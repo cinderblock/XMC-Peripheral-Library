@@ -11,7 +11,7 @@ LED Pin P5.2 as Output
 
 How to test the application
 ============================
-a. Import the project into DAVE V4
+a. Import the project
 b. Connect SWD Debugger to SDRAM Board (XMC4500 CPU_45B-V1-02)
 c. Compile and flash the application onto the device
 d. Run the application. 

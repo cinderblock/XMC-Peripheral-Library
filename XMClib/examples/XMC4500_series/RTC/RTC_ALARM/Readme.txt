@@ -12,7 +12,7 @@ XMC4500 Relax Kit
 
 How to test the application
 ============================
-a. Import the project into Keil MDK
+a. Import the project
 b. Compile and flash the application onto the device
 c. Run the application. 
 

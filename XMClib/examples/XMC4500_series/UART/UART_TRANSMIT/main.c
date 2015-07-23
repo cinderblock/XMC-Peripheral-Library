@@ -16,8 +16,8 @@
 
 /**
  * @file
- * @date 15 January,2015
- * @version 1.0.0
+ * @date 22 July,2015
+ * @version 1.0.1
  *
  * @brief UART demo example
  *
@@ -28,7 +28,7 @@
  * History <br>
  *
  * Version 1.0.0 Initial <br>
- *
+ * Version 1.0.1 Changed XMC_GPIO_SetMode() to XMC_GPIO_Init() for code clarity reasons <br>
  */
 
 #include <xmc_gpio.h>
@@ -42,6 +42,23 @@ const uint8_t message[] = "Hello world!!\n";
 #define LED1    P1_1
 #define UART_TX P1_5
 #define UART_RX P1_4
+
+XMC_GPIO_CONFIG_t uart_tx =
+{
+  .mode = XMC_GPIO_MODE_OUTPUT_PUSH_PULL_ALT2,
+  .output_strength = XMC_GPIO_OUTPUT_STRENGTH_MEDIUM
+};
+
+XMC_GPIO_CONFIG_t uart_rx =
+{
+  .mode = XMC_GPIO_MODE_INPUT_TRISTATE
+};
+
+XMC_GPIO_CONFIG_t led =
+{
+  .mode = XMC_GPIO_MODE_OUTPUT_PUSH_PULL,
+  .output_strength = XMC_GPIO_OUTPUT_STRENGTH_MEDIUM
+};
 
 XMC_UART_CH_CONFIG_t uart_config =
 {
@@ -73,10 +90,9 @@ int main(void)
   XMC_UART_CH_Init(XMC_UART0_CH0, &uart_config);
   XMC_UART_CH_SetInputSource(XMC_UART0_CH0, XMC_UART_CH_INPUT_RXD, USIC0_C0_DX0_P1_4);
   XMC_UART_CH_Start(XMC_UART0_CH0);
-
-  XMC_GPIO_SetMode(UART_TX, XMC_GPIO_MODE_OUTPUT_PUSH_PULL_ALT2);
-  XMC_GPIO_SetMode(UART_RX, XMC_GPIO_MODE_INPUT_TRISTATE);
-  XMC_GPIO_SetMode(LED1, XMC_GPIO_MODE_OUTPUT_PUSH_PULL);
+  XMC_GPIO_Init(UART_TX,&uart_tx);
+  XMC_GPIO_Init(UART_RX,&uart_rx);
+  XMC_GPIO_Init(LED1,&led);
 
   /* Send a message via UART periodically */
   SysTick_Config(SystemCoreClock / TICKS_PER_SECOND);

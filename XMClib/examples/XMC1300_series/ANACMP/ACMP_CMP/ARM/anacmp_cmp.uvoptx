@@ -77,37 +77,37 @@
         <tvExpOptDlg>0</tvExpOptDlg>
         <IsCurrentTarget>1</IsCurrentTarget>
       </OPTFL>
-      <CpuCode>6</CpuCode>
+      <CpuCode>9</CpuCode>
       <Books>
         <Book>
           <Number>0</Number>
           <Title>User Manual (XMC1300 Boot Kit)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Infineon\XMC1000_DFP\2.0.0\Documents\Board_Users_Manual_XMC1300_CPU_Card_R2.pdf</Path>
+          <Path>C:\Keil\ARM\PACK\Infineon\XMC1000_DFP\2.0.0\Documents\Board_Users_Manual_XMC1300_CPU_Card_R2.pdf</Path>
         </Book>
         <Book>
           <Number>1</Number>
           <Title>User Manual (XMC 2Go)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Infineon\XMC1000_DFP\2.0.0\Documents\Board_Users_Manual_XMC_2Go_Kit_with_XMC1100_R1.0.pdf</Path>
+          <Path>C:\Keil\ARM\PACK\Infineon\XMC1000_DFP\2.0.0\Documents\Board_Users_Manual_XMC_2Go_Kit_with_XMC1100_R1.0.pdf</Path>
         </Book>
         <Book>
           <Number>2</Number>
           <Title>Schematics (XMC 2Go)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Infineon\XMC1000_DFP\2.0.0\Documents\PCB_Sources_XMC_2Go_Kit_with_XMC1100-V1.zip</Path>
+          <Path>C:\Keil\ARM\PACK\Infineon\XMC1000_DFP\2.0.0\Documents\PCB_Sources_XMC_2Go_Kit_with_XMC1100-V1.zip</Path>
         </Book>
         <Book>
           <Number>3</Number>
           <Title>Schematics (XMC1300 Boot Kit)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Infineon\XMC1000_DFP\2.0.0\Documents\PCB_XMC1300_CPU_Card_V2.zip</Path>
+          <Path>C:\Keil\ARM\PACK\Infineon\XMC1000_DFP\2.0.0\Documents\PCB_XMC1300_CPU_Card_V2.zip</Path>
         </Book>
         <Book>
           <Number>4</Number>
           <Title>Getting Started (XMC1300 Boot Kit)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Infineon\XMC1000_DFP\2.0.0\Documents\XMC1300_Boot_Kit_Getting_Started_v1_2.pdf</Path>
+          <Path>C:\Keil\ARM\PACK\Infineon\XMC1000_DFP\2.0.0\Documents\XMC1300_Boot_Kit_Getting_Started_v1_2.pdf</Path>
         </Book>
         <Book>
           <Number>5</Number>
           <Title>Getting Started (XMC 2Go)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Infineon\XMC1000_DFP\2.0.0\Documents\XMC2Go_Initial-start-up-Guide.pdf</Path>
+          <Path>C:\Keil\ARM\PACK\Infineon\XMC1000_DFP\2.0.0\Documents\XMC2Go_Initial-start-up-Guide.pdf</Path>
         </Book>
         <Book>
           <Number>6</Number>
@@ -142,7 +142,7 @@
         <tRSysVw>1</tRSysVw>
         <sRunDeb>0</sRunDeb>
         <sLrtime>0</sLrtime>
-        <nTsel>6</nTsel>
+        <nTsel>7</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
         <sDlgDll></sDlgDll>
@@ -209,12 +209,13 @@
       </DebugFlag>
       <LintExecutable></LintExecutable>
       <LintConfigFile></LintConfigFile>
+      <bLintAuto>0</bLintAuto>
     </TargetOption>
   </Target>
 
   <Group>
     <GroupName>Source</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

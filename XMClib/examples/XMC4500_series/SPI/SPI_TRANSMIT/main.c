@@ -16,8 +16,8 @@
 
 /**
  * @file
- * @date 15 January,2015
- * @version 1.0.0
+ * @date 22 July,2015
+ * @version 1.0.1
  *
  * @brief SPI demo example
  *
@@ -26,6 +26,7 @@
  * History <br>
  *
  * Version 1.0.0 Initial <br>
+ * Version 1.0.1 Changed XMC_GPIO_SetMode() to XMC_GPIO_Init() for code clarity reasons <br>
  */
 
 #include "xmc_spi.h"
@@ -95,7 +96,7 @@ void SysTick_Handler(void)
 int main(void)
 {
   /*Initialize and Start SPI*/
-  XMC_SPI_CH_Init(XMC_SPI1_CH0, &spi_config);
+   XMC_SPI_CH_Init(XMC_SPI1_CH0, &spi_config);
 
   /*Input source selected*/
   XMC_SPI_CH_SetInputSource(XMC_SPI1_CH0,XMC_SPI_CH_INPUT_DIN0,USIC1_C0_DX0_P2_15);

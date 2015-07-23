@@ -1,34 +1,55 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- *
- */
-
 /**
  * @file xmc_ledts.c
- * @date 16 Feb, 2015
- * @version 1.0.0
+ * @date 2015-06-20
  *
- * @brief LEDTS low level driver for XMC1 and XMC4 microcontrollers
+ * @cond
+  *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
+ *
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-02-20:
+ *     - Initial draft <br>
+ *     - New API added: XMC_LEDTS_SetActivePADNo() <br>
+ *      
+ * 2015-06-20:
+ *     - Removed version macros and declaration of GetDriverVersion API
  *
  * <b>Detailed description of file:</b><br>
  * APIs for the functional blocks of LEDTS have been defined:<br>
  * -- GLOBAL (APIs prefixed with LEDTS_GLOBAL_) <br>
  * -- Clock configuration, Function/Event configuration, Interrupt configuration
  *
- * History
+ * @endcond
  *
- * Version 1.0.0 Initial version <br>
  */
 
 /*********************************************************************************************************************
@@ -62,19 +83,6 @@
 /*********************************************************************************************************************
  * API IMPLEMENTATION
  ********************************************************************************************************************/
-/**
-  * API to retrieve the version of the LEDTS driver
-  */
-XMC_DRIVER_VERSION_t XMC_LEDTS_GetDriverVersion(void)
-{
-  XMC_DRIVER_VERSION_t version;
-
-  version.major = XMC_LEDTS_MAJOR_VERSION;
-  version.minor = XMC_LEDTS_MINOR_VERSION;
-  version.patch = XMC_LEDTS_PATCH_VERSION;
-
-  return version;
-}
 
 /**
   * Initialization of global register
@@ -216,6 +224,21 @@ uint32_t XMC_LEDTS_ReadInterruptFlag(XMC_LEDTS_t *const ledts)
   XMC_ASSERT("XMC_LEDTS_ReadInterruptFlag:Wrong Module Pointer", XMC_LEDTS_CHECK_KERNEL_PTR(ledts));
 
   return (ledts->EVFR & 0xF);
+}
+
+/**
+  * Set the active pad number
+  */
+void XMC_LEDTS_SetActivePADNo(XMC_LEDTS_t *const ledts, XMC_LEDTS_NUMBER_TS_INPUT_t pad_num)
+{
+  uint32_t reg;
+
+  XMC_ASSERT("XMC_LEDTS_SetActivePADNo:Wrong Module Pointer", XMC_LEDTS_CHECK_KERNEL_PTR(ledts));
+
+  reg = ledts->FNCTL;
+  reg &= ~(LEDTS_FNCTL_PADT_Msk);
+  reg |= (uint32_t)pad_num;
+  ledts->FNCTL = reg;
 }
 
 /**

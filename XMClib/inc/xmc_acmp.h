@@ -1,41 +1,69 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * 
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,OR CONSEQUENTIAL DAMAGES, FOR ANY REASON
- * WHATSOEVER.
- */
-
 /**
  * @file xmc_acmp.h
- * @date 16 Feb, 2015
- * @version 1.0.2
+ * @date 2015-06-20 
  *
+ * @cond
+ *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
+ *
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
  * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
  *
- * <b>Detailed description of file</b> <br>
- * APIs provided in this file mainly cover the following functionality of ACMP: <br>
- * ---- Filter, Hysteresis, Output inversion
+ * Change History
+ * --------------
  *
- * History<br>
+ * 2014-12-10:
+ *     - Initial <br>
+ * 2015-02-20:
+ *     - Removed unused declarations<br> 
+ * 2015-05-08:
+ *     - Fixed sequence problem of low power mode in XMC_ACMP_Init() API<br>
+ *     - Fixed wrong register setting in XMC_ACMP_SetInput() API<br> 
+ *     - Removed return type variable and by default comparator enable from XMC_ACMP_Init() API. <br>
+ *       Additional call to XMC_ACMP_EnableComparator() API needed to start Comparator after Init.<br>
+ * 2015-06-04:
+ *     - Removed return type variable and by default comparator enable from XMC_ACMP_Init() API. <br>
+ *     - Divided XMC_ACMP_SetInput into two 3 APIs to reduce the code size and complexity as stated below<br> 
+ *       (a)XMC_ACMP_EnableReferenceDivider <br>
+ *       (b)XMC_ACMP_DisableReferenceDivider <br> 
+ *       (c)XMC_ACMP_SetInput <br> 
+ *     - Optimized enable and disable API's and moved to header file as static inline APIs.
+ *     - XMC_ACMP_t typedef changed to structure which overrides the standard header file structure.
+ * 2015-06-20: 
+ *     - Removed version macros and declaration of GetDriverVersion API 
+ * 2015-06-26: 
+ *     - API help documentation modified.   
+ * @endcond 
  *
- * Version 1.0.0 Initial <br>
- * Version 1.0.2 Removed unused declarations<br> 
  */
  
 #ifndef XMC_ACMP_H
 #define XMC_ACMP_H
  
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /**
  * @addtogroup XMClib XMC Peripheral Library
@@ -44,7 +72,7 @@ extern "C" {
 
 /**
  * @addtogroup ACMP
- * @brief Analog Comparator(ACMP) low level driver for XMC family of microcontrollers. <br>
+ * @brief Analog Comparator(ACMP) low level driver for XMC1 family of microcontrollers. <br>
  *
  * The ACMP module consists of 3 analog comparators. Each analog comparator has two inputs, INP and INN. 
  * Input INP is compared with input INN in the pad voltage domain.
@@ -76,18 +104,16 @@ extern "C" {
 /* If ACMP is available*/
 #if defined (COMPARATOR)
 
-#define XMC_ACMP_MAJOR_VERSION (1U) /**< Major number of the driver version. Format \<major\>.\<minor\>.\<patch\>*/
-#define XMC_ACMP_MINOR_VERSION (0U) /**< Minor number of the driver version. Format \<major\>.\<minor\>.\<patch\>*/
-#define XMC_ACMP_PATCH_VERSION (2U) /**< Patch number of the driver version. Format \<major\>.\<minor\>.\<patch\>*/
+#define XMC_ACMP0 (XMC_ACMP_t*)COMPARATOR /**< Comparator module base address defined*/
 
-#define XMC_ACMP_MAX_INSTANCES (3U) /* Maximum number of Analog Comparators available*/
-
-#define XMC_ACMP_SLICE_0        (0U) /**< Instance number for Slice-0 */
-#define XMC_ACMP_SLICE_1        (1U) /**< Instance number for Slice-1 */
-#define XMC_ACMP_SLICE_2        (2U) /**< Instance number for Slice-2 */
+#if UC_SERIES == XMC14
+#define XMC_ACMP_MAX_INSTANCES     (4U) /* Maximum number of Analog Comparators available*/
+#else
+#define XMC_ACMP_MAX_INSTANCES     (3U) /* Maximum number of Analog Comparators available*/
+#endif
 
 /* Checks if the pointer being passed is valid*/
-#define XMC_ACMP_CHECK_MODULE_PTR(PTR)  (((PTR)== COMPARATOR))
+#define XMC_ACMP_CHECK_MODULE_PTR(PTR)  (((PTR)== (XMC_ACMP_t*)COMPARATOR))
 
 /* Checks if the instance being addressed is valid*/
 #define XMC_ACMP_CHECK_INSTANCE(INST)   (((INST)< XMC_ACMP_MAX_INSTANCES))
@@ -95,10 +121,6 @@ extern "C" {
 /*********************************************************************************************************************
  * ENUMS
  ********************************************************************************************************************/
-/**
- * Defines the analog comparator module.
- */
-typedef COMPARATOR_Type XMC_ACMP_t;
 
 /**
  * Defines the return value of an API.
@@ -114,19 +136,21 @@ typedef enum XMC_ACMP_STATUS
  */ 
 typedef enum XMC_ACMP_HYSTERESIS
 {
-  XMC_ACMP_HYSTERESIS_OFF = 0, /**< No hysteresis */
-  XMC_ACMP_HYSTERESIS_10     , /**< Hysteresis = 10mv */
-  XMC_ACMP_HYSTERESIS_15     , /**< Hysteresis = 15mv */
-  XMC_ACMP_HYSTERESIS_20       /**< Hysteresis = 20mv */
+  XMC_ACMP_HYSTERESIS_OFF = 0U, /**< No hysteresis */
+  XMC_ACMP_HYSTERESIS_10     ,  /**< Hysteresis = 10mv */
+  XMC_ACMP_HYSTERESIS_15     ,  /**< Hysteresis = 15mv */
+  XMC_ACMP_HYSTERESIS_20        /**< Hysteresis = 20mv */
 } XMC_ACMP_HYSTERESIS_t;
 
 /**
- *  Defines the Comparator output status.
+ *  Defines the comparator output status options.
  */ 
 typedef enum XMC_ACMP_COMP_OUT
 {
-  XMC_ACMP_COMP_OUT_NEG_HIGHER = 0,  /**< Input Negative(INN) greater than Input Positive(INP). Vminus > Vplus*/
-  XMC_ACMP_COMP_OUT_POS_HIGHER       /**< Input Positive(INP) greater than Input Negative(INN). Vminus < Vplus */
+  XMC_ACMP_COMP_OUT_NO_INVERSION = 0U, /**< ACMP output is HIGH when, Input Positive(INP) greater than Input
+                                            Negative(INN). Vplus > Vminus */
+  XMC_ACMP_COMP_OUT_INVERSION          /**< ACMP output is HIGH when, Input Negative(INN) greater than Input
+                                            Positive(INP). Vminus > Vplus*/
 } XMC_ACMP_COMP_OUT_t;
 
 /**
@@ -134,9 +158,9 @@ typedef enum XMC_ACMP_COMP_OUT
  */ 
 typedef enum XMC_ACMP_INP_SOURCE
 {
-  XMC_ACMP_INP_SOURCE_STANDARD_PORT = 0,  /**< Input is connected to port */
-  XMC_ACMP_INP_SOURCE_REF_DIV          ,  /**< Input is connected to Reference Divider */
-  XMC_ACMP_INP_SOURCE_ACMP1_INP_PORT      /**< Input is connected to ACMP-1 INP */
+  XMC_ACMP_INP_SOURCE_STANDARD_PORT  = 0U,                                          /**< Input is connected to port */
+  XMC_ACMP_INP_SOURCE_ACMP1_INP_PORT = (uint16_t)(COMPARATOR_ANACMP0_ACMP0_SEL_Msk) /**< Input is connected to port
+                                                                                     and ACMP1 INP */
 } XMC_ACMP_INP_SOURCE_t;
 
 /*********************************************************************************************************************
@@ -152,6 +176,12 @@ typedef enum XMC_ACMP_INP_SOURCE
   #pragma warning 586
 #endif
 
+typedef struct {
+  __IO uint32_t  ORCCTRL;
+  __I  uint32_t  RESERVED[726];
+  __IO uint32_t  ANACMP[XMC_ACMP_MAX_INSTANCES];
+} XMC_ACMP_t;
+
 /**
  *  Structure for initializing the ACMP module. It configures the ANACMP register of the respective input.
  */
@@ -161,14 +191,14 @@ typedef struct XMC_ACMP_CONFIG
   {
     struct
     {
-	  uint32_t                  : 1;
-	  uint32_t filter_disable   : 1; /**< Comparator filter option for removing glitches. By default this option
-	                                      is selected in ANACMP register. Setting this option disables the filter */
-	  uint32_t                  : 1;
-	  uint32_t output_invert    : 1; /**< Option to invert the comparator output. */
-	  uint32_t hysteresis       : 2; /**< Hysteresis voltage to reduce noise sensitivity. Select the voltage levels
-	                                      from the values defined in @ref XMC_ACMP_HYSTERESIS_t. */
-	  uint32_t                  : 26;
+      uint32_t                  : 1;
+      uint32_t filter_disable   : 1; /**< Comparator filter option for removing glitches. By default this option
+                                          is selected in ANACMP register. Setting this option disables the filter */
+      uint32_t                  : 1;
+      uint32_t output_invert    : 1; /**< Option to invert the comparator output. Use XMC_@ref ACMP_COMP_OUT_t type*/
+      uint32_t hysteresis       : 2; /**< Hysteresis voltage to reduce noise sensitivity. Select the voltage levels
+                                          from the values defined in @ref XMC_ACMP_HYSTERESIS_t. */
+      uint32_t                  : 26;
     };
     uint32_t anacmp;
   };
@@ -181,99 +211,152 @@ typedef struct XMC_ACMP_CONFIG
   #pragma warning restore
 #endif
 
+#ifdef __cplusplus
+   extern "C" {
+#endif
+
 /*********************************************************************************************************************
  * API Prototypes
  ********************************************************************************************************************/
 
 /**
- * @return Data structure @ref XMC_DRIVER_VERSION_t storing driver version
+ * @param peripheral Constant pointer to analog comparator module, of @ref XMC_ACMP_t type. Use @ref XMC_ACMP0 macro.
+ * @param instance ACMP instance number. <BR>
+ *                 Range:<BR> 0 - ACMP0<BR>
+ *                            1 - ACMP1<BR>
+ *                            2 - ACMP2<BR>
  *
- * \par<b>Description: </b><br>
- * Return the version of the low level driver <br>
- *
- * \par
- * The function can be used to check application software compatibility with a specific version of the low level driver.
- *
- * \par<b>Related APIs:</b><br>
- * None
- */
-XMC_DRIVER_VERSION_t XMC_ACMP_GetDriverVersion(void);
-
-/**
- * @param peripheral Constant pointer to ACMP instance, of @ref XMC_ACMP_t type.
- * @param instance ACMP instance Number. Use one of the Macros @ref XMC_ACMP_SLICE_0/ @ref XMC_ACMP_SLICE_1/ 
-                   @ref XMC_ACMP_SLICE_2 <BR>
- *                 Range: [0x0 to 0x2]
- * @param config Pointer to configuration data. Refer data structure @ref XMC_ACMP_CONFIG_t for details.
+ * @param config Pointer to configuration data. Refer data structure @ref XMC_ACMP_CONFIG_t for settings.
  * @return
- *   @ref XMC_ACMP_STATUS_t returns \a XMC_ACMP_STATUS_SUCCESS , if succeeded else returns \a XMC_ACMP_STATUS_FAILURE
+ *    None<BR>
  *
  * \par<b>Description:</b><br>
  *  Initializes an instance of analog comparator module.<BR>\n
- *  Configures the ANACMP resister \a instance with hysteresis, comparator filter and inverted comparator output
- *  specified in the \a config structure. It internally calls XMC_ACMP_EnableComparator() to enable the analog
- *  comparator before setting the configurations.
+ *  Configures the ANACMP resister with hysteresis, comparator filter and inverted comparator output.
  *
  * \par<b>Related APIs:</b><br>
  *  None.
  */
-XMC_ACMP_STATUS_t XMC_ACMP_Init(XMC_ACMP_t *const peripheral, uint32_t instance, const XMC_ACMP_CONFIG_t *const config);
+void XMC_ACMP_Init(XMC_ACMP_t *const peripheral, uint32_t instance, const XMC_ACMP_CONFIG_t *const config);
 
 /**
- * @param peripheral Constant pointer to ACMP instance, of @ref XMC_ACMP_t type..
- * @param instance  ACMP instance Number
- *                  Use one of the Macros @ref XMC_ACMP_SLICE_0/ @ref XMC_ACMP_SLICE_1/ @ref XMC_ACMP_SLICE_2 <BR>
- *                  Range: [0x0 to 0x2]
+ * @param peripheral Constant pointer to analog comparator module, of @ref XMC_ACMP_t type. Use @ref XMC_ACMP0 macro.
+ * @param instance ACMP instance number. <BR>
+ *                 Range:<BR> 0 - ACMP0<BR>
+ *                            1 - ACMP1<BR>
+ *                            2 - ACMP2<BR>
  * @return
  *    None<BR>
  *
  * \par<b>Description:</b><br>
  * Enables an instance of ACMP module.<BR>\n
- * Enables a specific analog comparator for operation. The \a instance number determines which analog comparator to be
- * switched on. Sets the CMP_EN bit of respective ANACMP register specified in the \a instance number passed. Call this
- * API before accessing any ANACMP related Hardware functionalities.
+ * Starts the comparator by setting CMP_EN bit of respective ANACMP \a instance register. The \a instance number 
+ * determines which analog comparator to be switched on. Call this API after the successful completion of the comparator 
+ * initilization and input selection.
  *
  * \par<b>Related APIs:</b><br>
- * XMC_ACMP_Init().<BR>
  * XMC_ACMP_DisableComparator().<BR>
  */
-void XMC_ACMP_EnableComparator(XMC_ACMP_t *const peripheral, uint32_t instance);
+__STATIC_INLINE void XMC_ACMP_EnableComparator(XMC_ACMP_t *const peripheral, uint32_t instance)
+{
+  XMC_ASSERT("XMC_ACMP_EnableComparator:Wrong module pointer", XMC_ACMP_CHECK_MODULE_PTR(peripheral))
+  XMC_ASSERT("XMC_ACMP_EnableComparator:Wrong instance number", XMC_ACMP_CHECK_INSTANCE(instance) )
+
+  peripheral->ANACMP[instance] |= (uint16_t)COMPARATOR_ANACMP0_CMP_EN_Msk;
+
+}
 
 
 /**
- * @param peripheral Constant pointer to analog comparator instance, of @ref XMC_ACMP_t type.
- * @param instance  ACMP instance Number.
- *                  Use one of the Macros @ref XMC_ACMP_SLICE_0/ @ref XMC_ACMP_SLICE_1/ @ref XMC_ACMP_SLICE_2 <BR>
- *                  Range: [0x0 to 0x2]
+ * @param peripheral Constant pointer to analog comparator module, of @ref XMC_ACMP_t type. Use @ref XMC_ACMP0 macro.
+ * @param instance ACMP instance number. <BR>
+ *                 Range:<BR> 0 - ACMP0<BR>
+ *                            1 - ACMP1<BR>
+ *                            2 - ACMP2<BR>
  * @return
  *    None<BR>
  * \par<b>Description:</b><br>
  * Disables an instance of ACMP module.<BR>\n
- * Disables a specific analog comparator for operation. The \a instance number determines which analog comparator to be
- * switched off. Resets the CMP_EN bit of respective ANACMP register specified in the \a instance number passed.
+ * Stops the comparator by resetting CMP_EN bit of respective ANACMP \a instance register. The \a instance number 
+ * determines which analog comparator to be switched off.
  *
  * \par<b>Related APIs:</b><br>
  * XMC_ACMP_EnableComparator().
  */
-void XMC_ACMP_DisableComparator(XMC_ACMP_t *const peripheral, uint32_t instance);
+__STATIC_INLINE void XMC_ACMP_DisableComparator(XMC_ACMP_t *const peripheral, uint32_t instance)
+{
+  XMC_ASSERT("XMC_ACMP_DisableComparator:Wrong module pointer", XMC_ACMP_CHECK_MODULE_PTR(peripheral))
+  XMC_ASSERT("XMC_ACMP_DisableComparator:Wrong instance number", XMC_ACMP_CHECK_INSTANCE(instance) )
+
+  peripheral->ANACMP[instance] &= (uint16_t)(~((uint32_t)COMPARATOR_ANACMP0_CMP_EN_Msk));
+}
 
 /**
- * @param peripheral Constant pointer to analog comparator instance, of @ref XMC_ACMP_t type.
- * @param instance analog comparator instance Number.
- *                 Use one of the Macros @ref XMC_ACMP_SLICE_0/ @ref XMC_ACMP_SLICE_1/ @ref XMC_ACMP_SLICE_2<BR>
- *                 Range: [0x0 to 0x2]
- * @param source Input source. Refer @ref XMC_ACMP_INP_SOURCE_t for possible values<BR>
+ * @param None 
  * @return
  *    None<BR>
  *
  * \par<b>Description:</b><br>
- * Programs the source of INP.<BR>\n
- * INP can be driven by either an internal reference voltage or by an analog port input. Selects the Input for the
- * specific \a instance of the analog comparator. Directly accessed registers are  ANACMP0, ANACMP1, ANACMP2 according
- * to the instance number passed.
+ * Enables the reference divider for analog comparator instance 1.<BR>\n
+ * ACMP1 input INP is driven by an internal reference voltage by setting DIV_EN bit of ANACMP1 register.
+ * Other comparator instances can also share this reference divider option by calling the XMC_ACMP_SetInput() API.
+ * 
+ * \par<b>Related APIs:</b><br>
+ * XMC_ACMP_SetInput().
+ */
+__STATIC_INLINE void XMC_ACMP_EnableReferenceDivider(void)
+{
+  /* Enable the divider switch and connect the divided reference to ACMP1.INP */
+  COMPARATOR->ANACMP1 |= (uint16_t)(COMPARATOR_ANACMP1_REF_DIV_EN_Msk);
+}
+
+/**
+ * @param None 
+ * @return
+ *    None<BR>
+ *
+ * \par<b>Description:</b><br>
+ * Disables the reference divider for analog comparator instance 1.<BR>\n
+ * ACMP1 input INP is disconnected from the reference divider. This is achieved by reseting DIV_EN bit of ANACMP1 
+ * register.
  *
  * \par<b>Related APIs:</b><br>
  * None.
+ */
+__STATIC_INLINE void XMC_ACMP_DisableReferenceDivider(void)
+{
+  /* Disable the divider switch and use ACMP1.INP as standard port*/
+  COMPARATOR->ANACMP1 &= (uint16_t)(~(COMPARATOR_ANACMP1_REF_DIV_EN_Msk));
+}
+
+/**
+ * @param peripheral Constant pointer to analog comparator module, of @ref XMC_ACMP_t type. Use @ref XMC_ACMP0 macro.
+ * @param instance ACMP instance number. <BR>
+ *                 Range:<BR> 0 - ACMP0<BR>
+ *                            2 - ACMP2<BR>
+ * @param source ACMP input source selection options.<BR>
+ *                 Range:<BR> XMC_ACMP_INP_SOURCE_STANDARD_PORT  - Input is connected to port<BR>
+ *                            XMC_ACMP_INP_SOURCE_ACMP1_INP_PORT - Input is connected to port and ACMP1 INP <BR> 
+ * @return
+ *    None<BR>
+ *
+ * \par<b>Description:</b><br>
+ * Sets the analog comparartor input selection for ACMP0, ACMP2 instances.<BR>\n
+ * Apart from ACMP1 instance, each ACMP instances can be connected to its own port and ACMP1 INP.
+ * Calling @ref XMC_ACMP_EnableReferenceDivider() API, after this API can share the reference divider to one of the 
+ * comparartor input as explained in the following options.<br>
+ * The hardware options to set input are listed below.<br>
+ * <OL>
+ * <LI>The comparator inputs aren't connected to other ACMP1 comparator inputs.</LI>
+ * <LI>Can program the comparator-0 to connect ACMP0.INP to ACMP1.INP in XMC1200 AA or XMC1300 AA</LI>
+ * <LI>Can program the comparator-0 to connect ACMP0.INN to ACMP1.INP in XMC1200 AB or XMC1300 AB or XMC1400 AA</LI>
+ * <LI>Can program the comparator-2 to connect ACMP2.INP to ACMP1.INP</LI>
+ * </OL><br>
+ * Directly accessed registers are ANACMP0, ANACMP2 according to the availability of instance in the devices.
+ *
+ * \par<b>Related APIs:</b><br>
+ * @ref XMC_ACMP_EnableReferenceDivider.<BR>
+ * @ref XMC_ACMP_DisableReferenceDivider. 
  */
 void XMC_ACMP_SetInput(XMC_ACMP_t *const peripheral, uint32_t instance, const XMC_ACMP_INP_SOURCE_t source);
 
@@ -284,16 +367,17 @@ void XMC_ACMP_SetInput(XMC_ACMP_t *const peripheral, uint32_t instance, const XM
  *    None<BR>
  *
  * \par<b>Description:</b><br>
- * Sets up low power mode.<BR>\n
- * The low power mode is controlled by analog comparator module0. It is necessary to request low power mode of
- * operation for all instances of ACMP for the feature to be turned on. Sets LPWR bit of ANACMP0 register.
+ * Set the comparartors to operate in low power mode, by setting the LPWR bit of ANACMP0 register.<BR>\n
+ * The low power mode is controlled by ACMP0 instance. Low power mode is applicable for all instances of the
+ * comparator. In low power mode, blanking time will be introduced to ensure the stability of comparartor output. This 
+ * will slow down the comparator operation.
  *
  * \par<b>Related APIs:</b><br>
  * XMC_ACMP_ClearLowPowerMode().
  */
 __STATIC_INLINE void XMC_ACMP_SetLowPowerMode(void)
 {
-  COMPARATOR->ANACMP0 |= COMPARATOR_ANACMP0_CMP_LPWR_Msk;
+  COMPARATOR->ANACMP0 |= (uint16_t)COMPARATOR_ANACMP0_CMP_LPWR_Msk;
 }
 
 /**
@@ -302,20 +386,17 @@ __STATIC_INLINE void XMC_ACMP_SetLowPowerMode(void)
  *    None<BR>
  *
  * \par<b>Description:</b><br>
- * Exits the low power mode.<BR>\n
- * The low power mode is controlled by ACMP0 module. Turning off the low power feature of any single ACMP instance
- * disables other instances also. Blanking time will be introduce to ensure that the output would remain stable.
- * Resets LPWR bit of ANACMP0 register.
+ * Exits the low power mode by reseting LPWR bit of ANACMP0 register.<BR>\n
+ * The low power mode is controlled by ACMP0 module.  Low power mode is applicable for all instances of the
+ * comparator. To re-enable the low power mode, call the related API @ref XMC_ACMP_SetLowPowerMode().  
  *
  * \par<b>Related APIs:</b><br>
- * XMC_ACMP_ClearLowPowerMode().
+ * XMC_ACMP_SetLowPowerMode().
  */
 __STATIC_INLINE void XMC_ACMP_ClearLowPowerMode(void)
 {
-  COMPARATOR->ANACMP0 &= (uint16_t)(~COMPARATOR_ANACMP0_CMP_LPWR_Msk);
+  COMPARATOR->ANACMP0 &= (uint16_t)(~(uint16_t)COMPARATOR_ANACMP0_CMP_LPWR_Msk);
 }
-
-#endif /* #ifdef ACMP_AVAILABLE */
 
 /**
  * @}
@@ -328,5 +409,7 @@ __STATIC_INLINE void XMC_ACMP_ClearLowPowerMode(void)
 #ifdef __cplusplus
 }
 #endif
- 
+
+#endif /* If ACMP is available*/
+
 #endif /* XMC_ACMP_H */

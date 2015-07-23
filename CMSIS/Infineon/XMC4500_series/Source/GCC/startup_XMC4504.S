@@ -2,10 +2,10 @@
  * @file     startup_XMC4500.s
  * @brief    CMSIS Cortex-M4 Core Device Startup File for
  *           Infineon XMC4500 Device Series
- * @version  V1.16
- * @date     Nov 2014
+ * @version  V1.17
+ * @date     June 2015
  *
- * Copyright (C) 2014 Infineon Technologies AG. All rights reserved.
+ * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
  *
  *
  * @par
@@ -43,6 +43,7 @@
  * V1.15,May, 05, 2014 JFT:Added ram_code section
  * V1.16,Nov, 25, 2014 JFT:CPU workaround disabled. Single default handler.
  *                         Removed DAVE3 dependency
+ * V1.17,June 11, 2015 JFT:Remove SystemCoreClockUpdate call, done in SystemCoreClockSetup
  ******************************************************************************/
 
 /* ===========START : MACRO DEFINITION MACRO DEFINITION ================== */
@@ -300,9 +301,6 @@ Reset_Handler:
     ldr  r0, =__libc_init_array
     blx  r0
 #endif
-
-    ldr  r0, =SystemCoreClockUpdate
-    blx  r0
 
     ldr  r0, =main
     blx  r0

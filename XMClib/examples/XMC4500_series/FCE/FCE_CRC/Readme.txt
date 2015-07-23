@@ -19,7 +19,7 @@ XMC4000 device
 
 How to test the application
 ============================
-a. Import the project into DAVE V4
+a. Import the project
 b. Compile and flash the application onto the device
 c. Run the application. 
 d. In the debug window, user can set breakpoint to observe the values of variable.

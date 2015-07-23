@@ -1,59 +1,87 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
+/**
+ * @file xmc_uart.c
+ * @date 2015-06-20 
  *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
+ * @cond
+ *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-02-20:
+ *     - Initial <br>
+ *      
+ * 2015-05-20:
+ *     - TP ID 64798 fixed.
+ *     - xmc_uart_ch_stop API implementation corrected.
+ *     - Modified XMC_UART_CH_Stop() API for not setting to IDLE the channel if it is busy <br>
+ * 2015-06-20:
+ *     - Removed GetDriverVersion API
+ * @endcond 
  *
  */
  
  /**
  * @file xmc_uart.c
- * @date 16 Feb, 2015
- * @version 1.0.0
+ * @date 19 Jun, 2015
+ * @version 1.0.3
  *
  * @brief UART driver for XMC microcontroller family
  *
  * History <br>
  *
  * Version 1.0.0 Initial <br>
+ * Version 1.0.1 TP ID 64798 fixed. 
+ *               xmc_uart_ch_stop API implementation corrected.<br>
+ * Version 1.0.2 Modified XMC_UART_CH_Stop() API for not setting to IDLE the channel if it is busy <br>
+ * Version 1.0.3 Removed GetDriverVersion API
  */
 
-/*******************************************************************************
+/*********************************************************************************************************************
  * HEADER FILES
- *******************************************************************************/
+ *********************************************************************************************************************/
 
 #include <xmc_scu.h>
 #include <xmc_uart.h>
 
-/*******************************************************************************
+/*********************************************************************************************************************
  * MACROS
- *******************************************************************************/
+ *********************************************************************************************************************/
  
 #define XMC_UART_CH_OVERSAMPLING (16UL)
 #define XMC_UART_CH_OVERSAMPLING_MIN_VAL (4UL)
 
-/*******************************************************************************
+/*********************************************************************************************************************
  * API IMPLEMENTATION
- *******************************************************************************/
-
- XMC_DRIVER_VERSION_t XMC_UART_GetDriverVersion(void)
-{
-  XMC_DRIVER_VERSION_t version;
-
-  version.major = (uint8_t)XMC_UART_MAJOR_VERSION;
-  version.minor = (uint8_t)XMC_UART_MINOR_VERSION;
-  version.patch = (uint8_t)XMC_UART_PATCH_VERSION;
-
-  return version;
-}
+ *********************************************************************************************************************/
 
 void XMC_UART_CH_Init(XMC_USIC_CH_t *channel, const XMC_UART_CH_CONFIG_t *const config)
 {
@@ -166,15 +194,15 @@ uint16_t XMC_UART_CH_GetReceivedData(XMC_USIC_CH_t *const channel)
 XMC_UART_CH_STATUS_t XMC_UART_CH_Stop(XMC_USIC_CH_t *const channel)
 {
   XMC_UART_CH_STATUS_t status = XMC_UART_CH_STATUS_OK;
-
-  if ((XMC_UART_CH_GetStatusFlag(channel) & (uint32_t)XMC_UART_CH_STATUS_FLAG_TRANSMITTER_FRAME_FINISHED) != 0U)
+  if ((XMC_USIC_CH_GetTransmitBufferStatus(channel) & (uint32_t) XMC_USIC_CH_TBUF_STATUS_BUSY) != 0U)
   {
-    status = XMC_UART_CH_STATUS_BUSY;
+	status = XMC_UART_CH_STATUS_BUSY;
   }
-  
-  /* USIC channel in IDLE mode */
-  XMC_USIC_CH_SetMode(channel, XMC_USIC_CH_OPERATING_MODE_IDLE);
-
+  else
+  {
+	/* USIC channel in IDLE mode */
+	XMC_USIC_CH_SetMode(channel, XMC_USIC_CH_OPERATING_MODE_IDLE);
+  }
   return status;
 }
 

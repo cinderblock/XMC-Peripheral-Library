@@ -1,29 +1,60 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- *
- */
 
 /**
  * @file xmc_dma.c
- * @date 16 Feb, 2015
- * @version 1.0.0
+ * @date 2015-06-20 
  *
- * @brief DMA driver for XMC4000 microcontroller family.
+ * @cond
+ *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * History <br>
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
  *
- * Version 1.0.0  Initial <br>
+ * Change History
+ * --------------
+ *
+ * 2015-02-20:
+ *     - Initial <br>
+ *
+ * 2015-05-20:
+ *     - Add the declarations for the following APIs: <br>
+ *       XMC_DMA_DisableRequestLine, XMC_DMA_ClearRequestLine, <br>
+ *       XMC_DMA_CH_ClearSourcePeripheralRequest, <br>
+ *       XMC_DMA_CH_ClearDestinationPeripheralRequest <br>
+ *     - Remove PRIOARRAY <br>
+ *     - Documentation updates <br>
+ *
+ * 2015-06-20:
+ *     - Removed GetDriverVersion API <br>
+ *     - Updated XMC_DMA_CH_Init() to support scatter/gather functionality (only
+ *       on advanced DMA channels) <br>
+ *     - Updated XMC_DMA_CH_Disable() <br>
+ *
+ * @endcond
  */
 
 /*******************************************************************************
@@ -31,9 +62,10 @@
  *******************************************************************************/
 
 #include "xmc_dma.h"
-#include "xmc_scu.h"
 
-#if defined(GPDMA0)
+#if defined (GPDMA0)
+
+#include "xmc_scu.h"
 
 /*******************************************************************************
  * MACROS
@@ -55,66 +87,40 @@
 
 #if defined (GPDMA0)
 XMC_DMA_CH_EVENT_HANDLER_t dma0_event_handlers[XMC_DMA0_NUM_CHANNELS];
-XMC_PRIOARRAY_DEF(dma0_ordered_channels, XMC_DMA0_NUM_CHANNELS);
 #endif
 
 #if defined (GPDMA1)
 XMC_DMA_CH_EVENT_HANDLER_t dma1_event_handlers[XMC_DMA1_NUM_CHANNELS];
-XMC_PRIOARRAY_DEF(dma1_ordered_channels, XMC_DMA1_NUM_CHANNELS);
 #endif
  
 /*******************************************************************************
  * API IMPLEMENTATION
  *******************************************************************************/
 
- /* Get DMA low level driver version */
-XMC_DRIVER_VERSION_t XMC_DMA_GetDriverVersion(void)
-{
-  XMC_DRIVER_VERSION_t version;
-
-  version.major = (uint8_t)XMC_DMA_MAJOR_VERSION;
-  version.minor = (uint8_t)XMC_DMA_MINOR_VERSION;
-  version.patch = (uint8_t)XMC_DMA_PATCH_VERSION;
-
-  return version;
-}
-
 /* Initialize GPDMA */
 void XMC_DMA_Init(XMC_DMA_t *const dma)
 {
-#if UC_SERIES == XMC45
-  if (dma == XMC_DMA0)
-  {
-#endif
-    XMC_PRIOARRAY_Init(XMC_PRIOARRAY(dma0_ordered_channels));
-#if UC_SERIES == XMC45
-  }
-  else
-  {
-    XMC_PRIOARRAY_Init(XMC_PRIOARRAY(dma1_ordered_channels));
-  }
-#endif
-
   XMC_DMA_Enable(dma);
 }
 
 /* Enable GPDMA module */
 void XMC_DMA_Enable(XMC_DMA_t *const dma)
 {
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
   if (dma == XMC_DMA0)
   {
 #endif
 #if (UC_SERIES != XMC45)
     XMC_SCU_CLOCK_UngatePeripheralClock(XMC_SCU_PERIPHERAL_CLOCK_GPDMA0);
 #endif
-    XMC_SCU_RESET_AssertPeripheralReset(XMC_SCU_PERIPHERAL_RESET_GPDMA0);
     XMC_SCU_RESET_DeassertPeripheralReset(XMC_SCU_PERIPHERAL_RESET_GPDMA0);
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
   }
   else
   {
-    XMC_SCU_RESET_AssertPeripheralReset(XMC_SCU_PERIPHERAL_RESET_GPDMA1);
+#if (UC_SERIES != XMC45)
+    XMC_SCU_CLOCK_UngatePeripheralClock(XMC_SCU_PERIPHERAL_CLOCK_GPDMA1);
+#endif
     XMC_SCU_RESET_DeassertPeripheralReset(XMC_SCU_PERIPHERAL_RESET_GPDMA1);
   }
 #endif
@@ -127,7 +133,7 @@ void XMC_DMA_Disable(XMC_DMA_t *const dma)
 {
   dma->DMACFGREG = 0x0U;
 
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
   if (dma == XMC_DMA0)
   {
 #endif
@@ -135,11 +141,14 @@ void XMC_DMA_Disable(XMC_DMA_t *const dma)
 #if (UC_SERIES != XMC45)
     XMC_SCU_CLOCK_GatePeripheralClock(XMC_SCU_PERIPHERAL_CLOCK_GPDMA0);
 #endif
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
   }
   else
   {
     XMC_SCU_RESET_AssertPeripheralReset(XMC_SCU_PERIPHERAL_RESET_GPDMA1);
+#if (UC_SERIES != XMC45)
+    XMC_SCU_CLOCK_GatePeripheralClock(XMC_SCU_PERIPHERAL_CLOCK_GPDMA1);
+#endif
   }
 #endif
 }
@@ -149,7 +158,7 @@ bool XMC_DMA_IsEnabled(const XMC_DMA_t *const dma)
 {
   bool status;
 
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
   if (dma == XMC_DMA0)
   {
 #endif
@@ -157,11 +166,14 @@ bool XMC_DMA_IsEnabled(const XMC_DMA_t *const dma)
 #if (UC_SERIES != XMC45)
     status = status && !XMC_SCU_CLOCK_IsPeripheralClockGated(XMC_SCU_PERIPHERAL_CLOCK_GPDMA0);
 #endif
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
   }
   else
   {
     status = !XMC_SCU_RESET_IsPeripheralResetAsserted(XMC_SCU_PERIPHERAL_RESET_GPDMA1);
+#if (UC_SERIES != XMC45)
+    status = status && !XMC_SCU_CLOCK_IsPeripheralClockGated(XMC_SCU_PERIPHERAL_CLOCK_GPDMA1);
+#endif
   }
 #endif
 
@@ -177,14 +189,14 @@ bool XMC_DMA_IsEnabled(const XMC_DMA_t *const dma)
 /* Enable request line */
 void XMC_DMA_EnableRequestLine(XMC_DMA_t *const dma, uint8_t line, uint8_t peripheral)
 {
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
   if (dma == XMC_DMA0)
   {
 #endif
     DLR->SRSEL0 = ((DLR->SRSEL0 & (uint32_t)~(DLR_SRSEL_RS_MSK << (line * DLR_SRSEL_RS_BITSIZE))) |
                    ((uint32_t)peripheral << (line * DLR_SRSEL_RS_BITSIZE)));
-    DLR->LNEN |= (0x1UL << line);
-#if UC_SERIES == XMC45
+    DLR->LNEN |= (0x1UL << (line & GPDMA0_CH_CFGH_PER_Msk));
+#if defined(GPDMA1)
   }
   else
   {
@@ -195,17 +207,51 @@ void XMC_DMA_EnableRequestLine(XMC_DMA_t *const dma, uint8_t line, uint8_t perip
 #endif
 }
 
+void XMC_DMA_DisableRequestLine(XMC_DMA_t *const dma, uint8_t line)
+{
+#if defined(GPDMA1)
+  if (dma == XMC_DMA0)
+  {
+#endif
+    DLR->LNEN &= ~(0x1UL << line);
+#if defined(GPDMA1)
+  }
+  else
+  {
+    DLR->LNEN &= ~(0x100UL << line);
+  }
+#endif
+}
+
+void XMC_DMA_ClearRequestLine(XMC_DMA_t *const dma, uint8_t line)
+{
+#if defined(GPDMA1)
+  if (dma == XMC_DMA0)
+  {
+#endif
+    DLR->LNEN &= ~(0x1UL << line);
+	DLR->LNEN |= 0x1UL << line;
+#if defined(GPDMA1)
+  }
+  else
+  {
+    DLR->LNEN &= ~(0x100UL << line);
+	DLR->LNEN |= 0x100UL << line;
+  }
+#endif
+}
+
 /* Get DMA DLR overrun status */
 bool XMC_DMA_GetOverrunStatus(XMC_DMA_t *const dma, uint8_t line)
 {
   bool status;
 
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
   if (dma == XMC_DMA0)
   {
 #endif
     status = (bool)(DLR->OVRSTAT & (0x1UL << line));
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
   }
   else
   {
@@ -219,12 +265,12 @@ bool XMC_DMA_GetOverrunStatus(XMC_DMA_t *const dma, uint8_t line)
 /* Clear DMA DLR overrun status */
 void XMC_DMA_ClearOverrunStatus(XMC_DMA_t *const dma, const uint8_t line)
 {
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
   if (dma == XMC_DMA0)
   {
 #endif
     DLR->OVRCLR |= (uint32_t)(0x1UL << line);
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
   }
   else
   {
@@ -242,12 +288,11 @@ void XMC_DMA_CH_Enable(XMC_DMA_t *const dma, const uint8_t channel)
 /* Disable DMA channel */
 void XMC_DMA_CH_Disable(XMC_DMA_t *const dma, const uint8_t channel)
 {
-  dma->CH[channel].CFGL |= (uint32_t)GPDMA0_CH_CFGL_CH_SUSP_Msk;
-  while((dma->CH[channel].CFGL & GPDMA0_CH_CFGL_FIFO_EMPTY_Msk) == 0U)
-  {
-    /* wait until no data is left in the channel FIFO */
-  }
   dma->CHENREG = (uint32_t)(0x100UL << channel);
+  while((dma->CHENREG & (uint32_t)(0x1UL << channel)) != 0U)
+  {
+    /* wait until channel is disabled */
+  }
 }
 
 /* Check if a DMA channel is enabled */
@@ -260,7 +305,7 @@ bool XMC_DMA_CH_IsEnabled(XMC_DMA_t *const dma, const uint8_t channel)
 XMC_DMA_CH_STATUS_t XMC_DMA_CH_Init(XMC_DMA_t *const dma, const uint8_t channel, const XMC_DMA_CH_CONFIG_t *const config)
 {
   XMC_DMA_CH_STATUS_t status;
-  uint8_t interface;
+  uint8_t line;
   uint8_t peripheral;
 
   if (XMC_DMA_IsEnabled(dma) == true)
@@ -277,25 +322,12 @@ XMC_DMA_CH_STATUS_t XMC_DMA_CH_Init(XMC_DMA_t *const dma, const uint8_t channel,
                                          (uint32_t)GPDMA0_CH_CFGL_HS_SEL_SRC_Msk |
                                          (uint32_t)GPDMA0_CH_CFGL_HS_SEL_DST_Msk);
 
-#if UC_SERIES == XMC45
-      if (dma == XMC_DMA0)
+      if ((dma == XMC_DMA0) && (channel < (uint8_t)2))
       {
-#endif
-        XMC_PRIOARRAY_Add(XMC_PRIOARRAY(dma0_ordered_channels), (int32_t)channel, (int32_t)config->priority);
-
-        if (channel < (uint8_t)2)
-        {
-          /* Configure scatter and gather */
-          dma->CH[channel].SGR = config->src_gather_control;
-          dma->CH[channel].DSR = config->dst_scatter_control;
-        }
-#if UC_SERIES == XMC45
+        /* Configure scatter and gather */
+        dma->CH[channel].SGR = config->src_gather_control;
+        dma->CH[channel].DSR = config->dst_scatter_control;
       }
-      else
-      {
-        XMC_PRIOARRAY_Add(XMC_PRIOARRAY(dma1_ordered_channels), (int32_t)channel, (int32_t)config->priority);
-      }
-#endif
 
       if (config->dst_handshaking == XMC_DMA_CH_DST_HANDSHAKING_HARDWARE)
       {
@@ -303,22 +335,22 @@ XMC_DMA_CH_STATUS_t XMC_DMA_CH_Init(XMC_DMA_t *const dma, const uint8_t channel,
         if ((config->transfer_flow == (uint32_t)XMC_DMA_CH_TRANSFER_FLOW_M2P_DMA) ||
             (config->transfer_flow == (uint32_t)XMC_DMA_CH_TRANSFER_FLOW_P2P_DMA))
         {
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
           if (dma == XMC_DMA0)
           {
 #endif
-            interface = config->dst_peripheral_request & GPDMA0_CH_CFGH_PER_Msk;
-#if UC_SERIES == XMC45
+            line = config->dst_peripheral_request & GPDMA0_CH_CFGH_PER_Msk;
+#if defined(GPDMA1)
           }
           else
           {
-            interface = config->dst_peripheral_request & GPDMA1_CH_CFGH_PER_Msk;
+            line = config->dst_peripheral_request & GPDMA1_CH_CFGH_PER_Msk;
           }
 #endif
           peripheral = config->dst_peripheral_request >> GPDMA_CH_CFGH_PER_BITSIZE;
 
-          dma->CH[channel].CFGH |= (uint32_t)((uint32_t)interface << GPDMA0_CH_CFGH_DEST_PER_Pos);
-          XMC_DMA_EnableRequestLine(dma, interface, peripheral);
+          dma->CH[channel].CFGH |= (uint32_t)((uint32_t)line << GPDMA0_CH_CFGH_DEST_PER_Pos);
+          XMC_DMA_EnableRequestLine(dma, line, peripheral);
           dma->CH[channel].CFGL &= (uint32_t)~GPDMA0_CH_CFGL_HS_SEL_DST_Msk;
         }
       }
@@ -329,22 +361,22 @@ XMC_DMA_CH_STATUS_t XMC_DMA_CH_Init(XMC_DMA_t *const dma, const uint8_t channel,
         if ((config->transfer_flow == (uint32_t)XMC_DMA_CH_TRANSFER_FLOW_P2M_DMA) ||
             (config->transfer_flow == (uint32_t)XMC_DMA_CH_TRANSFER_FLOW_P2P_DMA))
         {
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
           if (dma == XMC_DMA0)
           {
 #endif
-            interface = config->src_peripheral_request & GPDMA0_CH_CFGH_PER_Msk;
-#if UC_SERIES == XMC45
+            line = config->src_peripheral_request & GPDMA0_CH_CFGH_PER_Msk;
+#if defined(GPDMA1)
           }
           else
           {
-            interface = config->src_peripheral_request & GPDMA1_CH_CFGH_PER_Msk;
+            line = config->src_peripheral_request & GPDMA1_CH_CFGH_PER_Msk;
           }
 #endif
           peripheral = config->src_peripheral_request >> GPDMA_CH_CFGH_PER_BITSIZE;
 
-          dma->CH[channel].CFGH |= (uint32_t)((uint32_t)interface << GPDMA0_CH_CFGH_SRC_PER_Pos);
-          XMC_DMA_EnableRequestLine(dma, interface, peripheral);
+          dma->CH[channel].CFGH |= (uint32_t)((uint32_t)line << GPDMA0_CH_CFGH_SRC_PER_Pos);
+          XMC_DMA_EnableRequestLine(dma, line, peripheral);
           dma->CH[channel].CFGL &= (uint32_t)~GPDMA0_CH_CFGL_HS_SEL_SRC_Msk;
         }
       }
@@ -583,18 +615,34 @@ void XMC_DMA_CH_RequestLastMultiblockTransfer(XMC_DMA_t *const dma, const uint8_
 /* Set event handler */
 void XMC_DMA_CH_SetEventHandler(XMC_DMA_t *const dma, const uint8_t channel, XMC_DMA_CH_EVENT_HANDLER_t event_handler)
 {
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
   if (dma == XMC_DMA0)
   {
 #endif
     dma0_event_handlers[channel] = event_handler;
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
   }
   else
   {
     dma1_event_handlers[channel] = event_handler;
   }
 #endif
+}
+
+void XMC_DMA_CH_ClearSourcePeripheralRequest(XMC_DMA_t *const dma, uint8_t channel)
+{
+  uint32_t line;
+  line = (dma->CH[channel].CFGH & GPDMA0_CH_CFGH_SRC_PER_Msk) >> GPDMA0_CH_CFGH_SRC_PER_Pos;
+
+  XMC_DMA_ClearRequestLine(dma, (uint8_t)line);
+}
+
+void XMC_DMA_CH_ClearDestinationPeripheralRequest(XMC_DMA_t *const dma, uint8_t channel)
+{
+  uint32_t line;
+  line = (dma->CH[channel].CFGH & GPDMA0_CH_CFGH_DEST_PER_Msk) >> GPDMA0_CH_CFGH_DEST_PER_Pos;
+
+  XMC_DMA_ClearRequestLine(dma, (uint8_t)line);
 }
 
 /* Default DMA IRQ handler */
@@ -605,34 +653,30 @@ void XMC_DMA_IRQHandler(XMC_DMA_t *const dma)
   uint32_t mask;
   XMC_DMA_CH_EVENT_HANDLER_t *dma_event_handlers;
   XMC_DMA_CH_EVENT_HANDLER_t event_handler;
-  XMC_PRIOARRAY_t *prio_array;
 
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
   if (dma == XMC_DMA0)
   {
 #endif
-    prio_array = XMC_PRIOARRAY(dma0_ordered_channels);
     dma_event_handlers = dma0_event_handlers;
-#if UC_SERIES == XMC45
+#if defined(GPDMA1)
   }
   else
   {
-    prio_array = XMC_PRIOARRAY(dma1_ordered_channels);
     dma_event_handlers = dma1_event_handlers;
   }
 #endif
   
   event = XMC_DMA_GetEventStatus(dma);
+  channel = 0;
 
   if ((event & (uint32_t)XMC_DMA_CH_EVENT_ERROR) != (uint32_t)0UL)
   {
     event = XMC_DMA_GetChannelsErrorStatus(dma);
-
-    channel = XMC_PRIOARRAY_GetHead(prio_array);
-    while (channel != -1)
+    while (event != 0)
     {
       mask = (uint32_t)1U << channel;
-      if (event & mask)
+      if ((event & mask) != 0)
       {
         event_handler = dma_event_handlers[channel];
 
@@ -646,15 +690,13 @@ void XMC_DMA_IRQHandler(XMC_DMA_t *const dma)
         
         break;
       }
-      channel = XMC_PRIOARRAY_GetItemNext(prio_array, channel);
+      ++channel;
     }
   }
   else if ((event & (uint32_t)XMC_DMA_CH_EVENT_TRANSFER_COMPLETE) != (uint32_t)0UL)
   {
     event = XMC_DMA_GetChannelsTransferCompleteStatus(dma);
-
-    channel = XMC_PRIOARRAY_GetHead(prio_array);
-    while (channel != -1)
+    while (event != 0)
     {
       mask = (uint32_t)1U << channel;
       if (event & mask)
@@ -672,19 +714,15 @@ void XMC_DMA_IRQHandler(XMC_DMA_t *const dma)
                                                                       (uint32_t)XMC_DMA_CH_EVENT_SRC_TRANSACTION_COMPLETE | 
                                                                       (uint32_t)XMC_DMA_CH_EVENT_DST_TRANSACTION_COMPLETE));
 																	  
-        XMC_PRIOARRAY_Remove(prio_array, channel);
-                                                           
         break;
       }
-      channel = XMC_PRIOARRAY_GetItemNext(prio_array, channel);
+      ++channel;
     }
   }
   else if ((event & (uint32_t)XMC_DMA_CH_EVENT_BLOCK_TRANSFER_COMPLETE) != (uint32_t)0UL)
   {
     event = XMC_DMA_GetChannelsBlockCompleteStatus(dma);
-
-    channel = XMC_PRIOARRAY_GetHead(prio_array);
-    while (channel != -1)
+    while (event != 0)
     {
       mask = (uint32_t)1U << channel;
       if (event & mask)
@@ -702,15 +740,13 @@ void XMC_DMA_IRQHandler(XMC_DMA_t *const dma)
                                                                       (uint32_t)XMC_DMA_CH_EVENT_DST_TRANSACTION_COMPLETE));
         break;
       }
-      channel = XMC_PRIOARRAY_GetItemNext(prio_array, channel);
+      ++channel;
     }
   }
   else if ((event & (uint32_t)XMC_DMA_CH_EVENT_SRC_TRANSACTION_COMPLETE) != (uint32_t)0UL)
   {
     event = XMC_DMA_GetChannelsSourceTransactionCompleteStatus(dma);
-
-    channel = XMC_PRIOARRAY_GetHead(prio_array);
-    while (channel != -1)
+    while (event != 0)
     {
       mask = (uint32_t)1U << channel;
       if (event & mask)
@@ -727,15 +763,13 @@ void XMC_DMA_IRQHandler(XMC_DMA_t *const dma)
         
         break;
       }
-      channel = XMC_PRIOARRAY_GetItemNext(prio_array, channel);
+      ++channel;
     }
   }
   else if ((event & (uint32_t)XMC_DMA_CH_EVENT_DST_TRANSACTION_COMPLETE) != (uint32_t)0UL)
   {
     event = XMC_DMA_GetChannelsDestinationTransactionCompleteStatus(dma);
-
-    channel = XMC_PRIOARRAY_GetHead(prio_array);
-    while (channel != -1)
+    while (event != 0)
     {
       mask = (uint32_t)1U << channel;
       if (event & mask)
@@ -752,7 +786,7 @@ void XMC_DMA_IRQHandler(XMC_DMA_t *const dma)
 
         break;
       }
-      channel = XMC_PRIOARRAY_GetItemNext(prio_array, channel);
+      ++channel;
     }
   }
   else

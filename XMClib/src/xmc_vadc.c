@@ -1,37 +1,61 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * 
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,OR CONSEQUENTIAL DAMAGES, FOR ANY REASON
- * WHATSOEVER.
- */
-
 /**
  * @file xmc_vadc.c
- * @date 20 Feb, 2015
- * @version 1.0.2
+ * @date 2015-06-25 
  *
- * @brief ADC low level driver API prototype definition for XMC family of microcontrollers.
+ * @cond
+*********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * <b>Detailed description of file:</b> <br>
- * APIs provided in this file cover the following functional blocks of VADC (Versatile ADC): <br>
- * -- GLOBAL (APIs prefixed with XMC_VADC_GLOBAL_) <br>
- * -- GROUP (APIs prefixed with XMC_VADC_GROUP_) <br>
- * -- SCAN (APIs prefixed with XMC_VADC_GROUP_Scan) <br>
- * -- BACKGROUND (APIs prefixed with XMC_VADC_GLOBAL_Background) <br>
- * -- QUEUE (APIs prefixed with XMC_VADC_GROUP_Queue) <br>
- * -- CHANNEL (APIs prefixed with XMC_VADC_GROUP_Channel) <br>
- * History <br>
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
  *
- * Version 1.0.0  Initial <br>
- * Version 1.0.2 Revised for XMC1201 device.<br>
+ * Change History
+ * --------------
+ *
+ * 2015-02-15:
+ *     - Initial <br>
+ *      
+ * 2015-02-20:
+ *     - Revised for XMC1201 device.<br>
+ *   
+ * 2015-04-27:
+ *     - Added new APIs for SHS.<br>
+ *     - Added New APIs for trigger edge selection.<BR>
+ *     - Added new APIs for Queue flush entries, boundary selection, Boundary node pointer.<BR>
+ *     - Revised GatingMode APIs and EMUX Control Init API.<BR>
+ *
+ * 2015-06-20:
+ *     - Removed version macros and declaration of GetDriverVersion API
+ *
+ * 2015-06-25:
+ *     - BFL configuration in channel initialization fixed.
+ *
+ * @endcond 
+ *
  */
 
 /*********************************************************************************************************************
@@ -81,17 +105,6 @@ static VADC_G_TypeDef *const g_xmc_vadc_group_array[XMC_VADC_MAXIMUM_NUM_GROUPS]
  * API IMPLEMENTATION
  ********************************************************************************************************************/
 
-/* API to retrieve driver version */
-XMC_DRIVER_VERSION_t XMC_VADC_GetDriverVersion(void)
-{
-  XMC_DRIVER_VERSION_t version;
-  version.major = XMC_VADC_MAJOR_VERSION;
-  version.minor = XMC_VADC_MINOR_VERSION;
-  version.patch = XMC_VADC_PATCH_VERSION;
-
-  return version;
-}
-
 /*API to enable the VADC Module*/
 void XMC_VADC_GLOBAL_EnableModule(void)
 {
@@ -104,7 +117,7 @@ void XMC_VADC_GLOBAL_EnableModule(void)
    */
 
 #if defined (COMPARATOR)
-  COMPARATOR->ORCCTRL = 0xFF;
+  COMPARATOR->ORCCTRL = (uint32_t)0xFF;
 #endif
 
 #if (XMC_VADC_CLOCK_UNGATING_NEEDED ==  1U)
@@ -122,12 +135,12 @@ void XMC_VADC_GLOBAL_DisableModule(void)
 {
 
 #if (XMC_VADC_CLOCK_UNGATING_NEEDED ==  1U)
-	XMC_SCU_CLOCK_GatePeripheralClock(XMC_SCU_PERIPHERAL_CLOCK_VADC);
+  XMC_SCU_CLOCK_GatePeripheralClock(XMC_SCU_PERIPHERAL_CLOCK_VADC);
 #endif
 
 #if(XMC_VADC_DEASSERT_RESET_NEEDED == 1U)
   /* Reset the Hardware */
-	XMC_SCU_RESET_AssertPeripheralReset((XMC_SCU_PERIPHERAL_RESET_t)XMC_SCU_PERIPHERAL_RESET_VADC );
+  XMC_SCU_RESET_AssertPeripheralReset((XMC_SCU_PERIPHERAL_RESET_t)XMC_SCU_PERIPHERAL_RESET_VADC );
 #endif
 }
 
@@ -190,11 +203,11 @@ void XMC_VADC_GLOBAL_InputClassInit(XMC_VADC_GLOBAL_t *const global_ptr, const X
 {
 
   XMC_ASSERT("XMC_VADC_GLOBAL_InputClassInit:Wrong Module Pointer", (global_ptr == VADC))
-  XMC_ASSERT("XMC_VADC_GLOBAL_InputClassInit:Wrong Conversion Type", ((conv_type) < XMC_VADC_GROUP_CONV_MAX))
+  XMC_ASSERT("XMC_VADC_GLOBAL_InputClassInit:Wrong Conversion Type", ((conv_type) <= XMC_VADC_GROUP_CONV_EMUX))
   XMC_ASSERT("XMC_VADC_GLOBAL_InputClassInit:Wrong ICLASS set number", (set_num < XMC_VADC_MAX_ICLASS_SET))
 
 #if(XMC_VADC_EMUX_AVAILABLE == 1U)
-  if(conv_type == XMC_VADC_GROUP_CONV_STD )
+  if (conv_type == XMC_VADC_GROUP_CONV_STD )
   {
 #endif
     global_ptr->GLOBICLASS[set_num] = config.globiclass &
@@ -225,7 +238,7 @@ void XMC_VADC_GLOBAL_StartupCalibration(XMC_VADC_GLOBAL_t *const global_ptr)
   for(i=0U; i<XMC_VADC_MAXIMUM_NUM_GROUPS; i++)
   {
     group_ptr = g_xmc_vadc_group_array[i];
-    if( (group_ptr->ARBCFG) & (uint32_t)VADC_G_ARBCFG_ANONS_Msk)
+    if ( (group_ptr->ARBCFG) & (uint32_t)VADC_G_ARBCFG_ANONS_Msk)
     {
       /* This group is active. Loop until it finishes calibration */
       while((group_ptr->ARBCFG) & (uint32_t)VADC_G_ARBCFG_CAL_Msk)
@@ -303,7 +316,7 @@ void XMC_VADC_GLOBAL_BindGroupToEMux(XMC_VADC_GLOBAL_t *const global_ptr, const 
   XMC_ASSERT("XMC_VADC_GLOBAL_BindGroupToEMux:Wrong EMUX Group", (emuxif < XMC_VADC_NUM_EMUX_INTERFACES))
   XMC_ASSERT("XMC_VADC_GLOBAL_BindGroupToEMux:Wrong VADC Group", (group < XMC_VADC_MAXIMUM_NUM_GROUPS))
 
-  if(0U == emuxif)
+  if (0U == emuxif)
   {
     pos  = (uint32_t)VADC_EMUXSEL_EMUXGRP0_Pos;
     mask = (uint32_t)VADC_EMUXSEL_EMUXGRP0_Msk;
@@ -326,9 +339,9 @@ void XMC_VADC_GLOBAL_SetResultEventInterruptNode(XMC_VADC_GLOBAL_t *const global
   uint32_t node;
   
   XMC_ASSERT("XMC_VADC_GLOBAL_SetResultEventInterruptNode:Wrong Module Pointer", (global_ptr == VADC))
-  XMC_ASSERT("XMC_VADC_GLOBAL_SetResultEventInterruptNode:Wrong SR Number", (sr < XMC_VADC_SR_MAX))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SetResultEventInterruptNode:Wrong SR Number", (sr <= XMC_VADC_SR_SHARED_SR3))
 
-  if(sr >= XMC_VADC_SR_SHARED_SR0)
+  if (sr >= XMC_VADC_SR_SHARED_SR0)
   {
     node = (uint32_t)sr - (uint32_t)XMC_VADC_SR_SHARED_SR0;
   }
@@ -348,7 +361,7 @@ void XMC_VADC_GLOBAL_BackgroundSetReqSrcEventInterruptNode(XMC_VADC_GLOBAL_t *co
   
   XMC_ASSERT("XMC_VADC_GLOBAL_BackgroundSetReqSrcEventInterruptNode:Wrong Module Pointer", (global_ptr == VADC))
 
-  if(sr >= XMC_VADC_SR_SHARED_SR0)
+  if (sr >= XMC_VADC_SR_SHARED_SR0)
   {
     node = (uint32_t)sr - (uint32_t)XMC_VADC_SR_SHARED_SR0;
   }
@@ -395,14 +408,14 @@ void XMC_VADC_GROUP_InputClassInit(XMC_VADC_GROUP_t *const group_ptr, const XMC_
   XMC_VADC_CONVMODE_t conv_mode;
 
   XMC_ASSERT("XMC_VADC_GROUP_InputClassInit:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
-  XMC_ASSERT("XMC_VADC_GROUP_InputClassInit:Wrong Conversion Type", ((conv_type) < XMC_VADC_GROUP_CONV_MAX))
+  XMC_ASSERT("XMC_VADC_GROUP_InputClassInit:Wrong Conversion Type", ((conv_type) <= XMC_VADC_GROUP_CONV_EMUX))
   XMC_ASSERT("XMC_VADC_GROUP_InputClassInit:Wrong ICLASS set number", (set_num < XMC_VADC_MAX_ICLASS_SET))
 
   /* 
    * Obtain the mask and position macros of the parameters based on what is being requested - Standard channels vs
    * external mux channels.
    */
-  if(XMC_VADC_GROUP_CONV_STD == conv_type)
+  if (XMC_VADC_GROUP_CONV_STD == conv_type)
   {
     conv_mode_pos    = (uint32_t) VADC_G_ICLASS_CMS_Pos;
     conv_mode_mask   = (uint32_t) VADC_G_ICLASS_CMS_Msk;
@@ -438,7 +451,7 @@ void XMC_VADC_GROUP_SetPowerMode(XMC_VADC_GROUP_t *const group_ptr, const XMC_VA
   uint32_t arbcfg;
 
   XMC_ASSERT("XMC_VADC_GROUP_SetPowerMode:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
-  XMC_ASSERT("XMC_VADC_GROUP_SetPowerMode:Wrong Power Mode", (power_mode < XMC_VADC_GROUP_POWERMODE_MAX))
+  XMC_ASSERT("XMC_VADC_GROUP_SetPowerMode:Wrong Power Mode", (power_mode <= XMC_VADC_GROUP_POWERMODE_NORMAL))
 
   arbcfg = group_ptr->ARBCFG;
 
@@ -459,7 +472,7 @@ void XMC_VADC_GROUP_SetSyncSlave(XMC_VADC_GROUP_t *const group_ptr, uint32_t mas
   #if (XMC_VADC_MULTIPLE_SLAVEGROUPS == 1U )
 
   /* Determine the coding of SYNCTR */
-  if(slave_grp > master_grp)
+  if (slave_grp > master_grp)
   {
     master_grp = master_grp + 1U;
   }
@@ -487,7 +500,7 @@ void XMC_VADC_GROUP_SetSyncMaster(XMC_VADC_GROUP_t *const group_ptr)
 /* API to enable checking of readiness of slaves before a synchronous conversion request is issued */
 void XMC_VADC_GROUP_CheckSlaveReadiness(XMC_VADC_GROUP_t *const group_ptr, uint32_t slave_group)
 {
-#if(XMC_VADC_MAXIMUM_NUM_GROUPS == 4U)
+#if (XMC_VADC_MAXIMUM_NUM_GROUPS == 4U)
   uint32_t slave_kernel;
   uint32_t adc_ready;
   uint8_t ready_pos;
@@ -499,7 +512,7 @@ void XMC_VADC_GROUP_CheckSlaveReadiness(XMC_VADC_GROUP_t *const group_ptr, uint3
  
   slave_kernel  =  slave_group;
 
-  if(0U == slave_kernel)
+  if (0U == slave_kernel)
   {
     adc_ready = 1U;
   }
@@ -508,7 +521,7 @@ void XMC_VADC_GROUP_CheckSlaveReadiness(XMC_VADC_GROUP_t *const group_ptr, uint3
     adc_ready = slave_kernel;
   }
 
-  if(1U == adc_ready)
+  if (1U == adc_ready)
   {
     ready_pos = (uint8_t)VADC_G_SYNCTR_EVALR1_Pos;
   }
@@ -540,7 +553,7 @@ void XMC_VADC_GROUP_IgnoreSlaveReadiness(XMC_VADC_GROUP_t *const group_ptr, uint
 #if(XMC_VADC_MAXIMUM_NUM_GROUPS == 4U)
   slave_kernel = slave_group;
 
-  if(0U == slave_kernel)
+  if (0U == slave_kernel)
   {
     adc_ready = 1U;
   }
@@ -549,7 +562,7 @@ void XMC_VADC_GROUP_IgnoreSlaveReadiness(XMC_VADC_GROUP_t *const group_ptr, uint
     adc_ready = slave_kernel;
   }
 
-  if(1U == adc_ready)
+  if (1U == adc_ready)
   {
     ready_pos = (uint8_t)VADC_G_SYNCTR_EVALR1_Pos;
   }
@@ -579,7 +592,7 @@ void XMC_VADC_GROUP_EnableChannelSyncRequest(XMC_VADC_GROUP_t *const group_ptr, 
 
   synctr  = group_ptr->SYNCTR;
 
-  if(!(synctr &  (uint32_t)VADC_G_SYNCTR_STSEL_Msk))
+  if (!(synctr &  (uint32_t)VADC_G_SYNCTR_STSEL_Msk))
   {
     group_ptr->CHCTR[ch_num] |= (uint32_t)((uint32_t)1 << VADC_G_CHCTR_SYNC_Pos);
   }
@@ -596,7 +609,7 @@ void XMC_VADC_GROUP_DisableChannelSyncRequest(XMC_VADC_GROUP_t *const group_ptr,
 
   synctr  = group_ptr->SYNCTR;
 
-  if(synctr &  (uint32_t)VADC_G_SYNCTR_STSEL_Msk)
+  if (synctr &  (uint32_t)VADC_G_SYNCTR_STSEL_Msk)
   {
     group_ptr->CHCTR[ch_num] &= ~((uint32_t)VADC_G_CHCTR_SYNC_Msk);
   }
@@ -640,12 +653,12 @@ void XMC_VADC_GROUP_TriggerServiceRequest(XMC_VADC_GROUP_t *const group_ptr,
   uint32_t sract;
 
   XMC_ASSERT("XMC_VADC_GROUP_TriggerServiceRequest:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
-  XMC_ASSERT("XMC_VADC_GROUP_TriggerServiceRequest:Wrong SR number", (sr_num < XMC_VADC_SR_MAX))
-  XMC_ASSERT("XMC_VADC_GROUP_TriggerServiceRequest:Wrong SR type", ((type)< XMC_VADC_GROUP_IRQ_MAX))
+  XMC_ASSERT("XMC_VADC_GROUP_TriggerServiceRequest:Wrong SR number", (sr_num <= XMC_VADC_SR_SHARED_SR3))
+  XMC_ASSERT("XMC_VADC_GROUP_TriggerServiceRequest:Wrong SR type", ((type)<= XMC_VADC_GROUP_IRQ_SHARED))
 
   sract = group_ptr->SRACT;
 
-  if(XMC_VADC_GROUP_IRQ_KERNEL == type)
+  if (XMC_VADC_GROUP_IRQ_KERNEL == type)
   {
     sract |= (uint32_t)((uint32_t)1 << sr_num);
   }
@@ -656,56 +669,273 @@ void XMC_VADC_GROUP_TriggerServiceRequest(XMC_VADC_GROUP_t *const group_ptr,
 
   group_ptr->SRACT = sract;
 }
+
+#if XMC_VADC_BOUNDARY_FLAG_SELECT == 1U
+
+/* API to set the SR line for the Boundary flag node pointer*/
+void XMC_VADC_GROUP_SetBoundaryEventInterruptNode(XMC_VADC_GROUP_t *const group_ptr,
+                                                                  const uint8_t boundary_flag_num,
+                                                                  const XMC_VADC_BOUNDARY_NODE_t sr)
+{
+  uint32_t flag_pos;
+  XMC_ASSERT("XMC_VADC_GROUP_SetBoundaryEventInterruptNode:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
+
+  /* Program the GxBFLNP */
+  flag_pos = (uint32_t)boundary_flag_num << (uint32_t)2;
+  group_ptr->BFLNP &= ~((uint32_t)VADC_G_BFLNP_BFL0NP_Msk << flag_pos);
+  group_ptr->BFLNP |= (uint32_t)sr << flag_pos;
+}
+
+#endif /* XMC_VADC_BOUNDARY_FLAG_SELECT */
+
 #endif /* XMC_VADC_GROUP_AVAILABLE */
 
 #if(XMC_VADC_SHS_AVAILABLE == 1U)
+
+/* API to Initialize the Sample and hold features*/
+void XMC_VADC_GLOBAL_SHS_Init(XMC_VADC_GLOBAL_SHS_t *const shs_ptr, const XMC_VADC_GLOBAL_SHS_CONFIG_t *config)
+{
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_Init:Wrong SHS Pointer", (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_Init:Wrong Index number",(config == (XMC_VADC_GLOBAL_SHS_CONFIG_t*)NULL))
+
+  /* Initialize the SHS Configuration register*/
+  shs_ptr->SHSCFG = (uint32_t)((uint32_t)config->shscfg | (uint32_t)SHS_SHSCFG_SCWC_Msk);
+
+  /* Select the Calibration order*/
+  shs_ptr->CALCTR &= ~((uint32_t)SHS_CALCTR_CALORD_Msk);
+  shs_ptr->CALCTR |=  (uint32_t) ((uint32_t)config->calibration_order << SHS_CALCTR_CALORD_Pos);
+}
+
 /* API to enable the accelerated mode of conversion */
 void XMC_VADC_GLOBAL_SHS_EnableAcceleratedMode(XMC_VADC_GLOBAL_SHS_t *const shs_ptr, XMC_VADC_GROUP_INDEX_t group_num)
 {
-	XMC_ASSERT("XMC_VADC_GLOBAL_SHS_EnableAcceleratedMode:Wrong SHS Pointer",
-			   (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
-    XMC_ASSERT("XMC_VADC_GLOBAL_SHS_EnableAcceleratedMode:Wrong Index number",(group_num < XMC_VADC_GROUP_INDEX_MAX))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_EnableAcceleratedMode:Wrong SHS Pointer",
+             (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_EnableAcceleratedMode:Wrong Index number",(group_num <= XMC_VADC_GROUP_INDEX_1))
 
-	if(group_num == XMC_VADC_GROUP_INDEX_0 )
-	{
-	  shs_ptr->TIMCFG0 |= (uint32_t)SHS_TIMCFG0_AT_Msk;
-	}
-	else if(group_num == XMC_VADC_GROUP_INDEX_1 )
-	{
-	  shs_ptr->TIMCFG1 |= (uint32_t)SHS_TIMCFG1_AT_Msk;
-	}
-	else
-	{
-		/* for MISRA*/
-	}
+  /* Set the converted to Accelerated mode from compatible mode*/
+  if (group_num == XMC_VADC_GROUP_INDEX_0 )
+  {
+    shs_ptr->TIMCFG0 |= (uint32_t)SHS_TIMCFG0_AT_Msk;
+  }
+  else if (group_num == XMC_VADC_GROUP_INDEX_1 )
+  {
+    shs_ptr->TIMCFG1 |= (uint32_t)SHS_TIMCFG1_AT_Msk;
+  }
+  else
+  {
+    /* for MISRA*/
+  }
+}
+
+/* API to disable the accelerated mode of conversion */
+void XMC_VADC_GLOBAL_SHS_DisableAcceleratedMode(XMC_VADC_GLOBAL_SHS_t *const shs_ptr, XMC_VADC_GROUP_INDEX_t group_num)
+{
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_DisableAcceleratedMode:Wrong SHS Pointer",
+             (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_DisableAcceleratedMode:Wrong Index number",(group_num <= XMC_VADC_GROUP_INDEX_1))
+
+  /* Set the converted to Accelerated mode from compatible mode*/
+  if (group_num == XMC_VADC_GROUP_INDEX_0 )
+  {
+    shs_ptr->TIMCFG0 &= ~(uint32_t)SHS_TIMCFG0_AT_Msk;
+  }
+  else if (group_num == XMC_VADC_GROUP_INDEX_1 )
+  {
+    shs_ptr->TIMCFG1 &= ~(uint32_t)SHS_TIMCFG1_AT_Msk;
+  }
+  else
+  {
+    /* for MISRA*/
+  }
 }
 
 /* API to set the Short sample time of the Sample and hold module*/
 void XMC_VADC_GLOBAL_SHS_SetShortSampleTime(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
-		                                    XMC_VADC_GROUP_INDEX_t group_num,
-											uint8_t sst_value)
+                                            XMC_VADC_GROUP_INDEX_t group_num,
+                                            uint8_t sst_value)
 {
-	XMC_ASSERT("XMC_VADC_GLOBAL_SHS_EnableAcceleratedMode:Wrong SHS Pointer",
-			   (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
-    XMC_ASSERT("XMC_VADC_GLOBAL_SHS_EnableAcceleratedMode:Wrong Index number",(group_num < XMC_VADC_GROUP_INDEX_MAX))
-	XMC_ASSERT("XMC_VADC_GLOBAL_SHS_EnableAcceleratedMode:Wrong SST value",(sst_value < 64U))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetShortSampleTime:Wrong SHS Pointer",
+             (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetShortSampleTime:Wrong Index number",(group_num <= XMC_VADC_GROUP_INDEX_1))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetShortSampleTime:Wrong SST value",(sst_value < 64U))
 
-	if(group_num == XMC_VADC_GROUP_INDEX_0 )
-	{
-	  shs_ptr->TIMCFG0 &= ~((uint32_t)SHS_TIMCFG0_SST_Msk);
-	  shs_ptr->TIMCFG0 |= (uint32_t)((uint32_t)sst_value << SHS_TIMCFG0_SST_Pos );
-	}
-	else if(group_num == XMC_VADC_GROUP_INDEX_1 )
-	{
-	  shs_ptr->TIMCFG1 &= ~((uint32_t)SHS_TIMCFG1_SST_Msk);
-	  shs_ptr->TIMCFG1 |= (uint32_t)((uint32_t)sst_value << SHS_TIMCFG1_SST_Pos );
-	}
-	else
-	{
-		/* for MISRA*/
-	}
+  /* Set the short sample time for the Accelerated mode of operation*/
+  if (group_num == XMC_VADC_GROUP_INDEX_0 )
+  {
+    shs_ptr->TIMCFG0 &= ~((uint32_t)SHS_TIMCFG0_SST_Msk);
+    shs_ptr->TIMCFG0 |= (uint32_t)((uint32_t)sst_value << SHS_TIMCFG0_SST_Pos );
+  }
+  else if (group_num == XMC_VADC_GROUP_INDEX_1 )
+  {
+    shs_ptr->TIMCFG1 &= ~((uint32_t)SHS_TIMCFG1_SST_Msk);
+    shs_ptr->TIMCFG1 |= (uint32_t)((uint32_t)sst_value << SHS_TIMCFG1_SST_Pos );
+  }
+  else
+  {
+  /* for MISRA*/
+  }
+}
+
+/* API to set the gain factor of the Sample and hold module*/
+void XMC_VADC_GLOBAL_SHS_SetGainFactor(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
+                                       uint8_t gain_value,
+                                       XMC_VADC_GROUP_INDEX_t group_num,
+                                       uint8_t ch_num)
+{
+  uint32_t ch_mask;
+
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetGainFactor:Wrong SHS Pointer", (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetGainFactor:Wrong Index number",(group_num <= XMC_VADC_GROUP_INDEX_1))
+
+  /*Calculate location of channel bit-field*/
+  ch_mask = ((uint32_t)ch_num << (uint32_t)2);
+  if (group_num == XMC_VADC_GROUP_INDEX_0 )
+  {
+    shs_ptr->GNCTR00 &= ~((uint32_t)SHS_GNCTR00_GAIN0_Msk << ch_mask) ;
+    shs_ptr->GNCTR00 |=  ((uint32_t)gain_value << ch_mask);
+  }
+  else if (group_num == XMC_VADC_GROUP_INDEX_1 )
+  {
+    shs_ptr->GNCTR10 &= ~((uint32_t)SHS_GNCTR10_GAIN0_Msk << ch_mask);
+    shs_ptr->GNCTR10 |=  ((uint32_t)gain_value << ch_mask);
+  }
+  else
+  {
+    /* for MISRA*/
+  }
+}
+
+/* API to enable the gain and offset calibration of the Sample and hold module*/
+void XMC_VADC_GLOBAL_SHS_EnableGainAndOffsetCalibrations(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
+                                                         XMC_VADC_GROUP_INDEX_t group_num)
+{
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_EnableGainAndOffsetCalibrations:Wrong SHS Pointer",
+             (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_EnableGainAndOffsetCalibrations:Wrong group selected",
+             (group_num <= (uint32_t)XMC_VADC_GROUP_INDEX_1))
+
+  /* Enable gain and offset calibration*/
+  if ( XMC_VADC_GROUP_INDEX_0 == group_num)
+  {
+    shs_ptr->CALOC0 &= ~((uint32_t)SHS_CALOC0_DISCAL_Msk);
+  }
+  else if ( XMC_VADC_GROUP_INDEX_1 == group_num)
+  {
+    shs_ptr->CALOC1 &= ~((uint32_t)SHS_CALOC1_DISCAL_Msk);
+  }
+  else
+  {
+    /* for MISRA */
+  }
+}
+
+/* API to enable the gain and offset calibration of the Sample and hold module*/
+void XMC_VADC_GLOBAL_SHS_DisableGainAndOffsetCalibrations(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
+                                                          XMC_VADC_GROUP_INDEX_t group_num)
+{
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_DisableGainAndOffsetCalibrations:Wrong SHS Pointer",
+               (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_DisableGainAndOffsetCalibrations:Wrong group selected",
+            (group_num <= (uint32_t)XMC_VADC_GROUP_INDEX_1))
+
+  if ( XMC_VADC_GROUP_INDEX_0 == group_num)
+  {
+    shs_ptr->CALOC0 |= (uint32_t)SHS_CALOC0_DISCAL_Msk;
+  }
+  else if ( XMC_VADC_GROUP_INDEX_1 == group_num)
+  {
+    shs_ptr->CALOC1 |= (uint32_t)SHS_CALOC1_DISCAL_Msk;
+  }
+  else
+  {
+    /* for MISRA */
+  }
+}
+
+/* API to get the offset calibration value of the Sample and hold module*/
+uint8_t XMC_VADC_GLOBAL_SHS_GetOffsetCalibrationValue(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
+                                                      XMC_VADC_GROUP_INDEX_t group_num,
+                                                      XMC_VADC_SHS_GAIN_LEVEL_t gain_level)
+{
+  uint32_t calibration_value;
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_GetOffsetCalibrationValue:Wrong SHS Pointer",
+               (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_GetOffsetCalibrationValue:Wrong Group number selected",
+             (group_num == XMC_VADC_GROUP_INDEX_0)||(group_num == XMC_VADC_GROUP_INDEX_1))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_GetOffsetCalibrationValue:Wrong gain level selected",
+             (gain_level == XMC_VADC_SHS_GAIN_LEVEL_0)||(gain_level == XMC_VADC_SHS_GAIN_LEVEL_1)||
+             (gain_level == XMC_VADC_SHS_GAIN_LEVEL_2)||(gain_level == XMC_VADC_SHS_GAIN_LEVEL_3))
+
+  calibration_value = 0U;
+  if ( XMC_VADC_GROUP_INDEX_0 == group_num)
+  {
+    calibration_value = (shs_ptr->CALOC0 >> (uint32_t)gain_level) & (uint32_t)SHS_CALOC0_CALOFFVAL0_Msk;
+  }
+  else if ( XMC_VADC_GROUP_INDEX_1 == group_num)
+  {
+    calibration_value = (shs_ptr->CALOC1 >> (uint32_t)gain_level) & (uint32_t)SHS_CALOC1_CALOFFVAL0_Msk;
+  }
+  else
+  {
+    /* for MISRA */
+  }
+  return ((uint8_t)calibration_value);
+}
+
+/* API to set the offset calibration value of the Sample and hold module*/
+void XMC_VADC_GLOBAL_SHS_SetOffsetCalibrationValue(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
+                                                   XMC_VADC_GROUP_INDEX_t group_num,
+                                                   XMC_VADC_SHS_GAIN_LEVEL_t gain_level,
+                                                   uint8_t offset_calibration_value)
+{
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetOffsetCalibrationValue:Wrong SHS Pointer",
+               (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetOffsetCalibrationValue:Wrong Group number selected",
+             (group_num == XMC_VADC_GROUP_INDEX_0)||(group_num == XMC_VADC_GROUP_INDEX_1))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetOffsetCalibrationValue:Wrong gain level selected",
+             (gain_level == XMC_VADC_SHS_GAIN_LEVEL_0)||(gain_level == XMC_VADC_SHS_GAIN_LEVEL_1)||
+             (gain_level == XMC_VADC_SHS_GAIN_LEVEL_2)||(gain_level == XMC_VADC_SHS_GAIN_LEVEL_3))
+
+  if ( XMC_VADC_GROUP_INDEX_0 == group_num)
+  {
+    shs_ptr->CALOC0 = (shs_ptr->CALOC0  & ~((uint32_t)SHS_CALOC0_CALOFFVAL0_Msk << (uint32_t)gain_level)) |
+                      (uint32_t)SHS_CALOC0_OFFWC_Msk;
+    shs_ptr->CALOC0 |=  ((uint32_t)offset_calibration_value << (uint32_t)gain_level) | (uint32_t)SHS_CALOC0_OFFWC_Msk;
+  }
+  else if ( XMC_VADC_GROUP_INDEX_1 == group_num)
+  {
+    shs_ptr->CALOC1 = (shs_ptr->CALOC1 & ~((uint32_t)SHS_CALOC1_CALOFFVAL0_Msk << (uint32_t)gain_level)) |
+                      (uint32_t)SHS_CALOC1_OFFWC_Msk;
+    shs_ptr->CALOC1 |=  ((uint32_t)offset_calibration_value << (uint32_t)gain_level) | (uint32_t)SHS_CALOC1_OFFWC_Msk;
+  }
+  else
+  {
+    /* for MISRA */
+  }
+}
+
+/* API to set the values of sigma delta loop of the Sample and hold module*/
+void XMC_VADC_GLOBAL_SHS_SetSigmaDeltaLoop(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
+                                           XMC_VADC_GROUP_INDEX_t group_num,
+                                           XMC_VADC_SHS_LOOP_CH_t loop_select,
+                                           uint8_t ch_num)
+{
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetSigmaDeltaLoop:Wrong SHS Pointer",
+               (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetSigmaDeltaLoop:Wrong Group number selected",
+               (group_num == XMC_VADC_GROUP_INDEX_0)||(group_num == XMC_VADC_GROUP_INDEX_1))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetSigmaDeltaLoop:Wrong Delta sigma loop selected",
+             (loop_select == XMC_VADC_SHS_LOOP_CH_0)||(loop_select == XMC_VADC_SHS_LOOP_CH_1))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetSigmaDeltaLoop:Wrong Channel Number",
+             ((ch_num) < XMC_VADC_NUM_CHANNELS_PER_GROUP))
+
+  shs_ptr->LOOP &= ~(((uint32_t)SHS_LOOP_LPCH0_Msk | (uint32_t)SHS_LOOP_LPSH0_Msk | (uint32_t)SHS_LOOP_LPEN0_Msk)
+                     << (uint32_t)loop_select);
+  shs_ptr->LOOP |= ((uint32_t)ch_num | ((uint32_t)group_num << (uint32_t)SHS_LOOP_LPSH0_Pos)) << (uint32_t)loop_select;
 
 }
+
 #endif /* XMC_VADC_SHS_AVAILABLE */
 
 #if (XMC_VADC_GSCAN_AVAILABLE == 1U)   
@@ -727,7 +957,7 @@ void XMC_VADC_GROUP_ScanInit(XMC_VADC_GROUP_t *const group_ptr, const XMC_VADC_S
   reg |= (uint32_t)((uint32_t)config->req_src_priority << VADC_G_ARBPR_PRIO1_Pos);
   
   /* Program the start mode */
-  if(XMC_VADC_STARTMODE_WFS != (config->conv_start_mode))
+  if (XMC_VADC_STARTMODE_WFS != (config->conv_start_mode))
   {
     reg |= (uint32_t)(VADC_G_ARBPR_CSM1_Msk);
   }
@@ -739,7 +969,7 @@ void XMC_VADC_GROUP_ScanInit(XMC_VADC_GROUP_t *const group_ptr, const XMC_VADC_S
 
   group_ptr->ASMR  = (uint32_t)((config->asmr)| (uint32_t)((uint32_t)XMC_VADC_GATEMODE_IGNORE << VADC_G_ASMR_ENGT_Pos));
   
-  if(XMC_VADC_STARTMODE_CNR == (config->conv_start_mode))
+  if (XMC_VADC_STARTMODE_CNR == (config->conv_start_mode))
   {
     group_ptr->ASMR |= (uint32_t)VADC_G_ASMR_RPTDIS_Msk;
   }
@@ -761,6 +991,21 @@ void XMC_VADC_GROUP_ScanSelectTrigger(XMC_VADC_GROUP_t *const group_ptr, XMC_VAD
   scanctrl     |= (uint32_t) VADC_G_ASCTRL_XTWC_Msk;
   scanctrl     &= ~((uint32_t)VADC_G_ASCTRL_XTSEL_Msk);
   scanctrl     |= (uint32_t)((uint32_t)trigger_input << VADC_G_ASCTRL_XTSEL_Pos);
+  group_ptr->ASCTRL  = scanctrl;
+}
+
+/* Select a trigger edge*/
+void XMC_VADC_GROUP_ScanSelectTriggerEdge(XMC_VADC_GROUP_t *const group_ptr, const XMC_VADC_TRIGGER_EDGE_t trigger_edge)
+{
+  uint32_t scanctrl;
+
+  XMC_ASSERT("XMC_VADC_GROUP_ScanSelectTriggerEdge:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
+  XMC_ASSERT("XMC_VADC_GROUP_ScanSelectTriggerEdge:Wrong Trigger Port", ((trigger_edge)<= XMC_VADC_TRIGGER_EDGE_ANY))
+
+  scanctrl      = group_ptr->ASCTRL;
+  scanctrl     |= (uint32_t) VADC_G_ASCTRL_XTWC_Msk;
+  scanctrl     &= ~((uint32_t)VADC_G_ASCTRL_XTMODE_Msk);
+  scanctrl     |= (uint32_t)((uint32_t)trigger_edge << VADC_G_ASCTRL_XTMODE_Pos);
   group_ptr->ASCTRL  = scanctrl;
 }
 
@@ -820,13 +1065,13 @@ uint32_t XMC_VADC_GROUP_ScanGetNumChannelsPending(XMC_VADC_GROUP_t *const group_
 
   count = 0U;
 
-  if(group_ptr->ASPND)
+  if (group_ptr->ASPND)
   {
     reg = group_ptr->ASPND;
 
     for(i=0U;i<XMC_VADC_NUM_CHANNELS_PER_GROUP;i++)
     {
-      if(reg & 1U)
+      if (reg & 1U)
       {
         count++;
       }
@@ -844,7 +1089,7 @@ void XMC_VADC_GROUP_ScanSetReqSrcEventInterruptNode(XMC_VADC_GROUP_t *const grou
   sevnp = group_ptr->SEVNP;
 
   XMC_ASSERT("XMC_VADC_GROUP_ScanSetReqSrcEventInterruptNode:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
-  XMC_ASSERT("XMC_VADC_GROUP_ScanSetReqSrcEventInterruptNode:Wrong Service Request", ((sr)  < XMC_VADC_SR_MAX))
+  XMC_ASSERT("XMC_VADC_GROUP_ScanSetReqSrcEventInterruptNode:Wrong Service Request", ((sr)  <= XMC_VADC_SR_SHARED_SR3))
 
   sevnp &= ~((uint32_t)VADC_G_SEVNP_SEV1NP_Msk);
   sevnp |= (uint32_t)((uint32_t)sr << VADC_G_SEVNP_SEV1NP_Pos);
@@ -871,7 +1116,7 @@ void XMC_VADC_GLOBAL_BackgroundInit(XMC_VADC_GLOBAL_t *const global_ptr, const X
   }
   
   conv_start_mask = (uint32_t) 0;
-  if(XMC_VADC_STARTMODE_WFS != config->conv_start_mode)
+  if (XMC_VADC_STARTMODE_WFS != config->conv_start_mode)
   {
     conv_start_mask = (uint32_t)VADC_G_ARBPR_CSM2_Msk;
   }
@@ -900,7 +1145,7 @@ void XMC_VADC_GLOBAL_BackgroundInit(XMC_VADC_GLOBAL_t *const global_ptr, const X
   global_ptr->BRSMR = (uint32_t)((config->asmr)| (uint32_t)((uint32_t)XMC_VADC_GATEMODE_IGNORE << VADC_BRSMR_ENGT_Pos));
   
 #if (XMC_VADC_GROUP_AVAILABLE ==1U)
-  if(XMC_VADC_STARTMODE_CNR == (config->conv_start_mode))
+  if (XMC_VADC_STARTMODE_CNR == (config->conv_start_mode))
   {
     global_ptr->BRSMR |= (uint32_t)VADC_BRSMR_RPTDIS_Msk;
   }
@@ -930,6 +1175,24 @@ void XMC_VADC_GLOBAL_BackgroundSelectTrigger(XMC_VADC_GLOBAL_t *const global_ptr
   scanctrl      |= (uint32_t)(input_num << VADC_BRSCTRL_XTSEL_Pos);
   global_ptr->BRSCTRL  = scanctrl;
 }
+
+/* Select a trigger edge*/
+void XMC_VADC_GLOBAL_BackgroundSelectTriggerEdge(XMC_VADC_GLOBAL_t *const global_ptr,
+                                                 const XMC_VADC_TRIGGER_EDGE_t trigger_edge)
+{
+  uint32_t scanctrl;
+
+  XMC_ASSERT("XMC_VADC_GLOBAL_BackgroundSelectTriggerEdge:Wrong Global Pointer", (global_ptr == VADC))
+  XMC_ASSERT("XMC_VADC_GLOBAL_BackgroundSelectTriggerEdge:Wrong Trigger Port",
+            ((trigger_edge)<= XMC_VADC_TRIGGER_EDGE_ANY))
+
+  scanctrl      = global_ptr->BRSCTRL;
+  scanctrl     |= (uint32_t) VADC_BRSCTRL_XTWC_Msk;
+  scanctrl     &= ~((uint32_t)VADC_BRSCTRL_XTMODE_Msk);
+  scanctrl     |= (uint32_t)((uint32_t)trigger_edge << VADC_BRSCTRL_XTMODE_Pos);
+  global_ptr->BRSCTRL  = scanctrl;
+}
+
 
 /* API to select one of the 16 inputs as a trigger gate for background scan request source */
 void XMC_VADC_GLOBAL_BackgroundSelectGating(XMC_VADC_GLOBAL_t *const global_ptr, const uint32_t input_num)
@@ -1004,13 +1267,13 @@ uint32_t XMC_VADC_GLOBAL_BackgroundGetNumChannelsPending(XMC_VADC_GLOBAL_t *cons
   /* Loop through all groups and find out who is awaiting conversion */
   for(i = 0U; i < XMC_VADC_MAXIMUM_NUM_GROUPS; i++)
   {
-    if(global_ptr->BRSSEL[i])
+    if (global_ptr->BRSSEL[i])
     {
       reg = global_ptr->BRSPND[i];
 
       for(j=0U;j<XMC_VADC_NUM_CHANNELS_PER_GROUP;j++)
       {
-        if(reg & 1U)
+        if (reg & 1U)
         {
           count++;
         }
@@ -1041,7 +1304,7 @@ void XMC_VADC_GROUP_QueueInit(XMC_VADC_GROUP_t *const group_ptr, const XMC_VADC_
   reg |= (uint32_t) ((uint32_t)config->req_src_priority << VADC_G_ARBPR_PRIO0_Pos);
 
   /* Conversion Start mode */
-  if(XMC_VADC_STARTMODE_WFS != config->conv_start_mode)
+  if (XMC_VADC_STARTMODE_WFS != config->conv_start_mode)
   {
     reg |= (uint32_t)(VADC_G_ARBPR_CSM0_Msk);
   }
@@ -1056,7 +1319,7 @@ void XMC_VADC_GROUP_QueueInit(XMC_VADC_GROUP_t *const group_ptr, const XMC_VADC_
   /* Gating mode */
   group_ptr->QMR0 = ((uint32_t)(config->qmr0) | (uint32_t)((uint32_t)XMC_VADC_GATEMODE_IGNORE << VADC_G_QMR0_ENGT_Pos));
 
-  if(XMC_VADC_STARTMODE_CNR == (config->conv_start_mode) )
+  if (XMC_VADC_STARTMODE_CNR == (config->conv_start_mode) )
   {
     group_ptr->QMR0 |= (uint32_t)((uint32_t)1 << VADC_G_QMR0_RPTDIS_Pos);
   }
@@ -1080,6 +1343,22 @@ void XMC_VADC_GROUP_QueueSelectTrigger(XMC_VADC_GROUP_t *const group_ptr,
   qctrl  |= (uint32_t)VADC_G_QCTRL0_XTWC_Msk;
   qctrl &= ~((uint32_t)VADC_G_QCTRL0_XTSEL_Msk);
   qctrl |= (uint32_t)((uint32_t)input_num << VADC_G_QCTRL0_XTSEL_Pos);
+  group_ptr->QCTRL0 = qctrl;
+}
+
+/* Select a trigger edge*/
+void XMC_VADC_GROUP_QueueSelectTriggerEdge(XMC_VADC_GROUP_t *const group_ptr, const XMC_VADC_TRIGGER_EDGE_t trigger_edge)
+{
+  uint32_t qctrl;
+
+  XMC_ASSERT("XMC_VADC_GROUP_QueueSelectTriggerEdge:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
+  XMC_ASSERT("XMC_VADC_GROUP_QueueSelectTriggerEdge:Wrong Gating Port", ((trigger_edge)<= XMC_VADC_TRIGGER_EDGE_ANY))
+
+  /* Now select the gating input */
+  qctrl  = group_ptr->QCTRL0;
+  qctrl |= (uint32_t)VADC_G_QCTRL0_XTWC_Msk;
+  qctrl &= ~((uint32_t)VADC_G_QCTRL0_XTMODE_Msk);
+  qctrl |= (uint32_t)((uint32_t)trigger_edge << VADC_G_QCTRL0_XTMODE_Pos);
   group_ptr->QCTRL0 = qctrl;
 }
 
@@ -1111,7 +1390,7 @@ uint32_t XMC_VADC_GROUP_QueueGetLength(XMC_VADC_GROUP_t *const group_ptr)
   qsr = group_ptr->QSR0;
   qbur0 = group_ptr->QBUR0;
 
-  if(qsr & (uint32_t)VADC_G_QSR0_EMPTY_Msk)
+  if (qsr & (uint32_t)VADC_G_QSR0_EMPTY_Msk)
   {
     length = 0U;
   }
@@ -1120,7 +1399,7 @@ uint32_t XMC_VADC_GROUP_QueueGetLength(XMC_VADC_GROUP_t *const group_ptr)
     length = (qsr & (uint32_t)VADC_G_QSR0_FILL_Msk) + 1U;
   }
   
-  if(qbur0 & (uint32_t)VADC_G_QBUR0_V_Msk )
+  if (qbur0 & (uint32_t)VADC_G_QBUR0_V_Msk )
   {
     length++;
   }
@@ -1146,13 +1425,8 @@ void XMC_VADC_GROUP_QueueAbortSequence(XMC_VADC_GROUP_t *const group_ptr)
   arbitration_status = (bool)((uint32_t)(group_ptr->ARBPR >> VADC_G_ARBPR_ASEN0_Pos) & 1U);
   XMC_VADC_GROUP_QueueDisableArbitrationSlot(group_ptr);
    
-  /* Initiate flushing of the queue */
-  group_ptr->QMR0 |= (uint32_t)VADC_G_QMR0_FLUSH_Msk;
-
-  while( !((group_ptr->QSR0)& (uint32_t)VADC_G_QSR0_EMPTY_Msk))
-  {
-    /* Stay put until the queue is indeed flushed */
-  }
+  /* Flush the Entries from queue*/
+  XMC_VADC_GROUP_QueueFlushEntries(group_ptr);
   
   /* Enable the arbitration slot 0*/
   group_ptr->ARBPR |= (uint32_t)((uint32_t)arbitration_status << VADC_G_ARBPR_ASEN0_Pos);
@@ -1184,7 +1458,7 @@ void XMC_VADC_GROUP_QueueRemoveChannel(XMC_VADC_GROUP_t *const group_ptr)
 
   length_before_abort = XMC_VADC_GROUP_QueueGetLength(group_ptr);
 
-  if(length_before_abort)
+  if (length_before_abort)
   {
     /* Remove the first entry of the queue */
     group_ptr->QMR0 |= (uint32_t)VADC_G_QMR0_CLRV_Msk;
@@ -1216,11 +1490,11 @@ int32_t XMC_VADC_GROUP_QueueGetNextChannel(XMC_VADC_GROUP_t *const group_ptr)
    * Check if there is something in the backup stage. If not, read queue-0
    * entry.
    */
-  if( (group_ptr->QBUR0) & (uint32_t)VADC_G_QBUR0_V_Msk)
+  if ( (group_ptr->QBUR0) & (uint32_t)VADC_G_QBUR0_V_Msk)
   {
     ch_num = (int32_t)(group_ptr->QBUR0 & (uint32_t)VADC_G_QBUR0_REQCHNR_Msk);
   }
-  else if( (group_ptr->Q0R0) & (uint32_t)VADC_G_Q0R0_V_Msk)
+  else if ( (group_ptr->Q0R0) & (uint32_t)VADC_G_Q0R0_V_Msk)
   {
     ch_num = (int32_t)(group_ptr->Q0R0 & (uint32_t)VADC_G_Q0R0_REQCHNR_Msk);
   }
@@ -1240,7 +1514,7 @@ int32_t XMC_VADC_GROUP_QueueGetInterruptedChannel(XMC_VADC_GROUP_t *const group_
 
   XMC_ASSERT("XMC_VADC_GROUP_QueueGetInterruptedChannel:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
   
-  if((group_ptr->QBUR0) & (uint32_t)VADC_G_QBUR0_V_Msk)
+  if ((group_ptr->QBUR0) & (uint32_t)VADC_G_QBUR0_V_Msk)
   {
     ch_num = (int32_t)(group_ptr->QBUR0 & (uint32_t)VADC_G_QBUR0_REQCHNR_Msk);
   }
@@ -1259,7 +1533,7 @@ void XMC_VADC_GROUP_QueueSetReqSrcEventInterruptNode(XMC_VADC_GROUP_t *const gro
   uint32_t sevnp;
 
   XMC_ASSERT("XMC_VADC_GROUP_QueueSetReqSrcEventInterruptNode:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
-  XMC_ASSERT("XMC_VADC_GROUP_QueueSetReqSrcEventInterruptNode:Wrong Service Request", ((sr)  < XMC_VADC_SR_MAX))
+  XMC_ASSERT("XMC_VADC_GROUP_QueueSetReqSrcEventInterruptNode:Wrong Service Request", ((sr)  <= XMC_VADC_SR_SHARED_SR3))
 
   sevnp = group_ptr->SEVNP;
 
@@ -1293,17 +1567,27 @@ void XMC_VADC_GROUP_ChannelInit(XMC_VADC_GROUP_t *const group_ptr, const uint32_
   group_ptr->CHASS = ch_assign;
 
   /* Alias channel */
-  if(config->alias_channel >= (int32_t)0)
+  if (config->alias_channel >= (int32_t)0)
   {
-    mask = ch_num? VADC_G_ALIAS_ALIAS1_Pos:VADC_G_ALIAS_ALIAS0_Pos;
-    group_ptr->ALIAS &= ch_num? ~(uint32_t)(VADC_G_ALIAS_ALIAS1_Msk):~(uint32_t)(VADC_G_ALIAS_ALIAS0_Msk);
+    mask = (uint32_t)0;
+    if ((uint32_t)1 == ch_num)
+    {
+      mask = VADC_G_ALIAS_ALIAS1_Pos;
+      group_ptr->ALIAS &= ~(uint32_t)(VADC_G_ALIAS_ALIAS1_Msk);
+    }
+    else if ((uint32_t)0 == ch_num)
+    {
+      mask = VADC_G_ALIAS_ALIAS0_Pos;
+      group_ptr->ALIAS &= ~(uint32_t)(VADC_G_ALIAS_ALIAS0_Msk);
+    }
+
     group_ptr->ALIAS |= (uint32_t)(config->alias_channel << mask);
   }
 
-  group_ptr->BFL = config->bfl;
+  group_ptr->BFL |= config->bfl;
 
 #if (XMC_VADC_BOUNDARY_FLAG_SELECT == 1U)
-  group_ptr->BFLC = config->bflc;
+  group_ptr->BFLC |= config->bflc;
 #endif
   /* Program the CHCTR register */
   group_ptr->CHCTR[ch_num] = config->chctr;
@@ -1321,11 +1605,11 @@ void XMC_VADC_GROUP_SetChannelAlias(XMC_VADC_GROUP_t *const group_ptr,
 
   XMC_ASSERT("XMC_VADC_GROUP_SetChannelAlias:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
   XMC_ASSERT("XMC_VADC_GROUP_SetChannelAlias:Wrong Alias Channel", ((alias_ch_num == 0)|| (alias_ch_num == 1U)))
-  XMC_ASSERT("XMC_VADC_GROUP_SetChannelAlias:Wrong Aliased Channel", ((src_ch_num >= 0U) && (src_ch_num < 8U)))
+  XMC_ASSERT("XMC_VADC_GROUP_SetChannelAlias:Wrong Aliased Channel", ((src_ch_num < 8U)))
 
   alias = group_ptr->ALIAS;
 
-  if(0U == alias_ch_num)
+  if (0U == alias_ch_num)
   {
     mask = (uint32_t) VADC_G_ALIAS_ALIAS0_Msk;
     pos  = (uint32_t) VADC_G_ALIAS_ALIAS0_Pos;
@@ -1359,14 +1643,14 @@ bool XMC_VADC_GROUP_ChannelIsResultOutOfBounds(XMC_VADC_GROUP_t *const group_ptr
   */
   /* Extract CHEVMODE for requested channel */
   chctr  = group_ptr->CHCTR[ch_num];
-  chctr  = (uint32_t)(chctr >> VADC_G_CHCTR_CHEVMODE_Pos)& (uint32_t)0x3;
+  chctr  = (uint32_t)(chctr >> (uint32_t)VADC_G_CHCTR_CHEVMODE_Pos)& (uint32_t)0x3;
 
   /* Extract CEFLAG for the requested channel */
   ceflag = group_ptr->CEFLAG;
   ceflag = ceflag & ((uint32_t)((uint32_t)1 << ch_num) );
 
   /* Check what was the channel event generation criteria */
-  if( (( (uint32_t)XMC_VADC_CHANNEL_EVGEN_INBOUND == chctr) \
+  if ( (( (uint32_t)XMC_VADC_CHANNEL_EVGEN_INBOUND == chctr) \
       || ((uint32_t) XMC_VADC_CHANNEL_EVGEN_OUTBOUND == chctr)) && (ceflag) )
   {
     retval = (bool)true;
@@ -1383,7 +1667,7 @@ void XMC_VADC_GROUP_ChannelSetInputReference(XMC_VADC_GROUP_t *const group_ptr,
   uint32_t chctr;
   XMC_ASSERT("XMC_VADC_GROUP_ChannelSetInputReference:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
   XMC_ASSERT("XMC_VADC_GROUP_ChannelSetInputReference:Wrong Channel Number", ((ch_num) < XMC_VADC_NUM_CHANNELS_PER_GROUP))
-  XMC_ASSERT("XMC_VADC_GROUP_ChannelSetInputReference:Wrong Voltage Reference", ((ref)< XMC_VADC_CHANNEL_REF_MAX))
+  XMC_ASSERT("XMC_VADC_GROUP_ChannelSetInputReference:Wrong Voltage Reference", ((ref)<= XMC_VADC_CHANNEL_REF_ALT_CH0))
 
   chctr = group_ptr->CHCTR[ch_num];
   chctr &= ~((uint32_t)VADC_G_CHCTR_REFSEL_Msk);
@@ -1449,7 +1733,7 @@ void XMC_VADC_GROUP_ChannelSetEventInterruptNode(XMC_VADC_GROUP_t *const group_p
   XMC_ASSERT("XMC_VADC_GROUP_ChannelSetEventInterruptNode:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
   XMC_ASSERT("XMC_VADC_GROUP_ChannelSetEventInterruptNode:Wrong Channel Number",
              ((ch_num) < XMC_VADC_NUM_CHANNELS_PER_GROUP))
-  XMC_ASSERT("XMC_VADC_GROUP_ChannelSetEventInterruptNode:Wrong Service Request", ((sr)  < XMC_VADC_SR_MAX))
+  XMC_ASSERT("XMC_VADC_GROUP_ChannelSetEventInterruptNode:Wrong Service Request", ((sr)  <= XMC_VADC_SR_SHARED_SR3))
 
   route_mask  = group_ptr->CEVNP0;
   route_mask &= ~((uint32_t)15 << (ch_num * (uint32_t)4));
@@ -1468,12 +1752,26 @@ void XMC_VADC_GROUP_ChannelTriggerEventGenCriteria( XMC_VADC_GROUP_t *const grou
   XMC_ASSERT("XMC_VADC_GROUP_ChannelTriggerEventGenCriteria:Wrong Channel Number",
              ((ch_num) < XMC_VADC_NUM_CHANNELS_PER_GROUP))
   XMC_ASSERT("XMC_VADC_GROUP_ChannelTriggerEventGenCriteria:Wrong Event Generation Criteria",
-             ((criteria) < XMC_VADC_CHANNEL_EVGEN_MAX))
+             ((criteria) <= XMC_VADC_CHANNEL_EVGEN_ALWAYS))
 
   chctr  = group_ptr->CHCTR[ch_num];
   chctr &= ~((uint32_t)VADC_G_CHCTR_CHEVMODE_Msk);
   chctr |= (uint32_t)((uint32_t)criteria << VADC_G_CHCTR_CHEVMODE_Pos);
   group_ptr->CHCTR[ch_num] = chctr;
+}
+
+/* API to configure the boundary selection */
+void  XMC_VADC_GROUP_ChannelSetBoundarySelection(XMC_VADC_GROUP_t *const group_ptr,
+                                                 const uint32_t ch_num,
+                                                 XMC_VADC_BOUNDARY_SELECT_t boundary_sel,
+                                                 XMC_VADC_CHANNEL_BOUNDARY_t selection)
+{
+  XMC_ASSERT("XMC_VADC_GROUP_ChannelSetBoundarySelection:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
+  XMC_ASSERT("XMC_VADC_GROUP_ChannelSetBoundarySelection:Wrong Channel Number",
+              ((ch_num) < XMC_VADC_NUM_CHANNELS_PER_GROUP))
+
+  group_ptr->CHCTR[ch_num] &= ~((uint32_t)VADC_G_CHCTR_BNDSELL_Msk << boundary_sel);
+  group_ptr->CHCTR[ch_num] |= (selection<< (VADC_G_CHCTR_BNDSELL_Pos + boundary_sel));
 }
 
 /* Make the specified result register part of Result FIFO */ 
@@ -1541,9 +1839,9 @@ void XMC_VADC_GROUP_SetResultInterruptNode(XMC_VADC_GROUP_t *const group_ptr,
 
   XMC_ASSERT("XMC_VADC_GROUP_SetResultInterruptNode:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
   XMC_ASSERT("XMC_VADC_GROUP_SetResultInterruptNode:Wrong Result Register", ((res_reg) < XMC_VADC_NUM_RESULT_REGISTERS))
-  XMC_ASSERT("XMC_VADC_GROUP_SetResultInterruptNode:Wrong Service Request", ((sr)  < XMC_VADC_SR_MAX))
+  XMC_ASSERT("XMC_VADC_GROUP_SetResultInterruptNode:Wrong Service Request", ((sr)  <= XMC_VADC_SR_SHARED_SR3))
 
-  if(res_reg <= 7U)
+  if (res_reg <= 7U)
   {
     route_mask  = group_ptr->REVNP0;
     route_mask &= ~((uint32_t)((uint32_t)15 << (res_reg * (uint32_t)4) ));
@@ -1573,13 +1871,13 @@ uint32_t XMC_VADC_GROUP_GetResultFifoTail(XMC_VADC_GROUP_t *const group_ptr, uin
   tail = 0U;
   exit_flag= (bool)false;
 
-  if((bool)true == XMC_VADC_GROUP_IsResultRegisterFifoHead(group_ptr, res_reg))
+  if ((bool)true == XMC_VADC_GROUP_IsResultRegisterFifoHead(group_ptr, res_reg))
   {
     res_reg = res_reg - 1U;
   }
 
   /* Border condition */
-  if(0U == res_reg)
+  if (0U == res_reg)
   {
     tail = 0U;
   }
@@ -1591,9 +1889,9 @@ uint32_t XMC_VADC_GROUP_GetResultFifoTail(XMC_VADC_GROUP_t *const group_ptr, uin
        rcr = group_ptr->RCR[i];
        rcr &= (uint32_t)VADC_G_RCR_FEN_Msk;
 
-       if(rcr)
+       if (rcr)
        {
-         if((int32_t)0 == i)
+         if ((int32_t)0 == i)
          {
           /* No more nodes. Stop here */
           tail = (uint32_t)0;
@@ -1606,7 +1904,7 @@ uint32_t XMC_VADC_GROUP_GetResultFifoTail(XMC_VADC_GROUP_t *const group_ptr, uin
          tail = (uint32_t)i + (uint32_t)1;
          exit_flag = (bool)true;
        }
-       if(exit_flag)
+       if (exit_flag)
        {
          break;
        }
@@ -1625,7 +1923,7 @@ uint32_t XMC_VADC_GROUP_GetResultFifoHead(XMC_VADC_GROUP_t *const group_ptr, con
   XMC_ASSERT("XMC_VADC_GROUP_GetResultFifoHead:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
   XMC_ASSERT("XMC_VADC_GROUP_GetResultFifoHead:Wrong Result Register", ((res_reg) < XMC_VADC_NUM_RESULT_REGISTERS))
 
-  if((bool)true == XMC_VADC_GROUP_IsResultRegisterFifoHead(group_ptr, res_reg))
+  if ((bool)true == XMC_VADC_GROUP_IsResultRegisterFifoHead(group_ptr, res_reg))
   {
       head = res_reg;
   }
@@ -1638,7 +1936,7 @@ uint32_t XMC_VADC_GROUP_GetResultFifoHead(XMC_VADC_GROUP_t *const group_ptr, con
       rcr = group_ptr->RCR[i];
       rcr &= (uint32_t)VADC_G_RCR_FEN_Msk;
 
-      if(!rcr)
+      if (!rcr)
       {
         /* This node forms the head of the FIFO */
         head = i ;
@@ -1665,11 +1963,11 @@ bool XMC_VADC_GROUP_IsResultRegisterFifoHead(XMC_VADC_GROUP_t *const group_ptr, 
   rcr_next = group_ptr->RCR[res_reg - (uint32_t)1];
   rcr_next &= (uint32_t)VADC_G_RCR_FEN_Msk;
 
-  if(rcr_head)
+  if (rcr_head)
   {
     ret_val = (bool)false;
   }
-  else if(rcr_next)
+  else if (rcr_next)
   {
     ret_val = (bool)true;
   }

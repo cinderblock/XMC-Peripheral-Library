@@ -17,7 +17,7 @@ XMC4500 Hexagon board (No other satellite board required)
 
 How to test the application
 ============================
-a. Import the project into Keil MDK
+a. Import the project
 b. Compile and flash the application onto the device
 c. Add g_num_period_interrupts and g_num_compare_interrupts to the watch window
 d. Run the application. 

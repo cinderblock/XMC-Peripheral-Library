@@ -1,34 +1,58 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- *
- */
-
 /**
  * @file xmc_bccu.c
- * @date 16 Feb, 2015
- * @version 1.0.0
+ * @date 2015-06-20
  *
- * @brief BCCU low level driver for XMC1 Micro-controllers
+ * @cond
+  *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
+ *
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-02-19:
+ *     - Initial draft <br>
+ *
+ * 2015-05-08:
+ *     - Minor bug fixes in following APIs: XMC_BCCU_ConcurrentStartDimming(), XMC_BCCU_ConcurrentAbortDimming(),
+ *               XMC_BCCU_SetGlobalDimmingLevel() <br>
+ *     
+ * 2015-06-20:
+ *     - Removed version macros and declaration of GetDriverVersion API
  *
  * <b>Detailed description of file:</b><br>
- * APIs for the functional blocks of BCCU have been defined.<br>
- * -- Global, Channel, Dimming Engine configuration. <br>
- * -- Clock configuration, Function/Event configuration, Interrupt configuration. <br>
+ * APIs for the functional blocks of BCCU have been defined:<br>
+ * -- GLOBAL configuration <br>
+ * -- Clock configuration, Function/Event configuration, Interrupt configuration <br>
  *
- * History
+ * @endcond
  *
- * Version 1.0.0 Initial version <br>
  */
 
 /*********************************************************************************************************************
@@ -61,19 +85,6 @@
 /*********************************************************************************************************************
  * API IMPLEMENTATION
  ********************************************************************************************************************/
-/**
-  * API to retrieve the version of the BCCU driver
-  */
-XMC_DRIVER_VERSION_t XMC_BCCU_GetDriverVersion(void)
-{
-  XMC_DRIVER_VERSION_t version;
-
-  version.major = XMC_BCCU_MAJOR_VERSION;
-  version.minor = XMC_BCCU_MINOR_VERSION;
-  version.patch = XMC_BCCU_PATCH_VERSION;
-
-  return version;
-}
 
 /*
  * API to initialise the global resources of a BCCU module
@@ -283,7 +294,7 @@ void XMC_BCCU_ConcurrentStartDimming (XMC_BCCU_t *const bccu, uint32_t mask)
 {
   XMC_ASSERT("XMC_BCCU_ConcurrentStartDimming: Invalid dimming engine mask", (mask <= XMC_BCCU_DIM_ENGINE_MASK));
 
-  bccu->DESTRCON |= (uint32_t)(mask);
+  bccu->DESTRCON = (uint32_t)(mask);
 }
 
 /*
@@ -293,7 +304,7 @@ void XMC_BCCU_ConcurrentAbortDimming (XMC_BCCU_t *const bccu, uint32_t mask)
 {
   XMC_ASSERT("XMC_BCCU_ConcurrentAbortDimming: Invalid dimming engine mask", (mask <= XMC_BCCU_DIM_ENGINE_MASK));
 
-  bccu->DESTRCON |= (uint32_t)(mask << BCCU_DESTRCON_DE0A_Pos);
+  bccu->DESTRCON = (uint32_t)(mask << BCCU_DESTRCON_DE0A_Pos);
 }
 
 /*
@@ -303,7 +314,7 @@ void  XMC_BCCU_SetGlobalDimmingLevel (XMC_BCCU_t *const bccu, uint32_t level)
 {
   XMC_ASSERT("XMC_BCCU_SetGlobalDimmingLevel: Invalid global dimming level", (level <= BCCU_GLOBDIM_GLOBDIM_Msk));
 
-  bccu->GLOBDIM |= (level);
+  bccu->GLOBDIM = level;
 }
 
 /*

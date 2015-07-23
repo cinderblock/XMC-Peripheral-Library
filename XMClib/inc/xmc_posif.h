@@ -1,30 +1,63 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
+/**
+ * @file xmc_posif.h
+ * @date 2015-07-02
  *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
+ * @cond
+ **********************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without           
+ * modification,are permitted provided that the following conditions are met:   
+ *                                                                              
+ *   Redistributions of source code must retain the above copyright notice,      
+ *   this list of conditions and the following disclaimer.                        
+ * 
+ *   Redistributions in binary form must reproduce the above copyright notice,   
+ *   this list of conditions and the following disclaimer in the documentation    
+ *   and/or other materials provided with the distribution.                       
+ * 
+ *   Neither the name of the copyright holders nor the names of its contributors 
+ *   may be used to endorse or promote products derived from this software without
+ *   specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"  
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE    
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE   
+ * ARE  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE   
+ * LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR         
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF         
+ * SUBSTITUTE GOODS OR  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS    
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN      
+ * CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)       
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE   
+ * POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share        
+ * modifications, enhancements or bug fixes with Infineon Technologies AG       
+ * dave@infineon.com).                                                          
+ **********************************************************************************
  *
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,OR CONSEQUENTIAL DAMAGES, FOR ANY REASON
- * WHATSOEVER.
+ * Change History
+ * --------------
+ *
+ * 2015-02-18:
+ *     - Initial version
+ *      
+ * 2015-02-20:
+ *     - Driver description added <BR>
+ *
+ * 2015-06-19:
+ *     - Removed version macros and declaration of GetDriverVersion API <BR> 
+ *
+ * 2015-07-02:
+ *     - Updated XMC_POSIF_QD_GetDirection API
+ * @endcond 
+ *
  */
 
- /**
- * @file xmc_posif.h
- * @date 20 Feb, 2015
- * @version 1.0.2
- *
- *
- *
- * History
- *
- * Version 1.0.0 Initial version <br>
- * Version 1.0.2 Driver description added <br>
- */
 
 #ifndef XMC_POSIF_H
 #define XMC_POSIF_H
@@ -80,10 +113,6 @@
 /*********************************************************************************************************************
  * MACROS
  ********************************************************************************************************************/
-#define XMC_POSIF_MAJOR_VERSION (1U) /**< Version number : Major version */
-#define XMC_POSIF_MINOR_VERSION (0U) /**< Version number : Minor version */
-#define XMC_POSIF_PATCH_VERSION (2U) /**< Version number : Patch version */
-
 #define XMC_POSIF_PCONF_INSEL_Msk        (0x3fUL << POSIF_PCONF_INSEL0_Pos) /*< Mask for input pins selection */
 #define XMC_POSIF_INSEL_MAX              (4U) /*< Maximum possible input selector */
 #define XMC_POSIF_HALPS_HALLPAT_Msk      (0x3FUL)
@@ -362,18 +391,6 @@ typedef struct XMC_POSIF_CONFIG
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @param None
- * @retval XMC_DRIVER_VERSION_t Driver version information
- *
- * \par<b>Description</b><br>
- * Returns POSIF low level driver version number.\n
- * Each of the XMC low level drivers export a version number(major, minor and patch number). 
- * Applications may then audit such a version number to determine compatibility.
- *
- */
-XMC_DRIVER_VERSION_t XMC_POSIF_GetDriverVersion(void);
 
 /**
  * @param peripheral Pointer to an instance of POSIF module of type @ref XMC_POSIF_t
@@ -846,7 +863,7 @@ __STATIC_INLINE void XMC_POSIF_MCM_EnableMultiChannelPatternUpdate(XMC_POSIF_t *
  */
 __STATIC_INLINE XMC_POSIF_QD_DIR_t XMC_POSIF_QD_GetDirection(XMC_POSIF_t *const peripheral)
 {
-  return ((XMC_POSIF_QD_DIR_t)(peripheral->QDC & POSIF_QDC_DVAL_Msk));
+  return ((XMC_POSIF_QD_DIR_t)((peripheral->QDC & POSIF_QDC_DVAL_Msk) >> POSIF_QDC_DVAL_Pos));
 }
 
 /**

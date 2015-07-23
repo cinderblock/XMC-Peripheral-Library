@@ -1,25 +1,49 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, FOR ANY
- * REASON WHATSOEVER.
- *
- */
-
 /**
  * @file xmc_eru.h
- * @date 20 Feb, 2015
- * @version 1.0.2
+ * @date 2015-06-20 
  *
- * History <br>
+ * @cond
+ *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * Version 1.0.0  Initial version <br>
- * Version 1.0.2  Documentation updated <br>
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-02-20:
+ *     - Initial <br>
+ *     - Documentation updates <br>
+ *
+ * 2015-06-20:
+ *     - Removed version macros and declaration of GetDriverVersion API <br>
+ *
+ * @endcond
  */
 
 #ifndef XMC_ERU_H
@@ -46,6 +70,7 @@
  * triggers, pattern detection and real-time signal monitoring.
  *
  * @image html eru_overview.png
+ * @image latex ../images/eru_overview.png 
  *
  * The driver is divided into two sections:\n
  * \par Event trigger logic (ERU_ETL):\n
@@ -88,10 +113,6 @@
  #include "xmc4_eru_map.h"
 #endif
 
-#define XMC_ERU_MAJOR_VERSION   (1U) /**< Major number of the driver version. Format \<major\>.\<minor\>.\<patch\> */
-#define XMC_ERU_MINOR_VERSION   (0U) /**< Minor number of the driver version. Format \<major\>.\<minor\>.\<patch\> */
-#define XMC_ERU_PATCH_VERSION   (2U) /**< Patch number of the driver version. Format \<major\>.\<minor\>.\<patch\> */
-
 #if defined(XMC_ERU0) && defined(XMC_ERU1)
 #define XMC_ERU_CHECK_MODULE_PTR(PTR)  (((PTR)== XMC_ERU0) | ((PTR)== XMC_ERU1))
 #elif defined(XMC_ERU0)
@@ -107,6 +128,7 @@
 /**
  * Defines input signal for path A of ERSx(Event request source, x = [0 to 3]) unit.
  * @image html eru_input_a.png "ETLx Input A selection"
+ * @image latex ../images/eru_input_a.png "ETLx Input A selection"
 */
 typedef enum XMC_ERU_ETL_INPUT_A
 {
@@ -119,6 +141,7 @@ typedef enum XMC_ERU_ETL_INPUT_A
 /**
  * Defines input signal for path B of ERSx(Event request source, x = [0 to 3]) unit.
  * @image html eru_input_b.png "ETLx Input B selection"
+ * @image latex ../images/eru_input_b.png "ETLx Input B selection"
  */
 typedef enum XMC_ERU_ETL_INPUT_B
 {
@@ -132,6 +155,7 @@ typedef enum XMC_ERU_ETL_INPUT_B
  * Defines input path combination along with polarity for event generation by ERSx(Event request source) unit to
  * ETLx(Event trigger logic),x = [0 to 3] unit.
  * @image html eru_input_trigger.png "ETLx input trigger signal generation"
+ * @image latex ../images/eru_input_trigger.png "ETLx input trigger signal generation" 
  */
 typedef enum XMC_ERU_ETL_SOURCE
 {
@@ -168,6 +192,7 @@ typedef enum XMC_ERU_ETL_EDGE_DETECTION
  * ETLx(Event Trigger Logic, x = [0 to 3]) unit.
  * @note Generation of output trigger pulse need to be enabled @ref XMC_ERU_OGU_PERIPHERAL_TRIGGER_t
  * @image html eru_connection_matrix.png "ERU_ETL ERU_OGU Connection matrix"
+ * @image latex ../images/eru_connection_matrix.png "ERU_ETL ERU_OGU Connection matrix" 
  */
 typedef enum XMC_ERU_ETL_OUTPUT_TRIGGER_CHANNEL
 {
@@ -241,6 +266,7 @@ typedef enum XMC_ERU_OGU_PERIPHERAL_TRIGGER
  * Defines the gating scheme for service request generation. In later stage of the OGUy(Output gating unit,
  * y = [0 to 3]) based on the gating scheme selected ERU_GOUTy(gated output signal) output is defined.
  * @image html interrupt_gating_signal.png "Interrupt gating signal"
+ * @image latex ../images/interrupt_gating_signal.png "Interrupt gating signal"
  */
 typedef enum XMC_ERU_OGU_SERVICE_REQUEST
 {
@@ -395,19 +421,6 @@ typedef union XMC_ERU_OGU_CONFIG
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @param  None
- *
- * @return XMC_DRIVER_VERSION_t Driver version information 
- *
- * \par<b>Description:</b><br>
- * Return version (major, minor and patch number) of the driver.<br>
- * \par
- * The function is commonly used to check for user software compatibility with a specific version of the low level
- * driver.
- */
-XMC_DRIVER_VERSION_t XMC_ERU_GetDriverVersion(void);
 
 /**
  * @param eru A constant pointer to XMC_ERU_t, pointing to the ERU base address

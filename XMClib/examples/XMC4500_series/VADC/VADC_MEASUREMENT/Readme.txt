@@ -10,12 +10,12 @@ flags are cleared. The ISR clears the interrupt and the main loop restarts the c
 
 Hardware Setup
 ===============
-XMC4500 Hexagon board (No other satellite board required)
+XMC4500 XMC4500 CPU Board (No other satellite board required)
 IO Pin : 14.1
 
 How to test the application
 ============================
-a. Import the project into DAVE V4
+a. Import the project
 b. Compile and flash the application onto the device
 c. Add g_num_interrupts to the watch window
 d. Run the application. 

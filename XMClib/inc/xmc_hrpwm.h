@@ -1,31 +1,66 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, FOR ANY
- * REASON WHATSOEVER.
- *
- */
 
 /**
  * @file xmc_hrpwm.h
- * @date 16 Feb, 2015
- * @version 1.0.2
- * 
- * History
+ * @date 2015-06-20
  *
- * Version 1.0.0 Initial version<br>
- * Version 1.0.2 1.Driver description updated<br>
- * Version 1.0.2 2.API's are renamed <br>
- *               XMC_HRPWM_HRC_SetResolutionCR1() -> XMC_HRPWM_HRC_SetCompare1()<br>
- *               XMC_HRPWM_HRC_SetResolutionCR2() -> XMC_HRPWM_HRC_SetCompare2()<br>
- *               XMC_HRPWM_HRC_SetDeadTimeDCF()   -> XMC_HRPWM_HRC_SetDeadTimeFalling()<br>
- *               XMC_HRPWM_HRC_SetDeadTimeDCR()   -> XMC_HRPWM_HRC_SetDeadTimeRising()<br>
- * Version 1.0.3 Trim data macros are removed <br>
+ * @cond
+ **********************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
+ *
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without           
+ * modification,are permitted provided that the following conditions are met:   
+ *                                                                              
+ *   Redistributions of source code must retain the above copyright notice,      
+ *   this list of conditions and the following disclaimer.                        
+ * 
+ *   Redistributions in binary form must reproduce the above copyright notice,   
+ *   this list of conditions and the following disclaimer in the documentation    
+ *   and/or other materials provided with the distribution.                       
+ * 
+ *   Neither the name of the copyright holders nor the names of its contributors 
+ *   may be used to endorse or promote products derived from this software without
+ *   specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"  
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE    
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE   
+ * ARE  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE   
+ * LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR         
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF         
+ * SUBSTITUTE GOODS OR  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS    
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN      
+ * CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)       
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE   
+ * POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share        
+ * modifications, enhancements or bug fixes with Infineon Technologies AG       
+ * dave@infineon.com).                                                          
+ **********************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-02-18:
+ *     - Driver description updated<br>
+ *     - API's are renamed <br>
+ *       XMC_HRPWM_HRC_SetResolutionCR1() -> XMC_HRPWM_HRC_SetCompare1()<br>
+ *       XMC_HRPWM_HRC_SetResolutionCR2() -> XMC_HRPWM_HRC_SetCompare2()<br>
+ *       XMC_HRPWM_HRC_SetDeadTimeDCF()   -> XMC_HRPWM_HRC_SetDeadTimeFalling()<br>
+ *       XMC_HRPWM_HRC_SetDeadTimeDCR()   -> XMC_HRPWM_HRC_SetDeadTimeRising()<br>
+ *      
+ * 2015-05-12:
+ *     - XMC_HRPWM_CSG_SelClampingInput() api is added to select the clamping input<br>
+ *     - Enum XMC_HRPWM_SHADOW_TX_t is renamed to XMC_HRPWM_SHADOW_TX_DAC_t to represent that shadow transfer is for DAC <br>
+ *
+ * 2015-06-20: 
+ *     - Removed version macros and declaration of GetDriverVersion API <br>
+ *     - Updated copyright and change history section.
+ *
+ * @endcond 
  *
  */
 
@@ -74,9 +109,9 @@ extern "C" {
  * <LI>programmable clock prescaler<br>
  * <LI>programmable clock pulse swallower for slope linearization with uneven clock scale<br>
  * <LI>different slope generation schemes:<br>
- *     – incrementing mode<br>
- *     – decrementing mode<br>
- *     – triangular mode<br>
+ *     â€“ incrementing mode<br>
+ *     â€“ decrementing mode<br>
+ *     â€“ triangular mode<br>
  * <LI>shadow transfer for one DAC reference value<br>
  * <LI>external trigger for the DAC<br>
  * <LI>external control for the DAC reference values<br>
@@ -101,10 +136,6 @@ extern "C" {
 /***********************************************************************************************************************
  * MACROS
  ********************************************************************************************************************/
-#define XMC_HRPWM_MAJOR_VERSION (1U)  /* Major number of the driver version(\<major\>.\<minor\>.\<patch\>) e.g. 1.2.3. */
-#define XMC_HRPWM_MINOR_VERSION (0U)  /* Minor number of the driver version(\<major\>.\<minor\>.\<patch\>) e.g. 1.2.3. */
-#define XMC_HRPWM_PATCH_VERSION (2U)  /* Patch number of the driver version(\<major\>.\<minor\>.\<patch\>) e.g. 1.2.3. */
-
 #define XMC_HRPWM_CSG0_MEMORY_ADDRESS 0x40020A40 /* CSG0 memory location */
 #define XMC_HRPWM_CSG1_MEMORY_ADDRESS 0x40020B40 /* CSG1 memory location */
 #define XMC_HRPWM_CSG2_MEMORY_ADDRESS 0x40020C40 /* CSG2 memory location */
@@ -510,7 +541,7 @@ typedef enum XMC_HRPWM_SHADOW_TX
   XMC_HRPWM_SHADOW_TX_DAC0 = HRPWM0_CSGTRC_D0SEC_Msk,  /**< Shadow transfer mask for DAC0 - reference value 1 & Pulse swallow value */
   XMC_HRPWM_SHADOW_TX_DAC1 = HRPWM0_CSGTRC_D1SEC_Msk,  /**< Shadow transfer mask for DAC1 - reference value 1 & Pulse swallow value */
   XMC_HRPWM_SHADOW_TX_DAC2 = HRPWM0_CSGTRC_D2SEC_Msk   /**< Shadow transfer mask for DAC2 - reference value 1 & Pulse swallow value */
-} XMC_HRPWM_SHADOW_TX_t;
+} XMC_HRPWM_SHADOW_TX_DAC_t;
 
 /**
  * HRPWM CSG - Service request line
@@ -839,18 +870,6 @@ typedef struct XMC_HRPWM_CSG_CONFIG
 /***********************************************************************************************************************
  * API PROTOTYPES - General
  **********************************************************************************************************************/
-/**
- * @return DRIVER_VERSION_t
- *
- * \par<b>Description</b><br>
- * <br>LLD Driver Version <br>\n
- *
- * API to retrieve the version of the HRPWM driver.
- * Each of the XMC low level drivers export a version number.
- * Applications may then audit such a version number to determine compatibility.
- */
-
-XMC_DRIVER_VERSION_t XMC_HRPWM_GetDriverVersion(void);
 
 /***********************************************************************************************************************
  * API PROTOTYPES - HRPWM
@@ -1491,7 +1510,7 @@ __STATIC_INLINE bool XMC_HRPWM_IsSlopeGenerationRunning(XMC_HRPWM_t *const hrpwm
 
 /**
  * @param hrpwm Constant pointer to XMC_HRPWM_t, pointing to the HRPWM module base address
- * @param mask masked values of selected HRC modules. Use the enum type @ref XMC_HRPWM_SHADOW_TX_t to generate the mask.
+ * @param mask masked values of selected HRC modules. Use the enum type @ref XMC_HRPWM_SHADOW_TX_DAC_t to generate the mask.
  * @return None
  *
  * \par<b>Description </b>
@@ -1512,7 +1531,7 @@ __STATIC_INLINE void XMC_HRPWM_EnableComparatorShadowTransfer(XMC_HRPWM_t *const
 
 /**
  * @param hrpwm Constant pointer to XMC_HRPWM_t, pointing to the HRPWM module base address
- * @param mask masked values of selected CSG modules. Use the enum type @ref XMC_HRPWM_SHADOW_TX_t to generate the mask.
+ * @param mask masked values of selected CSG modules. Use the enum type @ref XMC_HRPWM_SHADOW_TX_DAC_t to generate the mask.
  * @return None
  *
  * \par<b>Description </b>
@@ -1881,6 +1900,20 @@ void XMC_HRPWM_CSG_SetCMPInput(XMC_HRPWM_CSG_t *const csg, const XMC_HRPWM_CSG_C
  *
  */
 void XMC_HRPWM_CSG_SelBlankingInput(XMC_HRPWM_CSG_t *const csg, const XMC_HRPWM_CSG_INPUT_CONFIG_t *const config);
+
+/**
+ * @param csg Constant pointer to XMC_HRPWM_CSG_t, pointing to the CSG channel base address
+ * @param config Pointer to configuration structure.
+ * @return None
+ *
+ * \par<b>Description </b>
+ * <br>Configures the input signal to clamp the comparator output<br>\n
+ *
+ * Configures the input signal that is used as level signal to clamp the comparator output.<br>
+ * It configures the signal source and required level.
+ *
+ */
+void XMC_HRPWM_CSG_SelClampingInput(XMC_HRPWM_CSG_t *const csg, const XMC_HRPWM_CSG_INPUT_CONFIG_t *const config);
 
 /**
  * @param csg Constant pointer to XMC_HRPWM_CSG_t, pointing to the CSG channel base address

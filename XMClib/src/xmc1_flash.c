@@ -1,38 +1,60 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,OR CONSEQUENTIAL DAMAGES, FOR ANY REASON
- * WHATSOEVER.
- *
- */
-
 /**
  * @file xmc1_flash.c
- * @date 16 Feb, 2015
- * @version 1.0.0
+ * @date 2015-06-20 
  *
- * @brief flash low level driver API prototype definition for XMC1 family of microcontrollers <br>
+ * @cond
+ *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * <b>Detailed description of file</b> <br>
- * APIs provided in this file cover the following functional blocks of flash <br>
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
  *
- * History
+ * Change History
+ * --------------
  *
- * Version 1.0.0 Initial version<br>
+ * 2015-02-10:
+ *     - Initial <br>
+ *
+ * 2015-06-20: 
+ *     - Removed definition of GetDriverVersion API 
+ * @endcond 
+ *
  */
 
 #include "xmc_flash.h"
 
+/*********************************************************************************************************************
+ * MACROS
+ ********************************************************************************************************************/
 #if UC_FAMILY == XMC1
 
-/*******************************************************************************
- * MACROS
- *******************************************************************************/
+/*********************************************************************************************************************
+ * ENUMS
+ ********************************************************************************************************************/
 /* FLASH programming / erase options */
 typedef enum FLASH_ACTION
 {
@@ -48,23 +70,9 @@ typedef enum FLASH_ACTION
 } FLASH_ACTION_t;
 
 
-/*******************************************************************************
+/*********************************************************************************************************************
  * API IMPLEMENTATION
- *******************************************************************************/
-
- /* Returns the Driver major minor patch versionsEach of the XMC low level drivers export a version number.
- * Applications may then audit such a version number to determine compatibility.
- */
-XMC_DRIVER_VERSION_t XMC_FLASH_GetDriverVersion(void)
-{
-  XMC_DRIVER_VERSION_t version;
-
-  version.major = (uint8_t)XMC_FLASH_MAJOR_VERSION;
-  version.minor = (uint8_t)XMC_FLASH_MINOR_VERSION;
-  version.patch = (uint8_t)XMC_FLASH_PATCH_VERSION;
-
-  return version;
-}
+ ********************************************************************************************************************/
 
 /*
  * This API shall clear the ECC and VERIFICATION error status.

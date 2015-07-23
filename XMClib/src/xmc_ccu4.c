@@ -1,33 +1,53 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED 
- * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,OR CONSEQUENTIAL DAMAGES, FOR ANY REASON 
- * WHATSOEVER.
- *
- */
-
 /**
  * @file xmc_ccu4.c
- * @date 16 Feb, 2015
- * @version 1.0.0
+ * @date 2015-07-01
  *
- * @brief CCU4 low level driver API prototype definition for XMC family of microcontrollers <br>
+ * @cond
+ *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * <b>Detailed description of file</b> <br>
- * APIs provided in this file cover the following functional blocks of CCU4: <br>
- * -- SLICE (APIs prefixed with XMC_CCU4_SLICE_) <br>
- * -- Timer configuration, Capture configuration, Function/Event configuration, Interrupt configuration
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
  *
- * History
+ * Change History
+ * --------------
  *
- * Version 1.0.0 Initial version<br>
+ * 2015-02-20:
+ *     - Initial <br>
+ *
+ * 2015-06-20:
+ *     - Removed definition of GetDriverVersion API <br>
+ *
+ * 2015-07-01:
+ *     - In XMC_CCU4_SLICE_StartConfig(), Options in XMC_ASSERT check for start mode is corrected. <br>
+ *
+ * @endcond
  */
-
+ 
 /*********************************************************************************************************************
  * HEADER FILES
  ********************************************************************************************************************/
@@ -115,18 +135,6 @@
      (end_mode == XMC_CCU4_SLICE_END_MODE_TIMER_STOP_CLEAR))
 
 /*********************************************************************************************************************
- * ENUMS
- ********************************************************************************************************************/
-
-/*********************************************************************************************************************
- * DATA STRUCTURES
- ********************************************************************************************************************/
-
-/*********************************************************************************************************************
- * GLOBAL DATA
- ********************************************************************************************************************/
-
-/*********************************************************************************************************************
  * LOCAL ROUTINES
  ********************************************************************************************************************/
 #if (UC_FAMILY == XMC4)
@@ -141,18 +149,6 @@ void XMC_CCU4_lUngateClock(XMC_CCU4_MODULE_t *const module);
 /*********************************************************************************************************************
  * API IMPLEMENTATION
  ********************************************************************************************************************/
-
-/* API to retrieve driver version info */
-XMC_DRIVER_VERSION_t XMC_CCU4_GetDriverVersion(void)
-{
-  XMC_DRIVER_VERSION_t version;
-
-  version.major = XMC_CCU4_MAJOR_VERSION;
-  version.minor = XMC_CCU4_MINOR_VERSION;
-  version.patch = XMC_CCU4_PATCH_VERSION;
-
-  return version;
-}
 
 void XMC_CCU4_EnableModule(XMC_CCU4_MODULE_t *const module)
 {
@@ -288,7 +284,7 @@ void XMC_CCU4_SLICE_StartConfig(XMC_CCU4_SLICE_t *const slice,
   XMC_ASSERT("XMC_CCU4_SLICE_StartConfig:Invalid Event ID", XMC_CCU4_SLICE_CHECK_EVENT_ID(event));
   XMC_ASSERT("XMC_CCU4_SLICE_StartConfig:Invalid Start Mode", 
              ((start_mode == XMC_CCU4_SLICE_START_MODE_TIMER_START_CLEAR) ||\
-		          (start_mode == XMC_CCU4_SLICE_START_MODE_TIMER_START_CLEAR)));
+		          (start_mode == XMC_CCU4_SLICE_START_MODE_TIMER_START)));
   /* First, Bind the event with the stop function */
   cmc = slice->CMC;
   cmc &= ~((uint32_t) CCU4_CC4_CMC_STRTS_Msk);

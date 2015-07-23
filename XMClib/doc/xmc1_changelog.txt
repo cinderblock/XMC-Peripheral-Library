@@ -1,0 +1,118 @@
+/**
+ * @page Changelog
+ *
+ * @tableofcontents
+ * @section v200 Version 2.0.0
+ * @subsection GENERAL GENERAL
+ * - Removed:
+ *    - version macros and declaration of GetDriverVersion()
+ *
+ * @subsection ACMP ACMP
+ * - Added:
+ *    - XMC_ACMP_EnableReferenceDivider(). Prevously part of XMC_ACMP_SetInput
+ *    - XMC_ACMP_DisableReferenceDivider(). Prevously part of XMC_ACMP_SetInput
+ * - Fixed: 
+ *    - XMC_ACMP_Init(). Fixed sequence problem of low power mode.
+ *    - XMC_ACMP_SetInput(). Fixed wrong register setting.
+ * - Changed:
+ *    - Removed return type variable and by default comparator enable from XMC_ACMP_Init()
+ *    - Additional call to XMC_ACMP_EnableComparator() needed to start Comparator after Init
+ * 
+ * @subsection BCCU BCCU
+ * - Added:
+ *    - XMC_BCCU_DIM_ReadDimDivider()
+ *    - XMC_BCCU_DIM_GetDimCurve()
+ *    - XMC_BCCU_IsDitherEnable()
+ * - Fixed: 
+ *    - XMC_BCCU_ClearEventFlag()
+ * 
+ * @subsection CCU4 CCU4
+ * - Fixed:
+ *    - XMC_CCU4_SLICE_StartConfig(). Assert condition.
+ *
+ * @subsection CCU8 CCU8
+ * - Added:
+ *    - XMC_CCU8_SLICE_LoadSelector()
+ * - Fixed:
+ *    - XMC_CCU8_SLICE_CHECK_INTERRUPT macro. Fixed the missing item for compare match down for channel 2
+ *
+ * @subsection I2C I2C
+ * - Added:
+ *    - XMC_I2C_CH_TriggerServiceRequest()
+ *    - XMC_I2C_CH_SelectInterruptNodePointer()
+ * - Fixed:
+ *    - XMC_I2C_CH_Stop(). Check if transmission is going before setting the channel to idle.
+ * 
+ * @subsection LEDTS LEDTS
+ * - Added: 
+ *    - XMC_LEDTS_SetActivePADNo()
+ * 
+ * @subsection POSIF POSIF
+ * - Changed:
+ *    - XMC_POSIF_QD_GetDirection(). Fixed read direction
+ * 
+ * @subsection RTC RTC
+ * - Changed:
+ *    - XMC_RTC_Init(). Check RTC running condition.
+ * 
+ * @subsection SCU SCU
+ * - Added:
+ *    - For XMC11 series, XMC_SCU_SetRawTempLimits()
+ *    - For XMC11 series, XMC_SCU_StartTempMeasurement()
+ *    - For XMC11 series, XMC_SCU_StopTempMeasurement() 
+ *    - For XMC11 series, XMC_SCU_HighTemperature() 
+ *    - For XMC11 series, XMC_SCU_LowTemperature() 
+ *    - For XMC11 series, XMC_SCU_GetTemperature() 
+ * - Changed:
+ *    - XMC_SCU_INTERRUPT_SetEventHandler(). New implementation
+ *    - XMC_SCU_IRQHandler(). New implementation
+ * 
+ * @subsection SPI SPI
+ * - Added: 
+ *    - XMC_SPI_CH_SetSlaveSelectDelay()
+ *    - XMC_SPI_CH_TriggerServiceRequest()
+ *    - XMC_SPI_CH_SelectInterruptNodePointer()
+ *    - XMC_SPI_CH_SetInterwordDelaySCLK()
+ * 
+ * @subsection UART UART
+ * - Added:
+ *    - XMC_UART_CH_TriggerServiceRequest()
+ *    - XMC_UART_CH_SelectInterruptNodePointer()
+ * - Fixed:
+ *    - XMC_UART_CH_INPUT_t enum contents.
+ *    - XMC_UART_CH_Stop(). Check if transmission is going before setting the channel to idle.
+ *  
+ * @subsection VADC VADC 
+ * - Added:
+ *     - XMC_VADC_GLOBAL_SHS_Init()
+ *     - XMC_VADC_GLOBAL_SHS_SetStepperSequence()
+ *     - XMC_VADC_GLOBAL_SHS_IsConverterReady()
+ *     - XMC_VADC_GLOBAL_SHS_DisableAcceleratedMode()
+ *     - XMC_VADC_GLOBAL_SHS_SetGainFactor()
+ *     - XMC_VADC_GLOBAL_SHS_SetMaxCalTime()
+ *     - XMC_VADC_GLOBAL_SHS_EnableGainAndOffsetCalibrations()
+ *     - XMC_VADC_GLOBAL_SHS_DisableGainAndOffsetCalibrations()
+ *     - XMC_VADC_GLOBAL_SHS_GetOffsetCalibrationValue()
+ *     - XMC_VADC_GLOBAL_SHS_SetOffsetCalibrationValue()
+ *     - XMC_VADC_GLOBAL_SHS_SetSigmaDeltaLoop()
+ *     - XMC_VADC_GLOBAL_SHS_EnableSigmaDeltaLoop()
+ *     - XMC_VADC_GLOBAL_SHS_DisableSigmaDeltaLoop()
+ *     - XMC_VADC_GROUP_SetBoundaryEventInterruptNode()
+ *     - XMC_VADC_GROUP_ScanSelectTriggerEdge()
+ *     - XMC_VADC_GLOBAL_BackgroundSelectTriggerEdge()
+ *     - XMC_VADC_GROUP_QueueSelectTriggerEdge()
+ *     - XMC_VADC_GROUP_QueueFlushEntries()
+ *     - XMC_VADC_GROUP_ChannelSetBoundarySelection()
+ * - Changed:
+ *     - XMC_VADC_GLOBAL_GetResult(). Remove unnecessary masking, return result as 16bit.
+ *     - XMC_VADC_GROUP_GetResult(). Remove unnecessary masking, return result as 16bit.
+ * - Fixed:
+ *     - XMC_VADC_GROUP_ExternalMuxControlInit(). 
+ *     - XMC_VADC_GLOBAL_SHS_SetClockDivider(). Disable write protection of DIVS bitfield. 
+ *     - XMC_VADC_GROUP_ScanSetGatingMode(). Clear current gating before applying the new requested one.
+ *     - XMC_VADC_GLOBAL_BackgroundSetGatingMode(). Clear current gating before applying the new requested one.
+ *     - XMC_VADC_GROUP_QueueSetGatingMode(). Clear current gating before applying the new requested one.
+ * 
+ * @section v100 Version 1.0.0
+ * - Initial version
+ */

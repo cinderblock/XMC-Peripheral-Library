@@ -84,6 +84,8 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopA1X>0</nStopA1X>
+            <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
@@ -147,7 +149,7 @@
             <RestoreSysVw>1</RestoreSysVw>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>6</TargetSelection>
+          <TargetSelection>7</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -361,6 +363,8 @@
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
             <useXO>0</useXO>
+            <v6Lang>0</v6Lang>
+            <v6LangP>0</v6LangP>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -430,38 +434,6 @@
         </Group>
         <Group>
           <GroupName>::Device</GroupName>
-          <Files>
-            <File>
-              <FileName>xmc1_scu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>C:\Keil_v5\ARM\PACK\Infineon\XMC1000_DFP\2.0.0\Device\XMClib\src\xmc1_scu.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_acmp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>C:\Keil_v5\ARM\PACK\Infineon\XMC1000_DFP\2.0.0\Device\XMClib\src\xmc_acmp.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_common.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>C:\Keil_v5\ARM\PACK\Infineon\XMC1000_DFP\2.0.0\Device\XMClib\src\xmc_common.c</FilePath>
-            </File>
-            <File>
-              <FileName>xmc_scu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>C:\Keil_v5\ARM\PACK\Infineon\XMC1000_DFP\2.0.0\Device\XMClib\src\xmc_scu.c</FilePath>
-            </File>
-            <File>
-              <FileName>startup_XMC1200.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>RTE\Device\XMC1200-T038x0200\startup_XMC1200.s</FilePath>
-            </File>
-            <File>
-              <FileName>system_XMC1200.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>RTE\Device\XMC1200-T038x0200\system_XMC1200.c</FilePath>
-            </File>
-          </Files>
         </Group>
       </Groups>
     </Target>
@@ -496,17 +468,17 @@
       </component>
     </components>
     <files>
-      <file attr="config" category="source" condition="XMC1200 ARM" name="Device\XMC1200_series\Source\ARM\startup_XMC1200.s" version="1.3">
+      <file attr="config" category="source" condition="XMC12xx" name="Device\XMC1200_series\Source\ARM\startup_XMC1200.s" version="1.3">
         <instance index="0">RTE\Device\XMC1200-T038x0200\startup_XMC1200.s</instance>
-        <component Cclass="Device" Cgroup="Startup" Cvendor="Infineon" Cversion="1.0.0" condition="XMC1000 CMSIS Device"/>
+        <component Cclass="Device" Cgroup="Startup" Cvendor="Infineon" Cversion="1.0.0" condition="XMC1 CMSIS"/>
         <package license="License\CMSIS_END_USER_LICENSE_AGREEMENT.txt" name="XMC1000_DFP" schemaVersion="1.2" supportContact="http://www.infineon.com/cms/en/corporate/company/contact/support/index.html" url="http://media.infineon.com/mdk/" vendor="Infineon" version="2.0.0"/>
         <targetInfos>
           <targetInfo name="anacmp_cmp"/>
         </targetInfos>
       </file>
-      <file attr="config" category="source" condition="XMC1200 ARM" name="Device\XMC1200_series\Source\system_XMC1200.c" version="1.2">
+      <file attr="config" category="source" condition="XMC12xx" name="Device\XMC1200_series\Source\system_XMC1200.c" version="1.2">
         <instance index="0">RTE\Device\XMC1200-T038x0200\system_XMC1200.c</instance>
-        <component Cclass="Device" Cgroup="Startup" Cvendor="Infineon" Cversion="1.0.0" condition="XMC1000 CMSIS Device"/>
+        <component Cclass="Device" Cgroup="Startup" Cvendor="Infineon" Cversion="1.0.0" condition="XMC1 CMSIS"/>
         <package license="License\CMSIS_END_USER_LICENSE_AGREEMENT.txt" name="XMC1000_DFP" schemaVersion="1.2" supportContact="http://www.infineon.com/cms/en/corporate/company/contact/support/index.html" url="http://media.infineon.com/mdk/" vendor="Infineon" version="2.0.0"/>
         <targetInfos>
           <targetInfo name="anacmp_cmp"/>

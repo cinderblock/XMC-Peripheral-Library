@@ -1,28 +1,54 @@
 
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights Reserved bits.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- */
-
 /**
  * @file xmc_dma.h
- * @date 20 Feb, 2015
- * @version 1.0.2
+ * @date 2015-06-20 
  *
- * History <br>
+ * @cond
+ *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * Version 1.0.0  Initial <br>
- * Version 1.0.2  Documentation updates <br>
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-02-20:
+ *     - Initial <br>
+ *
+ * 2015-06-20:
+ *     - Add the declarations for the following APIs: <br>
+ *       XMC_DMA_DisableRequestLine, XMC_DMA_ClearRequestLine, <br>
+ *       XMC_DMA_CH_ClearSourcePeripheralRequest, <br>
+ *       XMC_DMA_CH_ClearDestinationPeripheralRequest <br>
+ *     - Documentation updates <br>
+ *     - Removed version macros and declaration of GetDriverVersion API <br>
+ *
+ * @endcond
  */
 
 #ifndef XMC_DMA_H
@@ -63,10 +89,6 @@
 /*******************************************************************************
  * MACROS
  *******************************************************************************/
-
-#define XMC_DMA_MAJOR_VERSION (1U) /**< Version number: Major number */
-#define XMC_DMA_MINOR_VERSION (0U) /**< Version number: Minor number */
-#define XMC_DMA_PATCH_VERSION (2U) /**< Version number: Patch number */
 
 #if defined (GPDMA0)
 #define XMC_DMA0 ((XMC_DMA_t *)GPDMA0_CH0_BASE) /**< DMA module 0 */
@@ -314,8 +336,8 @@ typedef struct {
  */
 typedef struct XMC_DMA_LLI
 {
-  uint32_t *src_addr;                           /**< Source address */
-  uint32_t *dst_addr;                           /**< Destination address */
+  uint32_t src_addr;                            /**< Source address */
+  uint32_t dst_addr;                            /**< Destination address */
   struct XMC_DMA_LLI *llp;                      /**< Linked list pointer of type XMC_DMA_LLI_t */
   union
   {
@@ -423,18 +445,6 @@ typedef void (*XMC_DMA_CH_EVENT_HANDLER_t)(XMC_DMA_CH_EVENT_t event);
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @return Data structure (::XMC_DRIVER_VERSION_t) storing driver version
- *
- * \par<b>Description: </b><br>
- * Return the version of the low level driver <br>
- *
- * \par
- * The function can be used to check application software compatibility with a specific
- * version of the low level driver.
- */
-XMC_DRIVER_VERSION_t XMC_DMA_GetDriverVersion(void);
 
 /**
  * @param dma A constant pointer to XMC_DMA_t, pointing to the GPDMA base address
@@ -622,6 +632,33 @@ void XMC_DMA_EnableRequestLine(XMC_DMA_t *const dma, uint8_t line, uint8_t perip
 
 /**
  * @param dma A constant pointer to XMC_DMA_t, pointing to the GPDMA base address
+ * @param line Which DLR (DMA line router) line should the function use?
+ * @return None
+ *
+ * \par<b>Description: </b><br>
+ * Disable request line <br>
+ *
+ * \par
+ * The function disables a DLR (DMA line router) line by clearing appropriate bits
+ * in the LNEN register. <br>
+ */
+void XMC_DMA_DisableRequestLine(XMC_DMA_t *const dma, uint8_t line);
+
+/**
+ * @param dma A constant pointer to XMC_DMA_t, pointing to the GPDMA base address
+ * @param line Which DLR (DMA line router) line should the function use?
+ * @return None
+ *
+ * \par<b>Description: </b><br>
+ * Clear request line <br>
+ *
+ * \par
+ * The function clears a DLR (DMA line router) request line. <br>
+ */
+void XMC_DMA_ClearRequestLine(XMC_DMA_t *const dma, uint8_t line);
+
+/**
+ * @param dma A constant pointer to XMC_DMA_t, pointing to the GPDMA base address
  * @param line The line for which the overrun status is requested
  * @return bool "true" if overrun occured, "false" otherwise
  *
@@ -776,9 +813,9 @@ void XMC_DMA_CH_Resume(XMC_DMA_t *const dma, const uint8_t channel);
  * \par<b>Related API: </b><br>
  * ::XMC_DMA_CH_SetDestinationAddress() <br>
  */
-__STATIC_INLINE void XMC_DMA_CH_SetSourceAddress(XMC_DMA_t *const dma, const uint8_t channel, uint32_t *addr)
+__STATIC_INLINE void XMC_DMA_CH_SetSourceAddress(XMC_DMA_t *const dma, const uint8_t channel, uint32_t addr)
 {
-  dma->CH[channel].SAR = (uint32_t)addr;
+  dma->CH[channel].SAR = addr;
 }
 
 /**
@@ -797,9 +834,9 @@ __STATIC_INLINE void XMC_DMA_CH_SetSourceAddress(XMC_DMA_t *const dma, const uin
  * \par<b>Related API: </b><br>
  * ::XMC_DMA_CH_SetSourceAddress() <br>
  */
-__STATIC_INLINE void XMC_DMA_CH_SetDestinationAddress(XMC_DMA_t *const dma, const uint8_t channel, uint32_t *addr)
+__STATIC_INLINE void XMC_DMA_CH_SetDestinationAddress(XMC_DMA_t *const dma, const uint8_t channel, uint32_t addr)
 {
-  dma->CH[channel].DAR = (uint32_t)addr;
+  dma->CH[channel].DAR = addr;
 }
 
 /**
@@ -1162,6 +1199,34 @@ void XMC_DMA_CH_RequestLastMultiblockTransfer(XMC_DMA_t *const dma, const uint8_
  * Call this function after enabling the GPDMA events (See ::XMC_DMA_CH_EnableEvent())
  */
 void XMC_DMA_CH_SetEventHandler(XMC_DMA_t *const dma, const uint8_t channel, XMC_DMA_CH_EVENT_HANDLER_t event_handler);
+
+/**
+ * @param dma A constant pointer to XMC_DMA_t, pointing to the GPDMA base address
+ * @param channel The source peripheral request for which DMA channel is to be cleared?
+ * @return None
+ *
+ * \par<b>Description: </b><br>
+ * Clear source peripheral request <br>
+ *
+ * \par
+ * The function is used to clear the source peripheral request for a given DMA
+ * channel.
+ */
+void XMC_DMA_CH_ClearSourcePeripheralRequest(XMC_DMA_t *const dma, uint8_t channel);
+
+/**
+ * @param dma A constant pointer to XMC_DMA_t, pointing to the GPDMA base address
+ * @param channel The destination peripheral request for which DMA channel is to be cleared?
+ * @return None
+ *
+ * \par<b>Description: </b><br>
+ * Clear destination peripheral request <br>
+ *
+ * \par
+ * The function is used to clear the destination peripheral request for a given DMA
+ * channel.
+ */
+void XMC_DMA_CH_ClearDestinationPeripheralRequest(XMC_DMA_t *const dma, uint8_t channel);
 
 /**
  * @param dma A constant pointer to XMC_DMA_t, pointing to the GPDMA base address

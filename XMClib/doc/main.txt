@@ -1,7 +1,10 @@
 /**
  * @mainpage XMC Peripheral Library
+ *
  * @tableofcontents
  * @image html xmc.png
+ * @image latex ../images/xmc.png
+ *
  * The XMC Peripheral Library (XMC Lib) consists of low-level drivers for the XMC product family peripherals. <br> 
  * Built on top the Cortex Microcontroller Software Interface Standard (CMSIS) and MISRA-C 2004 compliant, it provides access to all peripheral features. <br>
  *
@@ -16,7 +19,7 @@
  * - XMC1100 series
  *
  * The following tool chains are supported:
- * - GNU GCC for ARM (gcc)
+ * - GNU GCC for ARM (gcc) found in Atollic TrueSTUDIO, DAVE and Rowley CrossWorks.
  * - Keil MDK-ARM Microcontroller Development Kit v5.x (armcc)
  * - IAR Embedded Workbench for ARM v7.x(iccarm)
  * - TASKING VX-toolset for ARM v5.(carm)
@@ -28,6 +31,7 @@
  *
  * It is built on top of Cortex Microcontroller Software Interface Standard (CMSIS).
  * @image html architecture.png
+ * @image latex ../images/architecture.png
  *
  * @section coding Coding Rules and Conventions
  * This section describes the set of coding rules and conventions applied to the XMC Peripheral Library:
@@ -39,8 +43,8 @@
  *   - Functions use CamelCase convention.
  * - Non blocking APIs for better integration in event driven applications. Polling is supported aswell by API.
  * - Runtime error checking can be enabled by user
- * - XMC_ASSERT() used to check input parameters of functions, result of calculations, ... . Only enabled if XMC_ASSERT_ENABLE macro is defined
- * - XMC_DEBUG() used to monitor status of application. Only enabled if XMC_DEBUG_ENABLE macro is defined
+ * - XMC_ASSERT() used to check input parameters of functions, result of calculations, ... . @note Only enabled if XMC_ASSERT_ENABLE macro is defined
+ * - XMC_DEBUG() used to monitor status of application. @note Only enabled if XMC_DEBUG_ENABLE macro is defined
  * - Each driver defines its own namespace: every function and type definition is prefixed by a unique identifier, i.e. XMC_VADC
  *
  * XMC Peripheral Library follows an object oriented approach, where a instances of peripherals is treated as objects = attributes + functions.<br>
@@ -49,29 +53,23 @@
  * XMC Peripheral Library uses naming conventions to bind the data struct and the functions that operate on i, i.e. XMC_PERI_DoSomething(XMC_PERI_t const *peri, ...);
  *
  * Typically a driver contains the following functionality:
- * 1. Function to get at runtime the driver version
- * @code
- * XMC_DRIVER_VERSION_t XMC_PERI_GetDriverVersion(void);
- * @endcode
- * The user can also check at compilation time the version of the driver using various macros, i.e. XMC_PERI_MAJOR_VERSION, XMC_PERI_MINOR_VERSION and XMC_PERI_PATCH_VERSION
- * 
- * 2. Initialization function
+ * 1. Initialization function
  * @code
  * XMC_PERI_STATUS_t XMC_PERI_Init(XMC_PERI_t *const peri, const XMC_PERI_CONFIG_t const *config);
  * @endcode
  *
- * 3. Enable/disable peripheral functions
+ * 2. Enable/disable peripheral functions
  * @code
  * void XMC_PERI_Enable(XMC_PERI_t *const peri);
  * void XMC_PERI_Disable(XMC_PERI_t *const peri);
  * @endcode
  *
- * 4. Connectivity functions
+ * 3. Connectivity functions
  * @code
  * void XMC_PERI_SetInputSource(XMC_PERI_t *const peri, ...);
  * @endcode
  *
- * 5. Event handling functions
+ * 4. Event handling functions
  * @code
  * void XMC_PERI_Enable(XMC_PERI_t const *peri);
  * void XMC_PERI_Disable(XMC_PERI_t const *peri);
@@ -82,7 +80,7 @@
  * void XMC_PERI_SetInterruptNode(XMC_PERI_t const *peri);
  * @endcode
  *
- * 6. Control functions
+ * 5. Control functions
  * @code
  * void XMC_PERI_Start(XMC_PERI_t const *peri);
  * void XMC_PERI_Stop(XMC_PERI_t const *peri);
@@ -90,13 +88,13 @@
  * void XMC_PERI_Resume(XMC_PERI_t const *peri);
  * @endcode
  *
- * 7. Get/setters functions, run time API to obtain or modify state of peripheral
+ * 6. Get/setters functions, run time API to obtain or modify state of peripheral
  * @code
  * void XMC_PERI_SetSomething(XMC_PERI_t const *peri, ...);
  * uint32_t XMC_PERI_GetSomething(XMC_PERI_t const *peri);
  * @endcode
  *
- * 8. IRQ Handlers are provided which can be used optionally by the user to make easier the coding
+ * 7. IRQ Handlers are provided which can be used optionally by the user to make easier the coding
  * @code
  * void XMC_PERI_IRQHandler(uint32_t sr_num);
  * @endcode
@@ -110,6 +108,7 @@
  * The peripheral driver abstracts the target device, helping the user in code proting to another family or device.
  * 
  * @image html include.png
+ * @image latex ../images/include.png
  *
  * @section usage How to use the XMC Peripheral Library
  * The following steps are required:
@@ -258,41 +257,11 @@
  * - XMC1100_Q024x0032
  * - XMC1100_Q024x0016
  * - XMC1100_Q024x0008
- * @section misrac MISRA-C 2004 Compliance Exceptions 
- * CMSIS-CORE violates the following MISRA-C:2004 rules:
- * - Required Rule 1.1, All code shall conform to ISO 9899:1990
- *   Compiler extensions are beyond IFX control
- * - Required Rule 1.4, The compiler/linker shall be checked to ensure that 31 character significance and case sensitivity are supported for external identifiers. and 5.1 : Variables can be named greater than 31 characters
- *   Long parameters names are defined for code readability. 
- * - Required Rule 5.1, Identifiers (internal and external) shall not rely on the significance of more than 31 characters.
- *   Long parameters names are defined for code readability. 
- * - Advisory Rule 5.7, No identifier name should be reused. 
- *   This rule is untenable.
- * - Advisory Rule 6.3, typedefs that indicate size and signedness should be used in place of the basic types
- *   Float data type used for signed-ness
- * - Required Rule 8.5, object/function definition in header file.
- *   Violated since function definitions in header files are used for function inlining'.
- * - Required Rule 11.2, Conversions shall not be performed between a pointer to object and any type other than an integral type, another pointer to object type, or a pointer to void
- *   It may be sometimes necessary to cast a pointer to an integer and sometimes casting amongst pointers is unavoidable.
- * - Advisory Rule 11.3, A cast should not be performed between a pointer type and an integral type.
- *   It may be sometimes necessary to cast a pointer to an integer and sometimes casting amongst pointers is unavoidable.
- * - Advisory Rule 16.7, A pointer parameter in a function prototype should be declared as pointer to const if the pointer is not used to modify the addressed object 
- *   It is not mandatory to qualify all pointer arguments that are not going to be modified by callee function with a const attribute.
- * - Required Rule 18.4, declaration of union type or object of union type: '{...}'.
- *   Violated since unions are used for effective representation of core registers.
- * - Advisory Rule 19.4, Disallowed definition for macro.
- *   Violated since macros are used for assembler keywords.
- * - Advisory Rule 19.7, Function-like macro defined.
- *   Violated since function-like macros are used to generate more efficient code.
- * - Advisory Rule 20.2, Re-use of C90 identifier pattern.
- *   Violated since CMSIS macros begin with '__'. Since CMSIS is developed and verified with various compilers this approach is acceptable and avoids conflicts with user symbols.
- * - Advisory Rule 19.1, Declaration before #include.
- *   Violated since Interrupt Number Definition Type (IRQn_Type) must be defined before including the core header file. 
  *
  * @section files Directories and Files
  * The following diagram shows the most important directories and files provided in the distribution.
- * 
- * @verbatim
+ *
+ * @verbatim 
  * XMC_Peripheral_Library_vX.Y.Z\   - XMClib root directory
  * |
  * +-CMSIS\                         - The Cortex Microcontroller Software Interface Standard abstraction layer
@@ -331,7 +300,8 @@
  * | +-src\                         - XMC Peripheral Library API implementation files
  * | | +-xmc_vadc.c                 - VADC API implementation
  * | | +- . . .
- * @endverbatim
+ * @endverbatim  
+ *
  * @section examples XMC Lib examples
  * The XMC Peripheral Library comes with set of examples covering the main features of each peripheral.
  * All the examples are toolchain agnostic
@@ -349,10 +319,55 @@
  * Projects for DAVE (version 3 and version 4) are provided via the DAVE example library:
  * Help > Install DAVE APPs / Examples
  *
+ * @section misrac MISRA-C 2004 Compliance Exceptions 
+ * CMSIS-CORE violates the following MISRA-C:2004 rules:
+ * - Required Rule 1.1, All code shall conform to ISO 9899:1990
+ *   Compiler extensions are beyond IFX control
+ * - Required Rule 1.4, The compiler/linker shall be checked to ensure that 31 character significance and case sensitivity are supported for external identifiers. and 5.1 : Variables can be named greater than 31 characters
+ *   Long parameters names are defined for code readability. 
+ * - Required Rule 5.1, Identifiers (internal and external) shall not rely on the significance of more than 31 characters.
+ *   Long parameters names are defined for code readability. 
+ * - Advisory Rule 5.7, No identifier name should be reused. 
+ *   This rule is untenable.
+ * - Advisory Rule 6.3, typedefs that indicate size and signedness should be used in place of the basic types
+ *   Float data type used for signed-ness
+ * - Required Rule 8.5, object/function definition in header file.
+ *   Violated since function definitions in header files are used for function inlining'.
+ * - Required Rule 11.2, Conversions shall not be performed between a pointer to object and any type other than an integral type, another pointer to object type, or a pointer to void
+ *   It may be sometimes necessary to cast a pointer to an integer and sometimes casting amongst pointers is unavoidable.
+ * - Advisory Rule 11.3, A cast should not be performed between a pointer type and an integral type.
+ *   It may be sometimes necessary to cast a pointer to an integer and sometimes casting amongst pointers is unavoidable.
+ * - Advisory Rule 16.7, A pointer parameter in a function prototype should be declared as pointer to const if the pointer is not used to modify the addressed object 
+ *   It is not mandatory to qualify all pointer arguments that are not going to be modified by callee function with a const attribute.
+ * - Required Rule 18.4, declaration of union type or object of union type: '{...}'.
+ *   Violated since unions are used for effective representation of core registers.
+ * - Advisory Rule 19.4, Disallowed definition for macro.
+ *   Violated since macros are used for assembler keywords.
+ * - Advisory Rule 19.7, Function-like macro defined.
+ *   Violated since function-like macros are used to generate more efficient code.
+ * - Advisory Rule 20.2, Re-use of C90 identifier pattern.
+ *   Violated since CMSIS macros begin with '__'. Since CMSIS is developed and verified with various compilers this approach is acceptable and avoids conflicts with user symbols.
+ * - Advisory Rule 19.1, Declaration before #include.
+ *   Violated since Interrupt Number Definition Type (IRQn_Type) must be defined before including the core header file. 
+ *
+ * @section test Test conditions
+ *	- Libraries for the XMC4500 series are verified on all supported derivatives; fully functional test is applied with XMC4500-F144x1024.
+ *	- Libraries for the XMC4400 series are verified on all supported derivatives; fully functional test is applied with XMC4400-F100x512.
+ *	- Libraries for the XMC4200 series are verified on all supported derivatives; fully functional test is applied with XMC4200-Q48x256.
+ *	- Libraries for the XMC1100 series are verified on all supported derivatives; fully functional test is applied with XMC1100-T038F0064.
+ *	- Libraries for the XMC1200 series are verified on all supported derivatives; fully functional test is applied with XMC1200-T038F0200.
+ *	- Libraries for the XMC1300 series are verified on all supported derivatives; fully functional test is applied with XMC1302-T038F0200.
+ *	
+ *  Compilers used : 
+ *  - KEIL V5.10.0.2
+ *  - IAR V6.50.6.4958
+ *  - TASKING V5.1r1 patch
+ *  - GCC compiler version ARM-GCC-49
+
+ *
  * @section licensing XMC Peripheral Library Licensing
- * @verbatim
- * License Terms and Copyright Information
- * =======================================
+ * 
+ * <b> License Terms and Copyright Information </b>
  *   
  * Copyright (c) 2015, Infineon Technologies AG All rights reserved. 
  * 
@@ -370,5 +385,10 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
  * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with Infineon Technologies AG (support@infineon.com).  
- * @endverbatim
+ *
+ * <b>Legal Disclaimer</b> The information given in this document shall in no event be regarded as a guarantee of conditions or characteristics. With respect to any examples or hints given herein, any typical values stated herein and/or any information regarding the application of the device, Infineon Technologies hereby disclaims any and all warranties and liabilities of any kind, including without limitation, warranties of non-infringement of intellectual property rights of any third party. 
+ *
+ * <b>Information</b> For further information on technology, delivery terms and conditions and prices, please contact the nearest Infineon Technologies Office (www.infineon.com). 
+ *
+ * <b>Warnings</b> Due to technical requirements, components may contain dangerous substances. For information on the types in question, please contact the nearest Infineon Technologies Office. Infineon Technologies components may be used in life-support devices or systems only with the express written approval of Infineon Technologies, if a failure of such components can reasonably be expected to cause the failure of that life-support device or system or to affect the safety or effectiveness of that device or system. Life support devices or systems are intended to be implanted in the human body or to support and/or maintain and sustain and/or protect human life. If they fail, it is reasonable to assume that the health of the user or other persons may be endangered.
  */

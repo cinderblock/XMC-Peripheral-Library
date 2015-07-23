@@ -16,8 +16,8 @@
 
 /**
  * @file
- * @date 19 February,2015
- * @version 1.0.0
+ * @date 17 July,2015
+ * @version 1.1.0
  *
  * @brief CAN demo example
  *
@@ -26,6 +26,7 @@
  * History <br>
  *
  * Version 1.0.0 Initial <br>
+ * Version 1.1.0 Modified API to be compatible with XMCLib 2.0.0  <br>
  *
  */
 #include <xmc_can.h>
@@ -79,8 +80,8 @@ int main(void)
   /*Configure CAN Module*/
   XMC_CAN_Init(CAN,CAN_FREQUENCY);
 
-	/*Configure CAN Node baudrate*/
-	XMC_CAN_NODE_NominalBitTimeConfigure(CAN_NODE2,&baud);
+  /*Configure CAN Node baudrate*/
+  XMC_CAN_NODE_NominalBitTimeConfigure(CAN_NODE2,&baud);
   XMC_CAN_NODE_NominalBitTimeConfigure(CAN_NODE1,&baud);
 	
   /*NODE 2 initialization*/
@@ -96,10 +97,10 @@ int main(void)
   XMC_CAN_NODE_ResetInitBit(CAN_NODE1);
 
   /*Message 4 Configuration*/
-  XMC_CAN_MO_Config(&CAN_message_4, 2, 4);
+  XMC_CAN_MO_Config(&CAN_message_4);
 
   /*Message 2 Configuration*/
-  XMC_CAN_MO_Config(&CAN_message_2, 1, 2);
+  XMC_CAN_MO_Config(&CAN_message_2);
 
   /*Enable transmit interrupt */
   XMC_CAN_MO_EnableEvent(&CAN_message_2, XMC_CAN_MO_EVENT_RECEIVE);

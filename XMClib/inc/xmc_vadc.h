@@ -1,37 +1,61 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * 
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,OR CONSEQUENTIAL DAMAGES, FOR ANY REASON
- * WHATSOEVER.
- */
-
 /**
  * @file xmc_vadc.h
- * @date 20 Feb, 2015
- * @version 1.0.2
+ * @date 2015-06-25 
  *
- *  ADC low level driver API prototype definition for XMC family of microcontrollers.
+ * @cond
+*********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * <b>Detailed description of file:</b> <br>
- * APIs provided in this file cover the following functional blocks of VADC (Versatile ADC): <br>
- * -- GLOBAL (APIs prefixed with XMC_VADC_GLOBAL_) <br>
- * -- GROUP (APIs prefixed with XMC_VADC_GROUP_) <br>
- * -- SCAN (APIs prefixed with XMC_VADC_GROUP_Scan) <br>
- * -- BACKGROUND (APIs prefixed with XMC_VADC_GLOBAL_Background) <br>
- * -- QUEUE (APIs prefixed with XMC_VADC_GROUP_Queue) <br>
- * -- CHANNEL (APIs prefixed with XMC_VADC_GROUP_Channel) <br>
- * History <br>
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
  *
- * Version 1.0.0 Initial <br>
- * Version 1.0.2 Revised for XMC1201 device.<br>
+ * Change History
+ * --------------
+ *
+ * 2015-02-15:
+ *     - Initial <br>
+ *      
+ * 2015-02-20:
+ *     - Revised for XMC1201 device.<br>
+ *   
+ * 2015-04-27:
+ *     - Added new APIs for SHS.<br>
+ *     - Added New APIs for trigger edge selection.<BR>
+ *     - Added new APIs for Queue flush entries, boundary selection, Boundary node pointer.<BR>
+ *     - Revised GatingMode APIs and EMUX Control Init API.<BR>
+ *
+ * 2015-06-20:
+ *     - Removed version macros and declaration of GetDriverVersion API
+ *
+ * 2015-06-25:
+ *     - BFL configuration in channel initialization fixed.
+ *
+ * @endcond 
+ *
  */
 
 #ifndef XMC_VADC_H
@@ -72,8 +96,10 @@
  *
  * \if XMC4
  * @image html vadc_overview_xmc4x.png
+ * @image latex ../images/vadc_overview_xmc4x.png 
  * \else
  * @image html vadc_overview_xmc1x.png
+ * @image latex ../images/vadc_overview_xmc1x.png
  * \endif
  *
  * The VADC LLD is split into GLOBAL and GROUP related APIs.<BR>
@@ -84,6 +110,10 @@
  * <LI>The clock related configurations for the VADC module are configured in the Global APIs/</LI>
  * <LI>The Global API names are prefixed by the \b XMC_VADC_GLOBAL_ and they accept ::XMC_VADC_GLOBAL_t as
  *     one of its arguments.</LI>
+ * <LI>Configures the background request source of the VADC. The APIs which act on the background related registers
+ *     are prefixed by \b XMC_VADC_GLOBAL_Background</LI>
+ * <LI>Configures the sample and hold unit of the VADC. The APIs which act on the SHS related registers
+ *     are prefixed by \b XMC_VADC_GLOBAL_SHS_</LI>
  * </UL><BR>
  *
  * <B>GROUP: </B><BR>
@@ -105,13 +135,6 @@
  * MACROS
  ********************************************************************************************************************/
 
-#define XMC_VADC_MAJOR_VERSION (1U)  /**< Major number of the driver version, which is,
-                                         \<major.\<minor\>.\<patch\> e.g. 1.5.3.*/
-#define XMC_VADC_MINOR_VERSION (0U)  /**< Minor number of the driver version, which is,
-                                         \<major.\<minor\>.\<patch\> e.g. 1.5.3.*/
-#define XMC_VADC_PATCH_VERSION (2U)  /**< Minor number of the driver version, which is,
-                                         \<major.\<minor\>.\<patch\> e.g. 1.5.3.*/
-
 #if ((UC_SERIES == XMC42)||(UC_SERIES == XMC41))
 #define XMC_VADC_GROUP_AVAILABLE         (1U) /*  Defines the availability of group resource in a device*/
 #define XMC_VADC_GSCAN_AVAILABLE         (1U) /*  Defines the availability of scan request resource in a device*/
@@ -121,7 +144,7 @@
 #define XMC_VADC_BOUNDARY_AVAILABLE      (1U) /*  Defines the availability of boundary check support in a device*/
 #define XMC_VADC_MULTIPLE_SLAVEGROUPS    (1U) /*  Defines the availability of synchronous request source in device*/
 #define XMC_VADC_MAXIMUM_NUM_GROUPS      (2U) /*  Defines the maximum number of groups available in a device*/
-#define XMC_VADC_BOUNDARY_FLAG_SELECT    (0U) /*  Defines the availability of boundary flags in a device*/
+#define XMC_VADC_BOUNDARY_FLAG_SELECT    (1U) /*  Defines the availability of boundary flags in a device*/
 #define XMC_VADC_DEASSERT_RESET_NEEDED   (1U) /*  Defines the need to de-assert the reset to enable the peripheral */
 #define XMC_VADC_CLOCK_UNGATING_NEEDED   (1U) /*  Defines the need to un-gate of clock for peripheral enable*/
 #define XMC_VADC_EMUX_CH_SEL_STYLE       (1U) /*  Defines the external multiplexer channel selection mode of
@@ -211,7 +234,7 @@
 #define XMC_VADC_BOUNDARY_AVAILABLE      (0U) /*  Defines the availability of boundary check support in a device*/
 #define XMC_VADC_MULTIPLE_SLAVEGROUPS    (0U) /*  Defines the availability of synchronous request source in device*/
 #define XMC_VADC_MAXIMUM_NUM_GROUPS      (2U) /*  Defines the maximum number of groups available in a device*/
-#define XMC_VADC_BOUNDARY_FLAG_SELECT    (1U) /*  Defines the availability of boundary flags in a device*/
+#define XMC_VADC_BOUNDARY_FLAG_SELECT    (0U) /*  Defines the availability of boundary flags in a device*/
 #define XMC_VADC_SHS_START_UP_CAL_ACTIVE (3U) /*  Defines the need for SHS startup calibration activation for
                                                     XMC1100 devices */
 #define XMC_VADC_DEASSERT_RESET_NEEDED   (0U) /*  Defines the need to de-assert the reset to enable the peripheral */
@@ -269,8 +292,7 @@ typedef enum XMC_VADC_SR
   XMC_VADC_SR_SHARED_SR0,    /**< Module Wide Common Service Request-0 */
   XMC_VADC_SR_SHARED_SR1,    /**< Module Wide Common Service Request-1 */
   XMC_VADC_SR_SHARED_SR2,    /**< Module Wide Common Service Request-2 */
-  XMC_VADC_SR_SHARED_SR3,    /**< Module Wide Common Service Request-3 */
-  XMC_VADC_SR_MAX
+  XMC_VADC_SR_SHARED_SR3    /**< Module Wide Common Service Request-3 */
 } XMC_VADC_SR_t;
 
 /**
@@ -360,8 +382,7 @@ typedef enum XMC_VADC_GATEMODE
   XMC_VADC_GATEMODE_BLOCK = 0,  /**< External triggers are permanently blocked */
   XMC_VADC_GATEMODE_IGNORE,     /**< External triggers are unconditionally passed */
   XMC_VADC_GATEMODE_ACTIVEHIGH, /**< External trigger is passed only if the gate signal is high */
-  XMC_VADC_GATEMODE_ACTIVELOW,  /**< External trigger is passed only if the gate signal is low */
-  XMC_VADC_GATEMODE_MAX
+  XMC_VADC_GATEMODE_ACTIVELOW  /**< External trigger is passed only if the gate signal is low */
 } XMC_VADC_GATEMODE_t;
 
 /**
@@ -465,8 +486,7 @@ typedef enum XMC_VADC_CHANNEL_EVGEN
   XMC_VADC_CHANNEL_EVGEN_COMPHIGH  = 1U, /**< Event generated when the result of fast compare operation is high */
   XMC_VADC_CHANNEL_EVGEN_OUTBOUND  = 2U, /**< Event generated when the result is outside the normal range */
   XMC_VADC_CHANNEL_EVGEN_COMPLOW   = 2U, /**< Event generated when the result result of fast compare operation is low */
-  XMC_VADC_CHANNEL_EVGEN_ALWAYS    = 3U, /**< Event generated always after conversion - unconditionally */
-  XMC_VADC_CHANNEL_EVGEN_MAX       = 4
+  XMC_VADC_CHANNEL_EVGEN_ALWAYS    = 3U /**< Event generated always after conversion - unconditionally */
 } XMC_VADC_CHANNEL_EVGEN_t;
 
 /**
@@ -475,8 +495,7 @@ typedef enum XMC_VADC_CHANNEL_EVGEN
 typedef enum XMC_VADC_CHANNEL_REF
 {
   XMC_VADC_CHANNEL_REF_INTREF = 0, /**< Internal VARef */
-  XMC_VADC_CHANNEL_REF_ALT_CH0,    /**< External voltage available on Channel-0 of the perticular group */
-  XMC_VADC_CHANNEL_REF_MAX
+  XMC_VADC_CHANNEL_REF_ALT_CH0    /**< External voltage available on Channel-0 of the perticular group */
 } XMC_VADC_CHANNEL_REF_t;
  
 /**
@@ -507,8 +526,7 @@ typedef enum XMC_VADC_GROUP_POWERMODE
   XMC_VADC_GROUP_POWERMODE_OFF       = 0, /**< Group is powered down */
   XMC_VADC_GROUP_POWERMODE_RESERVED1,     /**< Reserved */
   XMC_VADC_GROUP_POWERMODE_RESERVED2,     /**< Reserved */
-  XMC_VADC_GROUP_POWERMODE_NORMAL,        /**< Group is powered up */
-  XMC_VADC_GROUP_POWERMODE_MAX
+  XMC_VADC_GROUP_POWERMODE_NORMAL        /**< Group is powered up */
 } XMC_VADC_GROUP_POWERMODE_t;
 
 /**
@@ -527,8 +545,7 @@ typedef enum XMC_VADC_GROUP_STATE
 typedef enum XMC_VADC_GROUP_CONV
 {
   XMC_VADC_GROUP_CONV_STD = 0, /**< Settings pertaining to channels directly attached to VADC module */
-  XMC_VADC_GROUP_CONV_EMUX,    /**< Settings pertaining to channels connected to VADC via EMUX */
-  XMC_VADC_GROUP_CONV_MAX
+  XMC_VADC_GROUP_CONV_EMUX    /**< Settings pertaining to channels connected to VADC via EMUX */
 } XMC_VADC_GROUP_CONV_t;
 
 /**
@@ -567,8 +584,7 @@ typedef enum XMC_VADC_GROUP_EMUXCODE
 typedef enum XMC_VADC_GROUP_IRQ
 {
   XMC_VADC_GROUP_IRQ_KERNEL = 0, /**< Refers to Group specific service request */
-  XMC_VADC_GROUP_IRQ_SHARED,     /**< Refers to Module wide service request */
-  XMC_VADC_GROUP_IRQ_MAX
+  XMC_VADC_GROUP_IRQ_SHARED     /**< Refers to Module wide service request */
 } XMC_VADC_GROUP_IRQ_t;
 
 /**
@@ -602,6 +618,17 @@ typedef enum XMC_VADC_GROUP_BOUNDARY_FLAG_MODE
     XMC_VADC_GROUP_BOUNDARY_FLAG_MODE_ENABLED_ACTIVE_HIGH /**< Enable boundary flag when gate level is 1*/
 }XMC_VADC_GROUP_BOUNDARY_FLAG_MODE_t;
 
+
+/**
+ *  Defines the boundary select for Channel. Use @ref XMC_VADC_GROUP_BOUNDARY_FLAG_MODE_t for this enumeration.
+ */
+typedef enum XMC_VADC_BOUNDARY_SELECT
+{
+  XMC_VADC_BOUNDARY_SELECT_LOWER_BOUND = 0U,       /**< Select the lower boundary*/
+  XMC_VADC_BOUNDARY_SELECT_UPPER_BOUND = 2U        /**< Selects the upper boundary*/
+}XMC_VADC_BOUNDARY_SELECT_t;
+
+
 /**
  * Defines the group indices. Use @ref XMC_VADC_GROUP_INDEX_t for this enumeration.
  */
@@ -611,9 +638,8 @@ typedef enum XMC_VADC_GROUP_INDEX
     XMC_VADC_GROUP_INDEX_1,
 #if (XMC_VADC_MAXIMUM_NUM_GROUPS > 2)
     XMC_VADC_GROUP_INDEX_2,
-    XMC_VADC_GROUP_INDEX_3,
+    XMC_VADC_GROUP_INDEX_3
 #endif
-    XMC_VADC_GROUP_INDEX_MAX
 }XMC_VADC_GROUP_INDEX_t;
 
 /**
@@ -633,7 +659,53 @@ typedef enum XMC_VADC_CHANNEL_ALIAS
   XMC_VADC_CHANNEL_ALIAS_CH7 = 7
 } XMC_VADC_CHANNEL_ALIAS_t;
 
+#if(XMC_VADC_SHS_AVAILABLE == 1U)
+/**
+ * Defines the gain calibration selection.
+ */
+typedef enum XMC_VADC_SHS_GAIN_LEVEL
+{
+  XMC_VADC_SHS_GAIN_LEVEL_0 = SHS_CALOC0_CALOFFVAL0_Pos, /**< Select the calibration value for gain level 0 */
+  XMC_VADC_SHS_GAIN_LEVEL_1 = SHS_CALOC0_CALOFFVAL1_Pos, /**< Select the calibration value for gain level 1 */
+  XMC_VADC_SHS_GAIN_LEVEL_2 = SHS_CALOC0_CALOFFVAL2_Pos, /**< Select the calibration value for gain level 2 */
+  XMC_VADC_SHS_GAIN_LEVEL_3 = SHS_CALOC0_CALOFFVAL3_Pos  /**< Select the calibration value for gain level 3 */
+}XMC_VADC_SHS_GAIN_LEVEL_t;
 
+/**
+ * Defines the Delta sigma loop.
+ */
+typedef enum XMC_VADC_SHS_LOOP_CH
+{
+  XMC_VADC_SHS_LOOP_CH_0 = SHS_LOOP_LPCH0_Pos, /**< Select Delta-sigma loop 0*/
+  XMC_VADC_SHS_LOOP_CH_1 = SHS_LOOP_LPCH1_Pos /**< Select Delta-sigma loop 1*/
+}XMC_VADC_SHS_LOOP_CH_t;
+
+/**
+ * Provides the order in which the SHS should do the calibration
+ */
+typedef enum XMC_VADC_GLOBAL_SHS_CALIBRATION_ORDER
+{
+  XMC_VADC_GLOBAL_SHS_CALIBRATION_ORDER_POST_CONV = 0, /**< Calibration occur after conversion takes place */
+  XMC_VADC_GLOBAL_SHS_CALIBRATION_ORDER_PRE_CONV   /**< Calibration occur before conversion takes place */
+}XMC_VADC_GLOBAL_SHS_CALIBRATION_ORDER_t;
+#endif
+
+#if (XMC_VADC_BOUNDARY_FLAG_SELECT == 1U)
+/**
+ * Provides possible routing values for the boundary flag.
+ */
+typedef enum XMC_VADC_BOUNDARY_NODE
+{
+  XMC_VADC_BOUNDARY_NODE_COMMON_BOUNDARY_FLAG_0 = 0U, /**<Route the Group boundary flag to Common boundary flag 0 */
+  XMC_VADC_BOUNDARY_NODE_COMMON_BOUNDARY_FLAG_1,      /**<Route the Group boundary flag to Common boundary flag 1 */
+  XMC_VADC_BOUNDARY_NODE_COMMON_BOUNDARY_FLAG_2,      /**<Route the Group boundary flag to Common boundary flag 2 */
+  XMC_VADC_BOUNDARY_NODE_COMMON_BOUNDARY_FLAG_3,      /**<Route the Group boundary flag to Common boundary flag 3 */
+  XMC_VADC_BOUNDARY_NODE_COMMON_SR_LINE_0,  /**<Route the Group boundary flag to Common Service Request line 0 */
+  XMC_VADC_BOUNDARY_NODE_COMMON_SR_LINE_1,  /**<Route the Group boundary flag to Common Service Request line 1 */
+  XMC_VADC_BOUNDARY_NODE_COMMON_SR_LINE_2,  /**<Route the Group boundary flag to Common Service Request line 2 */
+  XMC_VADC_BOUNDARY_NODE_COMMON_SR_LINE_3   /**<Route the Group boundary flag to Common Service Request line 3 */
+}XMC_VADC_BOUNDARY_NODE_t;
+#endif
 /*********************************************************************************************************************
  * DATA STRUCTURES
  ********************************************************************************************************************/
@@ -1090,6 +1162,70 @@ typedef struct XMC_VADC_RESULT_CONFIG
        uint32_t g_rcr;
     };
 } XMC_VADC_RESULT_CONFIG_t;
+
+#if(XMC_VADC_SHS_AVAILABLE == 1U)
+/**
+ * Structure to initialize the Stepper configurations
+ */
+typedef struct XMC_VADC_GLOBAL_SHS_STEP_CONFIG
+{
+  union
+  {
+    struct
+    {
+      uint32_t sh_unit_step0            :3;  /**< Select a Sample and hold unit for the stepper's step number 0.
+                                                      Uses @ref XMC_VADC_GROUP_INDEX_t*/
+      uint32_t enable_step0             :1;  /**< Should the step be added to the sequence */
+      uint32_t sh_unit_step1            :3;  /**< Select a Sample and hold unit for the stepper's step number 1.
+                                                      Uses @ref XMC_VADC_GROUP_INDEX_t*/
+      uint32_t enable_step1             :1;  /**< Should the step be added to the sequence */
+      uint32_t sh_unit_step2            :3;  /**< Select a Sample and hold unit for the stepper's step number 2.
+                                                      Uses @ref XMC_VADC_GROUP_INDEX_t*/
+      uint32_t enable_step2             :1;  /**< Should the step be added to the sequence */
+      uint32_t sh_unit_step3            :3;  /**< Select a Sample and hold unit for the stepper's step number 3.
+                                                      Uses @ref XMC_VADC_GROUP_INDEX_t*/
+      uint32_t enable_step3             :1;  /**< Should the step be added to the sequence */
+      uint32_t sh_unit_step4            :3;  /**< Select a Sample and hold unit for the stepper's step number 4.
+                                                      Uses @ref XMC_VADC_GROUP_INDEX_t*/
+      uint32_t enable_step4             :1;  /**< Should the step be added to the sequence */
+      uint32_t sh_unit_step5            :3;  /**< Select a Sample and hold unit for the stepper's step number 5.
+                                                      Uses @ref XMC_VADC_GROUP_INDEX_t*/
+      uint32_t enable_step5             :1;  /**< Should the step be added to the sequence */
+      uint32_t sh_unit_step6            :3;  /**< Select a Sample and hold unit for the stepper's step number 6.
+                                                      Uses @ref XMC_VADC_GROUP_INDEX_t*/
+      uint32_t enable_step6             :1;  /**< Should the step be added to the sequence */
+      uint32_t sh_unit_step7            :3;  /**< Select a Sample and hold unit for the stepper's step number 7.
+                                                      Uses @ref XMC_VADC_GROUP_INDEX_t*/
+      uint32_t enable_step7             :1;  /**< Should the step be added to the sequence */
+
+    };
+    uint32_t stepcfg;
+  };
+}XMC_VADC_GLOBAL_SHS_STEP_CONFIG_t;
+
+/**
+ * Sample and hold Initialization structure
+ */
+typedef struct XMC_VADC_GLOBAL_SHS_CONFIG
+{
+  union
+  {
+    struct
+    {
+      uint32_t shs_clock_divider        :4; /**< The divider value for the SHS clock. Range: [0x0 to 0xF]*/
+      uint32_t                          :6;
+      uint32_t analog_reference_select  :2; /**< It is possible to different reference voltage for the SHS module
+                                                 Accepts ::XMC_VADC_GLOBAL_SHS_AREF_t */
+      uint32_t                          :20;
+    };
+    uint32_t shscfg;
+  };
+
+  XMC_VADC_GLOBAL_SHS_CALIBRATION_ORDER_t calibration_order; /**< order in which the calibration should be taken up*/
+
+}XMC_VADC_GLOBAL_SHS_CONFIG_t;
+
+#endif
 /*Anonymous structure/union guard end*/
 #if defined(__CC_ARM)
   #pragma pop
@@ -1117,18 +1253,6 @@ __STATIC_INLINE bool XMC_VADC_CHECK_GROUP_PTR(XMC_VADC_GROUP_t *const group_ptr)
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- *
- * @param None
- *
- * @return Driver version information. Refer @ref XMC_DRIVER_VERSION_t structure definition.
- *
- * \par<b>Description:</b><br>
- * Return version (major, minor and patch number) of the driver.\n\n
- *
- */
-XMC_DRIVER_VERSION_t XMC_VADC_GetDriverVersion(void);
 
 /**
  * @param None
@@ -1516,7 +1640,7 @@ __STATIC_INLINE XMC_VADC_RESULT_SIZE_t XMC_VADC_GLOBAL_GetResult(XMC_VADC_GLOBAL
 {
   XMC_ASSERT("XMC_VADC_GLOBAL_GetResult:Wrong Module Pointer", (global_ptr == VADC))
 
-  return (global_ptr->GLOBRES & (uint32_t)VADC_GLOBRES_RESULT_Msk);
+  return ((XMC_VADC_RESULT_SIZE_t)global_ptr->GLOBRES);
 }
 
 /**
@@ -1639,6 +1763,69 @@ void XMC_VADC_GLOBAL_BackgroundSetReqSrcEventInterruptNode(XMC_VADC_GLOBAL_t *co
 #if(XMC_VADC_SHS_AVAILABLE == 1U)
 /**
  * @param shs_ptr Constant pointer to the VADC Sample and hold module
+ * @param  config Struct consisting of various SHS related configurations.
+ *
+ * @return None
+ *
+ * \par<b>Description:</b><br>
+ * Configure the basic SHS parameters.<BR>\n
+ * API would initialize the clock divider configuration, the analog reference selection and
+ * the calibration order for the Sample and Hold unit.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * None.
+ */
+ void XMC_VADC_GLOBAL_SHS_Init(XMC_VADC_GLOBAL_SHS_t *const shs_ptr, const XMC_VADC_GLOBAL_SHS_CONFIG_t *config);
+
+ /**
+  * @param shs_ptr Constant pointer to the VADC Sample and hold module
+  * @param  config Struct consisting of various step configurations.
+  *
+  * @return None
+  *
+  * \par<b>Description:</b><br>
+  * Configures the stepper sequence for the converter.<BR>\n
+  * Stepper of the SHS can be configured to take up a specific sequence of groups for conversion.
+  * The stepper sequence is configured using this API.
+  *
+  * \par<b>Related APIs:</b><BR>
+  * None.
+  */
+ __STATIC_INLINE void XMC_VADC_GLOBAL_SHS_SetStepperSequence(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
+                                                             const XMC_VADC_GLOBAL_SHS_STEP_CONFIG_t *config)
+ {
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_StepperInit:Wrong SHS Pointer",
+             (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_StepperInit:Wrong config pointer",
+             (config == (XMC_VADC_GLOBAL_SHS_STEP_CONFIG_t*)NULL))
+
+  shs_ptr->STEPCFG = (uint32_t) config->stepcfg;
+ }
+
+
+ /**
+  * @param shs_ptr Constant pointer to the VADC Sample and hold module
+  *
+  * @return bool returns true if the analog converter is operable
+  *              returns false if the analog converter is powered down
+  *
+  * \par<b>Description:</b><br>
+  * Returns the converter status.<BR>\n
+  * Returns the ANRDY bit field of the SHSCFG register.
+  *
+  * \par<b>Related APIs:</b><BR>
+  * None.
+  */
+ __STATIC_INLINE bool XMC_VADC_GLOBAL_SHS_IsConverterReady(XMC_VADC_GLOBAL_SHS_t *const shs_ptr)
+ {
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_IsConverterReady:Wrong SHS Pointer",(shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
+
+  return((bool)((shs_ptr->STEPCFG >> (uint32_t)SHS_SHSCFG_ANRDY_Pos) & (uint32_t)0x1));
+ }
+
+
+/**
+ * @param shs_ptr Constant pointer to the VADC Sample and hold module
  * @param group_num group number for which the accelerated mode needs to be enabled.<BR>Range: [0x0 to 0x1]
  *
  * @return None
@@ -1654,6 +1841,21 @@ void XMC_VADC_GLOBAL_BackgroundSetReqSrcEventInterruptNode(XMC_VADC_GLOBAL_t *co
  */
 void XMC_VADC_GLOBAL_SHS_EnableAcceleratedMode(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,XMC_VADC_GROUP_INDEX_t group_num);
 
+/**
+ * @param shs_ptr Constant pointer to the VADC Sample and hold module
+ * @param group_num group number for which the accelerated mode needs to be disabled.<BR>Range: [0x0 to 0x1]
+ *
+ * @return None
+ *
+ * \par<b>Description:</b><br>
+ * Enables the Accelerated timing mode.<BR>\n
+ * This API is needed when a switch from accelerated mode to compatible mode of conversion is needed.
+ * This API would clear the accelerated mode in the SHS0_TIMCFG0 and SHS0_TIMCFG1 registers.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * None.
+ */
+void XMC_VADC_GLOBAL_SHS_DisableAcceleratedMode(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,XMC_VADC_GROUP_INDEX_t group_num);
 
 /**
  * @param shs_ptr Constant pointer to the VADC Sample and hold module
@@ -1693,14 +1895,199 @@ void XMC_VADC_GLOBAL_SHS_SetShortSampleTime(XMC_VADC_GLOBAL_SHS_t *const shs_ptr
  */
 __STATIC_INLINE void XMC_VADC_GLOBAL_SHS_SetClockDivider(XMC_VADC_GLOBAL_SHS_t *const shs_ptr, uint8_t divs_value)
 {
-    XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetClockDivider:Wrong SHS Pointer",
-               (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
-    XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetClockDivider:Wrong divide factor selected",
-               (divs_value < (uint32_t)0x10))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetClockDivider:Wrong SHS Pointer",
+             (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetClockDivider:Wrong divide factor selected",
+             (divs_value < (uint32_t)0x10))
 
-      shs_ptr->SHSCFG &= ~((uint32_t)SHS_SHSCFG_DIVS_Msk);
-      shs_ptr->SHSCFG |=  ((uint32_t)divs_value << SHS_SHSCFG_DIVS_Pos);
+  shs_ptr->SHSCFG =  (shs_ptr->SHSCFG & (~(uint32_t)SHS_SHSCFG_DIVS_Msk)) | (uint32_t)SHS_SHSCFG_SCWC_Msk;
+  shs_ptr->SHSCFG |=  ((uint32_t)divs_value << SHS_SHSCFG_DIVS_Pos) | (uint32_t)SHS_SHSCFG_SCWC_Msk;
 }
+
+/**
+ * @param shs_ptr Constant pointer to the VADC Sample and hold module
+ * @param  gain_value gain value possible
+ *                    Range:[0x0 to 0x3]
+ * @param  group_num The Group number for which the configurations applies
+ * @param  ch_num The channel number for which the gain has to be configured
+ * @return None
+ *
+ * \par<b>Description:</b><br>
+ * Configure the gain value for SHS.<BR>\n
+ * API would set the gain factor for a selected channel.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * None.
+ */
+void XMC_VADC_GLOBAL_SHS_SetGainFactor(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
+                                       uint8_t gain_value,
+                                       XMC_VADC_GROUP_INDEX_t group_num,
+                                       uint8_t ch_num);
+
+
+/**
+ * @param shs_ptr Constant pointer to the VADC Sample and hold module
+ * @param  max_calibration_time calibration time
+ *                              Range:[0x0 to 0x3F]
+ * @return None
+ *
+ * \par<b>Description:</b><br>
+ * Configure the Maximum calibration timing.<BR>\n
+ * API would initialize the Maximum time after which the calibration should occur. If no adc conversion
+ * occur during this duration then the calibration would run irrespective of conversions. The max time the
+ * converter can go without a calibration is set in this API.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * None.
+ */
+__STATIC_INLINE void XMC_VADC_GLOBAL_SHS_SetMaxCalTime(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
+                                                       uint32_t max_calibration_time)
+{
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_SetMaxCalTime:Wrong SHS Pointer",
+             (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
+
+  shs_ptr->CALCTR &= ~((uint32_t)SHS_CALCTR_CALMAX_Msk);
+  shs_ptr->CALCTR |=  ((uint32_t)max_calibration_time << SHS_CALCTR_CALMAX_Pos);
+}
+
+
+/**
+ * @param shs_ptr Constant pointer to the VADC Sample and hold module
+ * @param  group_num The Group number for which the configurations applies
+ * @return None
+ *
+ * \par<b>Description:</b><br>
+ * Enable the Gain and offset calibration.<BR>\n
+ * Enable the gain and offset calibration for all the Sample and hold units.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_VADC_GLOBAL_SHS_DisableGainAndOffsetCalibrations()<BR>.
+ */
+void XMC_VADC_GLOBAL_SHS_EnableGainAndOffsetCalibrations(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
+                                                         XMC_VADC_GROUP_INDEX_t group_num);
+
+/**
+ * @param shs_ptr Constant pointer to the VADC Sample and hold module
+ * @param  group_num The Group number for which the configurations applies
+ * @return None
+ *
+ * \par<b>Description:</b><br>
+ * Disable the Gain and offset calibration.<BR>\n
+ * Disable the gain and offset calibration for all the Sample and hold units.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_VADC_GLOBAL_SHS_EnableGainAndOffsetCalibrations()<BR>.
+ */
+void XMC_VADC_GLOBAL_SHS_DisableGainAndOffsetCalibrations(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
+                                                          XMC_VADC_GROUP_INDEX_t group_num);
+
+/**
+ * @param shs_ptr Constant pointer to the VADC Sample and hold module
+ * @param  group_num The Group number for which the configurations applies
+ * @param  gain_level The gain level whose calibration value has to read.
+ * @return None
+ *
+ * \par<b>Description:</b><br>
+ * Read the calibration value for the selected gain level.<BR>\n
+ * Each gain value has a offset calibration value, this API would return the offset calibration value of the
+ * selected gain level. This is applicable for all the channels in the group that use the particular gain level.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_VADC_GLOBAL_SHS_SetOffsetCalibrationValue()<BR>.
+ */
+uint8_t XMC_VADC_GLOBAL_SHS_GetOffsetCalibrationValue(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
+                                                      XMC_VADC_GROUP_INDEX_t group_num,
+                                                      XMC_VADC_SHS_GAIN_LEVEL_t gain_level);
+
+/**
+ * @param shs_ptr Constant pointer to the VADC Sample and hold module
+ * @param  group_num The Group number for which the configurations applies
+ * @param  gain_level The gain level whose calibration value has to read.
+ * @param  offset_calibration_value The offset calibration value to be set.
+ * @return None
+ *
+ * \par<b>Description:</b><br>
+ * Set the calibration value for the selected gain level.<BR>\n
+ * Each gain value has a offset calibration value, this API would set the offset value of the selected gain level.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_VADC_GLOBAL_SHS_GetOffsetCalibrationValue()<BR>.
+ */
+void XMC_VADC_GLOBAL_SHS_SetOffsetCalibrationValue(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
+                                                   XMC_VADC_GROUP_INDEX_t group_num,
+                                                   XMC_VADC_SHS_GAIN_LEVEL_t gain_level,
+                                                   uint8_t offset_calibration_value);
+
+/**
+ * @param shs_ptr Constant pointer to the VADC Sample and hold module
+ * @param  XMC_VADC_GROUP_INDEX_t The Group number for which the configurations applies
+ * @param  loop_select The delta sigma loop number for which the configurations applies
+ * @param  ch_num Channel number for which the configurations applies
+ * @return None
+ *
+ * \par<b>Description:</b><br>
+ * Configures the delta sigma loop of the SHS.<BR>\n
+ * There are 2 Delta-Sigma loops that can be configured. This API would configure the loop (loop_select)
+ * with the appropriate group_num and channel_num.
+ * Configures the SHS_LOOP bit fields.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_VADC_GLOBAL_SHS_EnableSigmaDeltaLoop()<BR>.
+ */
+void XMC_VADC_GLOBAL_SHS_SetSigmaDeltaLoop(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
+                                           XMC_VADC_GROUP_INDEX_t group_num,
+                                           XMC_VADC_SHS_LOOP_CH_t loop_select,
+                                           uint8_t ch_num);
+
+/**
+ * @param shs_ptr Constant pointer to the VADC Sample and hold module
+ * @param  loop_select The delta sigma loop number for which the configurations applies
+ * @return None
+ *
+ * \par<b>Description:</b><br>
+ * Enable the selected Delta-Sigma loop.<BR>\n
+ * Configures the SHS_LOOP.LPENx bit field.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_VADC_GLOBAL_SHS_SetSigmaDeltaLoop()<BR>.
+ * XMC_VADC_GLOBAL_SHS_EnableGainAndOffsetCalibrations()<BR>.
+ */
+__STATIC_INLINE void XMC_VADC_GLOBAL_SHS_EnableSigmaDeltaLoop(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
+                                                              XMC_VADC_SHS_LOOP_CH_t loop_select)
+{
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_EnableSigmaDeltaLoop:Wrong SHS Pointer",
+             (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_EnableSigmaDeltaLoop:Wrong Delta sigma loop selected",
+             (loop_select == XMC_VADC_SHS_LOOP_CH_0)||(loop_select == XMC_VADC_SHS_LOOP_CH_1))
+
+  shs_ptr->LOOP |= (uint32_t)SHS_LOOP_LPEN0_Msk << (uint32_t)loop_select;
+}
+
+/**
+ * @param shs_ptr Constant pointer to the VADC Sample and hold module
+ * @param  loop_select The delta sigma loop number for which the configurations applies
+ * @return None
+ *
+ * \par<b>Description:</b><br>
+ * Disable the selected delta sigma loop.<BR>\n
+ * Configures the SHS_LOOP.LPENx bit field.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_VADC_GLOBAL_SHS_SetSigmaDeltaLoop()<BR>.
+ * XMC_VADC_GLOBAL_SHS_EnableGainAndOffsetCalibrations()<BR>.
+ */
+__STATIC_INLINE void XMC_VADC_GLOBAL_SHS_DisableSigmaDeltaLoop(XMC_VADC_GLOBAL_SHS_t *const shs_ptr,
+                                                               XMC_VADC_SHS_LOOP_CH_t loop_select)
+{
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_DisableSigmaDeltaLoop:Wrong SHS Pointer",
+             (shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
+  XMC_ASSERT("XMC_VADC_GLOBAL_SHS_DisableSigmaDeltaLoop:Wrong Delta sigma loop selected",
+             (loop_select == XMC_VADC_SHS_LOOP_CH_0)||(loop_select == XMC_VADC_SHS_LOOP_CH_1))
+
+  shs_ptr->LOOP &= ~((uint32_t)SHS_LOOP_LPEN0_Msk << (uint32_t)loop_select);
+
+}
+
 #endif
 #if (XMC_VADC_GROUP_AVAILABLE == 1U)
 /**
@@ -1746,7 +2133,7 @@ void XMC_VADC_GROUP_Init(XMC_VADC_GROUP_t *const group_ptr, const XMC_VADC_GROUP
  *
  */
 void XMC_VADC_GROUP_InputClassInit(XMC_VADC_GROUP_t *const group_ptr, const XMC_VADC_GROUP_CLASS_t config,
-                                    const XMC_VADC_GROUP_CONV_t conv_type, const uint32_t set_num);
+                                   const XMC_VADC_GROUP_CONV_t conv_type, const uint32_t set_num);
 
 /**
  *
@@ -1957,12 +2344,49 @@ void XMC_VADC_GROUP_TriggerServiceRequest(XMC_VADC_GROUP_t *const group_ptr,
 __STATIC_INLINE void XMC_VADC_GROUP_ExternalMuxControlInit(XMC_VADC_GROUP_t *const group_ptr,
                                                            const XMC_VADC_GROUP_EMUXCFG_t emux_cfg)
 {
+  uint32_t   emux_config;
+
   XMC_ASSERT("XMC_VADC_GROUP_ExternalMuxControlInit:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
 
-  group_ptr->EMUXCTR  = (uint32_t)(emux_cfg.g_emuxctr | VADC_G_EMUXCTR_EMXWC_Msk);
-}
-#endif
+  emux_config = ((uint32_t)emux_cfg.starting_external_channel << (uint32_t)VADC_G_EMUXCTR_EMUXSET_Pos) |
+              ((uint32_t)emux_cfg.connected_channel << (uint32_t)VADC_G_EMUXCTR_EMUXCH_Pos);
 
+  group_ptr->EMUXCTR  = emux_config;
+  emux_config = ((uint32_t)emux_cfg.emux_coding << (uint32_t)VADC_G_EMUXCTR_EMXCOD_Pos)  |
+                ((uint32_t)emux_cfg.emux_mode  << (uint32_t)VADC_G_EMUXCTR_EMUXMODE_Pos)|
+                ((uint32_t)emux_cfg.stce_usage << (uint32_t)VADC_G_EMUXCTR_EMXST_Pos);
+
+#if (XMC_VADC_EMUX_CH_SEL_STYLE == 1U)
+  emux_config |= ((uint32_t)emux_cfg.emux_channel_select_style << (uint32_t)VADC_G_EMUXCTR_EMXCSS_Pos);
+#endif
+  group_ptr->EMUXCTR  |= (emux_config | ((uint32_t)VADC_G_EMUXCTR_EMXWC_Msk)) ;
+}
+
+#if XMC_VADC_BOUNDARY_FLAG_SELECT == 1U
+
+/**
+ * @param group_ptr Constant pointer to the VADC group
+ * @param sr    Service Request Id
+ * @param boundary_flag_num The Boundary flag for which the interrupt node needs to be configured.
+ *                          Range: [0x0 to 0x3]
+ * @return
+ *    None
+ *
+ * \par<b>Description:</b><br>
+ * Connects the boundary event to the SR line of VADC or to a common boundary flag.<BR>\n
+ * This API will connect a Service Request line(SR) to a boundary event. Hence to get a interrupt on this
+ * Service request line one has to enable the required NVIC node.  A call to this API would configure the register bit
+ * field GxBFLNP.BFLxNP.
+ *
+ * \par<b>Related APIs:</b><br>
+ *  None.
+ */
+void XMC_VADC_GROUP_SetBoundaryEventInterruptNode(XMC_VADC_GROUP_t *const group_ptr,
+                                                  const uint8_t boundary_flag_num,
+                                                  const XMC_VADC_BOUNDARY_NODE_t node);
+#endif /* XMC_VADC_BOUNDARY_FLAG_SELECT */
+
+#endif /* XMC_VADC_GROUP_AVAILABLE */
 
 #if (XMC_VADC_GSCAN_AVAILABLE == 1U)
 /**
@@ -2046,6 +2470,25 @@ __STATIC_INLINE void XMC_VADC_GROUP_ScanDisableArbitrationSlot(XMC_VADC_GROUP_t 
  */
 void XMC_VADC_GROUP_ScanSelectTrigger(XMC_VADC_GROUP_t *const group_ptr, XMC_VADC_TRIGGER_INPUT_SELECT_t trigger_input);
 
+
+/**
+ * @param group_ptr     Constant pointer to the VADC group
+ * @param trigger_edge  Trigger edge selection
+ * @return
+ *    None
+ *
+ * \par<b>Description:</b><br>
+ * Selects the trigger edge for scan request source.<BR>\n
+ * A scan request source will raise conversion request only if there were either a request from application or
+ * occurrence of a hardware trigger. This API selects one of the 4 possible trigger edges. This is
+ * needed when a hardware trigger is needed for the conversion of the scan request source.
+ * A call to this API would configure the register bit field GxASCTRL.XTMODE.
+ *
+ * \par<b>Related APIs:</b><br>
+ *  XMC_VADC_GROUP_ScanSelectTrigger()<BR>
+ */
+void XMC_VADC_GROUP_ScanSelectTriggerEdge(XMC_VADC_GROUP_t *const group_ptr, const XMC_VADC_TRIGGER_EDGE_t trigger_edge);
+
 /**
  * @param group_ptr     Constant pointer to the VADC group
  * @param gating_input  Module input signal meant to be selected as gating input
@@ -2081,9 +2524,12 @@ void XMC_VADC_GROUP_ScanSelectGating(XMC_VADC_GROUP_t *const group_ptr, XMC_VADC
  */
 __STATIC_INLINE void XMC_VADC_GROUP_ScanSetGatingMode(XMC_VADC_GROUP_t *const group_ptr, XMC_VADC_GATEMODE_t mode_sel)
 {
-  XMC_ASSERT("XMC_VADC_GROUP_ScanSetGatingMode:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr));
-  XMC_ASSERT("XMC_VADC_GROUP_ScanSetGatingMode:Wrong mode selected", (mode_sel < XMC_VADC_GATEMODE_MAX));
+  XMC_ASSERT("XMC_VADC_GROUP_ScanSetGatingMode:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
+  XMC_ASSERT("XMC_VADC_GROUP_ScanSetGatingMode:Wrong mode selected", (mode_sel <= XMC_VADC_GATEMODE_ACTIVELOW))
 
+  /* Clear the existing gate configuration */
+  group_ptr->ASMR &= (uint32_t) (~((uint32_t)VADC_G_ASMR_ENGT_Msk));
+  /* Set the new gating mode */
   group_ptr->ASMR |= (uint32_t)((uint32_t)mode_sel << VADC_G_ASMR_ENGT_Pos);
 }
 
@@ -2323,7 +2769,7 @@ __STATIC_INLINE bool XMC_VADC_GROUP_ScanGetReqSrcEventStatus(XMC_VADC_GROUP_t *c
 }
 
 /**
- * @param group_ptrConstant pointer to the VADC group
+ * @param group_ptr Constant pointer to the VADC group
  * @param sr    Service Request Id
  * @return
  *    None
@@ -2467,6 +2913,25 @@ __STATIC_INLINE void XMC_VADC_GROUP_BackgroundDisableArbitrationSlot(XMC_VADC_GR
  */
 void XMC_VADC_GLOBAL_BackgroundSelectTrigger(XMC_VADC_GLOBAL_t *const global_ptr, const uint32_t input_num);
 
+
+/**
+ * @param global_ptr       Pointer to the VADC module
+ * @param trigger_edge  Select the trigger edge
+ * @return
+ *    None
+ *
+ * \par<b>Description:</b><br>
+ * Select Trigger edge for Background request source.<BR>\n
+ * A Background request source will raise conversion request only if there were either a request from application or
+ * occurrence of a hardware trigger. This API selects one of the 4 possible values for the trigger edge. This is
+ * needed when a hardware trigger is needed for the conversion of the Background request source.
+ * A call to this API would configure the register bit field BRSCTRL.XTMODE.
+ *
+ * \par<b>Related APIs:</b><br>
+ *  XMC_VADC_GLOBAL_BackgroundSelectGating()<BR> XMC_VADC_GLOBAL_BackgroundEnableExternalTrigger()<BR>
+ */
+void XMC_VADC_GLOBAL_BackgroundSelectTriggerEdge(XMC_VADC_GLOBAL_t *const global_ptr, const XMC_VADC_TRIGGER_EDGE_t trigger_edge);
+
 /**
  * @param global_ptr       Pointer to the VADC module
  * @param input_num  Module input signal meant to be selected as gating input
@@ -2506,8 +2971,11 @@ __STATIC_INLINE void XMC_VADC_GLOBAL_BackgroundSetGatingMode(XMC_VADC_GLOBAL_t *
                                                             XMC_VADC_GATEMODE_t mode_sel)
 {
   XMC_ASSERT("XMC_VADC_GLOBAL_BackgroundSetGatingMode:Wrong Module Pointer", (global_ptr == VADC))
-  XMC_ASSERT("XMC_VADC_GLOBAL_BackgroundSetGatingMode:Wrong mode selected", (mode_sel < XMC_VADC_GATEMODE_MAX))
+  XMC_ASSERT("XMC_VADC_GLOBAL_BackgroundSetGatingMode:Wrong mode selected", (mode_sel <= XMC_VADC_GATEMODE_ACTIVELOW))
 
+  /* Clear the existing gate configuration */
+  global_ptr->BRSMR &= (uint32_t)(~((uint32_t)VADC_BRSMR_ENGT_Msk));
+  /* Configure the new gating mode*/
   global_ptr->BRSMR |= (uint32_t)((uint32_t)mode_sel << VADC_BRSMR_ENGT_Pos);
 }
 
@@ -2893,6 +3361,25 @@ void XMC_VADC_GROUP_QueueSelectTrigger(XMC_VADC_GROUP_t *const group_ptr,
 
 /**
  * @param group_ptr     Constant pointer to the VADC group
+ * @param trigger_edge  Choice of the trigger edge
+ * @return
+ *    None
+ *
+ * \par<b>Description:</b><br>
+ * Select Trigger signal edge for queue request source.<BR>\n
+ * A queue request source will raise conversion request only if there were either a request from application or
+ * occurrence of a hardware trigger. This API selects one of the 4 trigger edges. This is
+ * needed when a hardware trigger is needed for the conversion of the queue request source.
+ * Refer to the reference manual to determine the signal that needs to be connected.
+ * A call to this API would configure the register bit field GxQCTRL0.XTMODE.
+ *
+ * \par<b>Related APIs:</b><br>
+ *  XMC_VADC_GROUP_QueueSelectGating()<BR> XMC_VADC_GROUP_QueueEnableExternalTrigger()<BR>
+ */
+void XMC_VADC_GROUP_QueueSelectTriggerEdge(XMC_VADC_GROUP_t *const group_ptr, const XMC_VADC_TRIGGER_EDGE_t trigger_edge);
+
+/**
+ * @param group_ptr     Constant pointer to the VADC group
  * @param input_num  Choice of the input earmarked as the gating line
  * @return
  *    None
@@ -2927,9 +3414,12 @@ void XMC_VADC_GROUP_QueueSelectGating(XMC_VADC_GROUP_t *const group_ptr, const X
  */
 __STATIC_INLINE void XMC_VADC_GROUP_QueueSetGatingMode(XMC_VADC_GROUP_t *const group_ptr, XMC_VADC_GATEMODE_t mode_sel)
 {
-  XMC_ASSERT("XMC_VADC_GROUP_QueueSetGatingMode:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr));
-  XMC_ASSERT("XMC_VADC_GROUP_QueueSetGatingMode:Wrong mode selected", (mode_sel < XMC_VADC_GATEMODE_MAX));
+  XMC_ASSERT("XMC_VADC_GROUP_QueueSetGatingMode:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
+  XMC_ASSERT("XMC_VADC_GROUP_QueueSetGatingMode:Wrong mode selected", (mode_sel <= XMC_VADC_GATEMODE_ACTIVELOW))
 
+  /* Clear the existing gate configuration */
+  group_ptr->QMR0 &= (uint32_t)(~((uint32_t) VADC_G_QMR0_ENGT_Msk));
+  /* Set the new gating mode */
   group_ptr->QMR0 |= (uint32_t)((uint32_t)mode_sel << VADC_G_QMR0_ENGT_Pos);
 }
 
@@ -2957,7 +3447,7 @@ __STATIC_INLINE void XMC_VADC_GROUP_QueueSetGatingMode(XMC_VADC_GROUP_t *const g
  */
 __STATIC_INLINE void XMC_VADC_GROUP_QueueTriggerConversion(XMC_VADC_GROUP_t *const group_ptr)
 {
-  XMC_ASSERT("XMC_VADC_GROUP_QueueTriggerConversion:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr));
+  XMC_ASSERT("XMC_VADC_GROUP_QueueTriggerConversion:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
   group_ptr->QMR0 |= (uint32_t)((uint32_t)1 << VADC_G_QMR0_TREV_Pos);
 }
 
@@ -2993,9 +3483,36 @@ uint32_t XMC_VADC_GROUP_QueueGetLength(XMC_VADC_GROUP_t *const group_ptr);
  * the queue sequence.
  *
  * \par<b>Related APIs:</b><br>
- *  XMC_VADC_GROUP_QueueRemoveChannel()<BR>
+ *  XMC_VADC_GROUP_QueueRemoveChannel()<BR> XMC_VADC_GROUP_QueueFlushEntries() <BR>
  */
 void XMC_VADC_GROUP_QueueAbortSequence(XMC_VADC_GROUP_t *const group_ptr);
+
+/**
+ * @param group_ptr     Constant pointer to the VADC group
+ * @return
+ *    None
+ *
+ * \par<b>Description:</b><br>
+ * Flushing the queue Entry.<BR>\n
+ * This API will flush one entry in the queue buffer. Ongoing conversion of the Queue request source will
+ * not be effected by this API. This would clear all the contents that are present in the queue buffer.
+ * A call to this API would configure the registers  GxQMR0. This is a Blocking API, i.e will only exit when
+ * all the entries are removed from the queue.
+ *
+ * \par<b>Related APIs:</b><br>
+ *  XMC_VADC_GROUP_QueueRemoveChannel()<BR> XMC_VADC_GROUP_QueueAbortSequence(0<BR>
+ */
+__STATIC_INLINE void XMC_VADC_GROUP_QueueFlushEntries(XMC_VADC_GROUP_t *const group_ptr)
+{
+  /* Initiate flushing of the queue */
+  group_ptr->QMR0 |= (uint32_t)VADC_G_QMR0_FLUSH_Msk;
+
+  while( !((group_ptr->QSR0)& (uint32_t)VADC_G_QSR0_EMPTY_Msk))
+  {
+    /* Wait until the queue is indeed flushed */
+  }
+}
+
 
 /**
  * @param group_ptr     Constant pointer to the VADC group
@@ -3422,6 +3939,30 @@ void XMC_VADC_GROUP_ChannelTriggerEventGenCriteria(XMC_VADC_GROUP_t *const group
                                                    const uint32_t ch_num,
                                                    const XMC_VADC_CHANNEL_EVGEN_t criteria);
 
+
+/**
+ * @param group_ptr     Constant pointer to the VADC group
+ * @param ch_num   Channel whose channel event is being configured
+ *                <BR>Range: [0x0 to 0x7]
+ * @param boundary_sel Select the upper/lower boundary configuration .
+ * @param selection The boundary value selected for \b boundary_sel.
+ * @return
+ *    None
+ *
+ * \par<b>Description:</b><br>
+ * Configure the boundary selection for the given channel<BR>\n
+ * The channel event can be generated under the following conditions - Always, Never, Result Out of bounds and Result
+ * inside the boundaries. The boundary values to which results are compared can be selected from several sources. 
+ * A call to this API would configure the register bit field GxCHCTR.BNDSELL or GxCHCTR.BNDSELU  .
+ *
+ * \par<b>Related APIs:</b><br>
+ * None.
+ */
+void  XMC_VADC_GROUP_ChannelSetBoundarySelection(XMC_VADC_GROUP_t *const group_ptr,
+                                                 const uint32_t ch_num,
+                                                 XMC_VADC_BOUNDARY_SELECT_t boundary_sel,
+                                                 XMC_VADC_CHANNEL_BOUNDARY_t selection);
+
 /**
  * @param group_ptr   Constant pointer to the VADC group
  * @param res_reg_num  Result register which is intended to be initialized
@@ -3566,13 +4107,13 @@ __STATIC_INLINE uint32_t XMC_VADC_GROUP_GetDetailedResult(XMC_VADC_GROUP_t *cons
  * \par<b>Related APIs:</b><br>
  * XMC_VADC_GROUP_GetDetailedResult().
  */
-
 __STATIC_INLINE XMC_VADC_RESULT_SIZE_t XMC_VADC_GROUP_GetResult(XMC_VADC_GROUP_t *const group_ptr, 
                                                                 const uint32_t res_reg)
 {
   XMC_ASSERT("XMC_VADC_GROUP_GetResult:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
   XMC_ASSERT("XMC_VADC_GROUP_GetResult:Wrong Result Register", ((res_reg) < XMC_VADC_NUM_RESULT_REGISTERS))
-  return ((XMC_VADC_RESULT_SIZE_t)(group_ptr->RES[res_reg] & (uint32_t)VADC_G_RES_RESULT_Msk));
+
+  return ((XMC_VADC_RESULT_SIZE_t)group_ptr->RES[res_reg]);
 }
 
 /**

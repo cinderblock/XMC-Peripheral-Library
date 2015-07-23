@@ -1,33 +1,55 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- *
- */
 /**
  * @file xmc_can.c
- * @date 20 Feb, 2015
- * @version 1.0.2
+ * @date 2015-06-20
  *
- * @brief CAN driver file
+ * @cond
+ *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
  *
+ * Change History
+ * --------------
  *
- * History
+ * 2015-02-20:
+ *     - Initial draft <br>
  *
- * Version 1.0.0 Initial <br>
- * Version 1.0.2 'XMC_' appended for missed data structures and functions <br>
+ * 2015-05-20:
+ *     - New API added: XMC_CAN_MO_ReceiveData() <br>
+ *     - XMC_CAN_MO_Config() signature has changed <br>
+ *     - Minor fix in XMC_CAN_TXFIFO_ConfigMOSlaveObject(). <br>
+ *
+ * 2015-06-20:
+ *     - Removed version macros and declaration of GetDriverVersion API
+ *      
+ * @endcond
+ *
  */
- 
 
 /*******************************************************************************
  * HEADER FILES
@@ -35,8 +57,6 @@
 #include "xmc_can.h"
 
 #if defined(CAN)
-
-#include <math.h>
 
 __STATIC_INLINE uint32_t max(uint32_t a, uint32_t b)
 {
@@ -51,17 +71,6 @@ __STATIC_INLINE uint32_t min(uint32_t a, uint32_t b)
 /*******************************************************************************
  * API IMPLEMENTATION
  *******************************************************************************/
-/* Setting the event node pointer */
-XMC_DRIVER_VERSION_t XMC_CAN_GetDriverVersion(void)
-{
-  XMC_DRIVER_VERSION_t version;
-
-  version.major = (uint8_t)XMC_CAN_MAJOR_VERSION;
-  version.minor = (uint8_t)XMC_CAN_MINOR_VERSION;
-  version.patch = (uint8_t)XMC_CAN_PATCH_VERSION;
-
-  return version;
-}
 
 /* Baudrate Configuration */
 void XMC_CAN_NODE_NominalBitTimeConfigure (XMC_CAN_NODE_t *const can_node,
@@ -82,9 +91,8 @@ void XMC_CAN_NODE_NominalBitTimeConfigure (XMC_CAN_NODE_t *const can_node,
   XMC_ASSERT("XMC_CAN_NODE_NOMINAL_BIT_TIME_Configure: fCAN not supported",
              can_bit_time->can_frequency > 5000000U);
   XMC_ASSERT("XMC_CAN_NODE_NOMINAL_BIT_TIME_Configure: sample point not supported",
-             (can_bit_time->sample_point < 10000U) && ((can_bit_time->sample_point >0U)));
+             (can_bit_time->sample_point < 10000U) && ((can_bit_time->sample_point > 0U)));
 			 
-
   /*
    * Bit timing & sampling
    * Tq = (BRP+1)/Fcan if DIV8 = 0
@@ -103,24 +111,20 @@ void XMC_CAN_NODE_NominalBitTimeConfigure (XMC_CAN_NODE_t *const can_node,
   /* search for best baudrate */
   for (temp_brp = 1U; temp_brp <= 64U; temp_brp++)
   {
-//    float f_quanta = (can_bit_time->can_frequency) / temp_brp;
-//    int32_t temp_tbaud = (int32_t)(f_quanta / (can_bit_time->baudrate));
-//    float temp_baudrate = f_quanta / temp_tbaud;
-//    float error = fabs(temp_baudrate - (can_bit_time->baudrate));
 
-  uint32_t f_quanta = (uint32_t)((can_bit_time->can_frequency * 10U) / temp_brp);
-  uint32_t temp_tbaud = (uint32_t)(f_quanta / (can_bit_time->baudrate));
-  uint32_t temp_baudrate;
-  uint32_t error;
+    uint32_t f_quanta = (uint32_t)((can_bit_time->can_frequency * 10U) / temp_brp);
+    uint32_t temp_tbaud = (uint32_t)(f_quanta / (can_bit_time->baudrate));
+    uint32_t temp_baudrate;
+    uint32_t error;
 
   if((temp_tbaud % 10U) > 5U)
   {
-	  temp_tbaud = (uint32_t)(temp_tbaud / 10U);
-	  temp_tbaud++;
+	temp_tbaud = (uint32_t)(temp_tbaud / 10U);
+	temp_tbaud++;
   }
   else
   {
-	  temp_tbaud = (uint32_t)(temp_tbaud / 10U);
+	temp_tbaud = (uint32_t)(temp_tbaud / 10U);
   }
 
   if(temp_tbaud > 0U)
@@ -160,7 +164,6 @@ void XMC_CAN_NODE_NominalBitTimeConfigure (XMC_CAN_NODE_t *const can_node,
   for (temp_tseg1 = 64U; temp_tseg1 >= 3U; temp_tseg1--)
   {
     uint32_t tempSamplePoint = ((temp_tseg1 + 1U) * 10000U) / best_tbaud;
-    //int32_t error = (int32_t)(fabs(tempSamplePoint - (can_bit_time->sample_point)));
 	uint32_t error;
 	if (tempSamplePoint >= can_bit_time->sample_point)
 	{
@@ -193,10 +196,8 @@ void XMC_CAN_NODE_NominalBitTimeConfigure (XMC_CAN_NODE_t *const can_node,
   XMC_CAN_NODE_DisableConfigurationChange(can_node);
 }
 /* Function to allocate message object from free list to node list */
-void XMC_CAN_AllocateMOtoNodeList(XMC_CAN_t *const obj, const uint8_t node_num,const uint8_t mo_num)
+void XMC_CAN_AllocateMOtoNodeList(XMC_CAN_t *const obj, const uint8_t node_num, const uint8_t mo_num)
 {
-  XMC_ASSERT("XMC_CAN_AllocateMOtoNodeList: Node not supported", node_num < 2U);
-  XMC_ASSERT("XMC_CAN_AllocateMOtoNodeList: MO not supported", mo_num < 63U);
   /* Panel Command for  allocation of MO to node list */
   XMC_CAN_PanelControl(obj, XMC_CAN_PANCMD_STATIC_ALLOCATE,mo_num,(node_num + 1U));
   /* wait until panel as done the command */
@@ -245,7 +246,7 @@ void XMC_CAN_Init(XMC_CAN_t *const obj, uint32_t can_frequency)
 
   uint32_t peripheral_frequency = (XMC_SCU_CLOCK_GetPeripheralClockFrequency());
 
-  XMC_ASSERT("XMC_CAN_Init: frequency not supported", can_frequency < peripheral_frequency);
+  XMC_ASSERT("XMC_CAN_Init: frequency not supported", can_frequency <= peripheral_frequency);
 
   /*Enabling the module*/
   XMC_CAN_Enable(obj);
@@ -271,12 +272,80 @@ void XMC_CAN_Init(XMC_CAN_t *const obj, uint32_t can_frequency)
   obj->FDR |= ((uint32_t)can_divider_mode << CAN_FDR_DM_Pos) | ((uint32_t)step << CAN_FDR_STEP_Pos);
 }
 
+
+/* Sets the Identifier of the MO */
+void XMC_CAN_MO_SetIdentifier(XMC_CAN_MO_t *const can_mo, const uint32_t can_identifier)
+{
+  if ((can_mo->can_mo_ptr->MOAR & CAN_MO_MOAR_IDE_Msk) != (uint32_t)CAN_MO_MOAR_IDE_Msk)
+  {
+    can_mo->can_mo_ptr->MOAR = ((can_mo->can_mo_ptr->MOAR) & ~(uint32_t)(CAN_MO_MOAR_ID_Msk)) |
+	                           ((can_identifier << XMC_CAN_MO_MOAR_STDID_Pos) & (uint32_t)CAN_MO_MOAR_ID_Msk);
+  }
+  else
+  {
+    can_mo->can_mo_ptr->MOAR = ((can_mo->can_mo_ptr->MOAR) & ~(uint32_t)(CAN_MO_MOAR_ID_Msk)) |
+    		                   (can_identifier & (uint32_t)CAN_MO_MOAR_ID_Msk);
+  }
+  can_mo->can_identifier = can_identifier;
+}
+
+
+/* Gets the Identifier of the MO */
+uint32_t XMC_CAN_MO_GetIdentifier(const XMC_CAN_MO_t *const can_mo)
+{
+  uint32_t identifier;
+  if ((can_mo->can_mo_ptr->MOAR & CAN_MO_MOAR_IDE_Msk) != (uint32_t)CAN_MO_MOAR_IDE_Msk)
+  {
+	identifier = ((can_mo->can_mo_ptr->MOAR) & (uint32_t)(CAN_MO_MOAR_ID_Msk)) >> XMC_CAN_MO_MOAR_STDID_Pos;
+  }
+  else
+  {
+	identifier = ((can_mo->can_mo_ptr->MOAR) & (uint32_t)(CAN_MO_MOAR_ID_Msk));
+  }
+  return identifier;
+}
+
+/* Gets the acceptance mask for the CAN MO. */
+uint32_t XMC_CAN_MO_GetAcceptanceMask(const XMC_CAN_MO_t *const can_mo)
+{
+  uint32_t identifier_mask;
+  if (((can_mo->can_mo_ptr->MOAMR & CAN_MO_MOAMR_MIDE_Msk) != (uint32_t)CAN_MO_MOAMR_MIDE_Msk)
+            && ((can_mo->can_mo_ptr->MOAR & CAN_MO_MOAR_IDE_Msk) != (uint32_t)CAN_MO_MOAR_IDE_Msk))
+  {
+    identifier_mask = ((can_mo->can_mo_ptr->MOAMR) & (uint32_t)(CAN_MO_MOAMR_AM_Msk)) >> XMC_CAN_MO_MOAR_STDID_Pos;
+  }
+  else
+  {
+    identifier_mask = ((can_mo->can_mo_ptr->MOAMR) & (uint32_t)(CAN_MO_MOAMR_AM_Msk));
+  }
+  return identifier_mask;
+}
+
+/* Gets the acceptance mask of the MO */
+void XMC_CAN_MO_SetAcceptanceMask(XMC_CAN_MO_t *const can_mo,const uint32_t can_id_mask)
+{
+  if (((can_mo->can_mo_ptr->MOAMR & CAN_MO_MOAMR_MIDE_Msk) != (uint32_t)CAN_MO_MOAMR_MIDE_Msk)
+          && ((can_mo->can_mo_ptr->MOAR & CAN_MO_MOAR_IDE_Msk) != (uint32_t)CAN_MO_MOAR_IDE_Msk))
+  {
+	can_mo->can_mo_ptr->MOAMR = ((can_mo->can_mo_ptr->MOAMR) & ~(uint32_t)(CAN_MO_MOAMR_AM_Msk)) |
+							    (can_id_mask << XMC_CAN_MO_MOAR_STDID_Pos);
+  }
+  else
+  {
+	can_mo->can_mo_ptr->MOAMR = ((can_mo->can_mo_ptr->MOAMR) & ~(uint32_t)(CAN_MO_MOAMR_AM_Msk)) |
+							    (can_id_mask & (uint32_t)CAN_MO_MOAMR_AM_Msk);
+  }
+  can_mo->can_id_mask = can_id_mask;
+}
+
+
 /* Initialization of XMC_CAN MO Object */
-void XMC_CAN_MO_Config(const XMC_CAN_MO_t *const can_mo, const uint8_t pndreg, const uint8_t pndbit)
+void XMC_CAN_MO_Config(const XMC_CAN_MO_t *const can_mo)
 {
   uint32_t reg;
   /* Configure MPN */
-  can_mo->can_mo_ptr->MOIPR = (((uint32_t)pndreg << (CAN_MO_MOIPR_MPN_Pos + 5U)) | ((uint32_t)pndbit << CAN_MO_MOIPR_MPN_Pos));
+  uint32_t num = ((uint32_t)(can_mo->can_mo_ptr) - CAN_BASE - 0x1000U)/0x0020U;
+  can_mo->can_mo_ptr->MOIPR = (((uint32_t)(num/32) << (CAN_MO_MOIPR_MPN_Pos + 5U)) | ((uint32_t)(num%32) << CAN_MO_MOIPR_MPN_Pos));
 
   if (((can_mo->can_id_mode != (uint32_t) XMC_CAN_FRAME_TYPE_STANDARD_11BITS) &&
        (can_mo->can_id_mode != (uint32_t) XMC_CAN_FRAME_TYPE_EXTENDED_29BITS)) ||
@@ -312,7 +381,7 @@ void XMC_CAN_MO_Config(const XMC_CAN_MO_t *const can_mo, const uint8_t pndreg, c
     {
       /* Set MO as Transmit message object  */
       XMC_CAN_MO_UpdateData(can_mo);
-      can_mo->can_mo_ptr->MOCTR = (CAN_MO_MOCTR_SETDIR_Msk | CAN_MO_MOCTR_SETNEWDAT_Msk);
+      can_mo->can_mo_ptr->MOCTR = CAN_MO_MOCTR_SETDIR_Msk;
     }
     else
     {
@@ -375,6 +444,42 @@ XMC_CAN_STATUS_t XMC_CAN_MO_Transmit(const XMC_CAN_MO_t *const can_mo)
   }
   return error;
 }
+
+/* This function is will read the message object data bytes */
+XMC_CAN_STATUS_t XMC_CAN_MO_ReceiveData (XMC_CAN_MO_t *can_mo)
+{
+  XMC_CAN_STATUS_t error = XMC_CAN_STATUS_ERROR;
+  uint8_t rx_pnd = 0U;
+  uint8_t new_data = 0U;
+  uint32_t mo_type = (uint32_t)((can_mo->can_mo_ptr->MOSTAT) & CAN_MO_MOSTAT_DIR_Msk) >> CAN_MO_MOSTAT_DIR_Pos;
+  uint32_t mo_recepcion_ongoing = (uint32_t)((can_mo->can_mo_ptr->MOSTAT) & CAN_MO_MOSTAT_RXUPD_Msk) >> CAN_MO_MOSTAT_RXUPD_Pos;
+  /* check if message object is a receive message object */
+  if (mo_type != (uint32_t)XMC_CAN_MO_TYPE_RECMSGOBJ)
+  {
+    error = XMC_CAN_STATUS_MO_NOT_ACCEPTABLE;
+  }
+  /* check if reception is ongoing on message object */
+  else if (mo_recepcion_ongoing == 1U)
+  {
+    error = XMC_CAN_STATUS_BUSY;
+  }
+  else
+  {
+    /* read message parameters */
+    do
+    {
+      can_mo->can_data[0] = can_mo->can_mo_ptr->MODATAL;
+      can_mo->can_data[1] = can_mo->can_mo_ptr->MODATAH;
+
+      rx_pnd = (uint8_t)((uint32_t)((can_mo->can_mo_ptr->MOSTAT) & CAN_MO_MOSTAT_RXUPD_Msk) >> CAN_MO_MOSTAT_RXUPD_Pos);
+      new_data = (uint8_t)((uint32_t)((can_mo->can_mo_ptr->MOSTAT) & CAN_MO_MOSTAT_NEWDAT_Msk) >> CAN_MO_MOSTAT_NEWDAT_Pos);
+    } while ((rx_pnd != 0U) && (new_data != 0U));
+
+    error = XMC_CAN_STATUS_SUCCESS;
+  }
+  return error;
+}
+
 
 /* This function is will read the message object data bytes */
 XMC_CAN_STATUS_t XMC_CAN_MO_Receive (XMC_CAN_MO_t *can_mo)
@@ -521,7 +626,6 @@ void XMC_CAN_TXFIFO_ConfigMOSlaveObject(const XMC_CAN_MO_t *const can_mo,const X
                                (((uint32_t)can_fifo.fifo_base << CAN_MO_MOFGPR_CUR_Pos) & (uint32_t)CAN_MO_MOFGPR_CUR_Msk);
 
   can_mo->can_mo_ptr->MOCTR  = CAN_MO_MOCTR_SETTXEN0_Msk|
-                               CAN_MO_MOCTR_SETTXRQ_Msk |
                                CAN_MO_MOCTR_RESTXEN1_Msk;
 }
 

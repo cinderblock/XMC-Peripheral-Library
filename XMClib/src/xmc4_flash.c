@@ -1,38 +1,57 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- *
- */
-
 /**
- * @file xmc_flash.c
- * @date 16 Feb, 2015
- * @version 1.0.0
+ * @file xmc4_flash.c
+ * @date 2015-06-20 
  *
- * @brief FLASH driver for XMC microcontroller family.
+ * @cond
+ *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * History <br>
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
  *
- * Version 1.0.0 Initial version <br> 
+ * Change History
+ * --------------
+ *
+ * 2015-02-10:
+ *     - Initial <br>
+ *
+ * 2015-06-20: 
+ *     - Removed definition of GetDriverVersion API 
+ * @endcond 
+ *
  */
 
 #include "xmc_flash.h"
 
 #if UC_FAMILY == XMC4
 
-/*******************************************************************************
+/*********************************************************************************************************************
  * MACROS
- *******************************************************************************/
+ ********************************************************************************************************************/
 
 #define XMC_FLASH_PROTECTION_CONFIGURATION_WORDS (8UL) /* Used to upadte the assembly buffer during protection 
                                                           configuration */
@@ -40,9 +59,9 @@
 #define XMC_FLASH_PROTECTION_CONFIRMATION_WORDS  (4UL)
 #define XMC_FLASH_PROTECTION_CONFIRMATION_CODE   (0x8AFE15C3UL)
 
-/*******************************************************************************
+/*********************************************************************************************************************
  * LOCAL FUNCTIONS
- *******************************************************************************/
+ ********************************************************************************************************************/
 /*
  * Command to reset the status of the PFLASH
  */
@@ -241,25 +260,11 @@ void XMC_FLASH_lClearStatusCommand(void)
   *address = 0xf5U;
 }
 
-/*******************************************************************************
+/*********************************************************************************************************************
  * API IMPLEMENTATION
- *******************************************************************************/
+ ********************************************************************************************************************/
 
- /* Returns the Driver major minor patch versionsEach of the XMC low level drivers export a version number.
- * Applications may then audit such a version number to determine compatibility.
- */
-XMC_DRIVER_VERSION_t XMC_FLASH_GetDriverVersion(void)
-{
-  XMC_DRIVER_VERSION_t version;
-
-  version.major = (uint8_t)XMC_FLASH_MAJOR_VERSION;
-  version.minor = (uint8_t)XMC_FLASH_MINOR_VERSION;
-  version.patch = (uint8_t)XMC_FLASH_PATCH_VERSION;
-
-  return version;
-}
-
-/*
+ /*
  * This API shall clear Program, erase and error flags(PFOPER, SQER, PROER, PFDBER, ORIER, VER) of FSR register.
  */
 void XMC_FLASH_ClearStatus(void)
@@ -387,7 +392,7 @@ bool XMC_FLASH_VerifyReadProtection(uint32_t password_0, uint32_t password_1)
  */
 bool XMC_FLASH_VerifyWriteProtection(uint32_t user,
                                      uint32_t protection_mask, 
-									                   uint32_t password_0, 
+                                     uint32_t password_0, 
                                      uint32_t password_1)
 {
   uint32_t *flash_procon_ptr;

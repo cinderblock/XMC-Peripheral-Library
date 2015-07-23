@@ -16,17 +16,21 @@
 
 /**
  * @file
- * @date 20 Feb, 2015
- * @version 1.0.0
+ * @date 20 May, 2015
+ * @version 1.0.2
  *
  * @brief ACMP example for XMC1200
  *
- * In this example, ACMP1 slice is configured to receive VRef on its IN-P pad.
- * Bitfield CMP_OUT of register ANACMP1 changes its state based on the input applied on IN-N pad.
+ * In this example, ACMP1 slice is configured to receive VRef/2 on its IN-P pad.
+ * Connect VDD to pin P2.11.
+ * Bit field CMP_OUT of register ANACMP1 changes its state based on the input applied on IN-N pad.
  *
  * History <br>
  *
  * Version 1.0.0 Initial <br>
+ * Version 1.0.2 a. Updated for changes in the ACMP LLD (Version 2.0.0).
+ *               b. Explicit call to enable comparator is added<br>
+ *               c. Corrected g_acmp_config structure hysteresis element mistake<br>
  *
  */
 
@@ -40,11 +44,11 @@
  ********************************************************************************************************************/
 
 /* ACMP Slice configuration */
-XMC_ACMP_CONFIG_t g_acmp_config = 
+XMC_ACMP_CONFIG_t g_acmp_config =
 {
   .filter_disable = 0U,
   .output_invert = 0U,
-  .anacmp = XMC_ACMP_HYSTERESIS_20
+  .hysteresis = XMC_ACMP_HYSTERESIS_20
 };
 
 /*********************************************************************************************************************
@@ -56,7 +60,9 @@ int main(void)
   XMC_ACMP_Init(COMPARATOR, 1, &g_acmp_config);
 
   /* Connect REF to IN-P */
-  XMC_ACMP_SetInput(COMPARATOR, 1, XMC_ACMP_INP_SOURCE_REF_DIV);
+  XMC_ACMP_SetInput(COMPARATOR,1,XMC_ACMP_INP_SOURCE_REF_DIV);
+
+  XMC_ACMP_EnableComparator(COMPARATOR,1);
 
   /* Users may now apply inputs on P2.6 and evaluate the state of ANACMP1:CMP_OUT bit*/
   while(1U)

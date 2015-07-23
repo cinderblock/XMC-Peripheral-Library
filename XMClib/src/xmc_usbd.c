@@ -1,30 +1,64 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
+/**
+ * @file xmc_usbd.c
+ * @date 2015-06-20 
  *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
+ * @cond
+ **********************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without           
+ * modification,are permitted provided that the following conditions are met:   
+ *                                                                              
+ *   Redistributions of source code must retain the above copyright notice,      
+ *   this list of conditions and the following disclaimer.                        
+ * 
+ *   Redistributions in binary form must reproduce the above copyright notice,   
+ *   this list of conditions and the following disclaimer in the documentation    
+ *   and/or other materials provided with the distribution.                       
+ * 
+ *   Neither the name of the copyright holders nor the names of its contributors 
+ *   may be used to endorse or promote products derived from this software without
+ *   specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"  
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE    
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE   
+ * ARE  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE   
+ * LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR         
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF         
+ * SUBSTITUTE GOODS OR  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS    
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN      
+ * CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)       
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE   
+ * POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share        
+ * modifications, enhancements or bug fixes with Infineon Technologies AG       
+ * dave@infineon.com).                                                          
+ **********************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-02-16:
+ *     - Initial Version.<br>           
+ * 2015-03-18:
+ *     - Updated the XMC_USBD_EndpointStall() to fix issue on USB clear stall. <br>
+ *     - Updated the XMC_USBD_EndpointConfigure() to fix issue in EP0 configuration.<br>
+ *     - Updated the XMC_USBD_IRQHandler()(Removed the DAVE_CE check on SOF event).<br>
+ * 2015-06-20:
+ *     - Removed GetDriverVersion API.<br>
+ *     - Updated the XMC_USBD_IsEnumDone() API.<br>
+ *     - Updated the copy right in the file header.<br>
+ *     - Updated the XMC_USBD_Disable() API to gate the clock after programming the SCU registers.<br>
+ *
+ * @endcond 
  *
  */
 
-/**
- * @file xmc_usbd.c
- * @date 16 Feb, 2015
- * @version 1.0.0
- *
- * @brief USBD low level driver API definition for XMC4 family of microcontrollers. 
- * 
- * History <br>
- *
- * Version 1.0.0  Initial Version. <br>
- */
 
 /*******************************************************************************
  * HEADER FILES
@@ -648,17 +682,17 @@ static void XMC_USBD_lHandleOEPInt(const XMC_USBD_t *const obj)
         if(obj->usbd_transfer_mode == XMC_USBD_USE_DMA)
         {
           /* calculate size for setup packet */
-					ep->outBytesAvailable = (uint32_t)(((uint32_t)XMC_USBD_SETUP_COUNT -
-					(uint32_t)((deptsiz0_data_t*)&doeptsiz)->b.supcnt)*(uint32_t)XMC_USBD_SETUP_SIZE);
+		  ep->outBytesAvailable = (uint32_t)(((uint32_t)XMC_USBD_SETUP_COUNT -
+		  (uint32_t)((deptsiz0_data_t*)&doeptsiz)->b.supcnt)*(uint32_t)XMC_USBD_SETUP_SIZE);
         }
-				if(obj->usbd_transfer_mode == XMC_USBD_USE_FIFO)
-				{
-					ep->outBytesAvailable += ep->xferCount;
-				}
-				ep->outInUse = 0U;
-				xmc_device.EndpointEvent_cb(0U,XMC_USBD_EP_EVENT_SETUP); /* signal endpoint event */
-						/* clear the interrupt */
-				XMC_USBD_ClearEventOUTEP((uint32_t)XMC_USBD_EVENT_OUT_EP_SETUP,ep_num);
+		if(obj->usbd_transfer_mode == XMC_USBD_USE_FIFO)
+		{
+			ep->outBytesAvailable += ep->xferCount;
+		}
+		ep->outInUse = 0U;
+		xmc_device.EndpointEvent_cb(0U,XMC_USBD_EP_EVENT_SETUP); /* signal endpoint event */
+				/* clear the interrupt */
+		XMC_USBD_ClearEventOUTEP((uint32_t)XMC_USBD_EVENT_OUT_EP_SETUP,ep_num);
       }
       if (doepint.b.xfercompl)
       {
@@ -707,7 +741,7 @@ static void XMC_USBD_lHandleIEPInt(const XMC_USBD_t *const obj)
   uint16_t temp1;
   uint16_t mask;
   uint8_t ep_num;
-	uint32_t inepint;
+  uint32_t inepint;
 	
   daint.d32 = xmc_device.device_register->daint;
   
@@ -826,9 +860,7 @@ void XMC_USBD_IRQHandler(const XMC_USBD_t *const obj)
 	
   if (data.b.sofintr)
   {
-#ifdef DAVE_CE
     xmc_device.DeviceEvent_cb(XMC_USBD_EVENT_SOF);
-#endif
     XMC_USBD_ClearEvent(XMC_USBD_EVENT_SOF);
   }
   if(obj->usbd_transfer_mode == XMC_USBD_USE_FIFO)
@@ -854,8 +886,8 @@ void XMC_USBD_IRQHandler(const XMC_USBD_t *const obj)
   }
   if (data.b.wkupintr)
   {
-    xmc_device.DeviceEvent_cb(XMC_USBD_EVENT_RESUME);
-    XMC_USBD_ClearEvent(XMC_USBD_EVENT_RESUME);
+    xmc_device.DeviceEvent_cb(XMC_USBD_EVENT_REMOTE_WAKEUP);
+    XMC_USBD_ClearEvent(XMC_USBD_EVENT_REMOTE_WAKEUP);
   }
   if (data.b.sessreqintr)
   {
@@ -908,12 +940,13 @@ void XMC_USBD_Enable(void)
  **/
 void XMC_USBD_Disable(void) 
 {
-#if(UC_SERIES != XMC45)
-  XMC_SCU_CLOCK_GatePeripheralClock(XMC_SCU_PERIPHERAL_CLOCK_USB0);
-#endif
   /* Clear Reset and power up */
   XMC_SCU_RESET_AssertPeripheralReset(XMC_SCU_PERIPHERAL_RESET_USB0);
   XMC_SCU_POWER_DisableUsb();
+	
+	#if(UC_SERIES != XMC45)
+  XMC_SCU_CLOCK_GatePeripheralClock(XMC_SCU_PERIPHERAL_CLOCK_USB0);
+#endif
 }
 
 /**
@@ -1006,20 +1039,6 @@ void XMC_USBD_EnableEventINEP(uint32_t event)
 	diepint_data_t diepint;
 	diepint.d32 = event;
 	xmc_device.device_register->diepmsk |= diepint.d32;
-}
-
-/**
- * Gets the USBD driver version
- **/
-XMC_DRIVER_VERSION_t XMC_USBD_GetDriverVersion(void)
-{
-  XMC_DRIVER_VERSION_t version;
-
-  version.major = (uint8_t)XMC_USBD_MAJOR_VERSION;
-  version.minor = (uint8_t)XMC_USBD_MINOR_VERSION;
-  version.patch = (uint8_t)XMC_USBD_PATCH_VERSION;
-
-  return version;
 }
 
 /**
@@ -1353,12 +1372,14 @@ XMC_USBD_STATUS_t XMC_USBD_EndpointStall(const uint8_t ep_addr, const bool stall
 		{
 			data.d32 = xmc_device.endpoint_in_register[ep->address_u.address_st.number]->diepctl;
 			data.b.stall = 0U;
+			data.b.setd0pid = 1U; /* reset pid to 0 */
 			xmc_device.endpoint_in_register[ep->address_u.address_st.number]->diepctl = data.d32;
 		}
 		else
 		{
 			data.d32 = xmc_device.endpoint_out_register[ep->address_u.address_st.number]->doepctl;
 			data.b.stall = 0U;
+			data.b.setd0pid = 1U; /* reset pid to 0 */
 			xmc_device.endpoint_out_register[ep->address_u.address_st.number]->doepctl = data.d32;
 		}
 		ep->isStalled = 0U;
@@ -1420,7 +1441,7 @@ XMC_USBD_STATUS_t XMC_USBD_EndpointConfigure(const uint8_t ep_addr,
   ep->inBufferSize = XMC_USBD_EP_IN_BUFFERSIZE[ep->address_u.address_st.number];
   ep->outBufferSize = XMC_USBD_EP_OUT_BUFFERSIZE[ep->address_u.address_st.number];
   /* is in */
-  if (ep->address_u.address_st.direction == 1U)
+  if ((ep->address_u.address_st.direction == 1U) || (ep_type == XMC_USBD_ENDPOINT_TYPE_CONTROL))
   {
     depctl_data_t data;
     data.d32 = xmc_device.endpoint_in_register[ep->address_u.address_st.number]->diepctl;
@@ -1463,7 +1484,7 @@ XMC_USBD_STATUS_t XMC_USBD_EndpointConfigure(const uint8_t ep_addr,
 		xmc_device.endpoint_in_register[ep->address_u.address_st.number]->diepctl = data.d32; /* configure endpoint */
 		daintmsk.ep.in |= (uint16_t)((uint16_t)1U << (uint8_t)ep->address_u.address_st.number); /* enable interrupts for endpoint */
   }
-  if (ep->address_u.address_st.direction == 0U)
+  if ((ep->address_u.address_st.direction == 0U) || (ep_type == XMC_USBD_ENDPOINT_TYPE_CONTROL))
   {
     /* is out */
 		depctl_data_t data;
@@ -1574,23 +1595,13 @@ uint16_t XMC_USBD_GetFrameNumber(void)
 }
 
 /**
- * Gets the enumeration completion status.
+ * Gets the USB speed enumeration completion status.
+ * This should not be used for the actual USB enumeration completion status. For the actual USB enumeration status,
+ * the application layer should check for the completion of USB standard request Set configuration.
  **/
 uint32_t XMC_USBD_IsEnumDone(void)
 {
- uint32_t result_IsEnumDone;
- gintmsk_data_t data;
- data.d32 = xmc_device.global_register->gintmsk;
- 
- if (data.b.enumdone)
- {
-    result_IsEnumDone = 1U;
- }
- else
- {
-    result_IsEnumDone = 0U;
- }
- return result_IsEnumDone;
+  return (uint32_t)((uint8_t)xmc_device.IsConnected && (uint8_t)xmc_device.IsPowered);
 }
 
 /***

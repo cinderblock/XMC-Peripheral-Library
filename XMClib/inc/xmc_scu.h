@@ -1,28 +1,58 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * 
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,OR CONSEQUENTIAL DAMAGES, FOR ANY REASON
- * WHATSOEVER.
- */
-
 /**
  * @file xmc_scu.h
- * @date 20 Feb, 2015
- * @version 1.0.2
+ * @date 2015-06-20 
  *
+ * @cond
+ *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
+ *
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
  * 
- * History <br>
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
  *
- * Version 1.0.0 Initial <br>
- * Version 1.0.2 Documentation improved <br>
+ * Change History
+ * --------------
+ *
+ * 2015-02-20:
+ *     - Initial <br>
+ *
+ * 2015-05-20:
+ *     - Documentation improved <br>
+ *     - XMC_ASSERT() hanging issues have fixed for XMC4 devices. <br>
+ *
+ * 2015-06-20:
+ *     - Removed version macros and declaration of GetDriverVersion API
+ *     - Removed STATIC_INLINE property for the below APIs and declared as void
+ *       XMC_SCU_INTERRUPT_EnableEvent, XMC_SCU_INTERRUPT_DisableEvent,
+ *       XMC_SCU_INTERRUPT_TriggerEvent, XMC_SCU_INTERUPT_GetEventStatus,
+ *       XMC_SCU_INTERUPT_ClearEventStatus
+ *      
+ * @endcond 
+ *
  */
-
 #ifndef XMC_SCU_H
 #define XMC_SCU_H
  
@@ -122,14 +152,8 @@
  */
  
 /*********************************************************************************************************************
- * MACROS
+	* MACROS
  ********************************************************************************************************************/
-#define XMC_SCU_MAJOR_VERSION (1U) /**< Major number of the SCU driver version, which is
-                                        \<major\>.\<minor\>.\<patch\> e.g. 1.5.3.*/
-#define XMC_SCU_MINOR_VERSION (0U) /**< Minor number of the SCU driver version, which is
-                                        \<major\>.\<minor\>.\<patch\> e.g. 1.5.3.*/
-#define XMC_SCU_PATCH_VERSION (2U) /**< Patch number of the SCU driver version, which is
-                                        \<major\>.\<minor\>.\<patch\> e.g. 1.5.3.*/
 
 /*********************************************************************************************************************
  * ENUMS
@@ -140,10 +164,10 @@
 typedef enum XMC_SCU_STATUS 
 {
   XMC_SCU_STATUS_OK   = 0UL, /**< SCU related operation successfully completed.*/
+  XMC_SCU_STATUS_ERROR,      /**< SCU related operation failed. When API cannot fulfill request, this value is returned. */
   XMC_SCU_STATUS_BUSY    ,   /**< Cannot execute the SCU related operation request because
                                   another operation is in progress. \a XMC_SCU_STATUS_BUSY is returned when API is busy
                                   processing another request. */
-  XMC_SCU_STATUS_ERROR       /**< SCU related operation failed. When API cannot fulfill request, this value is returned. */
 } XMC_SCU_STATUS_t;
 
 
@@ -177,18 +201,6 @@ extern "C" {
 #endif
 
 
-/**
- * @return Data structure (::XMC_DRIVER_VERSION_t) storing driver version
- *
- * \par<b>Description: </b><br>
- * Returns the version of the low level driver <br>
- *
- * \par
- * The function can be used to check application software compatibility with a specific
- * version of the low level driver.
- */
-XMC_DRIVER_VERSION_t XMC_SCU_GetDriverVersion(void);
- 
 /**
  *
  * @param trigger    CCU slices to be triggered synchronously via software. The value is a bitmask of CCU slice bits
@@ -286,10 +298,7 @@ void XMC_SCU_CLOCK_Init(const XMC_SCU_CLOCK_CONFIG_t *const config);
  * \par<b>Related APIs:</b><BR>
  * NVIC_EnableIRQ(), XMC_SCU_INTERRUPT_DisableEvent()\n\n\n
  */
-__STATIC_INLINE void XMC_SCU_INTERRUPT_EnableEvent(const uint32_t event)
-{
-  SCU_INTERRUPT->SRMSK |= (uint32_t)event;
-}
+void XMC_SCU_INTERRUPT_EnableEvent(const XMC_SCU_INTERRUPT_EVENT_t event);
 
 
 /**
@@ -305,10 +314,7 @@ __STATIC_INLINE void XMC_SCU_INTERRUPT_EnableEvent(const uint32_t event)
  * \par<b>Related APIs:</b><BR>
  * NVIC_DisableIRQ(), XMC_SCU_INTERRUPT_EnableEvent()\n\n\n
  */
-__STATIC_INLINE void XMC_SCU_INTERRUPT_DisableEvent(const uint32_t event)
-{
-  SCU_INTERRUPT->SRMSK &= (uint32_t)~event;
-}
+void XMC_SCU_INTERRUPT_DisableEvent(const XMC_SCU_INTERRUPT_EVENT_t event);
 
 /**
  *
@@ -324,10 +330,7 @@ __STATIC_INLINE void XMC_SCU_INTERRUPT_DisableEvent(const uint32_t event)
  * \par<b>Related APIs:</b><BR>
  * NVIC_EnableIRQ(), XMC_SCU_INTERUPT_GetEventStatus(), XMC_SCU_INTERRUPT_ClearEventStatus() \n\n\n
  */
-__STATIC_INLINE void XMC_SCU_INTERRUPT_TriggerEvent(const uint32_t event)
-{
-  SCU_INTERRUPT->SRSET |= (uint32_t)event;
-}
+void XMC_SCU_INTERRUPT_TriggerEvent(const XMC_SCU_INTERRUPT_EVENT_t  event);
 
 /**
  * @return uint32_t  Status of the SCU events.
@@ -342,10 +345,7 @@ __STATIC_INLINE void XMC_SCU_INTERRUPT_TriggerEvent(const uint32_t event)
  * \par<b>Related APIs:</b><BR>
  * XMC_SCU_INTERRUPT_ClearEventStatus(), XMC_SCU_INTERRUPT_TriggerEvent(), XMC_SCU_INTERRUPT_SetEventHandler() \n\n\n
  */
-__STATIC_INLINE uint32_t XMC_SCU_INTERUPT_GetEventStatus(void)
-{
-  return SCU_INTERRUPT->SRRAW;
-}
+XMC_SCU_INTERRUPT_EVENT_t XMC_SCU_INTERUPT_GetEventStatus(void);
 
 /**
  *
@@ -363,10 +363,7 @@ __STATIC_INLINE uint32_t XMC_SCU_INTERUPT_GetEventStatus(void)
  * \par<b>Related APIs:</b><BR>
  * XMC_SCU_INTERUPT_GetEventStatus(), XMC_SCU_INTERRUPT_TriggerEvent() \n\n\n
  */
-__STATIC_INLINE void XMC_SCU_INTERRUPT_ClearEventStatus(const uint32_t event)
-{
-  SCU_INTERRUPT->SRCLR |= (uint32_t)event;
-}
+void XMC_SCU_INTERRUPT_ClearEventStatus(const XMC_SCU_INTERRUPT_EVENT_t event);
 
 /**
  *

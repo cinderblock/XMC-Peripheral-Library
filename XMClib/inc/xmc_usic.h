@@ -1,29 +1,53 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- *
- */
-
 /**
  * @file xmc_usic.h
- * @date 20 Feb, 2015
- * @version 1.0.2
+ * @date 2015-06-20
  *
+ * @cond
+  *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * History <br>
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
  *
- * Version 1.0.0 Initial <br>
- * Version 1.0.2 Documentation improved <br>
+ * Change History
+ * --------------
+ *
+ * 2015-02-20:
+ *     - Initial draft<br>
+ *     - Documentation improved <br>
+ *
+ * 2015-05-08:
+ *     - Added XMC_USIC_CH_SetInputTriggerCombinationMode() and XMC_USIC_CH_SetTransmitBufferStatus()  <br>
+ *      
+ * 2015-06-20:
+ *     - Removed version macros and declaration of GetDriverVersion API
+ *
+ * @endcond
+ *
  */
 
 #ifndef XMC_USIC_H
@@ -48,7 +72,8 @@
  * independent communication channels named USICx_CH0 and USICx_CH1, with x
  * being the number of the USIC module. The user can program, during run-time, which protocol will be handled
  * by each communication channel and which pins are used.
- * The driver provides APIs, configuration structures and enumerations to configure common features of multiple serial communication protocols.
+ * The driver provides APIs, configuration structures and enumerations to configure common features of multiple serial
+ * communication protocols.
  * 
  * USIC driver features:
  * -# Allows configuration of FIFO for transmit and receive functions.
@@ -66,20 +91,20 @@
  * MACROS
  *******************************************************************************/
 
-#define XMC_USIC0 (XMC_USIC_t *)USIC0_BASE				/**< USIC0 module base address */
-#define XMC_USIC0_CH0 (XMC_USIC_CH_t *)USIC0_CH0_BASE	/**< USIC0 channel 0 base address */
-#define XMC_USIC0_CH1 (XMC_USIC_CH_t *)USIC0_CH1_BASE	/**< USIC0 channel 1 base address */
+#define XMC_USIC0 ((XMC_USIC_t *)USIC0_BASE)			/**< USIC0 module base address */
+#define XMC_USIC0_CH0 ((XMC_USIC_CH_t *)USIC0_CH0_BASE)	/**< USIC0 channel 0 base address */
+#define XMC_USIC0_CH1 ((XMC_USIC_CH_t *)USIC0_CH1_BASE)	/**< USIC0 channel 1 base address */
 
 #if defined(USIC1)
-#define XMC_USIC1 (XMC_USIC_t *)USIC1_BASE				/**< USIC1 module base address */
-#define XMC_USIC1_CH0 (XMC_USIC_CH_t *)USIC1_CH0_BASE	/**< USIC1 channel 0 base address */
-#define XMC_USIC1_CH1 (XMC_USIC_CH_t *)USIC1_CH1_BASE	/**< USIC1 channel 1 base address */
+#define XMC_USIC1 ((XMC_USIC_t *)USIC1_BASE)			/**< USIC1 module base address */
+#define XMC_USIC1_CH0 ((XMC_USIC_CH_t *)USIC1_CH0_BASE)	/**< USIC1 channel 0 base address */
+#define XMC_USIC1_CH1 ((XMC_USIC_CH_t *)USIC1_CH1_BASE)	/**< USIC1 channel 1 base address */
 #endif
 
 #if defined(USIC2)
-#define XMC_USIC2 (XMC_USIC_t *)USIC2_BASE				/**< USIC2 module base address */
-#define XMC_USIC2_CH0 (XMC_USIC_CH_t *)USIC2_CH0_BASE	/**< USIC2 channel 0 base address */
-#define XMC_USIC2_CH1 (XMC_USIC_CH_t *)USIC2_CH1_BASE	/**< USIC2 channel 1 base address */
+#define XMC_USIC2 ((XMC_USIC_t *)USIC2_BASE)			/**< USIC2 module base address */
+#define XMC_USIC2_CH0 ((XMC_USIC_CH_t *)USIC2_CH0_BASE)	/**< USIC2 channel 0 base address */
+#define XMC_USIC2_CH1 ((XMC_USIC_CH_t *)USIC2_CH1_BASE)	/**< USIC2 channel 1 base address */
 #endif
 
 #if defined(USIC2)
@@ -111,10 +136,6 @@
                                      (channel == XMC_USIC0_CH1) )
 #endif
 
-#define XMC_USIC_MAJOR_VERSION (1U) /**< Version number : Major version */
-#define XMC_USIC_MINOR_VERSION (0U) /**< Version number : Minor version */
-#define XMC_USIC_PATCH_VERSION (2U) /**< Version number : Patch version */
-
 #define USIC_CH_DXCR_DSEL_Msk  USIC_CH_DX0CR_DSEL_Msk   /**< Common mask for DSEL bitfield mask in DXnCR register */
 #define USIC_CH_DXCR_DSEL_Pos  USIC_CH_DX0CR_DSEL_Pos   /**< Common mask for DSEL bitfield position in DXnCR register */
 #define USIC_CH_DXCR_SFSEL_Pos USIC_CH_DX0CR_SFSEL_Pos  /**< Common mask for SFSEL bitfield position in DXnCR register */
@@ -122,7 +143,8 @@
 #define USIC_CH_DXCR_DPOL_Msk  USIC_CH_DX0CR_DPOL_Msk   /**< Common mask for DPOL bitfield mask in DXnCR register */
 #define USIC_CH_DXCR_DFEN_Msk  USIC_CH_DX0CR_DFEN_Msk   /**< Common mask for DFEN bitfield mask in DXnCR register */
 #define USIC_CH_DXCR_DSEN_Msk  USIC_CH_DX0CR_DSEN_Msk   /**< Common mask for DSEN bitfield mask in DXnCR register */
-
+#define USIC_CH_DXCR_CM_Pos    USIC_CH_DX0CR_CM_Pos     /**< Common mask for CM bitfield position in DXnCR register */
+#define USIC_CH_DXCR_CM_Msk    USIC_CH_DX0CR_CM_Msk     /**< Common mask for CM bitfield mask in DXnCR register */
 
 #if UC_FAMILY == XMC1
  #include "xmc1_usic_map.h"
@@ -192,6 +214,17 @@ typedef enum XMC_USIC_CH_INPUT_SAMPLING_FREQ
 } XMC_USIC_CH_INPUT_SAMPLING_FREQ_t;
 
 /**
+ * USIC channel input combination mode
+ */
+typedef enum XMC_USIC_CH_INPUT_COMBINATION_MODE
+{
+  XMC_USIC_CH_INPUT_COMBINATION_MODE_TRIGGER_DISABLED = 0x0UL, /**< The trigger activation is disabled.*/
+  XMC_USIC_CH_INPUT_COMBINATION_MODE_RISING_EDGE      = 0x1UL, /**< A rising edge activates DXnT*/
+  XMC_USIC_CH_INPUT_COMBINATION_MODE_FALLING_EDGE     = 0x2UL, /**< A falling edge activates DXnT*/
+  XMC_USIC_CH_INPUT_COMBINATION_MODE_BOTH_EDGES       = 0x3UL, /**< Both edges activate DXnT*/
+} XMC_USIC_CH_INPUT_COMBINATION_MODE_t;
+
+/**
  * USIC channel data transmission start modes.
  * Data shifted out of the transmit pin depends on the value configured for the
  * TDEN bitfield of the TCSR register. Following enum values are used for configuring
@@ -256,8 +289,19 @@ typedef enum XMC_USIC_CH_DATA_OUTPUT_MODE
 typedef enum XMC_USIC_CH_TBUF_STATUS
 {
   XMC_USIC_CH_TBUF_STATUS_IDLE = 0x0UL,                 /**< Transfer buffer is currently idle*/
-  XMC_USIC_CH_TBUF_STATUS_BUSY = USIC_CH_TCSR_TDV_Msk  /**< Transfer buffer is currently busy*/
+  XMC_USIC_CH_TBUF_STATUS_BUSY = USIC_CH_TCSR_TDV_Msk   /**< Transfer buffer is currently busy*/
 } XMC_USIC_CH_TBUF_STATUS_t;
+
+
+
+/**
+* USIC channel data transmit buffer status modification
+*/
+typedef enum XMC_USIC_CH_TBUF_STATUS_SET
+{
+  XMC_USIC_CH_TBUF_STATUS_SET_BUSY   = 0x1UL, /**< Set Transfer buffer status to busy*/
+  XMC_USIC_CH_TBUF_STATUS_SET_IDLE   = 0x2UL  /**< Set Transfer buffer status to idle*/
+} XMC_USIC_CH_TBUF_STATUS_SET_t;
 
 /**
 * USIC channel receive buffer status
@@ -487,18 +531,6 @@ typedef struct XMC_USIC_CH
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @return Data structure (::XMC_DRIVER_VERSION_t) storing driver version
- *
- * \par<b>Description: </b><br>
- * Return the version of the low level driver <br>
- *
- * \par
- * The function can be used to check application software compatibility with a specific
- * version of the low level driver.
- */
-XMC_DRIVER_VERSION_t XMC_USIC_GetDriverVersion(void);
 
 /* Common APIs */
 
@@ -735,9 +767,30 @@ __STATIC_INLINE void XMC_USIC_CH_SetInputSamplingFreq(XMC_USIC_CH_t *const chann
 		                                              const XMC_USIC_CH_INPUT_SAMPLING_FREQ_t sampling_freq)
 {
   channel->DXCR[input] = (uint32_t)(channel->DXCR[input] & (~USIC_CH_DXCR_SFSEL_Msk)) |
-                      ((uint32_t)sampling_freq);
+                         ((uint32_t)sampling_freq);
 }
 
+/**
+ * @param  channel Pointer to USIC channel handler of type @ref XMC_USIC_CH_t \n
+ * 				   \b Range: @ref XMC_USIC0_CH0, @ref XMC_USIC0_CH1 to @ref XMC_USIC2_CH1 based on device support..
+ * @param  input USIC channel input stage of type @ref XMC_USIC_CH_INPUT_t. \n
+ * 				 \b Range: @ref XMC_USIC_CH_INPUT_DX0 to @ref XMC_USIC_CH_INPUT_DX5
+ * @param  combination_mode Combination mode value of type \a XMC_USIC_CH_INPUT_COMBINATION_MODE_t.
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Selects which edge of the synchronized signal DXnS activates the trigger output DXnT of the input stage. \n\n
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_USIC_CH_SetInputSource(), XMC_USIC_CH_EnableInputSync(), XMC_USIC_CH_EnableInputDigitalFilter() \n\n\n
+ */
+__STATIC_INLINE void XMC_USIC_CH_SetInputTriggerCombinationMode(XMC_USIC_CH_t *const channel,
+		                                                        const XMC_USIC_CH_INPUT_t input,
+		                                                        const XMC_USIC_CH_INPUT_COMBINATION_MODE_t combination_mode)
+{
+  channel->DXCR[input] = (uint32_t)(channel->DXCR[input] & (~USIC_CH_DXCR_CM_Msk)) |
+                         ((uint32_t)combination_mode << USIC_CH_DXCR_CM_Pos);
+}
 /**
  * @param  channel Pointer to USIC channel handler of type @ref XMC_USIC_CH_t \n
  * 				   \b Range: @ref XMC_USIC0_CH0, @ref XMC_USIC0_CH1 to @ref XMC_USIC2_CH1 based on device support.
@@ -998,6 +1051,26 @@ __STATIC_INLINE void XMC_USIC_CH_DisableFrameLengthControl(XMC_USIC_CH_t *const 
 __STATIC_INLINE void XMC_USIC_CH_TriggerServiceRequest(XMC_USIC_CH_t *const channel, const uint32_t service_request_line)
 {
   channel->FMR |= (uint32_t)(USIC_CH_FMR_SIO0_Msk << service_request_line);
+}
+
+
+/**
+ * @param  channel Pointer to USIC channel handler of type @ref XMC_USIC_CH_t \n
+ * 				   \b Range: @ref XMC_USIC0_CH0, @ref XMC_USIC0_CH1 to @ref XMC_USIC2_CH1 based on device support.
+ * @param  transmit_buffer_status clearing or setting the TDV flag. \n
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Modify TCSR.TDV and TCSR.TE to control the start of a data word transmission by software.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_USIC_CH_GetTransmitBufferStatus() \n\n\n
+ */
+__STATIC_INLINE void XMC_USIC_CH_SetTransmitBufferStatus(XMC_USIC_CH_t *const channel,
+		                                                 const XMC_USIC_CH_TBUF_STATUS_SET_t transmit_buffer_status)
+{
+  channel->FMR |= (uint32_t)transmit_buffer_status;
 }
 
 /**

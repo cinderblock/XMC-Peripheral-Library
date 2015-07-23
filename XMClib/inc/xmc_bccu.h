@@ -1,33 +1,59 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- *
- */
-
 /**
  * @file xmc_bccu.h
- * @date 20 Feb, 2015
- * @version 1.0.2
+ * @date 2015-06-20
+ *
+ * @cond
+  *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
+ *
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-02-19:
+ *     - Initial draft<br>
+ *     - Documentation improved <br>
+ *
+ * 2015-05-08:
+ *     - Minor bug fix in XMC_BCCU_ClearEventFlag().
+ *     - New APIs are added: XMC_BCCU_DIM_ReadDimDivider(), XMC_BCCU_DIM_GetDimCurve(), XMC_BCCU_IsDitherEnable()<br>
+ *
+ * 2015-06-20:
+ *     - Removed version macros and declaration of GetDriverVersion API
  *
  * <b>Detailed description of file:</b><br>
  * APIs for the functional blocks of BCCU have been defined:<br>
  * -- GLOBAL configuration <br>
  * -- Clock configuration, Function/Event configuration, Interrupt configuration <br>
  *
- * History
+ * @endcond
  *
- * Version 1.0.0 Initial draft<br>
- * Version 1.0.2 Documentation improved <br>
  */
 
 #ifndef XMC_BCCU_H
@@ -115,19 +141,13 @@
  * DEVICE SPECIFIC MACROS
  ********************************************************************************************************************/
 #if defined (BCCU0)
+
 /*********************************************************************************************************************
  * MACROS
  ********************************************************************************************************************/
-#define XMC_BCCU_MAJOR_VERSION (1U) /**< Major number of the driver version, which is,
-                                         \<major>.\<minor\>.\<patch\> e.g. 1.5.3.*/
-#define XMC_BCCU_MINOR_VERSION (0U) /**< Minor number of the driver version, which is,
-                                         \<major>.\<minor\>.\<patch\> e.g. 1.5.3.*/
-#define XMC_BCCU_PATCH_VERSION (2U) /**< Patch number of the driver version, which is,
-                                         \<major>.\<minor\>.\<patch\> e.g. 1.5.3.*/
-
 #define XMC_BCCU_NO_OF_CHANNELS    (9U) /**< Total number of channels available @ BCCU module */
-#define XMC_BCCU_CHANNEL_MASK      ((0x1 << XMC_BCCU_NO_OF_CHANNELS)-1) /* Maximum possible value for multiple channels; used 
-only for \n xmc_assert() */
+#define XMC_BCCU_CHANNEL_MASK      ((0x1 << XMC_BCCU_NO_OF_CHANNELS)-1) /* Maximum possible value for multiple channels;
+used only for \n xmc_assert() */
 #define XMC_BCCU_NO_OF_DIM_ENGINE  (3U) /**< Total number of dimming engines available @ BCCU module */
 #define XMC_BCCU_DIM_ENGINE_MASK   (((0x1 << XMC_BCCU_NO_OF_DIM_ENGINE)-1)) /* Maximum possible value for dimming engine; 
 used \n only for xmc_assert() */
@@ -192,8 +212,8 @@ typedef enum {
  * The members can be combined using 'OR' operator for multiple selection.<br>
  */
 typedef enum {
-	XMC_BCCU_EVENT_TIMER0 = 0x1U, /**< Trigger 0 event */
-	XMC_BCCU_EVENT_TIMER1 = 0x2U, /**< Trigger 1 event */
+	XMC_BCCU_EVENT_TRIGGER0 = 0x1U, /**< Trigger 0 event */
+	XMC_BCCU_EVENT_TRIGGER1 = 0x2U, /**< Trigger 1 event */
 	XMC_BCCU_EVENT_FIFOFULL = 0x4U, /**< FIFO Full event */
 	XMC_BCCU_EVENT_FIFOEMPTY = 0x8U, /**< FIFO Empty event */
 	XMC_BCCU_EVENT_TRAP = 0x10U, /**< Trap event */
@@ -204,8 +224,8 @@ typedef enum {
  * The members can be combined using 'OR' operator for multiple selection.<br>
  */
 typedef enum {
-	XMC_BCCU_EVENT_STATUS_TIMER0 = 0x1U, /**< Trigger 0 Event flag status */
-	XMC_BCCU_EVENT_STATUS_TIMER1 = 0x2U, /**< Trigger 1 Event flag status */
+	XMC_BCCU_EVENT_STATUS_TRIGGER0 = 0x1U, /**< Trigger 0 Event flag status */
+	XMC_BCCU_EVENT_STATUS_TRIGGER1 = 0x2U, /**< Trigger 1 Event flag status */
 	XMC_BCCU_EVENT_STATUS_FIFOFULL = 0x4U, /**< FIFO Full Event flag status */
 	XMC_BCCU_EVENT_STATUS_FIFOEMPTY = 0x8U, /**< FIFO Empty Event flag status */
 	XMC_BCCU_EVENT_STATUS_TRAP = 0x10U, /**< Trap Event flag status (Without Trap Set) */
@@ -501,18 +521,6 @@ typedef struct XMC_BCCU_DIM_CONFIG
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @return Data structure (::XMC_DRIVER_VERSION_t) storing driver version
- *
- * \par<b>Description: </b><br>
- * Return the version of the low level driver <br>
- *
- * \par
- * The function can be used to check application software compatibility with a specific
- * version of the low level driver.
- */
-XMC_DRIVER_VERSION_t XMC_BCCU_GetDriverVersion(void);
 
 /**
  *
@@ -1092,8 +1100,8 @@ void  XMC_BCCU_SetGlobalDimmingLevel (XMC_BCCU_t *const bccu, uint32_t level);
  *
  * @param bccu Base address of the bccu module. \b Range: BCCU0
  * @param event Event mask to enable multiple events at a time using ORed values of @ref XMC_BCCU_EVENT_t.\n
- *        <b>For example:</b> If XMC_BCCU_EVENT_TIMER0, XMC_BCCU_EVENT_TIMER1, XMC_BCCU_EVENT_FIFOEMPTY wants to enable 
- *        at a same time,\n then event mask is = <b>(XMC_BCCU_EVENT_TIMER0 | XMC_BCCU_EVENT_TIMER1 | 
+ *        <b>For example:</b> If XMC_BCCU_EVENT_TRIGGER0, XMC_BCCU_EVENT_TRIGGER1, XMC_BCCU_EVENT_FIFOEMPTY wants to enable 
+ *        at a same time,\n then event mask is = <b>(XMC_BCCU_EVENT_TRIGGER0 | XMC_BCCU_EVENT_TRIGGER1 | 
  *        XMC_BCCU_EVENT_FIFOEMPTY) </b> \n
  *
  * @return None
@@ -1113,8 +1121,8 @@ __STATIC_INLINE void XMC_BCCU_EnableInterrupt (XMC_BCCU_t *const bccu, uint32_t 
  *
  * @param bccu Base address of the bccu module. \b Range: BCCU0
  * @param event Event mask to disable multiple events at a time using ORed values of @ref XMC_BCCU_EVENT_t.\n
- *        <b>For example:</b> If XMC_BCCU_EVENT_TIMER0, XMC_BCCU_EVENT_TIMER1, XMC_BCCU_EVENT_FIFOEMPTY wants to disable\n
- *         at a same time, then event mask is = <b>(XMC_BCCU_EVENT_TIMER0 | XMC_BCCU_EVENT_TIMER1 | 
+ *        <b>For example:</b> If XMC_BCCU_EVENT_TRIGGER0, XMC_BCCU_EVENT_TRIGGER1, XMC_BCCU_EVENT_FIFOEMPTY wants to disable\n
+ *         at a same time, then event mask is = <b>(XMC_BCCU_EVENT_TRIGGER0 | XMC_BCCU_EVENT_TRIGGER1 | 
  *         XMC_BCCU_EVENT_FIFOEMPTY)</b> \n
  *
  * @return None
@@ -1150,10 +1158,10 @@ __STATIC_INLINE uint32_t XMC_BCCU_ReadEventFlag (XMC_BCCU_t *const bccu)
 /**
  *
  * @param bccu Base address of the bccu module. \b Range: BCCU0
- * @param flag_type Event flag mask to configure multiple events flags at a time using ORed values of @ref 
+ * @param flag_type Event flag mask to configure multiple events at a time using ORed values of @ref 
  * XMC_BCCU_EVENT_STATUS_t.\n
- *        <b>For example:</b> If XMC_BCCU_EVENT_STATUS_TIMER0, XMC_BCCU_EVENT_STATUS_TIMER1, XMC_BCCU_EVENT_STATUS_FIFOEMPTY 
- * wants to configure at a same time, then event mask is = <b>(XMC_BCCU_EVENT_STATUS_TIMER0 | XMC_BCCU_EVENT_STATUS_TIMER1 | 
+ *        <b>For example:</b> If XMC_BCCU_EVENT_STATUS_TRIGGER0, XMC_BCCU_EVENT_STATUS_TRIGGER1, XMC_BCCU_EVENT_STATUS_FIFOEMPTY 
+ * wants to configure at a same time, then event mask is = <b>(XMC_BCCU_EVENT_STATUS_TRIGGER0 | XMC_BCCU_EVENT_STATUS_TRIGGER1 | 
  * XMC_BCCU_EVENT_STATUS_FIFOEMPTY)</b> \n
  *
  * @return None
@@ -1166,16 +1174,16 @@ __STATIC_INLINE uint32_t XMC_BCCU_ReadEventFlag (XMC_BCCU_t *const bccu)
  */
 __STATIC_INLINE void XMC_BCCU_SetEventFlag (XMC_BCCU_t *const bccu, uint32_t flag_type)
 {
-  bccu->EVFSR |= flag_type;
+  bccu->EVFSR = flag_type;
 }
 
 /**
  *
  * @param bccu Base address of the bccu module. \b Range: BCCU0
- * @param flag_type event Flag mask to clear multiple events flags at a time using ORed values of @ref 
+ * @param flag_type event flag mask to clear multiple events at a time using ORed values of @ref 
  * XMC_BCCU_EVENT_STATUS_t.\n
- *        <b>For example:</b> If XMC_BCCU_EVENT_STATUS_TIMER0, XMC_BCCU_EVENT_STATUS_TIMER1, XMC_BCCU_EVENT_STATUS_FIFOEMPTY 
- * wants to clear at a same time, then event mask is = <b>(XMC_BCCU_EVENT_STATUS_TIMER0 | XMC_BCCU_EVENT_STATUS_TIMER1 | 
+ *        <b>For example:</b> If XMC_BCCU_EVENT_STATUS_TRIGGER0, XMC_BCCU_EVENT_STATUS_TRIGGER1, XMC_BCCU_EVENT_STATUS_FIFOEMPTY 
+ * wants to clear at a same time, then event mask is = <b>(XMC_BCCU_EVENT_STATUS_TRIGGER0 | XMC_BCCU_EVENT_STATUS_TRIGGER1 | 
  * XMC_BCCU_EVENT_STATUS_FIFOEMPTY)</b> \n
  *
  * @return None
@@ -1189,7 +1197,7 @@ __STATIC_INLINE void XMC_BCCU_SetEventFlag (XMC_BCCU_t *const bccu, uint32_t fla
  */
 __STATIC_INLINE void XMC_BCCU_ClearEventFlag (XMC_BCCU_t *const bccu, uint32_t flag_type)
 {
-  bccu->EVFCR |= flag_type;
+  bccu->EVFCR = flag_type;
 }
 
 /**
@@ -1893,15 +1901,31 @@ __STATIC_INLINE uint32_t XMC_BCCU_DIM_ReadDimmingLevel (XMC_BCCU_DIM_t *const di
  * Configures dimming clock divider by writing register bit DE_DTT_DIMDIV.\n\n
  *
  * \par<b>Related APIs:</b><BR>
- * XMC_BCCU_SetDimClockPrescaler()\n\n\n
+ * XMC_BCCU_SetDimClockPrescaler(), XMC_BCCU_DIM_ReadDimDivider()\n\n\n
  */
 void XMC_BCCU_DIM_SetDimDivider (XMC_BCCU_DIM_t *const dim_engine, uint32_t div);
 
 /**
  *
  * @param dim_engine Base address of the bccu dimming engine. \b Range: BCCU0_DE0, BCCU0_DE1, BCCU0_DE2
+ *
+ * @return Dimming clock divider value. \b Range: 0 to 1023
+ * \par<b>Description:</b><br>
+ * Retrieves dimming clock divider value by reading the register BCCU_DE_DTT_DIMDIV.\n\n
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_BCCU_DIM_SetDimDivider()\n\n\n
+ */
+ __STATIC_INLINE uint32_t XMC_BCCU_DIM_ReadDimDivider(XMC_BCCU_DIM_t *const dim_engine)
+{
+  return (uint32_t)(dim_engine->DTT & BCCU_DE_DTT_DIMDIV_Msk);
+}
+
+/**
+ *
+ * @param dim_engine Base address of the bccu dimming engine. \b Range: BCCU0_DE0, BCCU0_DE1, BCCU0_DE2
  * @param dither_en Dither enable. Dithering added for every dimming step if dimming level < 128. <br>
- * @param sel Type of exponential curve. Use type @ref XMC_BCCU_DIM_CURVE_t. If dither
+ * @param sel Type of exponential curve. Use type @ref XMC_BCCU_DIM_CURVE_t. Note: If dither
               enabled, the configuration is being ignored\n
  *
  * @return None
@@ -1914,6 +1938,37 @@ void XMC_BCCU_DIM_SetDimDivider (XMC_BCCU_DIM_t *const dim_engine, uint32_t div)
  */
 void XMC_BCCU_DIM_ConfigDimCurve (XMC_BCCU_DIM_t *const dim_engine, uint32_t dither_en, XMC_BCCU_DIM_CURVE_t sel);
 
+/**
+ *
+ * @param dim_engine Base address of the bccu dimming engine. \b Range: BCCU0_DE0, BCCU0_DE1, BCCU0_DE2
+ *
+ * @return Type of exponential curve \b Range: XMC_BCCU_DIM_CURVE_COARSE or XMC_BCCU_DIM_CURVE_FINE
+ * \par<b>Description:</b><br>
+ * Retrieves exponential curve type by reading the register bit BCCU_DE_DTT_CSEL. \n\n
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_BCCU_DIM_ConfigDimCurve(), XMC_BCCU_IsDitherEnable()\n\n\n
+ */
+__STATIC_INLINE XMC_BCCU_DIM_CURVE_t XMC_BCCU_DIM_GetDimCurve (XMC_BCCU_DIM_t *const dim_engine)
+{
+  return (XMC_BCCU_DIM_CURVE_t)((dim_engine->DTT & BCCU_DE_DTT_CSEL_Msk) >> BCCU_DE_DTT_CSEL_Pos);
+}
+
+/**
+ *
+ * @param dim_engine Base address of the bccu dimming engine. \b Range: BCCU0_DE0, BCCU0_DE1, BCCU0_DE2
+ *
+ * @return Dither enable status. \b Range: 1-Enabled or 0-Disabled
+ * \par<b>Description:</b><br>
+ * Retrieves dither enable status by reading the register bit BCCU_DE_DTT_DTEN. \n\n
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_BCCU_DIM_ConfigDimCurve(), XMC_BCCU_DIM_GetDimCurve()\n\n\n
+ */
+__STATIC_INLINE uint32_t XMC_BCCU_IsDitherEnable(XMC_BCCU_DIM_t *const dim_engine)
+{
+  return (uint32_t)((dim_engine->DTT & BCCU_DE_DTT_DTEN_Msk) >> BCCU_DE_DTT_DTEN_Pos);
+}
 
 /**
  * @}

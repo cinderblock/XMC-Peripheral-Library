@@ -1,36 +1,66 @@
-
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- */
-
 /**
  * @file xmc_ebu.h
- * @date 20 Feb, 2015
- * @version 1.0.2
+ * @date 2015-06-20 
+ *
+ * @cond
+  *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
+ *
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-06-20:
+ *     - Initial
+ *     - Description of changes 2
+ *      
+ * @endcond 
+ *
+ */
+/**
+ * @file xmc_ebu.h
+ * @date 19 Jun, 2015
+ * @version 1.0.3
  *
  * History <br>
  *
  * Version 1.0.0  Initial <br>
  * Version 1.0.2  Documentation updates <br>
+ * Version 1.0.3  Removed version macros and declaration of GetDriverVersion API
  */ 
  
 #ifndef XMC_EBU_H
 #define XMC_EBU_H
 
-/*******************************************************************************
+/**********************************************************************************************************************
  * HEADER FILES
- *******************************************************************************/
+ *********************************************************************************************************************/
  
 #include <xmc_common.h>
 #if defined (EBU)
@@ -55,24 +85,9 @@
  * @{
  */
  
-/*******************************************************************************
+/**********************************************************************************************************************
  * MACROS
- *******************************************************************************/
-
-/**
- * EBU low level driver: Major number
- */ 
-#define XMC_EBU_MAJOR_VERSION (1U)
-
-/**
- * EBU low level driver: Minor number
- */
-#define XMC_EBU_MINOR_VERSION (0U)
-
-/**
- * EBU low level driver: Patch number
- */
-#define XMC_EBU_PATCH_VERSION (2U)
+**********************************************************************************************************************/
 
 /**
  * A convenient symbol for the EBU peripheral base address
@@ -89,9 +104,9 @@
  */
 #define XMC_EBU_CHECK_MODULE_PTR(p) ((p) == XMC_EBU)
 
-/*******************************************************************************
+/**********************************************************************************************************************
  * ENUMS
- *******************************************************************************/
+**********************************************************************************************************************/
  
 /**
  * Status return values for EBU low level driver
@@ -469,9 +484,9 @@ typedef enum XMC_EBU_SDRAM_RFRSH_STATUS
 } XMC_EBU_SDRAM_RFRSH_STATUS_t;
 
 
-/*******************************************************************************
+/**********************************************************************************************************************
  * DATA STRUCTURES
- *******************************************************************************/
+ *********************************************************************************************************************/
  
 /* Anonymous structure/union guard start */
 #if defined(__CC_ARM)
@@ -1023,25 +1038,13 @@ typedef struct
   __I  uint32_t  SDRSTAT;
 } XMC_EBU_t;
 
-/*******************************************************************************
+/**********************************************************************************************************************
  * API PROTOTYPES
- *******************************************************************************/
+**********************************************************************************************************************/
  
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @return Data structure (::XMC_DRIVER_VERSION_t) storing driver version
- *
- * \par<b>Description: </b><br>
- * Return the version of the low level driver <br>
- *
- * \par
- * The function can be used to check application software compatibility with a specific
- * version of the low level driver.
- */
-XMC_DRIVER_VERSION_t XMC_EBU_GetDriverVersion(void);
 
 /**
  * @param ebu Constant pointer to ::XMC_EBU_t, pointing to the EBU base address

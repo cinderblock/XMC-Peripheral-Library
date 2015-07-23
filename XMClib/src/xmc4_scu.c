@@ -1,22 +1,58 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
+/**
+ * @file xmc4_scu.c
+ * @date 2015-06-20 
  *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
+ * @cond
+ *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
  * 
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,OR CONSEQUENTIAL DAMAGES, FOR ANY REASON
- * WHATSOEVER.
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-02-20:
+ *     - Initial <br>
+ *      
+ * 2015-05-20:
+ *     - XMC_ASSERT() hanging issues have fixed.  <br>
+ *     - Line indentation aligned with 120 characters. <br>
+ *     
+ * 2015-06-20:
+ *     - XMC_SCU_INTERRUPT_EnableEvent,XMC_SCU_INTERRUPT_DisableEvent,
+ *     - XMC_SCU_INTERRUPT_TriggerEvent,XMC_SCU_INTERUPT_GetEventStatus,
+ *     - XMC_SCU_INTERRUPT_ClearEventStatus are added
+ *     - Added Weak implementation for OSCHP_GetFrequency()
+ * @endcond 
+ *
  */
 
 /**
- * @file xmc4_scu.c
- * @date 20 Feb, 2015
- * @version 1.0.2
  *
  * @brief SCU low level driver API prototype definition for XMC4 family of microcontrollers. 
  *
@@ -37,10 +73,6 @@
  * -- TRAP (APIs prefixed with XMC_SCU_TRAP_) <br>
  * ------ Init, Enable/Disable, Acknowledge etc <br>
  *
- * History <br>
- *
- * Version 1.0.0  Initial <br>
- * Version 1.0.2  Few MISRA warnings are fixed <br>
  */
 
 /*********************************************************************************************************************
@@ -55,6 +87,14 @@
  ********************************************************************************************************************/
 #define FOSCREF   (2500000UL)
 #define FREQ_1MHZ (1000000UL)
+
+#ifndef OFI_FREQUENCY
+#define OFI_FREQUENCY (24000000UL)
+#endif
+
+#ifndef OSI_FREQUENCY
+#define OSI_FREQUENCY (32768UL)
+#endif
 
 #define XMC_SCU_PLL_PLLSTAT_OSC_USABLE  (SCU_PLL_PLLSTAT_PLLHV_Msk | \
                                          SCU_PLL_PLLSTAT_PLLLV_Msk | \
@@ -92,27 +132,26 @@
 #define XMC_SCU_INTERRUPT_EVENT_MAX            (32U)
 
 /*********************************************************************************************************************
- * ENUMS
- ********************************************************************************************************************/
-
-/*********************************************************************************************************************
- * DATA STRUCTURES
- ********************************************************************************************************************/
-
-/*********************************************************************************************************************
- * LOCAL VARIABLES
+ * LOCAL DATA
  ********************************************************************************************************************/
 XMC_SCU_INTERRUPT_EVENT_HANDLER_t event_handler_list[XMC_SCU_INTERRUPT_EVENT_MAX];
 
 /*********************************************************************************************************************
  * LOCAL ROUTINES
  ********************************************************************************************************************/
+ #if defined(UC_ID)
+__WEAK uint32_t OSCHP_GetFrequency(void)
+{
+  return OSCHP_FREQUENCY;
+}
+#endif
 
 static void XMC_SCU_lDelay(uint32_t cycles);
 
 /*********************************************************************************************************************
  * API IMPLEMENTATION
  ********************************************************************************************************************/
+
 void XMC_SCU_lDelay(uint32_t delay)
 {
   uint32_t i;
@@ -125,6 +164,37 @@ void XMC_SCU_lDelay(uint32_t delay)
     __NOP();
   }
 }
+
+/* API to enable the SCU event */
+void XMC_SCU_INTERRUPT_EnableEvent(const XMC_SCU_INTERRUPT_EVENT_t event)
+{
+  SCU_INTERRUPT->SRMSK |= (uint32_t)event;
+}
+
+/* API to disable the SCU event */
+void XMC_SCU_INTERRUPT_DisableEvent(const XMC_SCU_INTERRUPT_EVENT_t event)
+{
+  SCU_INTERRUPT->SRMSK &= (uint32_t)~event;
+}
+
+/* API to trigger the SCU event */
+void XMC_SCU_INTERRUPT_TriggerEvent(const XMC_SCU_INTERRUPT_EVENT_t event)
+{
+  SCU_INTERRUPT->SRSET |= (uint32_t)event;
+}
+
+/* API to retrieve the SCU event status */
+XMC_SCU_INTERRUPT_EVENT_t XMC_SCU_INTERUPT_GetEventStatus(void)
+{
+  return SCU_INTERRUPT->SRRAW;
+}
+
+/* API to clear the SCU event status */
+void XMC_SCU_INTERRUPT_ClearEventStatus(const XMC_SCU_INTERRUPT_EVENT_t event)
+{
+  SCU_INTERRUPT->SRCLR |= (uint32_t)event;
+}
+
 
 /* API to retrieve the currently deployed device bootmode */
 uint32_t XMC_SCU_GetBootMode(void)
@@ -376,14 +446,23 @@ void XMC_SCU_CLOCK_Init(const XMC_SCU_CLOCK_CONFIG_t *const config)
   XMC_ASSERT("", config->fcpu_clkdiv != 0);
   XMC_ASSERT("", config->fccu_clkdiv != 0);
   XMC_ASSERT("", config->fperipheral_clkdiv != 0);
-  XMC_ASSERT("", (config->syspll_config.p_div != 0) && (config->syspll_config.mode == XMC_SCU_CLOCK_SYSPLL_MODE_NORMAL));
-  XMC_ASSERT("", (config->syspll_config.n_div != 0) && (config->syspll_config.mode == XMC_SCU_CLOCK_SYSPLL_MODE_NORMAL));
-  XMC_ASSERT("", (config->syspll_config.k_div != 0) && ((config->syspll_config.mode == XMC_SCU_CLOCK_SYSPLL_MODE_NORMAL) ||
-                                                        (config->syspll_config.mode == XMC_SCU_CLOCK_SYSPLL_MODE_PRESCALAR)));
-  XMC_ASSERT("", (config->fsys_clksrc == XMC_SCU_CLOCK_SYSCLKSRC_PLL) && ((config->syspll_config.mode == XMC_SCU_CLOCK_SYSPLL_MODE_NORMAL) ||
-                                                                         (config->syspll_config.mode == XMC_SCU_CLOCK_SYSPLL_MODE_PRESCALAR)));
-  XMC_ASSERT("", (config->fstdby_clksrc == XMC_SCU_HIB_STDBYCLKSRC_OSCULP) && (config->enable_osculp == true));
-  XMC_ASSERT("", (config->syspll_config.clksrc == XMC_SCU_CLOCK_SYSPLLCLKSRC_OSCHP) && (config->enable_oschp == true));
+  XMC_ASSERT("", ((config->syspll_config.p_div != 0) &&
+                  (config->syspll_config.mode == XMC_SCU_CLOCK_SYSPLL_MODE_NORMAL)) ||
+		          (config->syspll_config.mode == XMC_SCU_CLOCK_SYSPLL_MODE_PRESCALAR));
+  XMC_ASSERT("", ((config->syspll_config.n_div != 0) &&
+                  (config->syspll_config.mode == XMC_SCU_CLOCK_SYSPLL_MODE_NORMAL)) ||
+		          (config->syspll_config.mode == XMC_SCU_CLOCK_SYSPLL_MODE_PRESCALAR));
+  XMC_ASSERT("", (config->syspll_config.k_div != 0) &&
+		         ((config->syspll_config.mode == XMC_SCU_CLOCK_SYSPLL_MODE_NORMAL) ||
+                  (config->syspll_config.mode == XMC_SCU_CLOCK_SYSPLL_MODE_PRESCALAR)));
+  XMC_ASSERT("", ((config->fsys_clksrc == XMC_SCU_CLOCK_SYSCLKSRC_PLL) ||
+		          (config->fsys_clksrc == XMC_SCU_CLOCK_SYSCLKSRC_OFI)) &&
+    		      ((config->syspll_config.mode == XMC_SCU_CLOCK_SYSPLL_MODE_NORMAL) ||
+                  (config->syspll_config.mode == XMC_SCU_CLOCK_SYSPLL_MODE_PRESCALAR)));
+  XMC_ASSERT("", ((config->fstdby_clksrc == XMC_SCU_HIB_STDBYCLKSRC_OSCULP) && (config->enable_osculp == true)) ||
+		          (config->fstdby_clksrc != XMC_SCU_HIB_STDBYCLKSRC_OSCULP));
+  XMC_ASSERT("", ((config->syspll_config.clksrc == XMC_SCU_CLOCK_SYSPLLCLKSRC_OSCHP) &&
+		         (config->enable_oschp == true)) || (config->syspll_config.clksrc != XMC_SCU_CLOCK_SYSPLLCLKSRC_OSCHP));
 
   XMC_SCU_CLOCK_SetSystemClockSource(XMC_SCU_CLOCK_SYSCLKSRC_OFI);
 
@@ -634,7 +713,8 @@ uint32_t XMC_SCU_CLOCK_GetCcuClockFrequency(void)
   uint32_t frequency = 0UL;
   frequency = XMC_SCU_CLOCK_GetSystemClockFrequency();
   
-  return (uint32_t)(frequency >> ((uint32_t)((SCU_CLK->CCUCLKCR & SCU_CLK_CCUCLKCR_CCUDIV_Msk) >> SCU_CLK_CCUCLKCR_CCUDIV_Pos)));
+  return (uint32_t)(frequency >> ((uint32_t)((SCU_CLK->CCUCLKCR & SCU_CLK_CCUCLKCR_CCUDIV_Msk) >>
+		                                     SCU_CLK_CCUCLKCR_CCUDIV_Pos)));
 }
 
 /*
@@ -659,7 +739,8 @@ uint32_t XMC_SCU_CLOCK_GetUsbClockFrequency(void)
   {
   }
 
-  return (uint32_t)(frequency / (((SCU_CLK->USBCLKCR & SCU_CLK_USBCLKCR_USBDIV_Msk) >> SCU_CLK_USBCLKCR_USBDIV_Pos) + 1UL));
+  return (uint32_t)(frequency / (((SCU_CLK->USBCLKCR & SCU_CLK_USBCLKCR_USBDIV_Msk) >>
+		                           SCU_CLK_USBCLKCR_USBDIV_Pos) + 1UL));
 }
 
 #if(UC_SERIES == XMC45)
@@ -671,7 +752,8 @@ uint32_t XMC_SCU_CLOCK_GetEbuClockFrequency(void)
   uint32_t frequency = 0UL;
   frequency = XMC_SCU_CLOCK_GetSystemPllClockFrequency();
   
-  return (uint32_t)((frequency /(((SCU_CLK->EBUCLKCR & SCU_CLK_EBUCLKCR_EBUDIV_Msk) >> SCU_CLK_EBUCLKCR_EBUDIV_Pos) + 1UL)));
+  return (uint32_t)((frequency /(((SCU_CLK->EBUCLKCR & SCU_CLK_EBUCLKCR_EBUDIV_Msk) >>
+		                           SCU_CLK_EBUCLKCR_EBUDIV_Pos) + 1UL)));
 }
 #endif
 
@@ -702,7 +784,8 @@ uint32_t XMC_SCU_CLOCK_GetWdtClockFrequency(void)
 
   }
 
-  return (uint32_t)((frequency / (((SCU_CLK->WDTCLKCR & SCU_CLK_WDTCLKCR_WDTDIV_Msk) >> SCU_CLK_WDTCLKCR_WDTDIV_Pos) + 1UL)));
+  return (uint32_t)((frequency / (((SCU_CLK->WDTCLKCR & SCU_CLK_WDTCLKCR_WDTDIV_Msk) >>
+		                            SCU_CLK_WDTCLKCR_WDTDIV_Pos) + 1UL)));
 }
 
 /**
@@ -819,7 +902,8 @@ void XMC_SCU_HIB_SetStandbyClockSource(const XMC_SCU_HIB_STDBYCLKSRC_t source)
 /* API to program the divider placed between fsys and its parent */
 void XMC_SCU_CLOCK_SetSystemClockDivider(const uint32_t divider)
 {
-  XMC_ASSERT("XMC_SCU_CLOCK_SetSystemClockDivider:Wrong clock divider value", (divider <= (SCU_CLK_SYSCLKCR_SYSDIV_Msk + 1UL)) );
+  XMC_ASSERT("XMC_SCU_CLOCK_SetSystemClockDivider:Wrong clock divider value",
+		      (divider <= (SCU_CLK_SYSCLKCR_SYSDIV_Msk + 1UL)) );
 
   SCU_CLK->SYSCLKCR = (SCU_CLK->SYSCLKCR & ((uint32_t)~SCU_CLK_SYSCLKCR_SYSDIV_Msk)) |
                       ((uint32_t)(((uint32_t)(divider - 1UL)) << SCU_CLK_SYSCLKCR_SYSDIV_Pos));
@@ -855,17 +939,19 @@ void XMC_SCU_CLOCK_SetPeripheralClockDivider(const uint32_t divider)
 /* API to program the divider placed between fsdmmc and its parent */
 void XMC_SCU_CLOCK_SetUsbClockDivider(const uint32_t divider)
 {
-  XMC_ASSERT("XMC_SCU_CLOCK_SetSdmmcClockDivider:Wrong clock divider value", (divider <= (SCU_CLK_USBCLKCR_USBDIV_Msk + 1UL)) );
+  XMC_ASSERT("XMC_SCU_CLOCK_SetSdmmcClockDivider:Wrong clock divider value",
+		      (divider <= (SCU_CLK_USBCLKCR_USBDIV_Msk + 1UL)) );
 
   SCU_CLK->USBCLKCR = (SCU_CLK->USBCLKCR & ((uint32_t)~SCU_CLK_USBCLKCR_USBDIV_Msk)) |
                       (uint32_t)((uint32_t)(divider - 1UL) << SCU_CLK_USBCLKCR_USBDIV_Pos); 
 }
 
-#if(UC_SERIES == XMC45)
+#if defined(EBU)
 /* API to program the divider placed between febu and its parent */
 void XMC_SCU_CLOCK_SetEbuClockDivider(const uint32_t divider)
 {
-  XMC_ASSERT("XMC_SCU_CLOCK_SetEbuClockDivider:Wrong clock divider value", (divider <= (SCU_CLK_EBUCLKCR_EBUDIV_Msk + 1UL) ) );
+  XMC_ASSERT("XMC_SCU_CLOCK_SetEbuClockDivider:Wrong clock divider value",
+		      (divider <= (SCU_CLK_EBUCLKCR_EBUDIV_Msk + 1UL) ) );
 
   SCU_CLK->EBUCLKCR = (SCU_CLK->EBUCLKCR & ((uint32_t)~SCU_CLK_EBUCLKCR_EBUDIV_Msk)) |
                       (uint32_t)(((uint32_t)(divider - 1UL)) << SCU_CLK_EBUCLKCR_EBUDIV_Pos);
@@ -875,7 +961,8 @@ void XMC_SCU_CLOCK_SetEbuClockDivider(const uint32_t divider)
 /* API to program the divider placed between fwdt and its parent */
 void XMC_SCU_CLOCK_SetWdtClockDivider(const uint32_t divider)
 {
-  XMC_ASSERT("XMC_SCU_CLOCK_SetWdtClockDivider:Wrong clock divider value", (divider <= (SCU_CLK_WDTCLKCR_WDTDIV_Msk + 1UL) ) );
+  XMC_ASSERT("XMC_SCU_CLOCK_SetWdtClockDivider:Wrong clock divider value",
+		      (divider <= (SCU_CLK_WDTCLKCR_WDTDIV_Msk + 1UL) ) );
 
   SCU_CLK->WDTCLKCR = (SCU_CLK->WDTCLKCR & ((uint32_t)~SCU_CLK_WDTCLKCR_WDTDIV_Msk)) |
                       (uint32_t)(((uint32_t)(divider - 1UL)) << SCU_CLK_WDTCLKCR_WDTDIV_Pos);
@@ -884,7 +971,8 @@ void XMC_SCU_CLOCK_SetWdtClockDivider(const uint32_t divider)
 /* API to program the divider placed between fext and its parent */
 void XMC_SCU_CLOCK_SetExternalOutputClockDivider(const uint32_t divider)
 {
-  XMC_ASSERT("XMC_SCU_CLOCK_SetExternalOutputClockDivider:Wrong clock divider value", (divider <= (SCU_CLK_EXTCLKCR_ECKDIV_Msk + 1UL) ) );
+  XMC_ASSERT("XMC_SCU_CLOCK_SetExternalOutputClockDivider:Wrong clock divider value",
+		      (divider <= (SCU_CLK_EXTCLKCR_ECKDIV_Msk + 1UL) ) );
 
   SCU_CLK->EXTCLKCR = (SCU_CLK->EXTCLKCR & ((uint32_t)~SCU_CLK_EXTCLKCR_ECKDIV_Msk)) |
                       (uint32_t)(((uint32_t)(divider - 1UL)) << SCU_CLK_EXTCLKCR_ECKDIV_Pos);
@@ -983,7 +1071,8 @@ void XMC_SCU_CLOCK_StartUsbPll(uint32_t pdiv, uint32_t ndiv)
 
 void XMC_SCU_CLOCK_StopUsbPll(void)
 {
-  SCU_PLL->USBPLLCON = (uint32_t)(SCU_PLL_USBPLLCON_VCOPWD_Msk | SCU_PLL_USBPLLCON_PLLPWD_Msk | SCU_PLL_USBPLLCON_VCOBYP_Msk);
+  SCU_PLL->USBPLLCON = (uint32_t)(SCU_PLL_USBPLLCON_VCOPWD_Msk | SCU_PLL_USBPLLCON_PLLPWD_Msk |
+		                          SCU_PLL_USBPLLCON_VCOBYP_Msk);
 }
 
 void XMC_SCU_CLOCK_SetBackupClockCalibrationMode(XMC_SCU_CLOCK_FOFI_CALIBRATION_MODE_t mode)
@@ -1131,7 +1220,8 @@ void XMC_SCU_CLOCK_EnableHighPerformanceOscillator(void)
 {
   SCU_PLL->PLLCON0 &= (uint32_t)~SCU_PLL_PLLCON0_PLLPWD_Msk;
 
-  SCU_OSC->OSCHPCTRL = (uint32_t)((SCU_OSC->OSCHPCTRL & ~(SCU_OSC_OSCHPCTRL_MODE_Msk | SCU_OSC_OSCHPCTRL_OSCVAL_Msk)) | (((OSCHP_GetFrequency() / FOSCREF) - 1UL) << SCU_OSC_OSCHPCTRL_OSCVAL_Pos));
+  SCU_OSC->OSCHPCTRL = (uint32_t)((SCU_OSC->OSCHPCTRL & ~(SCU_OSC_OSCHPCTRL_MODE_Msk | SCU_OSC_OSCHPCTRL_OSCVAL_Msk)) |
+		                          (((OSCHP_GetFrequency() / FOSCREF) - 1UL) << SCU_OSC_OSCHPCTRL_OSCVAL_Pos));
 
   /* restart OSC Watchdog */
   SCU_PLL->PLLCON0 &= (uint32_t)~SCU_PLL_PLLCON0_OSCRES_Msk;
@@ -1190,10 +1280,10 @@ void XMC_SCU_CLOCK_StartSystemPll(XMC_SCU_CLOCK_SYSPLLCLKSRC_t source,
     SCU_PLL->PLLCON0 |= (uint32_t)SCU_PLL_PLLCON0_FINDIS_Msk;
 
     /* Setup divider settings for main PLL */
-    SCU_PLL->PLLCON1 = (uint32_t)((SCU_PLL->PLLCON1 & ~(SCU_PLL_PLLCON1_NDIV_Msk | SCU_PLL_PLLCON1_K2DIV_Msk |                   SCU_PLL_PLLCON1_PDIV_Msk)) | 
-                       ((ndiv - 1UL) << SCU_PLL_PLLCON1_NDIV_Pos) |
-                       ((kdiv_temp - 1UL) << SCU_PLL_PLLCON1_K2DIV_Pos) |
-                       ((pdiv - 1UL)<< SCU_PLL_PLLCON1_PDIV_Pos));
+    SCU_PLL->PLLCON1 = (uint32_t)((SCU_PLL->PLLCON1 & ~(SCU_PLL_PLLCON1_NDIV_Msk | SCU_PLL_PLLCON1_K2DIV_Msk |
+    		                       SCU_PLL_PLLCON1_PDIV_Msk)) | ((ndiv - 1UL) << SCU_PLL_PLLCON1_NDIV_Pos) |
+                                   ((kdiv_temp - 1UL) << SCU_PLL_PLLCON1_K2DIV_Pos) |
+                                   ((pdiv - 1UL)<< SCU_PLL_PLLCON1_PDIV_Pos));
 
     /* Set OSCDISCDIS, OSC clock remains connected to the VCO in case of loss of lock */
     SCU_PLL->PLLCON0 |= (uint32_t)SCU_PLL_PLLCON0_OSCDISCDIS_Msk;
@@ -1266,25 +1356,26 @@ bool XMC_SCU_CLOCK_IsSystemPllLocked(void)
 /*
  *
  */
-XMC_SCU_STATUS_t XMC_SCU_INTERRUPT_SetEventHandler(const XMC_SCU_INTERRUPT_EVENT_t event, const XMC_SCU_INTERRUPT_EVENT_HANDLER_t handler)
+XMC_SCU_STATUS_t XMC_SCU_INTERRUPT_SetEventHandler(const XMC_SCU_INTERRUPT_EVENT_t event,
+		                                           const XMC_SCU_INTERRUPT_EVENT_HANDLER_t handler)
 {
   uint32_t index;
   XMC_SCU_STATUS_t status;
   
   index = 0U;
-  while (((uint32_t)event >> index) != 0x1U)
+  while (((event & ((XMC_SCU_INTERRUPT_EVENT_t)1 << index)) == 0U) && (index < XMC_SCU_INTERRUPT_EVENT_MAX))
   {
     index++;
   }
   
-  if (index < XMC_SCU_INTERRUPT_EVENT_MAX)
-  {
-    event_handler_list[index] = handler;
-    status = XMC_SCU_STATUS_OK;
-  }
-  else 
+  if (index == XMC_SCU_INTERRUPT_EVENT_MAX)
   {
     status = XMC_SCU_STATUS_ERROR;
+  }
+  else
+  {
+    event_handler_list[index] = handler;
+    status = XMC_SCU_STATUS_OK;      
   }
   
   return status;
@@ -1296,16 +1387,16 @@ XMC_SCU_STATUS_t XMC_SCU_INTERRUPT_SetEventHandler(const XMC_SCU_INTERRUPT_EVENT
 void XMC_SCU_IRQHandler(uint32_t sr_num)
 {
   uint32_t index;
-  uint32_t status;
+  XMC_SCU_INTERRUPT_EVENT_t event;
   XMC_SCU_INTERRUPT_EVENT_HANDLER_t event_handler;
   
   XMC_UNUSED_ARG(sr_num);
   
   index = 0U;
-  status = XMC_SCU_INTERUPT_GetEventStatus();
+  event = XMC_SCU_INTERUPT_GetEventStatus();
   while (index < XMC_SCU_INTERRUPT_EVENT_MAX)
   {    
-    if ((uint32_t)(status & (1UL << index)) != (uint32_t)0UL)
+    if ((event & ((XMC_SCU_INTERRUPT_EVENT_t)1 << index)) != 0U)
     {
       event_handler = event_handler_list[index];
       if (event_handler != NULL)

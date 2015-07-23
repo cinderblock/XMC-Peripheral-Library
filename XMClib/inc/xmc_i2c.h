@@ -1,36 +1,51 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- *
- */
-
 /**
  * @file xmc_i2c.h
- * @date 20 Feb, 2015
- * @version 1.0.2
+ * @date 2015-06-20 
  *
- * History <br>
+ * @cond
+ *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * Version 1.0.0 Initial version <br>
- * Version 1.0.2 Description updated <br>
-
-  @code
- ===============================================================================
-                     #####  Usage  #####
- ===============================================================================
-
-  @endcode
-
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-02-20:
+ *     - Initial <br>
+ *      
+ * 2015-05-20:
+ *     - Description updated
+ *     - Added XMC_I2C_CH_TriggerServiceRequest() and XMC_I2C_CH_SelectInterruptNodePointer()
+ *
+ * 2015-06-20:
+ *     - Removed version macros and declaration of GetDriverVersion API
+ * @endcond 
  *
  */
 
@@ -83,10 +98,6 @@
 #define XMC_I2C2_CH0 XMC_USIC2_CH0                   /**< USIC2 channel 0 base address */
 #define XMC_I2C2_CH1 XMC_USIC2_CH1                   /**< USIC2 channel 1 base address */
 #endif
-
-#define XMC_I2C_MAJOR_VERSION          (1U)          /**< Version number : Major version */
-#define XMC_I2C_MINOR_VERSION          (0U)          /**< Version number : Minor version */
-#define XMC_I2C_PATCH_VERSION          (2U)          /**< Version number : Patch version */
 
 #define XMC_I2C_10BIT_ADDR_GROUP       (0xF000U)	 /**< Value to verify the address is 10-bit or not */
 
@@ -195,6 +206,18 @@ typedef enum XMC_I2C_CH_INPUT
 #endif  
 } XMC_I2C_CH_INPUT_t;
 
+/**
+ * I2C channel interrupt node pointers
+ */
+typedef enum XMC_I2C_CH_INTERRUPT_NODE_POINTER
+{
+  XMC_I2C_CH_INTERRUPT_NODE_POINTER_TRANSMIT_SHIFT      = XMC_USIC_CH_INTERRUPT_NODE_POINTER_TRANSMIT_SHIFT, /**< Node pointer for transmit shift interrupt */
+  XMC_I2C_CH_INTERRUPT_NODE_POINTER_TRANSMIT_BUFFER     = XMC_USIC_CH_INTERRUPT_NODE_POINTER_TRANSMIT_BUFFER, /**< Node pointer for transmit buffer interrupt */
+  XMC_I2C_CH_INTERRUPT_NODE_POINTER_RECEIVE             = XMC_USIC_CH_INTERRUPT_NODE_POINTER_RECEIVE,  /**< Node pointer for receive interrupt */
+  XMC_I2C_CH_INTERRUPT_NODE_POINTER_ALTERNATE_RECEIVE   = XMC_USIC_CH_INTERRUPT_NODE_POINTER_ALTERNATE_RECEIVE,  /**< Node pointer for alternate receive interrupt */
+  XMC_I2C_CH_INTERRUPT_NODE_POINTER_PROTOCOL            = XMC_USIC_CH_INTERRUPT_NODE_POINTER_PROTOCOL   /**< Node pointer for protocol related interrupts */
+} XMC_I2C_CH_INTERRUPT_NODE_POINTER_t;
+
 /*******************************************************************************
  * DATA STRUCTURES
  *******************************************************************************/
@@ -214,21 +237,6 @@ typedef struct XMC_I2C_CH_CONFIG
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @param None
- *
- *
- * @return Data structure (::XMC_DRIVER_VERSION_t) storing driver version
- *
- * \par<b>Description: </b><br>
- * Return the version of the low level driver <br>
- *
- * \par
- * The function can be used to check application software compatibility with a specific
- * version of the low level driver.
- */
-XMC_DRIVER_VERSION_t XMC_I2C_GetDriverVersion(void);
 
 /**
  * @param channel Constant pointer to USIC channel structure of type @ref XMC_USIC_CH_t
@@ -323,6 +331,54 @@ __STATIC_INLINE void XMC_I2C_CH_SetInterruptNodePointer(XMC_USIC_CH_t *const cha
                                                         const uint8_t service_request)
 {
   XMC_USIC_CH_SetInterruptNodePointer(channel, XMC_USIC_CH_INTERRUPT_NODE_POINTER_PROTOCOL, service_request);
+}
+
+
+/**
+ * @param channel Pointer to USIC channel handler of type @ref XMC_USIC_CH_t \n
+ * 				  \b Range: @ref XMC_USIC0_CH0, @ref XMC_USIC0_CH1 to @ref XMC_USIC2_CH1 based on device support.
+ * @param  interrupt_node Interrupt node pointer to be configured. \n
+ * 						  \b Range: @ref XMC_SPI_CH_INTERRUPT_NODE_POINTER_TRANSMIT_SHIFT,
+ * 						  			@ref XMC_SPI_CH_INTERRUPT_NODE_POINTER_TRANSMIT_BUFFER etc.
+ * @param service_request Service request number.\n
+ * 						  \b Range: 0 to 5.
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Sets the interrupt node for USIC channel events. \n\n
+ * For an event to generate interrupt, node pointer should be configured with service request(SR0, SR1..SR5).
+ * The NVIC node gets linked to the interrupt event by doing so.<br>
+ * Note: NVIC node should be separately enabled to generate the interrupt.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_I2C_CH_EnableEvent() \n\n\n
+ */
+__STATIC_INLINE void XMC_I2C_CH_SelectInterruptNodePointer(XMC_USIC_CH_t *const channel,
+                                                           const XMC_I2C_CH_INTERRUPT_NODE_POINTER_t interrupt_node,
+                                                           const uint32_t service_request)
+{
+  XMC_USIC_CH_SetInterruptNodePointer(channel, (XMC_USIC_CH_INTERRUPT_NODE_POINTER_t)interrupt_node,
+		                                       (uint32_t)service_request);
+}
+
+/**
+ * @param  channel Pointer to USIC channel handler of type @ref XMC_USIC_CH_t \n
+ * 				   \b Range: @ref XMC_USIC0_CH0, @ref XMC_USIC0_CH1 to @ref XMC_USIC2_CH1 based on device support.
+ * @param  service_request_line service request number of the event to be triggered. \n
+ * 			\b Range: 0 to 5.
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Trigger a I2C interrupt service request.\n\n
+ * When the I2C service request is triggered, the NVIC interrupt associated with it will be
+ * generated if enabled.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_I2C_CH_SelectInterruptNodePointer() \n\n\n
+ */
+__STATIC_INLINE void XMC_I2C_CH_TriggerServiceRequest(XMC_USIC_CH_t *const channel, const uint32_t service_request_line)
+{
+  XMC_USIC_CH_TriggerServiceRequest(channel, (uint32_t)service_request_line);
 }
 
 /**

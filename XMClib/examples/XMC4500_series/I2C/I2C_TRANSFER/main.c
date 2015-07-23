@@ -16,8 +16,8 @@
 
 /**
  * @file
- * @date 15 January, 2015
- * @version 1.0.1
+ * @date 22 July, 2015
+ * @version 1.0.2
  *
  * @brief I2C demo example
  *
@@ -30,7 +30,7 @@
  *
  * Version 1.0.0 Initial <br>
  * Version 1.0.1 Adapted to the last llds <br>
- *
+ * Version 1.0.2 Changed XMC_GPIO_SetMode() to XMC_GPIO_Init() for code clarity reasons <br> *
  */
 
 #include <xmc_gpio.h>
@@ -53,6 +53,18 @@ typedef enum PCA9502_REGADDR {
 
 #define SDA_PIN P2_14
 #define SCL_PIN P5_8
+XMC_GPIO_CONFIG_t i2c_sda =
+{
+  .mode = XMC_GPIO_MODE_OUTPUT_OPEN_DRAIN_ALT2,
+  .output_strength = XMC_GPIO_OUTPUT_STRENGTH_MEDIUM
+};
+
+XMC_GPIO_CONFIG_t i2c_scl =
+{
+  .mode = XMC_GPIO_MODE_OUTPUT_OPEN_DRAIN_ALT2,
+  .output_strength = XMC_GPIO_OUTPUT_STRENGTH_MEDIUM
+};
+
 
 XMC_I2C_CH_CONFIG_t i2c_cfg =
 {
@@ -72,8 +84,8 @@ int main(void)
   XMC_I2C_CH_SetInputSource(XMC_I2C1_CH0, XMC_I2C_CH_INPUT_SCL, USIC1_C0_DX1_P5_8);
   XMC_I2C_CH_Start(XMC_I2C1_CH0);
 
-  XMC_GPIO_SetMode(SCL_PIN, XMC_GPIO_MODE_OUTPUT_OPEN_DRAIN_ALT2);
-  XMC_GPIO_SetMode(SDA_PIN, XMC_GPIO_MODE_OUTPUT_OPEN_DRAIN_ALT2);
+  XMC_GPIO_Init(SCL_PIN, &i2c_scl);
+  XMC_GPIO_Init(SDA_PIN, &i2c_sda);
 
   XMC_I2C_CH_MasterStart(XMC_I2C1_CH0, IO_EXPANDER_ADDRESS, XMC_I2C_CH_CMD_WRITE);
   while((XMC_I2C_CH_GetStatusFlag(XMC_I2C1_CH0) & XMC_I2C_CH_STATUS_FLAG_ACK_RECEIVED) == 0U)

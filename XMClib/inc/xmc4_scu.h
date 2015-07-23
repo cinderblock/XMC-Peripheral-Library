@@ -1,29 +1,49 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * 
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,OR CONSEQUENTIAL DAMAGES, FOR ANY REASON
- * WHATSOEVER.
- */
-
 /**
  * @file xmc4_scu.h
- * @date 20 Feb, 2015
- * @version 1.0.2
+ * @date 2015-06-20
  *
+ * @cond
+  *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * History <br>
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
  *
- * Version 1.0.0 Initial version <br>
- * Version 1.0.2 Documentation improved <br>
+ * Change History
+ * --------------
+ *
+ * 2015-06-20:
+ *     - Initial version
+ *     - Documentation improved
+ *      
+ * @endcond 
+ *
  */
+
 #ifndef XMC4_SCU_H
 #define XMC4_SCU_H
 
@@ -59,6 +79,51 @@
 #define PLL_PDIV_XTAL_16MHZ (1U)
 #define PLL_NDIV_XTAL_16MHZ (59U)
 #define PLL_K2DIV_XTAL_16MHZ (3U)
+
+#define XMC_SCU_INTERRUPT_EVENT_WDT_WARN           SCU_INTERRUPT_SRSTAT_PRWARN_Msk /**< Watchdog prewarning event. */
+#define XMC_SCU_INTERRUPT_EVENT_RTC_PERIODIC       SCU_INTERRUPT_SRSTAT_PI_Msk     /**< RTC periodic interrupt. */
+#define XMC_SCU_INTERRUPT_EVENT_RTC_ALARM          SCU_INTERRUPT_SRSTAT_AI_Msk     /**< RTC alarm event. */
+#define XMC_SCU_INTERRUPT_EVENT_DLR_OVERRUN        SCU_INTERRUPT_SRSTAT_DLROVR_Msk /**< DLR overrun event. */
+#if defined(SCU_INTERRUPT_SRSTAT_LPACCR_Msk)
+#define XMC_SCU_INTERRUPT_EVENT_LPACCR_UPDATED     SCU_INTERRUPT_SRSTAT_LPACCR_Msk /**< LPAC Control register update event. */
+#endif
+#if defined(SCU_INTERRUPT_SRSTAT_LPACTH0_Msk)
+#define XMC_SCU_INTERRUPT_EVENT_LPACTH0_UPDATED    SCU_INTERRUPT_SRSTAT_LPACTH0_Msk /**< LPAC Threshold-0 register update event. */
+#endif
+#if defined(SCU_INTERRUPT_SRSTAT_LPACTH1_Msk)
+#define XMC_SCU_INTERRUPT_EVENT_LPACTH1_UPDATED    SCU_INTERRUPT_SRSTAT_LPACTH1_Msk  /**< LPAC Threshold-1 register update event. */
+#endif
+#if defined(SCU_INTERRUPT_SRSTAT_LPACST_Msk)
+#define XMC_SCU_INTERRUPT_EVENT_LPACST_UPDATED     SCU_INTERRUPT_SRSTAT_LPACST_Msk  /**< LPAC Status register update event. */
+#endif
+#if defined(SCU_INTERRUPT_SRSTAT_LPACCLR_Msk)
+#define XMC_SCU_INTERRUPT_EVENT_LPACCLR_UPDATED    SCU_INTERRUPT_SRSTAT_LPACCLR_Msk /**< LPAC event clear register update event. */
+#endif
+#if defined(SCU_INTERRUPT_SRSTAT_LPACSET_Msk)
+#define XMC_SCU_INTERRUPT_EVENT_LPACSET_UPDATED    SCU_INTERRUPT_SRSTAT_LPACSET_Msk /**< LPAC event set register update event. */
+#endif
+#if defined(SCU_INTERRUPT_SRSTAT_HINTST_Msk)
+#define XMC_SCU_INTERRUPT_EVENT_HINTST_UPDATED     SCU_INTERRUPT_SRSTAT_HINTST_Msk /**< HIB HINTST register update event. */
+#endif
+#if defined(SCU_INTERRUPT_SRSTAT_HINTCLR_Msk)
+#define XMC_SCU_INTERRUPT_EVENT_HINTCLR_UPDATED    SCU_INTERRUPT_SRSTAT_HINTCLR_Msk /**< HIB HINTCLR register update event. */
+#endif
+#if defined(SCU_INTERRUPT_SRSTAT_HINTSET_Msk)
+#define XMC_SCU_INTERRUPT_EVENT_HINTSET_UPDATED    SCU_INTERRUPT_SRSTAT_HINTSET_Msk /**< HIB HINTSET register update event. */
+#endif
+#define XMC_SCU_INTERRUPT_EVENT_HDSTAT_UPDATED     SCU_INTERRUPT_SRSTAT_HDSTAT_Msk /**< HIB HDSTAT register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_HDCLR_UPDATED      SCU_INTERRUPT_SRSTAT_HDCLR_Msk /**< HIB HDCLR register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_HDSET_UPDATED      SCU_INTERRUPT_SRSTAT_HDSET_Msk /**< HIB HDSET register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_HDCR_UPDATED       SCU_INTERRUPT_SRSTAT_HDCR_Msk /**< HIB HDCR register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_OSCSICTRL_UPDATED  SCU_INTERRUPT_SRSTAT_OSCSICTRL_Msk /**< HIB OSCSICTRL register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_OSCULSTAT_UPDATED  SCU_INTERRUPT_SRSTAT_OSCULSTAT_Msk /**< HIB OSCULSTAT register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_OSCULCTRL_UPDATED  SCU_INTERRUPT_SRSTAT_OSCULCTRL_Msk /**< HIB OSCULCTRL register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_RTCCTR_UPDATED     SCU_INTERRUPT_SRSTAT_RTC_CTR_Msk /**< HIB RTCCTR register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_RTCATIM0_UPDATED   SCU_INTERRUPT_SRSTAT_RTC_ATIM0_Msk /**< HIB RTCATIM0 register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_RTCATIM1_UPDATED   SCU_INTERRUPT_SRSTAT_RTC_ATIM1_Msk /**< HIB RTCATIM1 register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_RTCTIM0_UPDATED    SCU_INTERRUPT_SRSTAT_RTC_TIM0_Msk /**< HIB TIM0 register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_RTCTIM1_UPDATED    SCU_INTERRUPT_SRSTAT_RTC_TIM1_Msk /**< HIB TIM1 register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_RMX_UPDATED        SCU_INTERRUPT_SRSTAT_RMX_Msk /**< HIB RMX register update event. */
 
 /*********************************************************************************************************************
  * ENUMS
@@ -173,53 +238,7 @@ typedef enum XMC_SCU_RESET_REASON
  * status of one of the bits in \a SRSTAT register. 
  *  Use type \a XMC_SCU_INTERRUPT_EVENT_t for accessing these enum parameters.
  */
-typedef enum XMC_SCU_INTERRUPT_EVENT
-{
-  XMC_SCU_INTERRUPT_EVENT_WDT_WARN          = SCU_INTERRUPT_SRSTAT_PRWARN_Msk, /**< Watchdog prewarning event. */
-  XMC_SCU_INTERRUPT_EVENT_RTC_PERIODIC      = SCU_INTERRUPT_SRSTAT_PI_Msk, /**< RTC periodic interrupt. */
-  XMC_SCU_INTERRUPT_EVENT_RTC_ALARM         = SCU_INTERRUPT_SRSTAT_AI_Msk, /**< RTC alarm event. */
-  XMC_SCU_INTERRUPT_EVENT_DLR_OVERRUN       = SCU_INTERRUPT_SRSTAT_DLROVR_Msk, /**< DLR overrun event. */
-#if defined(SCU_INTERRUPT_SRSTAT_LPACCR_Msk)
-  XMC_SCU_INTERRUPT_EVENT_LPACCR_UPDATED    = SCU_INTERRUPT_SRSTAT_LPACCR_Msk, /**< LPAC Control register update event. */
-#endif
-#if defined(SCU_INTERRUPT_SRSTAT_LPACTH0_Msk)
-  XMC_SCU_INTERRUPT_EVENT_LPACTH0_UPDATED   = SCU_INTERRUPT_SRSTAT_LPACTH0_Msk, /**< LPAC Threshold-0 register update event. */
-#endif
-#if defined(SCU_INTERRUPT_SRSTAT_LPACTH1_Msk)
-  XMC_SCU_INTERRUPT_EVENT_LPACTH1_UPDATED   = SCU_INTERRUPT_SRSTAT_LPACTH1_Msk,  /**< LPAC Threshold-1 register update event. */
-#endif
-#if defined(SCU_INTERRUPT_SRSTAT_LPACST_Msk)
-  XMC_SCU_INTERRUPT_EVENT_LPACST_UPDATED    = SCU_INTERRUPT_SRSTAT_LPACST_Msk,  /**< LPAC Status register update event. */
-#endif
-#if defined(SCU_INTERRUPT_SRSTAT_LPACCLR_Msk)
-  XMC_SCU_INTERRUPT_EVENT_LPACCLR_UPDATED   = SCU_INTERRUPT_SRSTAT_LPACCLR_Msk, /**< LPAC event clear register update event. */
-#endif
-#if defined(SCU_INTERRUPT_SRSTAT_LPACSET_Msk)
-  XMC_SCU_INTERRUPT_EVENT_LPACSET_UPDATED   = SCU_INTERRUPT_SRSTAT_LPACSET_Msk, /**< LPAC event set register update event. */
-#endif
-#if defined(SCU_INTERRUPT_SRSTAT_HINTST_Msk)
-  XMC_SCU_INTERRUPT_EVENT_HINTST_UPDATED    = SCU_INTERRUPT_SRSTAT_HINTST_Msk, /**< HIB HINTST register update event. */
-#endif
-#if defined(SCU_INTERRUPT_SRSTAT_HINTCLR_Msk)
-  XMC_SCU_INTERRUPT_EVENT_HINTCLR_UPDATED   = SCU_INTERRUPT_SRSTAT_HINTCLR_Msk, /**< HIB HINTCLR register update event. */
-#endif
-#if defined(SCU_INTERRUPT_SRSTAT_HINTSET_Msk)
-  XMC_SCU_INTERRUPT_EVENT_HINTSET_UPDATED   = SCU_INTERRUPT_SRSTAT_HINTSET_Msk, /**< HIB HINTSET register update event. */
-#endif
-  XMC_SCU_INTERRUPT_EVENT_HDSTAT_UPDATED    = SCU_INTERRUPT_SRSTAT_HDSTAT_Msk, /**< HIB HDSTAT register update event. */
-  XMC_SCU_INTERRUPT_EVENT_HDCLR_UPDATED     = SCU_INTERRUPT_SRSTAT_HDCLR_Msk, /**< HIB HDCLR register update event. */
-  XMC_SCU_INTERRUPT_EVENT_HDSET_UPDATED     = SCU_INTERRUPT_SRSTAT_HDSET_Msk, /**< HIB HDSET register update event. */
-  XMC_SCU_INTERRUPT_EVENT_HDCR_UPDATED      = SCU_INTERRUPT_SRSTAT_HDCR_Msk, /**< HIB HDCR register update event. */
-  XMC_SCU_INTERRUPT_EVENT_OSCSICTRL_UPDATED = SCU_INTERRUPT_SRSTAT_OSCSICTRL_Msk, /**< HIB OSCSICTRL register update event. */
-  XMC_SCU_INTERRUPT_EVENT_OSCULSTAT_UPDATED = SCU_INTERRUPT_SRSTAT_OSCULSTAT_Msk, /**< HIB OSCULSTAT register update event. */
-  XMC_SCU_INTERRUPT_EVENT_OSCULCTRL_UPDATED = SCU_INTERRUPT_SRSTAT_OSCULCTRL_Msk, /**< HIB OSCULCTRL register update event. */
-  XMC_SCU_INTERRUPT_EVENT_RTCCTR_UPDATED    = SCU_INTERRUPT_SRSTAT_RTC_CTR_Msk, /**< HIB RTCCTR register update event. */
-  XMC_SCU_INTERRUPT_EVENT_RTCATIM0_UPDATED  = SCU_INTERRUPT_SRSTAT_RTC_ATIM0_Msk, /**< HIB RTCATIM0 register update event. */
-  XMC_SCU_INTERRUPT_EVENT_RTCATIM1_UPDATED  = SCU_INTERRUPT_SRSTAT_RTC_ATIM1_Msk, /**< HIB RTCATIM1 register update event. */
-  XMC_SCU_INTERRUPT_EVENT_RTCTIM0_UPDATED   = SCU_INTERRUPT_SRSTAT_RTC_TIM0_Msk, /**< HIB TIM0 register update event. */
-  XMC_SCU_INTERRUPT_EVENT_RTCTIM1_UPDATED   = SCU_INTERRUPT_SRSTAT_RTC_TIM1_Msk, /**< HIB TIM1 register update event. */
-  XMC_SCU_INTERRUPT_EVENT_RMX_UPDATED       = SCU_INTERRUPT_SRSTAT_RMX_Msk, /**< HIB RMX register update event. */
-} XMC_SCU_INTERRUPT_EVENT_t;
+typedef uint32_t XMC_SCU_INTERRUPT_EVENT_t;
 
  
 /**
@@ -574,7 +593,7 @@ typedef struct XMC_SCU_CLOCK_CONFIG
 
 
 /*********************************************************************************************************************
- * API Prototypes
+ * API PROTOTYPES
  ********************************************************************************************************************/
 
 #ifdef __cplusplus

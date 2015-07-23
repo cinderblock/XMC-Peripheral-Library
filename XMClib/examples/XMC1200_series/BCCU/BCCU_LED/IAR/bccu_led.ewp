@@ -1957,9 +1957,6 @@
         <name>$PROJ_DIR$\..\..\..\..\..\src\xmc_rtc.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\..\..\..\src\xmc_scu.c</name>
-      </file>
-      <file>
         <name>$PROJ_DIR$\..\..\..\..\..\src\xmc_spi.c</name>
       </file>
       <file>

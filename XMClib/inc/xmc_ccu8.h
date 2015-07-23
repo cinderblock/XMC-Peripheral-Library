@@ -1,26 +1,55 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, FOR ANY
- * REASON WHATSOEVER.
- *
- */
-
 /**
  * @file xmc_ccu8.h
- * @date 20 Feb, 2015
- * @version 1.0.2
+ * @date 2015-07-01 
  *
- * History
+ * @cond
+ *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * Version 1.0.0  Initial version <br>
- * Version 1.0.2  Documentation updates <br>
-*/
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-02-20:
+ *     - Initial <br>
+ *     - Documentation updates <br>
+ *
+ * 2015-06-20:
+ *     - Removed version macros and declaration of GetDriverVersion API <br>
+ *     - Added XMC_CCU8_SLICE_LoadSelector() API, to select which compare register value has to be loaded 
+ *       during external load event.
+ *
+ * 2015-07-01:
+ *     - In XMC_CCU8_SLICE_CHECK_INTERRUPT macro, fixed the missing item for compare match down for channel 2. <br>
+ *
+ * @endcond
+ */
 
 #ifndef CCU8_H
 #define CCU8_H
@@ -100,10 +129,6 @@
  * MACROS
  ********************************************************************************************************************/
 
-#define XMC_CCU8_MAJOR_VERSION (1U) /**< Major number of the driver version. Format \<major\>.\<minor\>.\<patch\> */
-#define XMC_CCU8_MINOR_VERSION (0U) /**< Minor number of the driver version. Format \<major\>.\<minor\>.\<patch\> */
-#define XMC_CCU8_PATCH_VERSION (2U) /**< Patch number of the driver version. Format \<major\>.\<minor\>.\<patch\> */
-
 #if ((UC_SERIES == XMC45) || (UC_SERIES == XMC44))
 #define XMC_CCU8_NUM_MODULES           (2U) /* Number of XMC_CCU8 modules on the device */
 #elif ((UC_SERIES == XMC42) || (UC_SERIES == XMC41) || (UC_SERIES == XMC13))
@@ -138,7 +163,7 @@
      (interrupt == XMC_CCU8_SLICE_IRQ_ID_COMPARE_MATCH_UP_CH_1)  || \
      (interrupt == XMC_CCU8_SLICE_IRQ_ID_COMPARE_MATCH_DOWN_CH_1)|| \
      (interrupt == XMC_CCU8_SLICE_IRQ_ID_COMPARE_MATCH_UP_CH_2)  || \
-     (interrupt == XMC_CCU8_SLICE_IRQ_ID_COMPARE_MATCH_UP_CH_2)  || \
+     (interrupt == XMC_CCU8_SLICE_IRQ_ID_COMPARE_MATCH_DOWN_CH_2)|| \
      (interrupt == XMC_CCU8_SLICE_IRQ_ID_EVENT0)                 || \
      (interrupt == XMC_CCU8_SLICE_IRQ_ID_EVENT1)                 || \
      (interrupt == XMC_CCU8_SLICE_IRQ_ID_EVENT2)                 || \
@@ -756,21 +781,6 @@ extern "C" {
 #endif
 
 /**
- * @param
- *   None <BR>
- * @return <BR>
- *   DRIVER_VERSION_t Driver version information.
- *
- * \par<b>Description:</b><br>
- *  Return version (major, minor and patch number) of the driver.\n\n
- *  The function is commonly used to check for user software compatibility with a specific version of the low level
- *  driver.
- * \par<b>Related APIs:</b><br>
- * None
- */
-XMC_DRIVER_VERSION_t XMC_CCU8_GetDriverVersion(void);
-
-/**
  * @param module Constant pointer to CCU8 module
  * @param mcs_action multi-channel shadow transfer request configuration
  * @return <BR>
@@ -1080,6 +1090,23 @@ void XMC_CCU8_SLICE_StopConfig(XMC_CCU8_SLICE_t *const slice,
  *  XMC_CCU8_SLICE_ConfigureEvent()<BR>  XMC_CCU8_SLICE_SetInput().
  */
 void XMC_CCU8_SLICE_LoadConfig(XMC_CCU8_SLICE_t *const slice, const XMC_CCU8_SLICE_EVENT_t event);
+
+/**
+ * @param slice Constant pointer to CC8 Slice
+ * @param ch_num Select which compare channel value has to be loaded to the Timer register during external load event.
+ * @return <BR>
+ *    None<BR>
+ *
+ * \par<b>Description:</b><br>
+ *  Up on occurrence of the external load event, if CC8yTCST.CDIR set to 0, CC8yTIMER register can be reloaded\n
+ *  with the value from compare channel 1 or compare channel 2\n
+ *  If CC8yTC.TLS is 0, compare channel 1 value is loaded to the CC8yTIMER register\n
+ *  If CC8yTC.TLS is 1, compare channel 2 value is loaded to the CC8yTIMER register\n
+ *
+ * \par<b>Related APIs:</b><br>
+ *  XMC_CCU8_SLICE_ConfigureEvent()<BR>  XMC_CCU8_SLICE_SetInput().
+ */
+void XMC_CCU8_SLICE_LoadSelector(XMC_CCU8_SLICE_t *const slice, const XMC_CCU8_SLICE_COMPARE_CHANNEL_t ch_num);
 
 /**
  * @param slice Constant pointer to CC8 Slice

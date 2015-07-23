@@ -1,41 +1,63 @@
 
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- */
-
 /**
  * @file xmc_prng.h
- * @date 20 Feb, 2015
- * @version 1.0.2
+ * @date 2015-06-20 
  *
- * History <br>
+ * @cond
+ *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * Version 1.0.0  Initial <br>
- * Version 1.0.2  Documentation updates <br>
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-02-20:
+ *     - Initial <br>
+ *     - Documentation updates <br>
+ *
+ * 2015-06-20:
+ *     - Removed version macros and declaration of GetDriverVersion API <br>
+ *
+ * @endcond
  */
  
 #ifndef XMC_PRNG_H
 #define XMC_PRNG_H
 
-/*******************************************************************************
+/*********************************************************************************************************************
  * HEADER FILES
- *******************************************************************************/
+ *********************************************************************************************************************/
 
 #include "xmc_common.h"
 
 #if defined (PRNG) 
-  
+
 /**
  * @addtogroup XMClib XMC Peripheral Library
  * @{
@@ -54,34 +76,18 @@
  * @{
  */  
 
-/*******************************************************************************
+/*********************************************************************************************************************
  * MACROS
- *******************************************************************************/
+ *********************************************************************************************************************/
  
 /**
  * Byte mask value for random data block size
  */ 
 #define XMC_PRNG_RDBS_BYTE_READ_MASK (0x00FFU)
 
-/**
- * PRNG low level driver: Major number
- */ 
-#define XMC_PRNG_MAJOR_VERSION       (1U) 
-
-/**
- * PRNG low level driver: Minor number
- */
-#define XMC_PRNG_MINOR_VERSION       (0U) 
-
-/**
- * PRNG low level driver: Patch number
- */
-#define XMC_PRNG_PATCH_VERSION       (2U)
-
-
-/*******************************************************************************
+/*********************************************************************************************************************
  * ENUMS
- *******************************************************************************/
+ *********************************************************************************************************************/
 
 /**
  * PRNG key load operation modes
@@ -108,9 +114,9 @@ typedef enum XMC_PRNG_INIT_STATUS {
   XMC_PRNG_INITIALIZED     = 1U  /**< Initialized state */
 } XMC_PRNG_INIT_STATUS_t;
 
-/*******************************************************************************
+/*********************************************************************************************************************
  * DATA STRUCTURES
- *******************************************************************************/
+ *********************************************************************************************************************/
 
 /**
  * Key words and data block size configuration values of PRNG <br>
@@ -126,24 +132,13 @@ typedef struct XMC_PRNG_INIT
   XMC_PRNG_DATA_BLOCK_SIZE_t block_size; /**< Block size */
 } XMC_PRNG_INIT_t;
 
-/*******************************************************************************
+/*********************************************************************************************************************
  * API PROTOTYPES
- *******************************************************************************/
+ *********************************************************************************************************************/
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @return Data structure (::XMC_DRIVER_VERSION_t) storing driver version
- *
- * \par<b>Description: </b><br>
- * Return the version of the low level driver <br>
- *
- * The function can be used to check application software compatibility with a specific
- * version of the low level driver.
- */
-XMC_DRIVER_VERSION_t XMC_PRNG_GetDriverVersion(void);
 
 /**
  * @param prng Pointer to a constant instance of ::XMC_PRNG_INIT_t, pointing to
@@ -173,10 +168,6 @@ XMC_PRNG_INIT_STATUS_t XMC_PRNG_Init(const XMC_PRNG_INIT_t *prng);
  * This function programmes the CTRL and WORD registers. 
  */
 void XMC_PRNG_DeInit(void);
-
-/*******************************************************************************
- * API DEFINITIONS
- *******************************************************************************/
 
 /**
  * @param block_size Block size of type ::XMC_PRNG_DATA_BLOCK_SIZE_t for read access

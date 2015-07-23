@@ -1,27 +1,51 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * 
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,OR CONSEQUENTIAL DAMAGES, FOR ANY REASON
- * WHATSOEVER.
- */
-
 /**
  * @file xmc1_scu.h
- * @date 20 Feb, 2015
- * @version 1.0.2
+ * @date 2015-06-20 
  *
- * History
+ * @cond
+*********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * Version 1.0.0 Initial <br>
- * Version 1.0.2 Documentation improved <br>
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-02-20:
+ *     - Initial
+ *      
+ * 2015-05-20:
+ *     - Description updated <br>
+ *   
+ * 2015-06-20:
+ *     - XMC_SCU_INTERRUPT_EVENT enum elements are typecasted to int64_t
+ * @endcond 
+ *
  */
 
 #ifndef XMC1_SCU_H
@@ -43,6 +67,61 @@
  * @addtogroup SCU
  * @{
  */
+/*********************************************************************************************************************
+ * MACROS
+ ********************************************************************************************************************/
+
+/**
+ * List of events 
+ */
+#define XMC_SCU_INTERRUPT_EVENT_WDT_WARN         SCU_INTERRUPT_SRMSK_PRWARN_Msk /**< WDT pre-warning event. */
+#define XMC_SCU_INTERRUPT_EVENT_RTC_PERIODIC     SCU_INTERRUPT_SRCLR_PI_Msk     /**< RTC periodic event. */
+#define XMC_SCU_INTERRUPT_EVENT_RTC_ALARM        SCU_INTERRUPT_SRCLR_AI_Msk     /**< RTC alarm event. */
+#define XMC_SCU_INTERRUPT_EVENT_VDDPI            SCU_INTERRUPT_SRMSK_VDDPI_Msk  /**< VDDP pre-warning event. */
+#if defined(COMPARATOR)
+#define XMC_SCU_INTERRUPT_EVENT_ACMP0            SCU_INTERRUPT_SRMSK_ACMP0I_Msk /**< Analog comparator-0 output event. */
+#define XMC_SCU_INTERRUPT_EVENT_ACMP1            SCU_INTERRUPT_SRMSK_ACMP1I_Msk /**< Analog comparator-1 output event. */
+#define XMC_SCU_INTERRUPT_EVENT_ACMP2            SCU_INTERRUPT_SRMSK_ACMP2I_Msk /**< Analog comparator-2 output event. */
+#if UC_SERIES == XMC14  
+#define XMC_SCU_INTERRUPT_EVENT_ACMP3            (((int64_t)SCU_INTERRUPT_SRMSK1_ACMP3I_Msk) << 32U) /**< Analog comparator-3 output event. */
+#endif  
+#endif
+#define XMC_SCU_INTERRUPT_EVENT_VDROP            SCU_INTERRUPT_SRMSK_VDROPI_Msk  /**< VDROP event. */
+#if UC_SERIES != XMC11
+#define XMC_SCU_INTERRUPT_EVENT_ORC0             SCU_INTERRUPT_SRMSK_ORC0I_Msk   /**< Out of range comparator-0 event. */
+#define XMC_SCU_INTERRUPT_EVENT_ORC1             SCU_INTERRUPT_SRMSK_ORC1I_Msk   /**< Out of range comparator-1 event. */
+#define XMC_SCU_INTERRUPT_EVENT_ORC2             SCU_INTERRUPT_SRMSK_ORC2I_Msk   /**< Out of range comparator-2 event. */
+#define XMC_SCU_INTERRUPT_EVENT_ORC3             SCU_INTERRUPT_SRMSK_ORC3I_Msk   /**< Out of range comparator-3 event. */
+#define XMC_SCU_INTERRUPT_EVENT_ORC4             SCU_INTERRUPT_SRMSK_ORC4I_Msk   /**< Out of range comparator-4 event. */
+#define XMC_SCU_INTERRUPT_EVENT_ORC5             SCU_INTERRUPT_SRMSK_ORC5I_Msk   /**< Out of range comparator-5 event. */
+#define XMC_SCU_INTERRUPT_EVENT_ORC6             SCU_INTERRUPT_SRMSK_ORC6I_Msk   /**< Out of range comparator-6 event. */
+#define XMC_SCU_INTERRUPT_EVENT_ORC7             SCU_INTERRUPT_SRMSK_ORC7I_Msk   /**< Out of range comparator-7 event. */
+#endif
+#define XMC_SCU_INTERRUPT_EVENT_LOCI             SCU_INTERRUPT_SRMSK_LOCI_Msk    /**< Loss of clock event. */
+#define XMC_SCU_INTERRUPT_EVENT_PESRAM           SCU_INTERRUPT_SRMSK_PESRAMI_Msk /**< PSRAM Parity error event. */
+#define XMC_SCU_INTERRUPT_EVENT_PEUSIC0          SCU_INTERRUPT_SRMSK_PEU0I_Msk   /**< USIC0 Parity error event. */
+#if defined(USIC1)
+#define XMC_SCU_INTERRUPT_EVENT_PEUSIC1          (((int64_t)SCU_INTERRUPT_SRMSK1_PEU1I_Msk) << 32U)   /**< USIC1 Parity error event. */
+#endif
+#define XMC_SCU_INTERRUPT_EVENT_FLASH_ERROR      SCU_INTERRUPT_SRMSK_FLECC2I_Msk /**< Flash ECC double bit error event. */
+#define XMC_SCU_INTERRUPT_EVENT_FLASH_COMPLETED  SCU_INTERRUPT_SRCLR_FLCMPLTI_Msk /**< Flash operation completion event. */
+#define XMC_SCU_INTERRUPT_EVENT_VCLIP            SCU_INTERRUPT_SRMSK_VCLIPI_Msk  /**< VCLIP event. */
+#define XMC_SCU_INTERRUPT_EVENT_STDBYCLKFAIL     SCU_INTERRUPT_SRMSK_SBYCLKFI_Msk  /**< Standby clock failure event. */
+#define XMC_SCU_INTERRUPT_EVENT_RTCCTR_UPDATED   SCU_INTERRUPT_SRMSK_RTC_CTR_Msk  /**< RTCCTR register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_RTCATIM0_UPDATED SCU_INTERRUPT_SRMSK_RTC_ATIM0_Msk  /**< RTCATIM0 register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_RTCATIM1_UPDATED SCU_INTERRUPT_SRMSK_RTC_ATIM1_Msk  /**< RTCATIM1 register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_RTCTIM0_UPDATED  SCU_INTERRUPT_SRMSK_RTC_TIM0_Msk  /**< RTCTIM0 register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_RTCTIM1_UPDATED  SCU_INTERRUPT_SRMSK_RTC_TIM1_Msk  /**< RTCTIM1 register update event. */
+#define XMC_SCU_INTERRUPT_EVENT_TSE_DONE         SCU_INTERRUPT_SRMSK_TSE_DONE_Msk  /**< Temperature measurement Completion event. */
+#define XMC_SCU_INTERRUPT_EVENT_TSE_HIGH         SCU_INTERRUPT_SRMSK_TSE_HIGH_Msk  /**< Temperature too high event. */
+#define XMC_SCU_INTERRUPT_EVENT_TSE_LOW          SCU_INTERRUPT_SRMSK_TSE_LOW_Msk /**< Temperature too low event. */
+#if defined(CAN)  
+#define XMC_SCU_INTERRUPT_EVENT_PEMCAN           (((int64_t)SCU_INTERRUPT_SRMSK1_PEMCI_Msk) << 32U)   /**< MultiCAN SRAM Parity Error Event. */
+#endif  
+#if (UC_SERIES == XMC14)
+#define XMC_SCU_INTERRUPT_EVENT_LOSS_EXT_CLOCK   (((int64_t)SCU_INTERRUPT_SRMSK1_LOECI_Msk) << 32U)  /**< Loss of external OSC_HP clock event. */
+#define XMC_SCU_INTERRUPT_EVENT_DCO1_OUT_SYNC    (((int64_t)SCU_INTERRUPT_SRMSK1_DCO1OFSI_Msk) << 32U)   /**< DCO1 Out of SYNC Event. */
+#endif
  
 /*********************************************************************************************************************
  * ENUMS
@@ -86,45 +165,11 @@ typedef enum XMC_SCU_SYSTEM_RESET_REQUEST
  *  in \a SRMSK register. Use type \a XMC_SCU_INTERRUPT_EVENT_t for accessing these enum parameters. These
  *  enums can also be used for checking the status of events from the \a SRSTAT register.
  */
-typedef enum XMC_SCU_INTERRUPT_EVENT
-{
-  XMC_SCU_INTERRUPT_EVENT_WDT_WARN         = SCU_INTERRUPT_SRMSK_PRWARN_Msk, /**< WDT pre-warning event. */
-  XMC_SCU_INTERRUPT_EVENT_RTC_PERIODIC     = SCU_INTERRUPT_SRCLR_PI_Msk,     /**< RTC periodic event. */
-  XMC_SCU_INTERRUPT_EVENT_RTC_ALARM        = SCU_INTERRUPT_SRCLR_AI_Msk,     /**< RTC alarm event. */
-  XMC_SCU_INTERRUPT_EVENT_VDDPI            = SCU_INTERRUPT_SRMSK_VDDPI_Msk,  /**< VDDP pre-warning event. */
-#if UC_SERIES != XMC11
-  XMC_SCU_INTERRUPT_EVENT_ACMP0            = SCU_INTERRUPT_SRMSK_ACMP0I_Msk, /**< Analog comparator-0 output event. */
-  XMC_SCU_INTERRUPT_EVENT_ACMP1            = SCU_INTERRUPT_SRMSK_ACMP1I_Msk, /**< Analog comparator-1 output event. */
-  XMC_SCU_INTERRUPT_EVENT_ACMP2            = SCU_INTERRUPT_SRMSK_ACMP2I_Msk, /**< Analog comparator-2 output event. */
+#if (UC_SERIES == XMC14)
+typedef uint64_t XMC_SCU_INTERRUPT_EVENT_t;
+#else
+typedef uint32_t XMC_SCU_INTERRUPT_EVENT_t;
 #endif
-  XMC_SCU_INTERRUPT_EVENT_VDROP            = SCU_INTERRUPT_SRMSK_VDROPI_Msk,  /**< VDROP event. */
-#if UC_SERIES != XMC11
-  XMC_SCU_INTERRUPT_EVENT_ORC0             = SCU_INTERRUPT_SRMSK_ORC0I_Msk,   /**< Out of range comparator-0 event. */
-  XMC_SCU_INTERRUPT_EVENT_ORC1             = SCU_INTERRUPT_SRMSK_ORC1I_Msk,   /**< Out of range comparator-1 event. */
-  XMC_SCU_INTERRUPT_EVENT_ORC2             = SCU_INTERRUPT_SRMSK_ORC2I_Msk,   /**< Out of range comparator-2 event. */
-  XMC_SCU_INTERRUPT_EVENT_ORC3             = SCU_INTERRUPT_SRMSK_ORC3I_Msk,   /**< Out of range comparator-3 event. */
-  XMC_SCU_INTERRUPT_EVENT_ORC4             = SCU_INTERRUPT_SRMSK_ORC4I_Msk,   /**< Out of range comparator-4 event. */
-  XMC_SCU_INTERRUPT_EVENT_ORC5             = SCU_INTERRUPT_SRMSK_ORC5I_Msk,   /**< Out of range comparator-5 event. */
-  XMC_SCU_INTERRUPT_EVENT_ORC6             = SCU_INTERRUPT_SRMSK_ORC6I_Msk,   /**< Out of range comparator-6 event. */
-  XMC_SCU_INTERRUPT_EVENT_ORC7             = SCU_INTERRUPT_SRMSK_ORC7I_Msk,   /**< Out of range comparator-7 event. */
-#endif
-  XMC_SCU_INTERRUPT_EVENT_LOCI             = SCU_INTERRUPT_SRMSK_LOCI_Msk,    /**< Loss of clock event. */
-  XMC_SCU_INTERRUPT_EVENT_PESRAM           = SCU_INTERRUPT_SRMSK_PESRAMI_Msk, /**< PSRAM Parity error event. */ 
-  XMC_SCU_INTERRUPT_EVENT_PUSIC            = SCU_INTERRUPT_SRMSK_PEU0I_Msk,   /**< USIC Parity error event. */
-  XMC_SCU_INTERRUPT_EVENT_FLASH_ERROR      = SCU_INTERRUPT_SRMSK_FLECC2I_Msk, /**< Flash ECC double bit error event. */
-  XMC_SCU_INTERRUPT_EVENT_FLASH_COMPLETED  = SCU_INTERRUPT_SRCLR_FLCMPLTI_Msk, /**< Flash operation completion event. */
-  XMC_SCU_INTERRUPT_EVENT_VCLIP            = SCU_INTERRUPT_SRMSK_VCLIPI_Msk,  /**< VCLIP event. */
-  XMC_SCU_INTERRUPT_EVENT_STDBYCLKFAIL     = SCU_INTERRUPT_SRMSK_SBYCLKFI_Msk,  /**< Standby clock failure event. */
-  XMC_SCU_INTERRUPT_EVENT_RTCCTR_UPDATED   = SCU_INTERRUPT_SRMSK_RTC_CTR_Msk,  /**< RTCCTR register update event. */
-  XMC_SCU_INTERRUPT_EVENT_RTCATIM0_UPDATED = SCU_INTERRUPT_SRMSK_RTC_ATIM0_Msk,  /**< RTCATIM0 register update event. */
-  XMC_SCU_INTERRUPT_EVENT_RTCATIM1_UPDATED = SCU_INTERRUPT_SRMSK_RTC_ATIM1_Msk,  /**< RTCATIM1 register update event. */
-  XMC_SCU_INTERRUPT_EVENT_RTCTIM0_UPDATED  = SCU_INTERRUPT_SRMSK_RTC_TIM0_Msk,  /**< RTCTIM0 register update event. */
-  XMC_SCU_INTERRUPT_EVENT_RTCTIM1_UPDATED  = SCU_INTERRUPT_SRMSK_RTC_TIM1_Msk,  /**< RTCTIM1 register update event. */
-  XMC_SCU_INTERRUPT_EVENT_TSE_DONE         = SCU_INTERRUPT_SRMSK_TSE_DONE_Msk,  /**< Temperature measurement Completion 
-                                                                                     event. */ 
-  XMC_SCU_INTERRUPT_EVENT_TSE_HIGH         = SCU_INTERRUPT_SRMSK_TSE_HIGH_Msk,  /**< Temperature too high event. */
-  XMC_SCU_INTERRUPT_EVENT_TSE_LOW          = (int32_t)SCU_INTERRUPT_SRMSK_TSE_LOW_Msk, /**< Temperature too low event. */
-} XMC_SCU_INTERRUPT_EVENT_t;
 
 /**
  *  Defines possible sources of RTC clock. These enums can be used to configure \a RTCCLKSEL bits of \a CLKCR Clock Control
@@ -290,7 +335,7 @@ typedef struct XMC_SCU_CLOCK_DEEP_SLEEP
 } XMC_SCU_CLOCK_DEEP_SLEEP_t;
  
 /*********************************************************************************************************************
- * API Prototypes
+ * API PROTOTYPES
  ********************************************************************************************************************/
 
 #ifdef __cplusplus
@@ -392,7 +437,7 @@ void XMC_SCU_SupplyMonitorInit(const XMC_SCU_SUPPLYMONITOR_t *obj);
  * \par<b>Related APIs:</b><BR>
  * XMC_SCU_StopTempMeasurement(), XMC_SCU_StartTempMeasurement() \n\n\n
  */
-#if (UC_SERIES != XMC11)
+
 void XMC_SCU_SetRawTempLimits(const uint32_t lower_temp, const uint32_t upper_temp);
 
 // /* API to program temperature limits in centigrade into temperature sensor unit */ // need to implement in future
@@ -416,7 +461,7 @@ void XMC_SCU_SetRawTempLimits(const uint32_t lower_temp, const uint32_t upper_te
  * \par<b>Related APIs:</b><BR>
  * XMC_SCU_StopTempMeasurement(), XMC_SCU_SetRawTempLimits(), XMC_SCU_GetTemperature() \n\n\n
  */
-XMC_SCU_STATUS_t XMC_SCU_StartTempMeasurement(void);
+void XMC_SCU_StartTempMeasurement(void);
 
 /**
  * @return None   
@@ -473,8 +518,16 @@ bool XMC_SCU_LowTemperature(void);
  */
 
 uint32_t XMC_SCU_GetTemperature(void);
-#endif
  
+/**
+ *
+ * @return
+ */
+__STATIC_INLINE bool XMC_SCU_IsTempMeasurementDone(void)
+{
+  return ((SCU_INTERRUPT->SRRAW & SCU_INTERRUPT_SRRAW_TSE_DONE_Msk) != 0U);
+}
+
 /**
  * @return None
  *

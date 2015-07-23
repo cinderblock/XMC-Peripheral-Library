@@ -1,28 +1,53 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
- *
- * Infineon Technologies AG (Infineon) is supplying this software for use with
- * Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are
- * supporting such microcontrollers.
- *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- *
- */
- /**
+/**
  * @file xmc_usic.c
- * @date 16 Feb, 2015
- * @version 1.0.0
+ * @date 2015-06-20
  *
- * @brief USIC driver for XMC microcontroller family.
+ * @cond
+  *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * History <br>
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
  *
- * Version 1.0.0 Initial <br>
+ * Change History
+ * --------------
+ *
+ * 2015-02-20:
+ *     - Initial draft <br>
+ *     - Documentation improved <br>
+ *
+ * 2015-05-08:
+ *     - Clearing bit fields PDIV, PCTQ, PPPEN in XMC_USIC_CH_SetBaudrate() API  <br>
+ *      
+ * 2015-06-20:
+ *     - Removed version macros and declaration of GetDriverVersion API
+ *
+ * @endcond
+ *
  */
 
 /*******************************************************************************
@@ -42,16 +67,6 @@
  * API IMPLEMENTATION
  *******************************************************************************/
 
-XMC_DRIVER_VERSION_t XMC_USIC_GetDriverVersion(void)
-{
-  XMC_DRIVER_VERSION_t version;
-
-  version.major = (uint8_t)XMC_USIC_MAJOR_VERSION;
-  version.minor = (uint8_t)XMC_USIC_MINOR_VERSION;
-  version.patch = (uint8_t)XMC_USIC_PATCH_VERSION;
-
-  return version;
-}
 void XMC_USIC_CH_Enable(XMC_USIC_CH_t *const channel)
 {
   XMC_ASSERT("XMC_USIC_CH_Enable: channel not valid", XMC_USIC_CHECK_CH(channel));
@@ -135,7 +150,10 @@ XMC_USIC_CH_STATUS_t XMC_USIC_CH_SetBaudrate(XMC_USIC_CH_t *const channel, uint3
     channel->FDR = XMC_USIC_CH_BRG_CLOCK_DIVIDER_MODE_FRACTIONAL |
                    (clock_divider_min << USIC_CH_FDR_STEP_Pos);
 
-    channel->BRG = (channel->BRG & ~(USIC_CH_BRG_DCTQ_Msk | USIC_CH_BRG_PDIV_Msk)) | 
+    channel->BRG = (channel->BRG & ~(USIC_CH_BRG_DCTQ_Msk |
+                                     USIC_CH_BRG_PDIV_Msk |
+                                     USIC_CH_BRG_PCTQ_Msk |
+                                     USIC_CH_BRG_PPPEN_Msk)) |
                    ((oversampling - 1U) << USIC_CH_BRG_DCTQ_Pos) |
                    ((pdiv_int_min - 1U) << USIC_CH_BRG_PDIV_Pos);
                     
@@ -163,9 +181,9 @@ void XMC_USIC_CH_TXFIFO_Configure(XMC_USIC_CH_t *const channel,
    *  from equal to below the limit, not the fact being below
    */
   channel->TBCTR = (uint32_t)(channel->TBCTR & (uint32_t)~(USIC_CH_TBCTR_LIMIT_Msk |
-	                                     USIC_CH_TBCTR_DPTR_Msk |
-	                                     USIC_CH_TBCTR_SIZE_Msk)) |
-	                 (uint32_t)((limit << USIC_CH_TBCTR_LIMIT_Pos) |
+                                                           USIC_CH_TBCTR_DPTR_Msk |
+                                                           USIC_CH_TBCTR_SIZE_Msk)) |
+                   (uint32_t)((limit << USIC_CH_TBCTR_LIMIT_Pos) |
                    (data_pointer << USIC_CH_TBCTR_DPTR_Pos) |
                    ((uint32_t)size << USIC_CH_TBCTR_SIZE_Pos));
 }
@@ -183,9 +201,9 @@ void XMC_USIC_CH_RXFIFO_Configure(XMC_USIC_CH_t *const channel,
    *  due to the reception of a new data word
    */
   channel->RBCTR = (uint32_t)((channel->RBCTR & (uint32_t)~(USIC_CH_RBCTR_LIMIT_Msk |
-	                                     USIC_CH_RBCTR_DPTR_Msk |
-	                                     USIC_CH_RBCTR_LOF_Msk)) |
-									 ((limit << USIC_CH_RBCTR_LIMIT_Pos) |
+                                                            USIC_CH_RBCTR_DPTR_Msk |
+                                                            USIC_CH_RBCTR_LOF_Msk)) |
+                   ((limit << USIC_CH_RBCTR_LIMIT_Pos) |
                    (data_pointer << USIC_CH_RBCTR_DPTR_Pos) |
                    ((uint32_t)size << USIC_CH_RBCTR_SIZE_Pos) |
                    (uint32_t)USIC_CH_RBCTR_LOF_Msk));
@@ -202,7 +220,7 @@ void XMC_USIC_CH_TXFIFO_SetSizeTriggerLimit(XMC_USIC_CH_t *const channel,
    *  from equal to below the limit, not the fact being below
    */
   channel->TBCTR = (uint32_t)((uint32_t)(channel->TBCTR & (uint32_t)~USIC_CH_TBCTR_LIMIT_Msk) |
-	                 (limit << USIC_CH_TBCTR_LIMIT_Pos) |
+                   (limit << USIC_CH_TBCTR_LIMIT_Pos) |
                    ((uint32_t)size << USIC_CH_TBCTR_SIZE_Pos));
 }
 

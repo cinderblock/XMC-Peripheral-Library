@@ -1,25 +1,57 @@
-/*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
+/**
+ * @file xmc_spi.c
+ * @date 2015-06-20 
  *
- * Infineon Technologies AG (Infineon) is supplying this software for use with Infineon's microcontrollers.
- * This file can be freely distributed within development tools that are supporting such microcontrollers.
+ * @cond
+ *********************************************************************************************************************
+ * XMClib v2.0.0 - XMC Peripheral Driver Library
  *
- * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
- * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, FOR ANY
- * REASON WHATSOEVER.
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
+ *
+ * Change History
+ * --------------
+ *
+ * 2015-02-20:
+ *     - Initial <br>
+ *      
+ * 2015-05-20:
+ *     - Modified XMC_SPI_CH_Stop() API for not setting to IDLE the channel if it is busy
+ *     - Modified XMC_SPI_CH_SetInterwordDelay() implementation in order to gain accuracy <br>
+ *     
+ * 2015-06-20:
+ *     - Removed GetDriverVersion API
+ * @endcond 
  *
  */
 /**
- * @file xmc_spi.c
- * @date 16 Feb, 2015
- * @version 1.0.0
  *
  * @brief SPI driver for XMC microcontroller family
  *
- * History <br>
- *
- * Version 1.0.0  Initial <br>
  */
 /*********************************************************************************************************************
  * HEADER FILES
@@ -32,26 +64,10 @@
  * MACROS
  ********************************************************************************************************************/
 #define XMC_SPI_CH_OVERSAMPLING (2UL)
-#define XMC_SPI_DIVIDER_FACTOR (4000000UL)
-
-/*********************************************************************************************************************
- * ENUMS
- ********************************************************************************************************************/
 
 /*********************************************************************************************************************
  * API IMPLEMENTATION
  ********************************************************************************************************************/
- 
-XMC_DRIVER_VERSION_t XMC_SPI_GetDriverVersion(void)
-{
-  XMC_DRIVER_VERSION_t version;
-
-  version.major = (uint8_t)XMC_SPI_MAJOR_VERSION;
-  version.minor = (uint8_t)XMC_SPI_MINOR_VERSION;
-  version.patch = (uint8_t)XMC_SPI_PATCH_VERSION;
-
-  return version;
-}
  
 /* Initializes the selected SPI channel with the config structure. */
 void XMC_SPI_CH_Init(XMC_USIC_CH_t *const channel, const XMC_SPI_CH_CONFIG_t *const config)
@@ -179,57 +195,51 @@ void XMC_SPI_CH_SetInterwordDelay(XMC_USIC_CH_t *const channel,uint32_t tinterwo
   uint32_t step;
   uint32_t fFD;
   uint32_t fpdiv;
-  uint32_t divider_factor1=0U;
-  uint32_t divider_factor2=0U;
-
+  uint32_t divider_factor1 = 0U;
+  uint32_t divider_factor2 = 32U;
+  uint32_t divider_factor1_int = 0U;
+  uint32_t divider_factor1_int_min = 4U;
+  uint32_t divider_factor1_frac_min =100U;
+  uint32_t divider_factor1_frac = 0U;
+  uint32_t divider_factor2_temp = 0U;
   peripheral_clock = XMC_SCU_CLOCK_GetPeripheralClockFrequency();
   pdiv = (uint32_t)(channel->BRG & USIC_CH_BRG_PDIV_Msk) >> USIC_CH_BRG_PDIV_Pos;
   step = (uint32_t)(channel->FDR & USIC_CH_FDR_STEP_Msk) >> USIC_CH_FDR_STEP_Pos;
   fFD = (uint32_t)((peripheral_clock >> 10U) * step);
   fpdiv= fFD/(1U+pdiv);
 
-  if((((uint32_t)XMC_SPI_DIVIDER_FACTOR*100U)/fpdiv) < ((tinterword_delay_us*100U)))
+  if(tinterword_delay_us < (128000000/fpdiv))
   {
-    divider_factor1 = 3U;
-    divider_factor2 = (uint32_t)((((uint64_t)fpdiv * tinterword_delay_us)*100U)/XMC_SPI_DIVIDER_FACTOR);
+    for(divider_factor2_temp = 32U; divider_factor2_temp > 0U; --divider_factor2_temp)
+    {
 
-    if((divider_factor2%100U) > 50U)
-    {
-      divider_factor2 = divider_factor2/100U;
-    }
-    else
-    {
-      divider_factor2 = (divider_factor2/100U)- 1U;
-    }
-    if(divider_factor2 > 31U)
-    {
-      divider_factor2 = 31U;
-    }
-  }
-  else
-  {
-    divider_factor1 = ((fpdiv * tinterword_delay_us)/10000U);
-    if(divider_factor1 > 100U)
-    {
-      if((divider_factor1 % 100U) > 50U)
+      divider_factor1 = (tinterword_delay_us*fpdiv)/(divider_factor2_temp*10000);
+      divider_factor1_frac = divider_factor1%100U;
+
+      if(divider_factor1_frac > 50)
       {
-        divider_factor1 = divider_factor1/100U;
+        divider_factor1_int =  (divider_factor1/100U)+1;
+        divider_factor1_frac = (divider_factor1_int*100)-divider_factor1;
       }
       else
       {
-        divider_factor1 = (divider_factor1/100U)- 1U;
+        divider_factor1_int =  (divider_factor1/100U);
+      }
+
+      if ((divider_factor1_int < 5U) && (divider_factor1_int > 0) && (divider_factor1_frac < divider_factor1_frac_min))
+      {
+        divider_factor1_frac_min = divider_factor1_frac;
+        divider_factor1_int_min = divider_factor1_int;
+        divider_factor2= divider_factor2_temp;
       }
     }
-    else
-    {
-      divider_factor1 = 0U;
-    }
   }
+
   channel->PCR_SSCMode = (uint32_t)((channel->PCR_SSCMode) & (~(USIC_CH_PCR_SSCMode_DCTQ1_Msk |
                                                                 USIC_CH_PCR_SSCMode_PCTQ1_Msk |
                                                                 USIC_CH_PCR_SSCMode_CTQSEL1_Msk))) |
-                         ((divider_factor1 << USIC_CH_PCR_SSCMode_PCTQ1_Pos) & (uint32_t)USIC_CH_PCR_SSCMode_PCTQ1_Msk) |
-                         ((divider_factor2 << USIC_CH_PCR_SSCMode_DCTQ1_Pos) & (uint32_t)USIC_CH_PCR_SSCMode_DCTQ1_Msk);
+                         (((divider_factor1_int_min - 1) << USIC_CH_PCR_SSCMode_PCTQ1_Pos) & (uint32_t)USIC_CH_PCR_SSCMode_PCTQ1_Msk) |
+                         (((divider_factor2 - 1 ) << USIC_CH_PCR_SSCMode_DCTQ1_Pos) & (uint32_t)USIC_CH_PCR_SSCMode_DCTQ1_Msk);
 }
 
 XMC_SPI_CH_STATUS_t XMC_SPI_CH_Stop(XMC_USIC_CH_t *const channel)
@@ -240,9 +250,12 @@ XMC_SPI_CH_STATUS_t XMC_SPI_CH_Stop(XMC_USIC_CH_t *const channel)
   {
     status = XMC_SPI_CH_STATUS_BUSY;
   }
+  else
+  {
 
-  /* USIC channel in IDLE mode */
-  XMC_USIC_CH_SetMode(channel, XMC_USIC_CH_OPERATING_MODE_IDLE);
+    /* USIC channel in IDLE mode */
+    XMC_USIC_CH_SetMode(channel, XMC_USIC_CH_OPERATING_MODE_IDLE);
+  }
 
   return status;
 }
