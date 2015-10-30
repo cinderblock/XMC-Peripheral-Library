@@ -35768,19 +35768,19 @@
 						</field>
 						<field>
 							<name>DRVx_VSDUP_DIS</name>
-							<description>Driver On VSD Upper Voltage Disable</description>
+							<description>Driver shutdown on VSD Upper Voltage</description>
 							<lsb>22</lsb>
 							<msb>22</msb>
 							<access>read-write</access>
 							<enumeratedValues>
 								<enumeratedValue>
-									<name>Driver Enable</name>
-									<description>DRVx on VSD overvoltage enable.</description>
+									<name>Shutdown Enable</name>
+									<description>DRVx shutdown on VSD overvoltage enable.</description>
 									<value>0b0</value>
 								</enumeratedValue>
 								<enumeratedValue>
-									<name>Driver Disable</name>
-									<description>DRVx on VSD overvoltage disable.</description>
+									<name>Shutdown Disable</name>
+									<description>DRVx shutdown on VSD overvoltage disable.</description>
 									<value>0b1</value>
 								</enumeratedValue>
 							</enumeratedValues>
@@ -35806,19 +35806,19 @@
 						</field>
 						<field>
 							<name>DRVx_VSDLO_DIS</name>
-							<description>Driver On VSD Lower Voltage Disable</description>
+							<description>Driver shutdown on VSD Lower Voltage</description>
 							<lsb>20</lsb>
 							<msb>20</msb>
 							<access>read-write</access>
 							<enumeratedValues>
 								<enumeratedValue>
-									<name>Driver Enable</name>
-									<description>DRVx on VSD undervoltage enable.</description>
+									<name>Shutdown Enable</name>
+									<description>DRVx shutdown on VSD undervoltage enable.</description>
 									<value>0b0</value>
 								</enumeratedValue>
 								<enumeratedValue>
-									<name>Driver Disable</name>
-									<description>DRVx on VSD undervoltage disable.</description>
+									<name>Shutdown Disable</name>
+									<description>DRVx shutdown on VSD undervoltage disable.</description>
 									<value>0b1</value>
 								</enumeratedValue>
 							</enumeratedValues>
@@ -35844,19 +35844,19 @@
 						</field>
 						<field>
 							<name>DRVx_VCPUP_DIS</name>
-							<description>Driver On Charge Pump Upper Voltage Disable</description>
+							<description>Driver shutdown on Charge Pump Upper Voltage</description>
 							<lsb>18</lsb>
 							<msb>18</msb>
 							<access>read-write</access>
 							<enumeratedValues>
 								<enumeratedValue>
-									<name>Driver Enable</name>
-									<description>DRVx on Charge Pumpe overvoltage enable.</description>
+									<name>Shutdown Enable</name>
+									<description>DRVx shutdown on Charge Pumpe overvoltage enable.</description>
 									<value>0b0</value>
 								</enumeratedValue>
 								<enumeratedValue>
-									<name>Driver Disable</name>
-									<description>DRVx on Charge Pump overvoltage disable.</description>
+									<name>Shutdown Disable</name>
+									<description>DRVx shutdown on Charge Pump overvoltage disable.</description>
 									<value>0b1</value>
 								</enumeratedValue>
 							</enumeratedValues>
@@ -35882,19 +35882,19 @@
 						</field>
 						<field>
 							<name>DRVx_VCPLO_DIS</name>
-							<description>Driver On Charge Pump Low Voltage Disable</description>
+							<description>Driver Shutdown on Charge Pump Low Voltage</description>
 							<lsb>16</lsb>
 							<msb>16</msb>
 							<access>read-write</access>
 							<enumeratedValues>
 								<enumeratedValue>
-									<name>Driver Enable</name>
-									<description>DRVx on Charge Pump undervoltage enable.</description>
+									<name>Shutdown Enable</name>
+									<description>DRVx shutdown on Charge Pump undervoltage enable.</description>
 									<value>0b0</value>
 								</enumeratedValue>
 								<enumeratedValue>
 									<name>Driver Disable</name>
-									<description>DRVx on Charge Pump undervoltage disable.</description>
+									<description>DRVx shutdown on Charge Pump undervoltage disable.</description>
 									<value>0b1</value>
 								</enumeratedValue>
 							</enumeratedValues>

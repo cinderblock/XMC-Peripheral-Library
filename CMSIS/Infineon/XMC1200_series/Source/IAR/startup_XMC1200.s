@@ -12,6 +12,7 @@
 ;  V6, May, 16,2013 TYS:a) Add XMC1200_SCU.inc 
 ;  V7, Nov, 20,2014 JFT:a) Removed dependencies with DAVE generated code
 ;  V8, Dec, 11,2014 JFT:a) Default clocking changed, MCLK=32MHz and PCLK=64MHz
+;  V9, Sep, 03,2015 JFT:a) SSW default clocking changed, MCLK=8MHz and PCLK=16MHz avoid problems with BMI tool timeout   
 ;     
 ;**********************************************************************************
 ;
@@ -30,6 +31,7 @@
  * <h> Clock system handling by SSW
  *   <h> CLK_VAL1 Configuration
  *    <o0.0..7>    FDIV Fractional Divider Selection
+ *    <i> Deafult: 0. Fractional part of clock divider, MCLK = DCO1 / (2 x (IDIV + (FDIV / 256)))
  *    <o0.8..15>   IDIV Divider Selection (limited to 1-16)
  *                    <0=> Divider is bypassed
  *                    <1=> MCLK = 32 MHz
@@ -38,9 +40,11 @@
  *                    <4=> MCLK = 8 MHz
  *                    <254=> MCLK = 126 kHz
  *                    <255=> MCLK = 125.5 kHz
+ *    <i> Deafult: 4. Interger part of clock divider, MCLK = DCO1 / (2 x (IDIV + (FDIV / 256))) = 8MHz
  *    <o0.16>      PCLKSEL PCLK Clock Select
  *                    <0=> PCLK = MCLK
  *                    <1=> PCLK = 2 x MCLK
+ *    <i> Deafult: 2 x MCLK
  *    <o0.17..19>  RTCCLKSEL RTC Clock Select
  *                    <0=> 32.768kHz standby clock
  *                    <1=> 32.768kHz external clock from ERU0.IOUT0
@@ -50,10 +54,11 @@
  *                    <5=> Reserved
  *                    <6=> Reserved
  *                    <7=> Reserved
+ *    <i> Deafult: 32.768kHz standby clock 
  *    <o0.31>      do not move CLK_VAL1 to SCU_CLKCR[0..19]
  *  </h>
  *****************************************************************************/
-#define CLKVAL1_SSW 0x00010100
+#define CLKVAL1_SSW 0x00010400
 
 /*****************************************************************************
  *  <h> CLK_VAL2 Configuration

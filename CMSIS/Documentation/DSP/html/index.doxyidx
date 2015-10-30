@@ -4,9 +4,9 @@
  *  Copyright (C) 2013 ARM Ltd and ARM Germany GmbH. All rights reserved.
  *
  *  File: index.doxyidx
- *  Date: 24. March 2015
+ *  Date: 14. September 2015
  *
- *  Note: Generated with DoxyIndex V1.01  on Tuesday, 24.03.2015 10:58:32
+ *  Note: Generated with DoxyIndex V1.01  on Monday, 14.09.2015 13:48:07
  *
  *******************************************************************************************************/
 
@@ -927,7 +927,6 @@ Complex-by-Real Multiplication, group___cmplx_by_real_mult.html,
 Complex Matrix Multiplication, group___cmplx_matrix_mult.html, 
 coeffTable, arm__graphic__equalizer__example__q31_8c.html#a024c59772b9603698b898721c1e8204e, arm_graphic_equalizer_example_q31.c
 Complex FFT Functions, group___complex_f_f_t.html, 
-CONTRACT, license_8txt.html#a10f0467b31dafce8635381fbfc31df83, license.txt
 CONTROLLER_Q31_SHIFT, arm__math_8h.html#aaff6d2358c4ada8de838a279254ab550, arm_math.h
 Convolution, group___conv.html, 
 Convolution Example, group___convolution_example.html, 
@@ -954,7 +953,6 @@ CMSIS DSP Software Library, index.html,
 Convert 16-bit Integer value, group__q15__to__x.html, 
 Convert 32-bit Integer value, group__q31__to__x.html, 
 Convert 8-bit Integer value, group__q7__to__x.html, 
-DAMAGES, license_8txt.html#afc8082d353720b09f7f84a3e99b3a915, license.txt
 DCT Type IV Functions, group___d_c_t4___i_d_c_t4.html, 
 DELTA, arm__variance__example__f32_8c.html#a3fd2b1bcd7ddcf506237987ad780f495, DELTA():&#160;arm_variance_example_f32.c
 DELTA_COEFF, arm__signal__converge__example__f32_8c.html#a9156349d99957ded15d8aa3aa11723de, arm_signal_converge_example_f32.c
@@ -962,13 +960,11 @@ DELTA_ERROR, arm__signal__converge__example__f32_8c.html#a6d3c6a4484dcaac72fbfe5
 DELTA_Q15, arm__math_8h.html#a663277ff19ad0b409fb98b64b2c2750b, arm_math.h
 DELTA_Q31, arm__math_8h.html#aad77ae594e95c5af6ae4129bd6a483c2, arm_math.h
 Deprecated List, deprecated.html, 
-DIRECT, license_8txt.html#ad9afdc0bba232070031f8010f3a4d6dd, license.txt
 doBitReverse, _g_c_c_2arm__fft__bin__example__f32_8c.html#a4d2e31c38e8172505e0a369a6898657d, doBitReverse():&#160;arm_fft_bin_example_f32.c
 Dot Product Example, group___dotproduct_example.html, 
 energy, structarm__lms__norm__instance__q15.html#a1c81ded399919d8181026bc1c8602e7b, arm_lms_norm_instance_q15::energy()
 err_signal, arm__signal__converge__example__f32_8c.html#ae6bcc00ea126543ab33d6174549eacda, arm_signal_converge_example_f32.c
 errOutput, arm__signal__converge__example__f32_8c.html#a276e8a27484cf9389dabf047e76992ed, arm_signal_converge_example_f32.c
-EXEMPLARY, license_8txt.html#ae63ad52c9dceab675153066e674486d9, license.txt
 Examples, group__group_examples.html, 
 FAST_MATH_Q15_SHIFT, arm__math_8h.html#a34716b73c631e65e8dd855e08384ecb2, arm_math.h
 FAST_MATH_Q31_SHIFT, arm__math_8h.html#a4268f77b1811a0c7fc2532a0bf6108b0, arm_math.h
@@ -1005,19 +1001,13 @@ Interpolation Functions, group__group_interpolation.html,
 ifftFlag, _g_c_c_2arm__fft__bin__example__f32_8c.html#a379ccb99013d369a41b49619083c16ef, ifftFlag():&#160;arm_fft_bin_example_f32.c
 ifftFlagR, structarm__rfft__instance__f32.html#a5ee6d10a934ab4b666e0bb286c3d633f, arm_rfft_instance_f32::ifftFlagR()
 Infinite Impulse Response (IIR) Lattice Filters, group___i_i_r___lattice.html, 
-INCIDENTAL, license_8txt.html#accf7a56ff94c1269298ca951d17edc13, license.txt
-INCLUDING, license_8txt.html#ada26d66c5114ffca1170ee8b231c879d, license.txt
 INDEX_MASK, arm__math_8h.html#a29f839928f4752b73c8858d6dbb55294, arm_math.h
-INDIRECT, license_8txt.html#a095f9237ce367023024c8ccb8f8229d0, license.txt
 INPUT_SPACING, arm__math_8h.html#a1339e9abc11a3870e0c04f822a62166a, arm_math.h
 inputQ31, arm__graphic__equalizer__example__q31_8c.html#a79521a4d6a9adb144c4d999ae713413c, arm_graphic_equalizer_example_q31.c
 Kd, structarm__pid__instance__f32.html#ad5b68fbf84d16188ae4747ff91f6f088, arm_pid_instance_f32::Kd()
 Ki, structarm__pid__instance__f32.html#ac0feffde05fe391eeab3bf78e953830a, arm_pid_instance_f32::Ki()
 Kp, structarm__pid__instance__f32.html#aa9b9aa9e413c6cec376a9dddc9f01ebe, arm_pid_instance_f32::Kp()
 L, structarm__fir__interpolate__instance__f32.html#ae6f94dcc0ccd8aa4bc699b20985d9df5, arm_fir_interpolate_instance_f32::L()
-LIABILITY, license_8txt.html#abdaf89273b995cd2d18e467160bb019b, license.txt
-license, license_8txt.html#ab135b2121e9191734cb723af1165eb77, license.txt
-license.txt, license_8txt.html, 
 Linear Interpolate Example, group___linear_interp_example.html, 
 Linear Interpolation, group___linear_interpolate.html, 
 Least Mean Square (LMS) Filters, group___l_m_s.html, 
@@ -1043,10 +1033,8 @@ max_marks, _g_c_c_2arm__class__marks__example__f32_8c.html#aad32888fa966b3d9db9c
 maxDelay, structarm__fir__sparse__instance__q7.html#af74dacc1d34c078283e50f2530eb91df, arm_fir_sparse_instance_q7::maxDelay()
 mean, group__mean.html, (Global Namespace)
 merge_rfft_f32, arm__rfft__fast__f32_8c.html#a93258bc1e64a939a8ebd086367e459af, arm_rfft_fast_f32.c
-met, license_8txt.html#a30cf0b06853538c11b0c0d2d578d749e, license.txt
 Minimum, group___min.html, 
 min_marks, _g_c_c_2arm__class__marks__example__f32_8c.html#abb7687fa07ec54d8e792cfcbfe2ca809, min_marks():&#160;arm_class_marks_example_f32.c
-modification, license_8txt.html#a2329c741a6626579aa45877de35f8ff0, license.txt
 mu, arm__signal__converge__example__f32_8c.html#a09bc9e6a44f0291cfcf578f2efcddfab, MU():&#160;arm_signal_converge_example_f32.c
 mult32x64, arm__math_8h.html#a642a29d71f7951a7f6c0b797c300b711, arm_math.h
 mult_32x32_keep32, arm__math_8h.html#abb4baa0192bbb6fabc9251af4b4cb322, arm_math.h
@@ -1060,14 +1048,13 @@ Normalized LMS Filters, group___l_m_s___n_o_r_m.html,
 N, structarm__dct4__instance__q15.html#a53d24009bb9b2e93d0aa07db7f1a6c25, arm_dct4_instance_q15::N()
 Nby2, structarm__dct4__instance__q15.html#af43dcbbc2fc661ffbc525afe3dcbd7da, arm_dct4_instance_q15::Nby2()
 normalize, structarm__dct4__instance__q15.html#a197098140d68e89a08f7a249003a0b86, arm_dct4_instance_q15::normalize()
-notice, license_8txt.html#a59d3e1cb1e71d555eac80f55a2d7d9c4, license.txt
 NUM_TAPS, arm__fir__example__f32_8c.html#a7579d94e0a80fb9d376ea6c7897f73b0, arm_fir_example_f32.c
-NUMBLOCKS, arm__fir__example__f32_8c.html#af7d5613bda9a19b2ccae5d6cb79a22bc, numBlocks():&#160;arm_fir_example_f32.c
+numBlocks, arm__graphic__equalizer__example__q31_8c.html#a814e34126e1b8150f4de047e1a9e7030, NUMBLOCKS():&#160;arm_graphic_equalizer_example_q31.c
 numCols, structarm__bilinear__interp__instance__q7.html#a860dd0d24380ea06cfbb348fb3b12c9a, arm_bilinear_interp_instance_q7::numCols()
 NUMFRAMES, arm__signal__converge__example__f32_8c.html#a4b6b859e1e3f6021a360390be287ca2c, arm_signal_converge_example_f32.c
 numRows, structarm__bilinear__interp__instance__q7.html#ad5a8067cab5f9ea4688b11a623e16607, arm_bilinear_interp_instance_q7::numRows()
 numStages, arm__graphic__equalizer__example__q31_8c.html#a23f8e430b510dfdb3ebe53bffca0d864, NUMSTAGES():&#160;arm_graphic_equalizer_example_q31.c
-numStudents, _g_c_c_2arm__class__marks__example__f32_8c.html#a9d89ac0707e7c9363544986d47a70bd3, NUMSTUDENTS():&#160;arm_class_marks_example_f32.c
+NUMSTUDENTS, _g_c_c_2arm__class__marks__example__f32_8c.html#ab3b66d06b4af1af4ea2740d0ccf4e7bd, numStudents():&#160;arm_class_marks_example_f32.c
 numSubjects, _g_c_c_2arm__class__marks__example__f32_8c.html#a7b02f9b34bf2cd4d12633f5bf30771ec, NUMSUBJECTS():&#160;arm_class_marks_example_f32.c
 numTaps, arm__signal__converge__example__f32_8c.html#ac1d8ddb4f9a957eef3ad13d44de4d804, NUMTAPS():&#160;arm_signal_converge_example_f32.c
 nValues, structarm__linear__interp__instance__f32.html#a95f02a926b16d35359aca5b31e813b11, arm_linear_interp_instance_f32
@@ -1131,7 +1118,6 @@ snr1, arm__linear__interp__example__f32_8c.html#ad492c21cf2dd4e9199ae46c77f812cb
 snr2, arm__linear__interp__example__f32_8c.html#a269948ab25f230d33e3f22eab85aa1cf, arm_linear_interp_example_f32.c
 SNR_THRESHOLD, arm__matrix__example__f32_8c.html#af08ec3fef897d77c6817638bf0e0c5c6, SNR_THRESHOLD():&#160;arm_matrix_example_f32.c
 SNR_THRESHOLD_F32, arm__graphic__equalizer__example__q31_8c.html#af7d1dd4deffa8e7ed6429e5dd0fe1812, SNR_THRESHOLD_F32():&#160;arm_graphic_equalizer_example_q31.c
-SPECIAL, license_8txt.html#aaee2f5441fbc21b3aa611c5192f505ae, license.txt
 Square Root, group___s_q_r_t.html, 
 srcA_buf_f32, _g_c_c_2arm__dotproduct__example__f32_8c.html#a0c248a472fdc0507e4ab7d693e4876b6, srcA_buf_f32():&#160;arm_dotproduct_example_f32.c
 srcALen, _g_c_c_2arm__convolution__example__f32_8c.html#ace48ed566e2cd6a680f0681192e6af28, srcALen():&#160;arm_convolution_example_f32.c
@@ -1167,8 +1153,6 @@ testOutput, arm__sin__cos__example__f32_8c.html#a324833b61eae796082e07d078a67c34
 testRefOutput_f32, arm__sin__cos__example__f32_8c.html#a8bcb5c1f75ed5f1737e435f0de1850a3, testRefOutput_f32():&#160;arm_sin_cos_example_f32.c
 testRefSinOutput32_f32, arm__linear__interp__example__f32_8c.html#a5a33218d422603f3e5267b6984bdddd1, arm_linear_interp_example_f32.c
 testUnity_f32, _g_c_c_2arm__class__marks__example__f32_8c.html#a993b9b2a1faf43b319c1c6d58b26e7a1, testUnity_f32():&#160;arm_class_marks_example_f32.c
-TO, license_8txt.html#ab825d0b655b4239ccc38eaf201996c49, license.txt
-TORT, license_8txt.html#a939bfb6f16767ac1b4ccd807a5d099a2, license.txt
 twidCoefModifier, structarm__cfft__radix4__instance__f32.html#abe31ea2157dfa233e389cdfd3b9993ee, arm_cfft_radix4_instance_f32::twidCoefModifier()
 twidCoefRModifier, structarm__rfft__instance__f32.html#aede85350fb5ae6baa1b3e8bfa15b18d6, arm_rfft_instance_f32::twidCoefRModifier()
 twiddleCoef, arm__common__tables_8h.html#a9bf8c85e4c91b9b55818b3d650d2c761, arm_common_tables.h
@@ -1226,7 +1210,6 @@ Vector Shift, group__shift.html,
 var, _g_c_c_2arm__class__marks__example__f32_8c.html#a3bd39c4335d84be071cc1eaa9b0a8642, var():&#160;arm_class_marks_example_f32.c
 Variance, group__variance.html, 
 Variance Example, group___variance_example.html, 
-WARRANTIES, license_8txt.html#a24ec3fd7c1df8a2f4785d5c8791bad99, license.txt
 Weights_128, group___d_c_t4___i_d_c_t4.html#gad00f29d896d64d6da7afbbb9d3e182a4, arm_dct4_init_f32.c
 Weights_2048, group___d_c_t4___i_d_c_t4.html#gac3a2a00b3106dfcb5e0a582f50c65692, arm_dct4_init_f32.c
 Weights_512, group___d_c_t4___i_d_c_t4.html#gaeb67b0be5b3c2139d660e02cedeed908, arm_dct4_init_f32.c

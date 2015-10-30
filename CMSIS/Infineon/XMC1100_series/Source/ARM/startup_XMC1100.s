@@ -1,34 +1,48 @@
-;*******************************************************************************
+;*********************************************************************************************************************
 ;* @file     startup_XMC1100.s
-;* @brief    CMSIS Core Device Startup File for
-;*           Infineon XMC1100 Device Series
-;* @version  V1.3
-;* @date     December 2014
+;* @brief    CMSIS Core Device Startup File for Infineon XMC1100 Device Series
+;* @version  V1.4
+;* @date     03 Sep 2015
 ;*
-;* Copyright (C) 2014 Infineon Technologies AG. All rights reserved.
+;* @cond
+;*********************************************************************************************************************
+;* Copyright (c) 2015, Infineon Technologies AG
+;* All rights reserved.                        
+;*                                             
+;* Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+;* following conditions are met:   
+;*                                                                              
+;* Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+;* disclaimer.                        
+;* 
+;* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+;* disclaimer in the documentation and/or other materials provided with the distribution.                       
+;* 
+;* Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+;* products derived from this software without specific prior written permission.                                           
+;*                                                                              
+;* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+;* INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+;* DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+;* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+;* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+;* WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+;* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+;*                                                                              
+;* To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+;* Infineon Technologies AG dave@infineon.com).                                                          
+;*********************************************************************************************************************
 ;*
+;**************************** Change history ********************************
+;* V1.0, Jan, 21, 2013 TYS:Startup file for XMC1
+;* V1.1, Jul, 17, 2013 TYS:remove redundant vector table
+;* V1.2, Nov, 25, 2014 JFT:Removed DAVE3 dependency. 
+;*                         Default handler used for all IRQs
+;* V1.3, Dec, 11, 2014 JFT:Default clocking changed, MCLK=32MHz and PCLK=64MHz
+;* V1.4, Sep, 03, 2015 JFT:SSW default clocking changed, MCLK=8MHz and PCLK=16MHz avoid problems with BMI tool timeout
 ;*
-;* @par
-;* Infineon Technologies AG (Infineon) is supplying this software for use with 
-;* Infineon's microcontrollers.  This file can be freely distributed
-;* within development tools that are supporting such microcontrollers.
+;* @endcond 
 ;*
-;* @par
-;* THIS SOFTWARE IS PROVIDED AS IS.  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
-;* OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
-;* MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
-;* ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
-;* CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
-;*
-;******************************************************************************
-
-;************************** Version History ************************************
-; V1.0, Jan, 21, 2013 TYS:Startup file for XMC1
-; V1.1, Jul, 17, 2013 TYS:remove redundant vector table
-; V1.2, Nov, 25, 2014 JFT:Removed DAVE3 dependency. 
-;                         Default handler used for all IRQs
-; V1.3, Dec, 11, 2014 JFT:Default clocking changed, MCLK=32MHz and PCLK=64MHz
-;*******************************************************************************
 
 ; ------------------ <<< Use Configuration Wizard in Context Menu >>> ------------------
            
@@ -58,6 +72,7 @@ __heap_limit
 ; <h> Clock system handling by SSW
 ;   <h> CLK_VAL1 Configuration
 ;    <o0.0..7>    FDIV Fractional Divider Selection
+;    <i> Deafult: 0. Fractional part of clock divider, MCLK = DCO1 / (2 x (IDIV + (FDIV / 256)))
 ;    <o0.8..15>   IDIV Divider Selection (limited to 1-16)
 ;                    <0=> Divider is bypassed
 ;                    <1=> MCLK = 32 MHz
@@ -66,9 +81,11 @@ __heap_limit
 ;                    <4=> MCLK = 8 MHz
 ;                    <254=> MCLK = 126 kHz
 ;                    <255=> MCLK = 125.5 kHz
+;    <i> Deafult: 4. Interger part of clock divider, MCLK = DCO1 / (2 x (IDIV + (FDIV / 256))) = 8MHz
 ;    <o0.16>      PCLKSEL PCLK Clock Select
 ;                    <0=> PCLK = MCLK
 ;                    <1=> PCLK = 2 x MCLK
+;    <i> Deafult: 2 x MCLK
 ;    <o0.17..19>  RTCCLKSEL RTC Clock Select
 ;                    <0=> 32.768kHz standby clock
 ;                    <1=> 32.768kHz external clock from ERU0.IOUT0
@@ -78,9 +95,10 @@ __heap_limit
 ;                    <5=> Reserved
 ;                    <6=> Reserved
 ;                    <7=> Reserved
+;    <i> Deafult: 32.768kHz standby clock 
 ;    <o0.31>      do not move CLK_VAL1 to SCU_CLKCR[0..19]
 ;   </h>
-CLK_VAL1_Val    EQU     0x00010100      
+CLK_VAL1_Val    EQU     0x00010400      
 
 ;   <h> CLK_VAL2 Configuration
 ;    <o0.0>    disable VADC and SHS Gating

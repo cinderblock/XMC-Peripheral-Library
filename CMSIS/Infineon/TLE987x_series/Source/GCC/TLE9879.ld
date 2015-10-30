@@ -61,7 +61,7 @@ MEMORY
 	SRAM_1(!RX) : ORIGIN = 0x18000000, LENGTH = 0x1800
 }
 
-stack_size = 256;
+stack_size = 512;
 
 SECTIONS
 {

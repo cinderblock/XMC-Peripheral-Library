@@ -9,7 +9,7 @@
 ;*
 ;******************* Version History **********************************************   
 ;
-;  V1, May,  7,2015 JFT:a) Initial version
+;  V1, May,  7,2015 JFT:a) Initial version, MCLK=8MHz, PCLK=16MHz
 ;     
 ;**********************************************************************************
 ;
@@ -28,12 +28,13 @@
  * <h> Clock system handling by SSW
  *  <h> CLK_VAL1 Configuration
  *   <o0.0..9>    FDIV Fractional Divider Selection <0-1023>
- *   <i> Fractional part of clock divider, MCLK = DCO1 / (IDIV + (FDIV / 1024))
+ *   <i> Deafult: 0. Fractional part of clock divider, MCLK = DCO1 / (IDIV + (FDIV / 1024))
  *   <o0.10..17>  IDIV Divider Selection <1-16>
- *   <i> Interger part of clock divider, MCLK = DCO1 / (IDIV + (FDIV / 1024))
+ *   <i> Deafult: 6. Interger part of clock divider, MCLK = DCO1 / (IDIV + (FDIV / 1024) = 8MHz)
  *   <o0.18>      PCLKSEL PCLK Clock Select
  *                   <0=> PCLK = MCLK
  *                   <1=> PCLK = 2 x MCLK
+ *   <i> Deafult: 2 x MCLK
  *   <o0.19..21>  RTCCLKSEL RTC Clock Select
  *                   <0=> 32.768kHz standby clock
  *                   <1=> 32.768kHz external clock from ERU0.IOUT0
@@ -43,10 +44,11 @@
  *                   <5=> 32.768kHz XTAL clock via OSC_LP
  *                   <6=> Reserved
  *                   <7=> Reserved
+ *   <i> Deafult: 32.768kHz standby clock
  *   <o0.31>      do not move CLK_VAL1 to SCU_CLKCR[0..19]
  * </h>
  *****************************************************************************/
-#define CLKVAL1_SSW 0x00040400
+#define CLKVAL1_SSW 0x00041800
 
 /*****************************************************************************
  *  <h> CLK_VAL2 Configuration
@@ -92,17 +94,26 @@ __vector_table
         THUMB
         LDR     R0,=HardFault_Handler
         BX      R0
-		DCD     0
-        DCD     0
-        DCD     0
-        DCD     0
-        DCD     0
-        DCD     0
-        DCD     0
+        LDR     R0,=Undef_Handler
+        BX      R0
+        LDR     R0,=Undef_Handler
+        BX      R0
+        LDR     R0,=Undef_Handler
+        BX      R0
+        LDR     R0,=Undef_Handler
+        BX      R0
+        LDR     R0,=Undef_Handler
+        BX      R0
+        LDR     R0,=Undef_Handler
+        BX      R0
+        LDR     R0,=Undef_Handler
+        BX      R0
         LDR     R0,=SVC_Handler
         BX      R0
-        DCD     0
-        DCD     0
+        LDR     R0,=Undef_Handler
+        BX      R0
+        LDR     R0,=Undef_Handler
+        BX      R0
         LDR     R0,=PendSV_Handler
         BX      R0
         LDR     R0,=SysTick_Handler
@@ -191,6 +202,10 @@ Reset_Handler
         LDR     R0, =__iar_program_start
         BX      R0
 
+        PUBWEAK Undef_Handler
+        SECTION .text:CODE:REORDER:NOROOT(1)
+Undef_Handler
+        B Undef_Handler
 
         PUBWEAK HardFault_Handler
         SECTION .text:CODE:REORDER:NOROOT(1)

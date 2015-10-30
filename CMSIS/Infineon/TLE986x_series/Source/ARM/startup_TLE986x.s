@@ -1,3 +1,31 @@
+;*******************************************************************************
+;* @file     startup_TLE986x.s
+;* @brief    CMSIS Core Device Startup File for
+;*           Infineon TLE986x Device Series
+;* @version  V1.0
+;* @date     September 2012
+;*
+;* Copyright (C) 2014 Infineon Technologies AG. All rights reserved.
+;*
+;*
+;* @par
+;* Infineon Technologies AG (Infineon) is supplying this software for use with 
+;* Infineon's microcontrollers.  This file can be freely distributed
+;* within development tools that are supporting such microcontrollers.
+;*
+;* @par
+;* THIS SOFTWARE IS PROVIDED AS IS.  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
+;* OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
+;* MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
+;* ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
+;* CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+;*
+;******************************************************************************
+
+;************************** Version History ************************************
+; V1.0, Sep,  9, 2012 DM: initial version
+;*******************************************************************************
+
 Stack_Size      EQU     0x200
 
                 AREA    STACK, NOINIT, READWRITE, ALIGN=3

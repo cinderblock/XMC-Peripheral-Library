@@ -1,41 +1,55 @@
-/******************************************************************************
- * @file     startup_XMC1400.s
- * @brief    CMSIS Core Device Startup File for
- *           Infineon XMC1400 Device Series
+/*********************************************************************************************************************
+ * @file     startup_XMC1400.S
+ * @brief    CMSIS Core Device Startup File for Infineon XMC1400 Device Series
  * @version  V1.0
- * @date     15 April 2015
+ * @date     03 Sep 2015
  *
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
+ * @cond
+ *********************************************************************************************************************
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
  *
- *
- * @par
- * Infineon Technologies AG (Infineon) is supplying this software for use with 
- * Infineon's microcontrollers.  This file can be freely distributed
- * within development tools that are supporting such microcontrollers.
- *
- * @par
- * THIS SOFTWARE IS PROVIDED AS IS.  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
- * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- *
- ******************************************************************************/
-
-/********************** Version History ***************************************
- * V1.0, April, 15, 2015 JFT: Initial version
- ******************************************************************************/
+ **************************** Change history ********************************
+ * V1.0, Sep, 03, 2015 JFT:Initial version
+ *                         MCLK=8MHz, PCLK=16MHz
+ * @endcond 
+ */
 
 /*****************************************************************************
  * <h> Clock system handling by SSW
  *  <h> CLK_VAL1 Configuration
  *   <o0.0..9>    FDIV Fractional Divider Selection <0-1023>
- *   <i> Fractional part of clock divider, MCLK = DCO1 / (IDIV + (FDIV / 1024))
+ *   <i> Deafult: 0. Fractional part of clock divider, MCLK = DCO1 / (IDIV + (FDIV / 1024))
  *   <o0.10..17>  IDIV Divider Selection <1-16>
- *   <i> Interger part of clock divider, MCLK = DCO1 / (IDIV + (FDIV / 1024))
+ *   <i> Deafult: 6. Interger part of clock divider, MCLK = DCO1 / (IDIV + (FDIV / 1024) = 8MHz)
  *   <o0.18>      PCLKSEL PCLK Clock Select
  *                   <0=> PCLK = MCLK
  *                   <1=> PCLK = 2 x MCLK
+ *   <i> Deafult: 2 x MCLK
  *   <o0.19..21>  RTCCLKSEL RTC Clock Select
  *                   <0=> 32.768kHz standby clock
  *                   <1=> 32.768kHz external clock from ERU0.IOUT0
@@ -45,10 +59,11 @@
  *                   <5=> 32.768kHz XTAL clock via OSC_LP
  *                   <6=> Reserved
  *                   <7=> Reserved
+ *   <i> Deafult: 32.768kHz standby clock
  *   <o0.31>      do not move CLK_VAL1 to SCU_CLKCR[0..19]
  * </h>
  *****************************************************************************/
-#define CLKVAL1_SSW 0x00040400
+#define CLKVAL1_SSW 0x00041800
 
 /*****************************************************************************
  *  <h> CLK_VAL2 Configuration

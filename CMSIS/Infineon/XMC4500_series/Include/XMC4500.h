@@ -16432,7 +16432,6 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define PORT14                          ((PORT14_Type             *) PORT14_BASE)
 #define PORT15                          ((PORT15_Type             *) PORT15_BASE)
 
-
 /** @} */ /* End of group Device_Peripheral_Registers */
 /** @} */ /* End of group XMC4500 */
 /** @} */ /* End of group Infineon */

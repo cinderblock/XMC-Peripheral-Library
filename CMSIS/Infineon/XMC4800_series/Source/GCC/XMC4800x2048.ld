@@ -40,9 +40,7 @@
  * --------------
  *
  * 2015-07-13:
- *     - Fix warning message 'sh_link not set for section .ARM.exidx' when using GCC ARM 4.9-2015-q2-update
- *     - Fix error '.ARM.exidx has both ordered and unordered sections'
- *     - Removed 'ARM <->THUMB interworking'
+ *     - Updates from ARM template for C++ and fixes for GCC 4.9q2
  * 
  * 2015-05-22:
  *     - Initial version
@@ -59,222 +57,214 @@ stack_size = DEFINED(stack_size) ? stack_size : 2048;
 
 MEMORY
 {
-	FLASH_1_cached(RX) : ORIGIN = 0x08000000, LENGTH = 0x00200000
-	FLASH_1_uncached(RX) : ORIGIN = 0x0C000000, LENGTH = 0x00200000
-	PSRAM_1(!RX) : ORIGIN = 0x1FFE8000, LENGTH = 0x18000
-	DSRAM_1_system(!RX) : ORIGIN = 0x20000000, LENGTH = 0x20000
-	DSRAM_2_comm(!RX) : ORIGIN = 0x20020000, LENGTH = 0x20000
-	SRAM_combined(!RX) : ORIGIN = 0x1FFEE000, LENGTH = 0x00058000
-	EXTMEM_1(!RX) : ORIGIN = 0x60000000, LENGTH = 0x04000000	
-	EXTMEM_2(!RX) : ORIGIN = 0x64000000, LENGTH = 0x04000000	
-	EXTMEM_3(!RX) : ORIGIN = 0x68000000, LENGTH = 0x04000000	
-	EXTMEM_4(!RX) : ORIGIN = 0x6C000000, LENGTH = 0x04000000	
+  FLASH_1_cached(RX) : ORIGIN = 0x08000000, LENGTH = 0x00200000
+  FLASH_1_uncached(RX) : ORIGIN = 0x0C000000, LENGTH = 0x00200000
+  PSRAM_1(!RX) : ORIGIN = 0x1FFE8000, LENGTH = 0x18000
+  DSRAM_1_system(!RX) : ORIGIN = 0x20000000, LENGTH = 0x20000
+  DSRAM_2_comm(!RX) : ORIGIN = 0x20020000, LENGTH = 0x20000
+  SRAM_combined(!RX) : ORIGIN = 0x1FFE8000, LENGTH = 0x00058000
 }
 
 SECTIONS
 {
-	/* TEXT section */
+  /* TEXT section */
 
-	.text : AT(ORIGIN(FLASH_1_uncached))
-	{
-		sText = .;
-		KEEP(*(.reset));
-		*(.text .text.* .gnu.linkonce.t.*);
+  .text :
+  {
+    sText = .;
+    KEEP(*(.reset));
+    *(.text .text.* .gnu.linkonce.t.*);
 
-		/* C++ Support */
-		KEEP(*(.init))
-		__preinit_array_start = .;
-		KEEP (*(.preinit_array))
-		__preinit_array_end = .;
-		__init_array_start = .;
-		KEEP (*(SORT(.init_array.*)))
-		KEEP (*(.init_array))
-		__init_array_end = .;
-		KEEP (*crtbegin.o(.ctors))
-		KEEP (*(EXCLUDE_FILE (*crtend.o) .ctors))
-		KEEP (*(SORT(.ctors.*)))
-		KEEP (*crtend.o(.ctors))
-		KEEP(*(.fini))
-		__fini_array_start = .;
-		KEEP (*(.fini_array))
-		KEEP (*(SORT(.fini_array.*)))
-		__fini_array_end = .;
+    /* C++ Support */
+    KEEP(*(.init))
+    KEEP(*(.fini))
 
-		KEEP (*crtbegin.o(.dtors))
-		KEEP (*(EXCLUDE_FILE (*crtend.o) .dtors))
-		KEEP (*(SORT(.dtors.*)))
-		KEEP (*crtend.o(.dtors))
+    /* .ctors */
+    *crtbegin.o(.ctors)
+    *crtbegin?.o(.ctors)
+    *(EXCLUDE_FILE(*crtend?.o *crtend.o) .ctors)
+    *(SORT(.ctors.*))
+    *(.ctors)
 
-	} > FLASH_1_cached
-    
-	/* Exception handling, exidx needs a dedicated section */
-	__extab_load = . | 0x04000000;
-	.ARM.extab : AT(__extab_load)
-    {
-		*(.ARM.extab* .gnu.linkonce.armextab.*)
-    } > FLASH_1_cached
-    
-	__exidx_load = . | 0x04000000;
-	.ARM.exidx : AT(__exidx_load)
-	{
-		__exidx_start = .;
-		*(.ARM.exidx* .gnu.linkonce.armexidx.*)
-		__exidx_end = .;
-	} > FLASH_1_cached
+    /* .dtors */
+    *crtbegin.o(.dtors)
+    *crtbegin?.o(.dtors)
+    *(EXCLUDE_FILE(*crtend?.o *crtend.o) .dtors)
+    *(SORT(.dtors.*))
+    *(.dtors)
 
-	/* CONST data section */
-	__rodata_load = . | 0x04000000;    
-	.rodata : AT(__rodata_load)
-	{
-		. = ALIGN(4);
-		*(.rodata .rodata.*)
-		*(.gnu.linkonce.r*)
-	} > FLASH_1_cached
-
-    . = ALIGN(16);
-		
-	/* End of RO-DATA and start of LOAD region for DATA */
-	__ram_load = . | 0x04000000;
-
-    /* DSRAM layout (Lowest to highest)*/
-	Stack (NOLOAD) : 
-	{
-		__stack_start = .;
-		. = . + stack_size;
-		__stack_end = .;
-		__initial_sp = .;
-	} > SRAM
-
-	/* functions with __attribute__((section(".ram_code"))) */
-    .ram_code : AT(__ram_load)
-	{
-		__ram_code_start = .;
-		*(.ram_code)  	
-        . = ALIGN(4);
-		__ram_code_end = .;
-	} > SRAM
-	__ram_code_load = LOADADDR (.ram_code);
-	__ram_code_size = __ram_code_end - __ram_code_start;
-
-	/* Standard DATA and user defined DATA/BSS/CONST sections */
-	.data : AT(LOADADDR(.ram_code)  + SIZEOF(.ram_code))
-	{
-		__data_start = .;
-		* (.data);
-		* (.data*);
-		*(*.data);
-		*(.gnu.linkonce.d*)
-        . = ALIGN(4);
-        __data_end = .;
-	} > SRAM
-    __data_load = LOADADDR (.data);
-	__data_size = __data_end - __data_start;
+    *(.rodata .rodata.*)
+    *(.gnu.linkonce.r*)
         
-	/* BSS section */
-	.bss (NOLOAD) : 
-	{
-		__bss_start = .;
-		* (.bss);
-		* (.bss*);
-		* (COMMON);
-		*(.gnu.linkonce.b*)
-        . = ALIGN(4);
-        __bss_end = .;
-	} > SRAM
-	__bss_size = __bss_end - __bss_start;
+  } > FLASH_1_cached AT > FLASH_1_uncached
 
-    /* Shift location counter, so that ETH_RAM and USB_RAM are located above DSRAM_1_system */    
-    __shift_loc =  (__bss_end >= DSRAM_1_system) ? 0 : (DSRAM_1_system - __bss_end);
+  .eh_frame_hdr : ALIGN (4)
+  {
+    KEEP (*(.eh_frame_hdr))
+  } > FLASH_1_cached AT > FLASH_1_uncached
+  
+  .eh_frame : ALIGN (4)
+  {
+    KEEP (*(.eh_frame))
+  } > FLASH_1_cached AT > FLASH_1_uncached
 
-    USB_RAM  (__bss_end + __shift_loc) (NOLOAD) :
-    {
-        USB_RAM_start = .;
-        *(USB_RAM)
-        . = ALIGN(4);
-        USB_RAM_end = .;
-    } > SRAM_combined
-	USB_RAM_size = USB_RAM_end - USB_RAM_start;
+  /* Exception handling, exidx needs a dedicated section */
+  .ARM.extab : ALIGN(4)
+  {
+    *(.ARM.extab* .gnu.linkonce.armextab.*)
+  } > FLASH_1_cached AT > FLASH_1_uncached
 
-    ETH_RAM (USB_RAM_end) (NOLOAD) :
-    {
-        ETH_RAM_start = .;
-        *(ETH_RAM)
-        . = ALIGN(4);
-        ETH_RAM_end = .;
-        . = ALIGN(8);
-        Heap_Bank1_Start = .;
-    } > SRAM_combined
-	ETH_RAM_size = ETH_RAM_end - ETH_RAM_start;
+  . = ALIGN(4);
+  __exidx_start = .;
+  .ARM.exidx : ALIGN(4)
+  {
+    *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+  } > FLASH_1_cached AT > FLASH_1_uncached
+  __exidx_end = .;
+  . = ALIGN(4);
+    
+    /* DSRAM layout (Lowest to highest)*/
+  Stack (NOLOAD) : 
+  {
+    __stack_start = .;
+    . = . + stack_size;
+    __stack_end = .;
+    __initial_sp = .;
+  } > SRAM_combined
 
-    /* .no_init section */
-    .no_init ORIGIN(SRAM_combined) + LENGTH(SRAM_combined) - 0x40 (NOLOAD) : 
-    {
-        Heap_Bank1_End = .;
-        * (.no_init);
-    } > SRAM_combined
+  /* functions with __attribute__((section(".ram_code"))) */
+  .ram_code :
+  {
+    . = ALIGN(4);        
+    __ram_code_start = .;
+    *(.ram_code)    
+    __ram_code_end = .;
+  } > SRAM_combined AT > FLASH_1_uncached
+  __ram_code_load = LOADADDR (.ram_code);
+  __ram_code_size = __ram_code_end - __ram_code_start;
 
-    .extmem_1 (NOLOAD) : 
-    {
-        * (.extmem_1);
-    } > EXTMEM_1
+  /* Standard DATA and user defined DATA/BSS/CONST sections */
+  .data :
+  {
+    . = ALIGN(4);        
+    __data_start = .;
+    *(vtable)        
+    * (.data);
+    * (.data*);
+    *(*.data);
+    *(.gnu.linkonce.d*)
+      
+    . = ALIGN(4);
+    /* preinit data */
+    PROVIDE_HIDDEN (__preinit_array_start = .);
+    KEEP(*(.preinit_array))
+    PROVIDE_HIDDEN (__preinit_array_end = .);
 
-    .extmem_2 (NOLOAD) : 
-    {
-        * (.extmem_2);
-    } > EXTMEM_2
+    . = ALIGN(4);
+    /* init data */
+    PROVIDE_HIDDEN (__init_array_start = .);
+    KEEP(*(SORT(.init_array.*)))
+    KEEP(*(.init_array))
+    PROVIDE_HIDDEN (__init_array_end = .);
 
-    .extmem_3 (NOLOAD) : 
-    {
-        * (.extmem_3);
-    } > EXTMEM_3
 
-    .extmem_4 (NOLOAD) : 
-    {
-        * (.extmem_4);
-    } > EXTMEM_4
-	
-	/* Heap - Bank1*/
-	Heap_Bank1_Size  = Heap_Bank1_End - Heap_Bank1_Start;
+    . = ALIGN(4);
+    /* finit data */
+    PROVIDE_HIDDEN (__fini_array_start = .);
+    KEEP(*(SORT(.fini_array.*)))
+    KEEP(*(.fini_array))
+    PROVIDE_HIDDEN (__fini_array_end = .);
 
-	/DISCARD/ :
-	{
-		*(.comment)
-	}
+    __data_end = .;
+  } > SRAM_combined AT > FLASH_1_uncached
+  __data_load = LOADADDR (.data);
+  __data_size = __data_end - __data_start;
+        
+  /* BSS section */
+  .bss (NOLOAD) : 
+  {
+    . = ALIGN(4);        
+    __bss_start = .;
+    * (.bss);
+    * (.bss*);
+    * (COMMON);
+    *(.gnu.linkonce.b*)
+    __bss_end = .;
+  } > SRAM_combined
+  __bss_size = __bss_end - __bss_start;
 
-	.stab		0 (NOLOAD) : { *(.stab) }
-	.stabstr	0 (NOLOAD) : { *(.stabstr) }
+  /* Shift location counter, so that ETH_RAM and USB_RAM are located above DSRAM_1_system */    
+  __shift_loc =  (__bss_end >= ORIGIN(DSRAM_1_system)) ? 0 : (ORIGIN(DSRAM_1_system) - __bss_end);
 
-	/* DWARF 1 */
-	.debug				0 : { *(.debug) }
-	.line				0 : { *(.line) }
+  USB_RAM  (__bss_end + __shift_loc) (NOLOAD) :
+  {
+    . = ALIGN(4);        
+    USB_RAM_start = .;
+    *(USB_RAM)
+    USB_RAM_end = .;
+  } > SRAM_combined
+  USB_RAM_size = USB_RAM_end - USB_RAM_start;
 
-	/* GNU DWARF 1 extensions */
-	.debug_srcinfo		0 : { *(.debug_srcinfo) }
-	.debug_sfnames		0 : { *(.debug_sfnames) }
+  ETH_RAM (USB_RAM_end) (NOLOAD) :
+  {
+    . = ALIGN(4);        
+    ETH_RAM_start = .;
+    *(ETH_RAM)
+    ETH_RAM_end = .;
+    . = ALIGN(8);
+    Heap_Bank1_Start = .;
+  } > SRAM_combined
+  ETH_RAM_size = ETH_RAM_end - ETH_RAM_start;
 
-	/* DWARF 1.1 and DWARF 2 */
-	.debug_aranges		0 : { *(.debug_aranges) }
-	.debug_pubnames		0 : { *(.debug_pubnames) }
-	.debug_pubtypes		0 : { *(.debug_pubtypes) }
+  /* .no_init section */
+  .no_init ORIGIN(SRAM_combined) + LENGTH(SRAM_combined) - 0x40 (NOLOAD) : 
+  {
+    Heap_Bank1_End = .;
+    * (.no_init);
+  } > SRAM_combined
 
-	/* DWARF 2 */
-	.debug_info			0 : { *(.debug_info .gnu.linkonce.wi.*) }
-	.debug_abbrev		0 : { *(.debug_abbrev) }
-	.debug_line			0 : { *(.debug_line) }
-	.debug_frame		0 : { *(.debug_frame) }
-	.debug_str			0 : { *(.debug_str) }
-	.debug_loc			0 : { *(.debug_loc) }
-	.debug_macinfo		0 : { *(.debug_macinfo) }
+  /* Heap - Bank1*/
+  Heap_Bank1_Size  = Heap_Bank1_End - Heap_Bank1_Start;
 
-	/* DWARF 2.1 */
-	.debug_ranges		0 : { *(.debug_ranges) }
+  /DISCARD/ :
+  {
+    *(.comment)
+  }
 
-	/* SGI/MIPS DWARF 2 extensions */
-	.debug_weaknames	0 : { *(.debug_weaknames) }
-	.debug_funcnames	0 : { *(.debug_funcnames) }
-	.debug_typenames	0 : { *(.debug_typenames) }
-	.debug_varnames		0 : { *(.debug_varnames) }
+  .stab   0 (NOLOAD) : { *(.stab) }
+  .stabstr  0 (NOLOAD) : { *(.stabstr) }
 
-	/* Build attributes */
-	.build_attributes	0 : { *(.ARM.attributes) }
+  /* DWARF 1 */
+  .debug        0 : { *(.debug) }
+  .line       0 : { *(.line) }
+
+  /* GNU DWARF 1 extensions */
+  .debug_srcinfo    0 : { *(.debug_srcinfo) }
+  .debug_sfnames    0 : { *(.debug_sfnames) }
+
+  /* DWARF 1.1 and DWARF 2 */
+  .debug_aranges    0 : { *(.debug_aranges) }
+  .debug_pubnames   0 : { *(.debug_pubnames) }
+  .debug_pubtypes   0 : { *(.debug_pubtypes) }
+
+  /* DWARF 2 */
+  .debug_info     0 : { *(.debug_info .gnu.linkonce.wi.*) }
+  .debug_abbrev   0 : { *(.debug_abbrev) }
+  .debug_line     0 : { *(.debug_line) }
+  .debug_frame    0 : { *(.debug_frame) }
+  .debug_str      0 : { *(.debug_str) }
+  .debug_loc      0 : { *(.debug_loc) }
+  .debug_macinfo    0 : { *(.debug_macinfo) }
+
+  /* DWARF 2.1 */
+  .debug_ranges   0 : { *(.debug_ranges) }
+
+  /* SGI/MIPS DWARF 2 extensions */
+  .debug_weaknames  0 : { *(.debug_weaknames) }
+  .debug_funcnames  0 : { *(.debug_funcnames) }
+  .debug_typenames  0 : { *(.debug_typenames) }
+  .debug_varnames   0 : { *(.debug_varnames) }
+
+  /* Build attributes */
+  .build_attributes 0 : { *(.ARM.attributes) }
 }

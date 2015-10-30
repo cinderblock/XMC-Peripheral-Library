@@ -24,11 +24,11 @@ Copyright (C) 2011-2015 Infineon Technologies AG. All rights reserved.
  * @brief    CMSIS Cortex-M4 Peripheral Access Layer Header File for
  *           XMC4800 from Infineon.
  *
- * @version  V1.0.2 (Reference Manual v1.0)
- * @date     30. June 2015
+ * @version  V1.1.2 (Reference Manual v1.0)
+ * @date     11. September 2015
  *
- * @note     Generated with SVDConv V2.86c 
- *           from CMSIS SVD File 'XMC4800_Processed_SVD.xml' Version 1.0.2 (Reference Manual v1.0),
+ * @note     Generated with SVDConv V2.87g 
+ *           from CMSIS SVD File 'XMC4800_Processed_SVD.xml' Version 1.1.2 (Reference Manual v1.0),
  *******************************************************************************************************/
 
 
@@ -357,6 +357,21 @@ reg = (uint##size##_t) (VAL2 | VAL4);\
   #warning Not supported compiler type
 #endif
 
+
+typedef struct {
+  __IO uint32_t  MOFCR;                             /*!< (@ 0x48015000) Message Object Function Control Register               */
+  __IO uint32_t  MOFGPR;                            /*!< (@ 0x48015004) Message Object FIFO/Gateway Pointer Register           */
+  __IO uint32_t  MOIPR;                             /*!< (@ 0x48015008) Message Object Interrupt Pointer Register              */
+  __IO uint32_t  MOAMR;                             /*!< (@ 0x4801500C) Message Object Acceptance Mask Register                */
+  __IO uint32_t  MODATAL;                           /*!< (@ 0x48015010) Message Object Data Register Low                       */
+  __IO uint32_t  MODATAH;                           /*!< (@ 0x48015014) Message Object Data Register High                      */
+  __IO uint32_t  MOAR;                              /*!< (@ 0x48015018) Message Object Arbitration Register                    */
+  
+  union {
+    __I  uint32_t  MOSTAT;                          /*!< (@ 0x4801501C) Message Object Status Register                         */
+    __O  uint32_t  MOCTR;                           /*!< (@ 0x4801501C) Message Object Control Register                        */
+  };
+} CAN_MO_TypeDef;                                      /*!< (@ 0x48015020) Cluster End. Size = 32 (0x20)                          */
 
 
 /* ================================================================================ */
@@ -908,7 +923,7 @@ typedef struct {                                    /*!< (@ 0x50004600) SCU_CLK 
   __IO uint32_t  SLEEPCR;                           /*!< (@ 0x50004630) Sleep Control Register                                 */
   __IO uint32_t  DSLEEPCR;                          /*!< (@ 0x50004634) Deep Sleep Control Register                            */
   __IO uint32_t  ECATCLKCR;                         /*!< (@ 0x50004638) EtherCAT Clock Control Register                        */
-  __IO uint32_t  CANCLKCR;                          /*!< (@ 0x5000463C) MultiCAN Clock Control Register                        */
+  __I  uint32_t  RESERVED;
   __I  uint32_t  CGATSTAT0;                         /*!< (@ 0x50004640) Peripheral 0 Clock Gating Status                       */
   __O  uint32_t  CGATSET0;                          /*!< (@ 0x50004644) Peripheral 0 Clock Gating Set                          */
   __O  uint32_t  CGATCLR0;                          /*!< (@ 0x50004648) Peripheral 0 Clock Gating Clear                        */
@@ -1562,7 +1577,7 @@ typedef struct {                                    /*!< (@ 0x54010000) ECAT Str
   __IO uint8_t   EEP_STATE;                         /*!< (@ 0x54010501) EEPROM PDI Access State                                */
   __IO uint16_t  EEP_CONT_STAT;                     /*!< (@ 0x54010502) EEPROM Control/Status                                  */
   __IO uint32_t  EEP_ADR;                           /*!< (@ 0x54010504) EEPROM Address                                         */
-  __IO uint32_t  EEP_DATA[2];                       /*!< (@ 0x54010508) EEPROM Data                                            */
+  __IO uint32_t  EEP_DATA[2];                       /*!< (@ 0x54010508) EEPROM Read/Write data                                 */
   __IO uint16_t  MII_CONT_STAT;                     /*!< (@ 0x54010510) MII Management Control/Status                          */
   __IO uint8_t   MII_PHY_ADR;                       /*!< (@ 0x54010512) PHY Address                                            */
   __IO uint8_t   MII_PHY_REG_ADR;                   /*!< (@ 0x54010513) PHY Register Address                                   */
@@ -1978,28 +1993,17 @@ typedef struct {                                    /*!< (@ 0x48014200) CAN_NODE
 
 
 /* ================================================================================ */
-/* ================                CAN_MO [CAN_MO0]                ================ */
+/* ================             CAN_MO_CLUSTER [CAN_MO]            ================ */
 /* ================================================================================ */
 
 
 /**
-  * @brief Controller Area Networks (CAN_MO)
+  * @brief Controller Area Networks (CAN_MO_CLUSTER)
   */
 
-typedef struct {                                    /*!< (@ 0x48015000) CAN_MO Structure                                       */
-  __IO uint32_t  MOFCR;                             /*!< (@ 0x48015000) Message Object Function Control Register               */
-  __IO uint32_t  MOFGPR;                            /*!< (@ 0x48015004) Message Object FIFO/Gateway Pointer Register           */
-  __IO uint32_t  MOIPR;                             /*!< (@ 0x48015008) Message Object Interrupt Pointer Register              */
-  __IO uint32_t  MOAMR;                             /*!< (@ 0x4801500C) Message Object Acceptance Mask Register                */
-  __IO uint32_t  MODATAL;                           /*!< (@ 0x48015010) Message Object Data Register Low                       */
-  __IO uint32_t  MODATAH;                           /*!< (@ 0x48015014) Message Object Data Register High                      */
-  __IO uint32_t  MOAR;                              /*!< (@ 0x48015018) Message Object Arbitration Register                    */
-  
-  union {
-    __I  uint32_t  MOSTAT;                          /*!< (@ 0x4801501C) Message Object Status Register                         */
-    __O  uint32_t  MOCTR;                           /*!< (@ 0x4801501C) Message Object Control Register                        */
-  };
-} CAN_MO_TypeDef;
+typedef struct {                                    /*!< (@ 0x48015000) CAN_MO_CLUSTER Structure                               */
+  CAN_MO_TypeDef MO[256];                              /*!< (@ 0x48015000) Message Object Registers                               */
+} CAN_MO_CLUSTER_Type;
 
 
 /* ================================================================================ */
@@ -2071,7 +2075,10 @@ typedef struct {                                    /*!< (@ 0x40004400) VADC_G S
   __IO uint32_t  SYNCTR;                            /*!< (@ 0x400044C0) Synchronization Control Register                       */
   __I  uint32_t  RESERVED5;
   __IO uint32_t  BFL;                               /*!< (@ 0x400044C8) Boundary Flag Register                                 */
-  __I  uint32_t  RESERVED6[13];
+  __O  uint32_t  BFLS;                              /*!< (@ 0x400044CC) Boundary Flag Software Register                        */
+  __IO uint32_t  BFLC;                              /*!< (@ 0x400044D0) Boundary Flag Control Register                         */
+  __IO uint32_t  BFLNP;                             /*!< (@ 0x400044D4) Boundary Flag Node Pointer Register                    */
+  __I  uint32_t  RESERVED6[10];
   __IO uint32_t  QCTRL0;                            /*!< (@ 0x40004500) Queue 0 Source Control Register                        */
   __IO uint32_t  QMR0;                              /*!< (@ 0x40004504) Queue 0 Mode Register                                  */
   __I  uint32_t  QSR0;                              /*!< (@ 0x40004508) Queue 0 Status Register                                */
@@ -2104,7 +2111,7 @@ typedef struct {                                    /*!< (@ 0x40004400) VADC_G S
   __I  uint32_t  RESERVED13;
   __O  uint32_t  SRACT;                             /*!< (@ 0x400045C8) Service Request Software Activation Trigger            */
   __I  uint32_t  RESERVED14[9];
-  __IO uint32_t  EMUXCTR;                           /*!< (@ 0x400045F0) External Multiplexer Control Register                  */
+  __IO uint32_t  EMUXCTR;                           /*!< (@ 0x400045F0) E0ternal Multiplexer Control Register                  */
   __I  uint32_t  RESERVED15;
   __IO uint32_t  VFR;                               /*!< (@ 0x400045F8) Valid Flag Register                                    */
   __I  uint32_t  RESERVED16;
@@ -5579,10 +5586,6 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define SCU_CLK_ECATCLKCR_ECADIV_Msk          (0x3UL)                   /*!< SCU_CLK ECATCLKCR: ECADIV (Bitfield-Mask: 0x03)             */
 #define SCU_CLK_ECATCLKCR_ECATSEL_Pos         (16UL)                    /*!< SCU_CLK ECATCLKCR: ECATSEL (Bit 16)                         */
 #define SCU_CLK_ECATCLKCR_ECATSEL_Msk         (0x10000UL)               /*!< SCU_CLK ECATCLKCR: ECATSEL (Bitfield-Mask: 0x01)            */
-
-/* ------------------------------  SCU_CLK_CANCLKCR  ------------------------------ */
-#define SCU_CLK_CANCLKCR_CANDIV_Pos           (0UL)                     /*!< SCU_CLK CANCLKCR: CANDIV (Bit 0)                            */
-#define SCU_CLK_CANCLKCR_CANDIV_Msk           (0x7UL)                   /*!< SCU_CLK CANCLKCR: CANDIV (Bitfield-Mask: 0x07)              */
 
 /* ------------------------------  SCU_CLK_CGATSTAT0  ----------------------------- */
 #define SCU_CLK_CGATSTAT0_VADC_Pos            (0UL)                     /*!< SCU_CLK CGATSTAT0: VADC (Bit 0)                             */
@@ -9832,6 +9835,10 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define ECAT_EEP_ADR_EEPROM_ADDR_Pos          (0UL)                     /*!< ECAT EEP_ADR: EEPROM_ADDR (Bit 0)                           */
 #define ECAT_EEP_ADR_EEPROM_ADDR_Msk          (0xffffffffUL)            /*!< ECAT EEP_ADR: EEPROM_ADDR (Bitfield-Mask: 0xffffffff)       */
 
+/* --------------------------------  ECAT_EEP_DATA  ------------------------------- */
+#define ECAT_EEP_DATA_EEP_DATA_Pos            (0UL)                     /*!< ECAT EEP_DATA: EEP_DATA (Bit 0)                             */
+#define ECAT_EEP_DATA_EEP_DATA_Msk            (0xffffffffUL)            /*!< ECAT EEP_DATA: EEP_DATA (Bitfield-Mask: 0xffffffff)         */
+
 /* -----------------------------  ECAT_MII_CONT_STAT  ----------------------------- */
 #define ECAT_MII_CONT_STAT_W_EN_Pos           (0UL)                     /*!< ECAT MII_CONT_STAT: W_EN (Bit 0)                            */
 #define ECAT_MII_CONT_STAT_W_EN_Msk           (0x1UL)                   /*!< ECAT MII_CONT_STAT: W_EN (Bitfield-Mask: 0x01)              */
@@ -9883,6 +9890,18 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 /* ------------------------------  ECAT_DC_SYS_TIME  ------------------------------ */
 #define ECAT_DC_SYS_TIME_WRITE_ACCESS_WRITEMode_Pos (0UL)               /*!< ECAT DC_SYS_TIME: WRITE_ACCESS_WRITEMode (Bit 0)            */
 #define ECAT_DC_SYS_TIME_WRITE_ACCESS_WRITEMode_Msk (0xffffffffUL)      /*!< ECAT DC_SYS_TIME: WRITE_ACCESS_WRITEMode (Bitfield-Mask: 0xffffffff) */
+
+/* ------------------------------  ECAT_DC_SYS_TIME  ------------------------------ */
+#define ECAT_DC_SYS_TIME_READ_ACCESS_READMode_Pos (0UL)                 /*!< ECAT DC_SYS_TIME: READ_ACCESS_READMode (Bit 0)              */
+#define ECAT_DC_SYS_TIME_READ_ACCESS_READMode_Msk (0xffffffffUL)        /*!< ECAT DC_SYS_TIME: READ_ACCESS_READMode (Bitfield-Mask: 0xffffffff) */
+
+/* ----------------------------  ECAT_RECEIVE_TIME_PU  ---------------------------- */
+#define ECAT_RECEIVE_TIME_PU_RECEIVE_TIME_PU_Pos (0UL)                  /*!< ECAT RECEIVE_TIME_PU: RECEIVE_TIME_PU (Bit 0)               */
+#define ECAT_RECEIVE_TIME_PU_RECEIVE_TIME_PU_Msk (0xffffffffUL)         /*!< ECAT RECEIVE_TIME_PU: RECEIVE_TIME_PU (Bitfield-Mask: 0xffffffff) */
+
+/* ---------------------------  ECAT_DC_SYS_TIME_OFFSET  -------------------------- */
+#define ECAT_DC_SYS_TIME_OFFSET_DC_SYS_TIME_OFFSET_Pos (0UL)            /*!< ECAT DC_SYS_TIME_OFFSET: DC_SYS_TIME_OFFSET (Bit 0)         */
+#define ECAT_DC_SYS_TIME_OFFSET_DC_SYS_TIME_OFFSET_Msk (0xffffffffUL)   /*!< ECAT DC_SYS_TIME_OFFSET: DC_SYS_TIME_OFFSET (Bitfield-Mask: 0xffffffff) */
 
 /* ---------------------------  ECAT_DC_SYS_TIME_DELAY  --------------------------- */
 #define ECAT_DC_SYS_TIME_DELAY_CLK_DELAY_Pos  (0UL)                     /*!< ECAT DC_SYS_TIME_DELAY: CLK_DELAY (Bit 0)                   */
@@ -9946,6 +9965,14 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define ECAT_DC_SYNC1_STAT_S1_STATE_Pos       (0UL)                     /*!< ECAT DC_SYNC1_STAT: S1_STATE (Bit 0)                        */
 #define ECAT_DC_SYNC1_STAT_S1_STATE_Msk       (0x1UL)                   /*!< ECAT DC_SYNC1_STAT: S1_STATE (Bitfield-Mask: 0x01)          */
 
+/* ---------------------------  ECAT_DC_CYC_START_TIME  --------------------------- */
+#define ECAT_DC_CYC_START_TIME_DC_CYC_START_TIME_Pos (0UL)              /*!< ECAT DC_CYC_START_TIME: DC_CYC_START_TIME (Bit 0)           */
+#define ECAT_DC_CYC_START_TIME_DC_CYC_START_TIME_Msk (0xffffffffUL)     /*!< ECAT DC_CYC_START_TIME: DC_CYC_START_TIME (Bitfield-Mask: 0xffffffff) */
+
+/* --------------------------  ECAT_DC_NEXT_SYNC1_PULSE  -------------------------- */
+#define ECAT_DC_NEXT_SYNC1_PULSE_DC_NEXT_SYNC1_PULSE_Pos (0UL)          /*!< ECAT DC_NEXT_SYNC1_PULSE: DC_NEXT_SYNC1_PULSE (Bit 0)       */
+#define ECAT_DC_NEXT_SYNC1_PULSE_DC_NEXT_SYNC1_PULSE_Msk (0xffffffffUL) /*!< ECAT DC_NEXT_SYNC1_PULSE: DC_NEXT_SYNC1_PULSE (Bitfield-Mask: 0xffffffff) */
+
 /* ---------------------------  ECAT_DC_SYNC0_CYC_TIME  --------------------------- */
 #define ECAT_DC_SYNC0_CYC_TIME_TIME_BETWEEN_SYNC0_Pos (0UL)             /*!< ECAT DC_SYNC0_CYC_TIME: TIME_BETWEEN_SYNC0 (Bit 0)          */
 #define ECAT_DC_SYNC0_CYC_TIME_TIME_BETWEEN_SYNC0_Msk (0xffffffffUL)    /*!< ECAT DC_SYNC0_CYC_TIME: TIME_BETWEEN_SYNC0 (Bitfield-Mask: 0xffffffff) */
@@ -9981,6 +10008,22 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define ECAT_DC_LATCH1_STAT_EV_L1_NEG_Msk     (0x2UL)                   /*!< ECAT DC_LATCH1_STAT: EV_L1_NEG (Bitfield-Mask: 0x01)        */
 #define ECAT_DC_LATCH1_STAT_L1_PIN_Pos        (2UL)                     /*!< ECAT DC_LATCH1_STAT: L1_PIN (Bit 2)                         */
 #define ECAT_DC_LATCH1_STAT_L1_PIN_Msk        (0x4UL)                   /*!< ECAT DC_LATCH1_STAT: L1_PIN (Bitfield-Mask: 0x01)           */
+
+/* ---------------------------  ECAT_DC_LATCH0_TIME_POS  -------------------------- */
+#define ECAT_DC_LATCH0_TIME_POS_DC_LATCH0_TIME_POS_Pos (0UL)            /*!< ECAT DC_LATCH0_TIME_POS: DC_LATCH0_TIME_POS (Bit 0)         */
+#define ECAT_DC_LATCH0_TIME_POS_DC_LATCH0_TIME_POS_Msk (0xffffffffUL)   /*!< ECAT DC_LATCH0_TIME_POS: DC_LATCH0_TIME_POS (Bitfield-Mask: 0xffffffff) */
+
+/* ---------------------------  ECAT_DC_LATCH0_TIME_NEG  -------------------------- */
+#define ECAT_DC_LATCH0_TIME_NEG_DC_LATCH0_TIME_NEG_Pos (0UL)            /*!< ECAT DC_LATCH0_TIME_NEG: DC_LATCH0_TIME_NEG (Bit 0)         */
+#define ECAT_DC_LATCH0_TIME_NEG_DC_LATCH0_TIME_NEG_Msk (0xffffffffUL)   /*!< ECAT DC_LATCH0_TIME_NEG: DC_LATCH0_TIME_NEG (Bitfield-Mask: 0xffffffff) */
+
+/* ---------------------------  ECAT_DC_LATCH1_TIME_POS  -------------------------- */
+#define ECAT_DC_LATCH1_TIME_POS_DC_LATCH1_TIME_POS_Pos (0UL)            /*!< ECAT DC_LATCH1_TIME_POS: DC_LATCH1_TIME_POS (Bit 0)         */
+#define ECAT_DC_LATCH1_TIME_POS_DC_LATCH1_TIME_POS_Msk (0xffffffffUL)   /*!< ECAT DC_LATCH1_TIME_POS: DC_LATCH1_TIME_POS (Bitfield-Mask: 0xffffffff) */
+
+/* ---------------------------  ECAT_DC_LATCH1_TIME_NEG  -------------------------- */
+#define ECAT_DC_LATCH1_TIME_NEG_DC_LATCH1_TIME_NEG_Pos (0UL)            /*!< ECAT DC_LATCH1_TIME_NEG: DC_LATCH1_TIME_NEG (Bit 0)         */
+#define ECAT_DC_LATCH1_TIME_NEG_DC_LATCH1_TIME_NEG_Msk (0xffffffffUL)   /*!< ECAT DC_LATCH1_TIME_NEG: DC_LATCH1_TIME_NEG (Bitfield-Mask: 0xffffffff) */
 
 /* --------------------------  ECAT_DC_ECAT_CNG_EV_TIME  -------------------------- */
 #define ECAT_DC_ECAT_CNG_EV_TIME_ECAT_CNG_EV_TIME_Pos (0UL)             /*!< ECAT DC_ECAT_CNG_EV_TIME: ECAT_CNG_EV_TIME (Bit 0)          */
@@ -12080,7 +12123,7 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 
 
 /* ================================================================================ */
-/* ================         Group 'CAN_MO' Position & Mask         ================ */
+/* ================     Cluster Group 'CAN_MO' Position & Mask     ================ */
 /* ================================================================================ */
 
 
@@ -12389,6 +12432,8 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define VADC_BRSPND_CHPNDG7_Msk               (0x80UL)                  /*!< VADC BRSPND: CHPNDG7 (Bitfield-Mask: 0x01)                  */
 
 /* --------------------------------  VADC_BRSCTRL  -------------------------------- */
+#define VADC_BRSCTRL_SRCRESREG_Pos            (0UL)                     /*!< VADC BRSCTRL: SRCRESREG (Bit 0)                             */
+#define VADC_BRSCTRL_SRCRESREG_Msk            (0xfUL)                   /*!< VADC BRSCTRL: SRCRESREG (Bitfield-Mask: 0x0f)               */
 #define VADC_BRSCTRL_XTSEL_Pos                (8UL)                     /*!< VADC BRSCTRL: XTSEL (Bit 8)                                 */
 #define VADC_BRSCTRL_XTSEL_Msk                (0xf00UL)                 /*!< VADC BRSCTRL: XTSEL (Bitfield-Mask: 0x0f)                   */
 #define VADC_BRSCTRL_XTLVL_Pos                (12UL)                    /*!< VADC BRSCTRL: XTLVL (Bit 12)                                */
@@ -12571,16 +12616,64 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define VADC_G_BFL_BFL2_Msk                   (0x4UL)                   /*!< VADC_G BFL: BFL2 (Bitfield-Mask: 0x01)                      */
 #define VADC_G_BFL_BFL3_Pos                   (3UL)                     /*!< VADC_G BFL: BFL3 (Bit 3)                                    */
 #define VADC_G_BFL_BFL3_Msk                   (0x8UL)                   /*!< VADC_G BFL: BFL3 (Bitfield-Mask: 0x01)                      */
-#define VADC_G_BFL_BFE0_Pos                   (16UL)                    /*!< VADC_G BFL: BFE0 (Bit 16)                                   */
-#define VADC_G_BFL_BFE0_Msk                   (0x10000UL)               /*!< VADC_G BFL: BFE0 (Bitfield-Mask: 0x01)                      */
-#define VADC_G_BFL_BFE1_Pos                   (17UL)                    /*!< VADC_G BFL: BFE1 (Bit 17)                                   */
-#define VADC_G_BFL_BFE1_Msk                   (0x20000UL)               /*!< VADC_G BFL: BFE1 (Bitfield-Mask: 0x01)                      */
-#define VADC_G_BFL_BFE2_Pos                   (18UL)                    /*!< VADC_G BFL: BFE2 (Bit 18)                                   */
-#define VADC_G_BFL_BFE2_Msk                   (0x40000UL)               /*!< VADC_G BFL: BFE2 (Bitfield-Mask: 0x01)                      */
-#define VADC_G_BFL_BFE3_Pos                   (19UL)                    /*!< VADC_G BFL: BFE3 (Bit 19)                                   */
-#define VADC_G_BFL_BFE3_Msk                   (0x80000UL)               /*!< VADC_G BFL: BFE3 (Bitfield-Mask: 0x01)                      */
+#define VADC_G_BFL_BFA0_Pos                   (8UL)                     /*!< VADC_G BFL: BFA0 (Bit 8)                                    */
+#define VADC_G_BFL_BFA0_Msk                   (0x100UL)                 /*!< VADC_G BFL: BFA0 (Bitfield-Mask: 0x01)                      */
+#define VADC_G_BFL_BFA1_Pos                   (9UL)                     /*!< VADC_G BFL: BFA1 (Bit 9)                                    */
+#define VADC_G_BFL_BFA1_Msk                   (0x200UL)                 /*!< VADC_G BFL: BFA1 (Bitfield-Mask: 0x01)                      */
+#define VADC_G_BFL_BFA2_Pos                   (10UL)                    /*!< VADC_G BFL: BFA2 (Bit 10)                                   */
+#define VADC_G_BFL_BFA2_Msk                   (0x400UL)                 /*!< VADC_G BFL: BFA2 (Bitfield-Mask: 0x01)                      */
+#define VADC_G_BFL_BFA3_Pos                   (11UL)                    /*!< VADC_G BFL: BFA3 (Bit 11)                                   */
+#define VADC_G_BFL_BFA3_Msk                   (0x800UL)                 /*!< VADC_G BFL: BFA3 (Bitfield-Mask: 0x01)                      */
+#define VADC_G_BFL_BFI0_Pos                   (16UL)                    /*!< VADC_G BFL: BFI0 (Bit 16)                                   */
+#define VADC_G_BFL_BFI0_Msk                   (0x10000UL)               /*!< VADC_G BFL: BFI0 (Bitfield-Mask: 0x01)                      */
+#define VADC_G_BFL_BFI1_Pos                   (17UL)                    /*!< VADC_G BFL: BFI1 (Bit 17)                                   */
+#define VADC_G_BFL_BFI1_Msk                   (0x20000UL)               /*!< VADC_G BFL: BFI1 (Bitfield-Mask: 0x01)                      */
+#define VADC_G_BFL_BFI2_Pos                   (18UL)                    /*!< VADC_G BFL: BFI2 (Bit 18)                                   */
+#define VADC_G_BFL_BFI2_Msk                   (0x40000UL)               /*!< VADC_G BFL: BFI2 (Bitfield-Mask: 0x01)                      */
+#define VADC_G_BFL_BFI3_Pos                   (19UL)                    /*!< VADC_G BFL: BFI3 (Bit 19)                                   */
+#define VADC_G_BFL_BFI3_Msk                   (0x80000UL)               /*!< VADC_G BFL: BFI3 (Bitfield-Mask: 0x01)                      */
+
+/* ---------------------------------  VADC_G_BFLS  -------------------------------- */
+#define VADC_G_BFLS_BFC0_Pos                  (0UL)                     /*!< VADC_G BFLS: BFC0 (Bit 0)                                   */
+#define VADC_G_BFLS_BFC0_Msk                  (0x1UL)                   /*!< VADC_G BFLS: BFC0 (Bitfield-Mask: 0x01)                     */
+#define VADC_G_BFLS_BFC1_Pos                  (1UL)                     /*!< VADC_G BFLS: BFC1 (Bit 1)                                   */
+#define VADC_G_BFLS_BFC1_Msk                  (0x2UL)                   /*!< VADC_G BFLS: BFC1 (Bitfield-Mask: 0x01)                     */
+#define VADC_G_BFLS_BFC2_Pos                  (2UL)                     /*!< VADC_G BFLS: BFC2 (Bit 2)                                   */
+#define VADC_G_BFLS_BFC2_Msk                  (0x4UL)                   /*!< VADC_G BFLS: BFC2 (Bitfield-Mask: 0x01)                     */
+#define VADC_G_BFLS_BFC3_Pos                  (3UL)                     /*!< VADC_G BFLS: BFC3 (Bit 3)                                   */
+#define VADC_G_BFLS_BFC3_Msk                  (0x8UL)                   /*!< VADC_G BFLS: BFC3 (Bitfield-Mask: 0x01)                     */
+#define VADC_G_BFLS_BFS0_Pos                  (16UL)                    /*!< VADC_G BFLS: BFS0 (Bit 16)                                  */
+#define VADC_G_BFLS_BFS0_Msk                  (0x10000UL)               /*!< VADC_G BFLS: BFS0 (Bitfield-Mask: 0x01)                     */
+#define VADC_G_BFLS_BFS1_Pos                  (17UL)                    /*!< VADC_G BFLS: BFS1 (Bit 17)                                  */
+#define VADC_G_BFLS_BFS1_Msk                  (0x20000UL)               /*!< VADC_G BFLS: BFS1 (Bitfield-Mask: 0x01)                     */
+#define VADC_G_BFLS_BFS2_Pos                  (18UL)                    /*!< VADC_G BFLS: BFS2 (Bit 18)                                  */
+#define VADC_G_BFLS_BFS2_Msk                  (0x40000UL)               /*!< VADC_G BFLS: BFS2 (Bitfield-Mask: 0x01)                     */
+#define VADC_G_BFLS_BFS3_Pos                  (19UL)                    /*!< VADC_G BFLS: BFS3 (Bit 19)                                  */
+#define VADC_G_BFLS_BFS3_Msk                  (0x80000UL)               /*!< VADC_G BFLS: BFS3 (Bitfield-Mask: 0x01)                     */
+
+/* ---------------------------------  VADC_G_BFLC  -------------------------------- */
+#define VADC_G_BFLC_BFM0_Pos                  (0UL)                     /*!< VADC_G BFLC: BFM0 (Bit 0)                                   */
+#define VADC_G_BFLC_BFM0_Msk                  (0xfUL)                   /*!< VADC_G BFLC: BFM0 (Bitfield-Mask: 0x0f)                     */
+#define VADC_G_BFLC_BFM1_Pos                  (4UL)                     /*!< VADC_G BFLC: BFM1 (Bit 4)                                   */
+#define VADC_G_BFLC_BFM1_Msk                  (0xf0UL)                  /*!< VADC_G BFLC: BFM1 (Bitfield-Mask: 0x0f)                     */
+#define VADC_G_BFLC_BFM2_Pos                  (8UL)                     /*!< VADC_G BFLC: BFM2 (Bit 8)                                   */
+#define VADC_G_BFLC_BFM2_Msk                  (0xf00UL)                 /*!< VADC_G BFLC: BFM2 (Bitfield-Mask: 0x0f)                     */
+#define VADC_G_BFLC_BFM3_Pos                  (12UL)                    /*!< VADC_G BFLC: BFM3 (Bit 12)                                  */
+#define VADC_G_BFLC_BFM3_Msk                  (0xf000UL)                /*!< VADC_G BFLC: BFM3 (Bitfield-Mask: 0x0f)                     */
+
+/* --------------------------------  VADC_G_BFLNP  -------------------------------- */
+#define VADC_G_BFLNP_BFL0NP_Pos               (0UL)                     /*!< VADC_G BFLNP: BFL0NP (Bit 0)                                */
+#define VADC_G_BFLNP_BFL0NP_Msk               (0xfUL)                   /*!< VADC_G BFLNP: BFL0NP (Bitfield-Mask: 0x0f)                  */
+#define VADC_G_BFLNP_BFL1NP_Pos               (4UL)                     /*!< VADC_G BFLNP: BFL1NP (Bit 4)                                */
+#define VADC_G_BFLNP_BFL1NP_Msk               (0xf0UL)                  /*!< VADC_G BFLNP: BFL1NP (Bitfield-Mask: 0x0f)                  */
+#define VADC_G_BFLNP_BFL2NP_Pos               (8UL)                     /*!< VADC_G BFLNP: BFL2NP (Bit 8)                                */
+#define VADC_G_BFLNP_BFL2NP_Msk               (0xf00UL)                 /*!< VADC_G BFLNP: BFL2NP (Bitfield-Mask: 0x0f)                  */
+#define VADC_G_BFLNP_BFL3NP_Pos               (12UL)                    /*!< VADC_G BFLNP: BFL3NP (Bit 12)                               */
+#define VADC_G_BFLNP_BFL3NP_Msk               (0xf000UL)                /*!< VADC_G BFLNP: BFL3NP (Bitfield-Mask: 0x0f)                  */
 
 /* --------------------------------  VADC_G_QCTRL0  ------------------------------- */
+#define VADC_G_QCTRL0_SRCRESREG_Pos           (0UL)                     /*!< VADC_G QCTRL0: SRCRESREG (Bit 0)                            */
+#define VADC_G_QCTRL0_SRCRESREG_Msk           (0xfUL)                   /*!< VADC_G QCTRL0: SRCRESREG (Bitfield-Mask: 0x0f)              */
 #define VADC_G_QCTRL0_XTSEL_Pos               (8UL)                     /*!< VADC_G QCTRL0: XTSEL (Bit 8)                                */
 #define VADC_G_QCTRL0_XTSEL_Msk               (0xf00UL)                 /*!< VADC_G QCTRL0: XTSEL (Bitfield-Mask: 0x0f)                  */
 #define VADC_G_QCTRL0_XTLVL_Pos               (12UL)                    /*!< VADC_G QCTRL0: XTLVL (Bit 12)                               */
@@ -12661,6 +12754,8 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define VADC_G_QBUR0_V_Msk                    (0x100UL)                 /*!< VADC_G QBUR0: V (Bitfield-Mask: 0x01)                       */
 
 /* --------------------------------  VADC_G_ASCTRL  ------------------------------- */
+#define VADC_G_ASCTRL_SRCRESREG_Pos           (0UL)                     /*!< VADC_G ASCTRL: SRCRESREG (Bit 0)                            */
+#define VADC_G_ASCTRL_SRCRESREG_Msk           (0xfUL)                   /*!< VADC_G ASCTRL: SRCRESREG (Bitfield-Mask: 0x0f)              */
 #define VADC_G_ASCTRL_XTSEL_Pos               (8UL)                     /*!< VADC_G ASCTRL: XTSEL (Bit 8)                                */
 #define VADC_G_ASCTRL_XTSEL_Msk               (0xf00UL)                 /*!< VADC_G ASCTRL: XTSEL (Bitfield-Mask: 0x0f)                  */
 #define VADC_G_ASCTRL_XTLVL_Pos               (12UL)                    /*!< VADC_G ASCTRL: XTLVL (Bit 12)                               */
@@ -12936,13 +13031,15 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define VADC_G_EMUXCTR_EMUXACT_Pos            (8UL)                     /*!< VADC_G EMUXCTR: EMUXACT (Bit 8)                             */
 #define VADC_G_EMUXCTR_EMUXACT_Msk            (0x700UL)                 /*!< VADC_G EMUXCTR: EMUXACT (Bitfield-Mask: 0x07)               */
 #define VADC_G_EMUXCTR_EMUXCH_Pos             (16UL)                    /*!< VADC_G EMUXCTR: EMUXCH (Bit 16)                             */
-#define VADC_G_EMUXCTR_EMUXCH_Msk             (0x1f0000UL)              /*!< VADC_G EMUXCTR: EMUXCH (Bitfield-Mask: 0x1f)                */
+#define VADC_G_EMUXCTR_EMUXCH_Msk             (0x3ff0000UL)             /*!< VADC_G EMUXCTR: EMUXCH (Bitfield-Mask: 0x3ff)               */
 #define VADC_G_EMUXCTR_EMUXMODE_Pos           (26UL)                    /*!< VADC_G EMUXCTR: EMUXMODE (Bit 26)                           */
 #define VADC_G_EMUXCTR_EMUXMODE_Msk           (0xc000000UL)             /*!< VADC_G EMUXCTR: EMUXMODE (Bitfield-Mask: 0x03)              */
 #define VADC_G_EMUXCTR_EMXCOD_Pos             (28UL)                    /*!< VADC_G EMUXCTR: EMXCOD (Bit 28)                             */
 #define VADC_G_EMUXCTR_EMXCOD_Msk             (0x10000000UL)            /*!< VADC_G EMUXCTR: EMXCOD (Bitfield-Mask: 0x01)                */
 #define VADC_G_EMUXCTR_EMXST_Pos              (29UL)                    /*!< VADC_G EMUXCTR: EMXST (Bit 29)                              */
 #define VADC_G_EMUXCTR_EMXST_Msk              (0x20000000UL)            /*!< VADC_G EMUXCTR: EMXST (Bitfield-Mask: 0x01)                 */
+#define VADC_G_EMUXCTR_EMXCSS_Pos             (30UL)                    /*!< VADC_G EMUXCTR: EMXCSS (Bit 30)                             */
+#define VADC_G_EMUXCTR_EMXCSS_Msk             (0x40000000UL)            /*!< VADC_G EMUXCTR: EMXCSS (Bitfield-Mask: 0x01)                */
 #define VADC_G_EMUXCTR_EMXWC_Pos              (31UL)                    /*!< VADC_G EMUXCTR: EMXWC (Bit 31)                              */
 #define VADC_G_EMUXCTR_EMXWC_Msk              (0x80000000UL)            /*!< VADC_G EMUXCTR: EMXWC (Bitfield-Mask: 0x01)                 */
 
@@ -18460,262 +18557,7 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define CAN_NODE3_BASE                  0x48014500UL
 #define CAN_NODE4_BASE                  0x48014600UL
 #define CAN_NODE5_BASE                  0x48014700UL
-#define CAN_MO0_BASE                    0x48015000UL
-#define CAN_MO1_BASE                    0x48015020UL
-#define CAN_MO2_BASE                    0x48015040UL
-#define CAN_MO3_BASE                    0x48015060UL
-#define CAN_MO4_BASE                    0x48015080UL
-#define CAN_MO5_BASE                    0x480150A0UL
-#define CAN_MO6_BASE                    0x480150C0UL
-#define CAN_MO7_BASE                    0x480150E0UL
-#define CAN_MO8_BASE                    0x48015100UL
-#define CAN_MO9_BASE                    0x48015120UL
-#define CAN_MO10_BASE                   0x48015140UL
-#define CAN_MO11_BASE                   0x48015160UL
-#define CAN_MO12_BASE                   0x48015180UL
-#define CAN_MO13_BASE                   0x480151A0UL
-#define CAN_MO14_BASE                   0x480151C0UL
-#define CAN_MO15_BASE                   0x480151E0UL
-#define CAN_MO16_BASE                   0x48015200UL
-#define CAN_MO17_BASE                   0x48015220UL
-#define CAN_MO18_BASE                   0x48015240UL
-#define CAN_MO19_BASE                   0x48015260UL
-#define CAN_MO20_BASE                   0x48015280UL
-#define CAN_MO21_BASE                   0x480152A0UL
-#define CAN_MO22_BASE                   0x480152C0UL
-#define CAN_MO23_BASE                   0x480152E0UL
-#define CAN_MO24_BASE                   0x48015300UL
-#define CAN_MO25_BASE                   0x48015320UL
-#define CAN_MO26_BASE                   0x48015340UL
-#define CAN_MO27_BASE                   0x48015360UL
-#define CAN_MO28_BASE                   0x48015380UL
-#define CAN_MO29_BASE                   0x480153A0UL
-#define CAN_MO30_BASE                   0x480153C0UL
-#define CAN_MO31_BASE                   0x480153E0UL
-#define CAN_MO32_BASE                   0x48015400UL
-#define CAN_MO33_BASE                   0x48015420UL
-#define CAN_MO34_BASE                   0x48015440UL
-#define CAN_MO35_BASE                   0x48015460UL
-#define CAN_MO36_BASE                   0x48015480UL
-#define CAN_MO37_BASE                   0x480154A0UL
-#define CAN_MO38_BASE                   0x480154C0UL
-#define CAN_MO39_BASE                   0x480154E0UL
-#define CAN_MO40_BASE                   0x48015500UL
-#define CAN_MO41_BASE                   0x48015520UL
-#define CAN_MO42_BASE                   0x48015540UL
-#define CAN_MO43_BASE                   0x48015560UL
-#define CAN_MO44_BASE                   0x48015580UL
-#define CAN_MO45_BASE                   0x480155A0UL
-#define CAN_MO46_BASE                   0x480155C0UL
-#define CAN_MO47_BASE                   0x480155E0UL
-#define CAN_MO48_BASE                   0x48015600UL
-#define CAN_MO49_BASE                   0x48015620UL
-#define CAN_MO50_BASE                   0x48015640UL
-#define CAN_MO51_BASE                   0x48015660UL
-#define CAN_MO52_BASE                   0x48015680UL
-#define CAN_MO53_BASE                   0x480156A0UL
-#define CAN_MO54_BASE                   0x480156C0UL
-#define CAN_MO55_BASE                   0x480156E0UL
-#define CAN_MO56_BASE                   0x48015700UL
-#define CAN_MO57_BASE                   0x48015720UL
-#define CAN_MO58_BASE                   0x48015740UL
-#define CAN_MO59_BASE                   0x48015760UL
-#define CAN_MO60_BASE                   0x48015780UL
-#define CAN_MO61_BASE                   0x480157A0UL
-#define CAN_MO62_BASE                   0x480157C0UL
-#define CAN_MO63_BASE                   0x480157E0UL
-#define CAN_MO64_BASE                   0x48015800UL
-#define CAN_MO65_BASE                   0x48015820UL
-#define CAN_MO66_BASE                   0x48015840UL
-#define CAN_MO67_BASE                   0x48015860UL
-#define CAN_MO68_BASE                   0x48015880UL
-#define CAN_MO69_BASE                   0x480158A0UL
-#define CAN_MO70_BASE                   0x480158C0UL
-#define CAN_MO71_BASE                   0x480158E0UL
-#define CAN_MO72_BASE                   0x48015900UL
-#define CAN_MO73_BASE                   0x48015920UL
-#define CAN_MO74_BASE                   0x48015940UL
-#define CAN_MO75_BASE                   0x48015960UL
-#define CAN_MO76_BASE                   0x48015980UL
-#define CAN_MO77_BASE                   0x480159A0UL
-#define CAN_MO78_BASE                   0x480159C0UL
-#define CAN_MO79_BASE                   0x480159E0UL
-#define CAN_MO80_BASE                   0x48015A00UL
-#define CAN_MO81_BASE                   0x48015A20UL
-#define CAN_MO82_BASE                   0x48015A40UL
-#define CAN_MO83_BASE                   0x48015A60UL
-#define CAN_MO84_BASE                   0x48015A80UL
-#define CAN_MO85_BASE                   0x48015AA0UL
-#define CAN_MO86_BASE                   0x48015AC0UL
-#define CAN_MO87_BASE                   0x48015AE0UL
-#define CAN_MO88_BASE                   0x48015B00UL
-#define CAN_MO89_BASE                   0x48015B20UL
-#define CAN_MO90_BASE                   0x48015B40UL
-#define CAN_MO91_BASE                   0x48015B60UL
-#define CAN_MO92_BASE                   0x48015B80UL
-#define CAN_MO93_BASE                   0x48015BA0UL
-#define CAN_MO94_BASE                   0x48015BC0UL
-#define CAN_MO95_BASE                   0x48015BE0UL
-#define CAN_MO96_BASE                   0x48015C00UL
-#define CAN_MO97_BASE                   0x48015C20UL
-#define CAN_MO98_BASE                   0x48015C40UL
-#define CAN_MO99_BASE                   0x48015C60UL
-#define CAN_MO100_BASE                  0x48015C80UL
-#define CAN_MO101_BASE                  0x48015CA0UL
-#define CAN_MO102_BASE                  0x48015CC0UL
-#define CAN_MO103_BASE                  0x48015CE0UL
-#define CAN_MO104_BASE                  0x48015D00UL
-#define CAN_MO105_BASE                  0x48015D20UL
-#define CAN_MO106_BASE                  0x48015D40UL
-#define CAN_MO107_BASE                  0x48015D60UL
-#define CAN_MO108_BASE                  0x48015D80UL
-#define CAN_MO109_BASE                  0x48015DA0UL
-#define CAN_MO110_BASE                  0x48015DC0UL
-#define CAN_MO111_BASE                  0x48015DE0UL
-#define CAN_MO112_BASE                  0x48015E00UL
-#define CAN_MO113_BASE                  0x48015E20UL
-#define CAN_MO114_BASE                  0x48015E40UL
-#define CAN_MO115_BASE                  0x48015E60UL
-#define CAN_MO116_BASE                  0x48015E80UL
-#define CAN_MO117_BASE                  0x48015EA0UL
-#define CAN_MO118_BASE                  0x48015EC0UL
-#define CAN_MO119_BASE                  0x48015EE0UL
-#define CAN_MO120_BASE                  0x48015F00UL
-#define CAN_MO121_BASE                  0x48015F20UL
-#define CAN_MO122_BASE                  0x48015F40UL
-#define CAN_MO123_BASE                  0x48015F60UL
-#define CAN_MO124_BASE                  0x48015F80UL
-#define CAN_MO125_BASE                  0x48015FA0UL
-#define CAN_MO126_BASE                  0x48015FC0UL
-#define CAN_MO127_BASE                  0x48015FE0UL
-#define CAN_MO128_BASE                  0x48016000UL
-#define CAN_MO129_BASE                  0x48016020UL
-#define CAN_MO130_BASE                  0x48016040UL
-#define CAN_MO131_BASE                  0x48016060UL
-#define CAN_MO132_BASE                  0x48016080UL
-#define CAN_MO133_BASE                  0x480160A0UL
-#define CAN_MO134_BASE                  0x480160C0UL
-#define CAN_MO135_BASE                  0x480160E0UL
-#define CAN_MO136_BASE                  0x48016100UL
-#define CAN_MO137_BASE                  0x48016120UL
-#define CAN_MO138_BASE                  0x48016140UL
-#define CAN_MO139_BASE                  0x48016160UL
-#define CAN_MO140_BASE                  0x48016180UL
-#define CAN_MO141_BASE                  0x480161A0UL
-#define CAN_MO142_BASE                  0x480161C0UL
-#define CAN_MO143_BASE                  0x480161E0UL
-#define CAN_MO144_BASE                  0x48016200UL
-#define CAN_MO145_BASE                  0x48016220UL
-#define CAN_MO146_BASE                  0x48016240UL
-#define CAN_MO147_BASE                  0x48016260UL
-#define CAN_MO148_BASE                  0x48016280UL
-#define CAN_MO149_BASE                  0x480162A0UL
-#define CAN_MO150_BASE                  0x480162C0UL
-#define CAN_MO151_BASE                  0x480162E0UL
-#define CAN_MO152_BASE                  0x48016300UL
-#define CAN_MO153_BASE                  0x48016320UL
-#define CAN_MO154_BASE                  0x48016340UL
-#define CAN_MO155_BASE                  0x48016360UL
-#define CAN_MO156_BASE                  0x48016380UL
-#define CAN_MO157_BASE                  0x480163A0UL
-#define CAN_MO158_BASE                  0x480163C0UL
-#define CAN_MO159_BASE                  0x480163E0UL
-#define CAN_MO160_BASE                  0x48016400UL
-#define CAN_MO161_BASE                  0x48016420UL
-#define CAN_MO162_BASE                  0x48016440UL
-#define CAN_MO163_BASE                  0x48016460UL
-#define CAN_MO164_BASE                  0x48016480UL
-#define CAN_MO165_BASE                  0x480164A0UL
-#define CAN_MO166_BASE                  0x480164C0UL
-#define CAN_MO167_BASE                  0x480164E0UL
-#define CAN_MO168_BASE                  0x48016500UL
-#define CAN_MO169_BASE                  0x48016520UL
-#define CAN_MO170_BASE                  0x48016540UL
-#define CAN_MO171_BASE                  0x48016560UL
-#define CAN_MO172_BASE                  0x48016580UL
-#define CAN_MO173_BASE                  0x480165A0UL
-#define CAN_MO174_BASE                  0x480165C0UL
-#define CAN_MO175_BASE                  0x480165E0UL
-#define CAN_MO176_BASE                  0x48016600UL
-#define CAN_MO177_BASE                  0x48016620UL
-#define CAN_MO178_BASE                  0x48016640UL
-#define CAN_MO179_BASE                  0x48016660UL
-#define CAN_MO180_BASE                  0x48016680UL
-#define CAN_MO181_BASE                  0x480166A0UL
-#define CAN_MO182_BASE                  0x480166C0UL
-#define CAN_MO183_BASE                  0x480166E0UL
-#define CAN_MO184_BASE                  0x48016700UL
-#define CAN_MO185_BASE                  0x48016720UL
-#define CAN_MO186_BASE                  0x48016740UL
-#define CAN_MO187_BASE                  0x48016760UL
-#define CAN_MO188_BASE                  0x48016780UL
-#define CAN_MO189_BASE                  0x480167A0UL
-#define CAN_MO190_BASE                  0x480167C0UL
-#define CAN_MO191_BASE                  0x480167E0UL
-#define CAN_MO192_BASE                  0x48016800UL
-#define CAN_MO193_BASE                  0x48016820UL
-#define CAN_MO194_BASE                  0x48016840UL
-#define CAN_MO195_BASE                  0x48016860UL
-#define CAN_MO196_BASE                  0x48016880UL
-#define CAN_MO197_BASE                  0x480168A0UL
-#define CAN_MO198_BASE                  0x480168C0UL
-#define CAN_MO199_BASE                  0x480168E0UL
-#define CAN_MO200_BASE                  0x48016900UL
-#define CAN_MO201_BASE                  0x48016920UL
-#define CAN_MO202_BASE                  0x48016940UL
-#define CAN_MO203_BASE                  0x48016960UL
-#define CAN_MO204_BASE                  0x48016980UL
-#define CAN_MO205_BASE                  0x480169A0UL
-#define CAN_MO206_BASE                  0x480169C0UL
-#define CAN_MO207_BASE                  0x480169E0UL
-#define CAN_MO208_BASE                  0x48016A00UL
-#define CAN_MO209_BASE                  0x48016A20UL
-#define CAN_MO210_BASE                  0x48016A40UL
-#define CAN_MO211_BASE                  0x48016A60UL
-#define CAN_MO212_BASE                  0x48016A80UL
-#define CAN_MO213_BASE                  0x48016AA0UL
-#define CAN_MO214_BASE                  0x48016AC0UL
-#define CAN_MO215_BASE                  0x48016AE0UL
-#define CAN_MO216_BASE                  0x48016B00UL
-#define CAN_MO217_BASE                  0x48016B20UL
-#define CAN_MO218_BASE                  0x48016B40UL
-#define CAN_MO219_BASE                  0x48016B60UL
-#define CAN_MO220_BASE                  0x48016B80UL
-#define CAN_MO221_BASE                  0x48016BA0UL
-#define CAN_MO222_BASE                  0x48016BC0UL
-#define CAN_MO223_BASE                  0x48016BE0UL
-#define CAN_MO224_BASE                  0x48016C00UL
-#define CAN_MO225_BASE                  0x48016C20UL
-#define CAN_MO226_BASE                  0x48016C40UL
-#define CAN_MO227_BASE                  0x48016C60UL
-#define CAN_MO228_BASE                  0x48016C80UL
-#define CAN_MO229_BASE                  0x48016CA0UL
-#define CAN_MO230_BASE                  0x48016CC0UL
-#define CAN_MO231_BASE                  0x48016CE0UL
-#define CAN_MO232_BASE                  0x48016D00UL
-#define CAN_MO233_BASE                  0x48016D20UL
-#define CAN_MO234_BASE                  0x48016D40UL
-#define CAN_MO235_BASE                  0x48016D60UL
-#define CAN_MO236_BASE                  0x48016D80UL
-#define CAN_MO237_BASE                  0x48016DA0UL
-#define CAN_MO238_BASE                  0x48016DC0UL
-#define CAN_MO239_BASE                  0x48016DE0UL
-#define CAN_MO240_BASE                  0x48016E00UL
-#define CAN_MO241_BASE                  0x48016E20UL
-#define CAN_MO242_BASE                  0x48016E40UL
-#define CAN_MO243_BASE                  0x48016E60UL
-#define CAN_MO244_BASE                  0x48016E80UL
-#define CAN_MO245_BASE                  0x48016EA0UL
-#define CAN_MO246_BASE                  0x48016EC0UL
-#define CAN_MO247_BASE                  0x48016EE0UL
-#define CAN_MO248_BASE                  0x48016F00UL
-#define CAN_MO249_BASE                  0x48016F20UL
-#define CAN_MO250_BASE                  0x48016F40UL
-#define CAN_MO251_BASE                  0x48016F60UL
-#define CAN_MO252_BASE                  0x48016F80UL
-#define CAN_MO253_BASE                  0x48016FA0UL
-#define CAN_MO254_BASE                  0x48016FC0UL
-#define CAN_MO255_BASE                  0x48016FE0UL
+#define CAN_MO_BASE                     0x48015000UL
 #define VADC_BASE                       0x40004000UL
 #define VADC_G0_BASE                    0x40004400UL
 #define VADC_G1_BASE                    0x40004800UL
@@ -18879,262 +18721,7 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define CAN_NODE3                       ((CAN_NODE_TypeDef           *) CAN_NODE3_BASE)
 #define CAN_NODE4                       ((CAN_NODE_TypeDef           *) CAN_NODE4_BASE)
 #define CAN_NODE5                       ((CAN_NODE_TypeDef           *) CAN_NODE5_BASE)
-#define CAN_MO0                         ((CAN_MO_TypeDef             *) CAN_MO0_BASE)
-#define CAN_MO1                         ((CAN_MO_TypeDef             *) CAN_MO1_BASE)
-#define CAN_MO2                         ((CAN_MO_TypeDef             *) CAN_MO2_BASE)
-#define CAN_MO3                         ((CAN_MO_TypeDef             *) CAN_MO3_BASE)
-#define CAN_MO4                         ((CAN_MO_TypeDef             *) CAN_MO4_BASE)
-#define CAN_MO5                         ((CAN_MO_TypeDef             *) CAN_MO5_BASE)
-#define CAN_MO6                         ((CAN_MO_TypeDef             *) CAN_MO6_BASE)
-#define CAN_MO7                         ((CAN_MO_TypeDef             *) CAN_MO7_BASE)
-#define CAN_MO8                         ((CAN_MO_TypeDef             *) CAN_MO8_BASE)
-#define CAN_MO9                         ((CAN_MO_TypeDef             *) CAN_MO9_BASE)
-#define CAN_MO10                        ((CAN_MO_TypeDef             *) CAN_MO10_BASE)
-#define CAN_MO11                        ((CAN_MO_TypeDef             *) CAN_MO11_BASE)
-#define CAN_MO12                        ((CAN_MO_TypeDef             *) CAN_MO12_BASE)
-#define CAN_MO13                        ((CAN_MO_TypeDef             *) CAN_MO13_BASE)
-#define CAN_MO14                        ((CAN_MO_TypeDef             *) CAN_MO14_BASE)
-#define CAN_MO15                        ((CAN_MO_TypeDef             *) CAN_MO15_BASE)
-#define CAN_MO16                        ((CAN_MO_TypeDef             *) CAN_MO16_BASE)
-#define CAN_MO17                        ((CAN_MO_TypeDef             *) CAN_MO17_BASE)
-#define CAN_MO18                        ((CAN_MO_TypeDef             *) CAN_MO18_BASE)
-#define CAN_MO19                        ((CAN_MO_TypeDef             *) CAN_MO19_BASE)
-#define CAN_MO20                        ((CAN_MO_TypeDef             *) CAN_MO20_BASE)
-#define CAN_MO21                        ((CAN_MO_TypeDef             *) CAN_MO21_BASE)
-#define CAN_MO22                        ((CAN_MO_TypeDef             *) CAN_MO22_BASE)
-#define CAN_MO23                        ((CAN_MO_TypeDef             *) CAN_MO23_BASE)
-#define CAN_MO24                        ((CAN_MO_TypeDef             *) CAN_MO24_BASE)
-#define CAN_MO25                        ((CAN_MO_TypeDef             *) CAN_MO25_BASE)
-#define CAN_MO26                        ((CAN_MO_TypeDef             *) CAN_MO26_BASE)
-#define CAN_MO27                        ((CAN_MO_TypeDef             *) CAN_MO27_BASE)
-#define CAN_MO28                        ((CAN_MO_TypeDef             *) CAN_MO28_BASE)
-#define CAN_MO29                        ((CAN_MO_TypeDef             *) CAN_MO29_BASE)
-#define CAN_MO30                        ((CAN_MO_TypeDef             *) CAN_MO30_BASE)
-#define CAN_MO31                        ((CAN_MO_TypeDef             *) CAN_MO31_BASE)
-#define CAN_MO32                        ((CAN_MO_TypeDef             *) CAN_MO32_BASE)
-#define CAN_MO33                        ((CAN_MO_TypeDef             *) CAN_MO33_BASE)
-#define CAN_MO34                        ((CAN_MO_TypeDef             *) CAN_MO34_BASE)
-#define CAN_MO35                        ((CAN_MO_TypeDef             *) CAN_MO35_BASE)
-#define CAN_MO36                        ((CAN_MO_TypeDef             *) CAN_MO36_BASE)
-#define CAN_MO37                        ((CAN_MO_TypeDef             *) CAN_MO37_BASE)
-#define CAN_MO38                        ((CAN_MO_TypeDef             *) CAN_MO38_BASE)
-#define CAN_MO39                        ((CAN_MO_TypeDef             *) CAN_MO39_BASE)
-#define CAN_MO40                        ((CAN_MO_TypeDef             *) CAN_MO40_BASE)
-#define CAN_MO41                        ((CAN_MO_TypeDef             *) CAN_MO41_BASE)
-#define CAN_MO42                        ((CAN_MO_TypeDef             *) CAN_MO42_BASE)
-#define CAN_MO43                        ((CAN_MO_TypeDef             *) CAN_MO43_BASE)
-#define CAN_MO44                        ((CAN_MO_TypeDef             *) CAN_MO44_BASE)
-#define CAN_MO45                        ((CAN_MO_TypeDef             *) CAN_MO45_BASE)
-#define CAN_MO46                        ((CAN_MO_TypeDef             *) CAN_MO46_BASE)
-#define CAN_MO47                        ((CAN_MO_TypeDef             *) CAN_MO47_BASE)
-#define CAN_MO48                        ((CAN_MO_TypeDef             *) CAN_MO48_BASE)
-#define CAN_MO49                        ((CAN_MO_TypeDef             *) CAN_MO49_BASE)
-#define CAN_MO50                        ((CAN_MO_TypeDef             *) CAN_MO50_BASE)
-#define CAN_MO51                        ((CAN_MO_TypeDef             *) CAN_MO51_BASE)
-#define CAN_MO52                        ((CAN_MO_TypeDef             *) CAN_MO52_BASE)
-#define CAN_MO53                        ((CAN_MO_TypeDef             *) CAN_MO53_BASE)
-#define CAN_MO54                        ((CAN_MO_TypeDef             *) CAN_MO54_BASE)
-#define CAN_MO55                        ((CAN_MO_TypeDef             *) CAN_MO55_BASE)
-#define CAN_MO56                        ((CAN_MO_TypeDef             *) CAN_MO56_BASE)
-#define CAN_MO57                        ((CAN_MO_TypeDef             *) CAN_MO57_BASE)
-#define CAN_MO58                        ((CAN_MO_TypeDef             *) CAN_MO58_BASE)
-#define CAN_MO59                        ((CAN_MO_TypeDef             *) CAN_MO59_BASE)
-#define CAN_MO60                        ((CAN_MO_TypeDef             *) CAN_MO60_BASE)
-#define CAN_MO61                        ((CAN_MO_TypeDef             *) CAN_MO61_BASE)
-#define CAN_MO62                        ((CAN_MO_TypeDef             *) CAN_MO62_BASE)
-#define CAN_MO63                        ((CAN_MO_TypeDef             *) CAN_MO63_BASE)
-#define CAN_MO64                        ((CAN_MO_TypeDef             *) CAN_MO64_BASE)
-#define CAN_MO65                        ((CAN_MO_TypeDef             *) CAN_MO65_BASE)
-#define CAN_MO66                        ((CAN_MO_TypeDef             *) CAN_MO66_BASE)
-#define CAN_MO67                        ((CAN_MO_TypeDef             *) CAN_MO67_BASE)
-#define CAN_MO68                        ((CAN_MO_TypeDef             *) CAN_MO68_BASE)
-#define CAN_MO69                        ((CAN_MO_TypeDef             *) CAN_MO69_BASE)
-#define CAN_MO70                        ((CAN_MO_TypeDef             *) CAN_MO70_BASE)
-#define CAN_MO71                        ((CAN_MO_TypeDef             *) CAN_MO71_BASE)
-#define CAN_MO72                        ((CAN_MO_TypeDef             *) CAN_MO72_BASE)
-#define CAN_MO73                        ((CAN_MO_TypeDef             *) CAN_MO73_BASE)
-#define CAN_MO74                        ((CAN_MO_TypeDef             *) CAN_MO74_BASE)
-#define CAN_MO75                        ((CAN_MO_TypeDef             *) CAN_MO75_BASE)
-#define CAN_MO76                        ((CAN_MO_TypeDef             *) CAN_MO76_BASE)
-#define CAN_MO77                        ((CAN_MO_TypeDef             *) CAN_MO77_BASE)
-#define CAN_MO78                        ((CAN_MO_TypeDef             *) CAN_MO78_BASE)
-#define CAN_MO79                        ((CAN_MO_TypeDef             *) CAN_MO79_BASE)
-#define CAN_MO80                        ((CAN_MO_TypeDef             *) CAN_MO80_BASE)
-#define CAN_MO81                        ((CAN_MO_TypeDef             *) CAN_MO81_BASE)
-#define CAN_MO82                        ((CAN_MO_TypeDef             *) CAN_MO82_BASE)
-#define CAN_MO83                        ((CAN_MO_TypeDef             *) CAN_MO83_BASE)
-#define CAN_MO84                        ((CAN_MO_TypeDef             *) CAN_MO84_BASE)
-#define CAN_MO85                        ((CAN_MO_TypeDef             *) CAN_MO85_BASE)
-#define CAN_MO86                        ((CAN_MO_TypeDef             *) CAN_MO86_BASE)
-#define CAN_MO87                        ((CAN_MO_TypeDef             *) CAN_MO87_BASE)
-#define CAN_MO88                        ((CAN_MO_TypeDef             *) CAN_MO88_BASE)
-#define CAN_MO89                        ((CAN_MO_TypeDef             *) CAN_MO89_BASE)
-#define CAN_MO90                        ((CAN_MO_TypeDef             *) CAN_MO90_BASE)
-#define CAN_MO91                        ((CAN_MO_TypeDef             *) CAN_MO91_BASE)
-#define CAN_MO92                        ((CAN_MO_TypeDef             *) CAN_MO92_BASE)
-#define CAN_MO93                        ((CAN_MO_TypeDef             *) CAN_MO93_BASE)
-#define CAN_MO94                        ((CAN_MO_TypeDef             *) CAN_MO94_BASE)
-#define CAN_MO95                        ((CAN_MO_TypeDef             *) CAN_MO95_BASE)
-#define CAN_MO96                        ((CAN_MO_TypeDef             *) CAN_MO96_BASE)
-#define CAN_MO97                        ((CAN_MO_TypeDef             *) CAN_MO97_BASE)
-#define CAN_MO98                        ((CAN_MO_TypeDef             *) CAN_MO98_BASE)
-#define CAN_MO99                        ((CAN_MO_TypeDef             *) CAN_MO99_BASE)
-#define CAN_MO100                       ((CAN_MO_TypeDef             *) CAN_MO100_BASE)
-#define CAN_MO101                       ((CAN_MO_TypeDef             *) CAN_MO101_BASE)
-#define CAN_MO102                       ((CAN_MO_TypeDef             *) CAN_MO102_BASE)
-#define CAN_MO103                       ((CAN_MO_TypeDef             *) CAN_MO103_BASE)
-#define CAN_MO104                       ((CAN_MO_TypeDef             *) CAN_MO104_BASE)
-#define CAN_MO105                       ((CAN_MO_TypeDef             *) CAN_MO105_BASE)
-#define CAN_MO106                       ((CAN_MO_TypeDef             *) CAN_MO106_BASE)
-#define CAN_MO107                       ((CAN_MO_TypeDef             *) CAN_MO107_BASE)
-#define CAN_MO108                       ((CAN_MO_TypeDef             *) CAN_MO108_BASE)
-#define CAN_MO109                       ((CAN_MO_TypeDef             *) CAN_MO109_BASE)
-#define CAN_MO110                       ((CAN_MO_TypeDef             *) CAN_MO110_BASE)
-#define CAN_MO111                       ((CAN_MO_TypeDef             *) CAN_MO111_BASE)
-#define CAN_MO112                       ((CAN_MO_TypeDef             *) CAN_MO112_BASE)
-#define CAN_MO113                       ((CAN_MO_TypeDef             *) CAN_MO113_BASE)
-#define CAN_MO114                       ((CAN_MO_TypeDef             *) CAN_MO114_BASE)
-#define CAN_MO115                       ((CAN_MO_TypeDef             *) CAN_MO115_BASE)
-#define CAN_MO116                       ((CAN_MO_TypeDef             *) CAN_MO116_BASE)
-#define CAN_MO117                       ((CAN_MO_TypeDef             *) CAN_MO117_BASE)
-#define CAN_MO118                       ((CAN_MO_TypeDef             *) CAN_MO118_BASE)
-#define CAN_MO119                       ((CAN_MO_TypeDef             *) CAN_MO119_BASE)
-#define CAN_MO120                       ((CAN_MO_TypeDef             *) CAN_MO120_BASE)
-#define CAN_MO121                       ((CAN_MO_TypeDef             *) CAN_MO121_BASE)
-#define CAN_MO122                       ((CAN_MO_TypeDef             *) CAN_MO122_BASE)
-#define CAN_MO123                       ((CAN_MO_TypeDef             *) CAN_MO123_BASE)
-#define CAN_MO124                       ((CAN_MO_TypeDef             *) CAN_MO124_BASE)
-#define CAN_MO125                       ((CAN_MO_TypeDef             *) CAN_MO125_BASE)
-#define CAN_MO126                       ((CAN_MO_TypeDef             *) CAN_MO126_BASE)
-#define CAN_MO127                       ((CAN_MO_TypeDef             *) CAN_MO127_BASE)
-#define CAN_MO128                       ((CAN_MO_TypeDef             *) CAN_MO128_BASE)
-#define CAN_MO129                       ((CAN_MO_TypeDef             *) CAN_MO129_BASE)
-#define CAN_MO130                       ((CAN_MO_TypeDef             *) CAN_MO130_BASE)
-#define CAN_MO131                       ((CAN_MO_TypeDef             *) CAN_MO131_BASE)
-#define CAN_MO132                       ((CAN_MO_TypeDef             *) CAN_MO132_BASE)
-#define CAN_MO133                       ((CAN_MO_TypeDef             *) CAN_MO133_BASE)
-#define CAN_MO134                       ((CAN_MO_TypeDef             *) CAN_MO134_BASE)
-#define CAN_MO135                       ((CAN_MO_TypeDef             *) CAN_MO135_BASE)
-#define CAN_MO136                       ((CAN_MO_TypeDef             *) CAN_MO136_BASE)
-#define CAN_MO137                       ((CAN_MO_TypeDef             *) CAN_MO137_BASE)
-#define CAN_MO138                       ((CAN_MO_TypeDef             *) CAN_MO138_BASE)
-#define CAN_MO139                       ((CAN_MO_TypeDef             *) CAN_MO139_BASE)
-#define CAN_MO140                       ((CAN_MO_TypeDef             *) CAN_MO140_BASE)
-#define CAN_MO141                       ((CAN_MO_TypeDef             *) CAN_MO141_BASE)
-#define CAN_MO142                       ((CAN_MO_TypeDef             *) CAN_MO142_BASE)
-#define CAN_MO143                       ((CAN_MO_TypeDef             *) CAN_MO143_BASE)
-#define CAN_MO144                       ((CAN_MO_TypeDef             *) CAN_MO144_BASE)
-#define CAN_MO145                       ((CAN_MO_TypeDef             *) CAN_MO145_BASE)
-#define CAN_MO146                       ((CAN_MO_TypeDef             *) CAN_MO146_BASE)
-#define CAN_MO147                       ((CAN_MO_TypeDef             *) CAN_MO147_BASE)
-#define CAN_MO148                       ((CAN_MO_TypeDef             *) CAN_MO148_BASE)
-#define CAN_MO149                       ((CAN_MO_TypeDef             *) CAN_MO149_BASE)
-#define CAN_MO150                       ((CAN_MO_TypeDef             *) CAN_MO150_BASE)
-#define CAN_MO151                       ((CAN_MO_TypeDef             *) CAN_MO151_BASE)
-#define CAN_MO152                       ((CAN_MO_TypeDef             *) CAN_MO152_BASE)
-#define CAN_MO153                       ((CAN_MO_TypeDef             *) CAN_MO153_BASE)
-#define CAN_MO154                       ((CAN_MO_TypeDef             *) CAN_MO154_BASE)
-#define CAN_MO155                       ((CAN_MO_TypeDef             *) CAN_MO155_BASE)
-#define CAN_MO156                       ((CAN_MO_TypeDef             *) CAN_MO156_BASE)
-#define CAN_MO157                       ((CAN_MO_TypeDef             *) CAN_MO157_BASE)
-#define CAN_MO158                       ((CAN_MO_TypeDef             *) CAN_MO158_BASE)
-#define CAN_MO159                       ((CAN_MO_TypeDef             *) CAN_MO159_BASE)
-#define CAN_MO160                       ((CAN_MO_TypeDef             *) CAN_MO160_BASE)
-#define CAN_MO161                       ((CAN_MO_TypeDef             *) CAN_MO161_BASE)
-#define CAN_MO162                       ((CAN_MO_TypeDef             *) CAN_MO162_BASE)
-#define CAN_MO163                       ((CAN_MO_TypeDef             *) CAN_MO163_BASE)
-#define CAN_MO164                       ((CAN_MO_TypeDef             *) CAN_MO164_BASE)
-#define CAN_MO165                       ((CAN_MO_TypeDef             *) CAN_MO165_BASE)
-#define CAN_MO166                       ((CAN_MO_TypeDef             *) CAN_MO166_BASE)
-#define CAN_MO167                       ((CAN_MO_TypeDef             *) CAN_MO167_BASE)
-#define CAN_MO168                       ((CAN_MO_TypeDef             *) CAN_MO168_BASE)
-#define CAN_MO169                       ((CAN_MO_TypeDef             *) CAN_MO169_BASE)
-#define CAN_MO170                       ((CAN_MO_TypeDef             *) CAN_MO170_BASE)
-#define CAN_MO171                       ((CAN_MO_TypeDef             *) CAN_MO171_BASE)
-#define CAN_MO172                       ((CAN_MO_TypeDef             *) CAN_MO172_BASE)
-#define CAN_MO173                       ((CAN_MO_TypeDef             *) CAN_MO173_BASE)
-#define CAN_MO174                       ((CAN_MO_TypeDef             *) CAN_MO174_BASE)
-#define CAN_MO175                       ((CAN_MO_TypeDef             *) CAN_MO175_BASE)
-#define CAN_MO176                       ((CAN_MO_TypeDef             *) CAN_MO176_BASE)
-#define CAN_MO177                       ((CAN_MO_TypeDef             *) CAN_MO177_BASE)
-#define CAN_MO178                       ((CAN_MO_TypeDef             *) CAN_MO178_BASE)
-#define CAN_MO179                       ((CAN_MO_TypeDef             *) CAN_MO179_BASE)
-#define CAN_MO180                       ((CAN_MO_TypeDef             *) CAN_MO180_BASE)
-#define CAN_MO181                       ((CAN_MO_TypeDef             *) CAN_MO181_BASE)
-#define CAN_MO182                       ((CAN_MO_TypeDef             *) CAN_MO182_BASE)
-#define CAN_MO183                       ((CAN_MO_TypeDef             *) CAN_MO183_BASE)
-#define CAN_MO184                       ((CAN_MO_TypeDef             *) CAN_MO184_BASE)
-#define CAN_MO185                       ((CAN_MO_TypeDef             *) CAN_MO185_BASE)
-#define CAN_MO186                       ((CAN_MO_TypeDef             *) CAN_MO186_BASE)
-#define CAN_MO187                       ((CAN_MO_TypeDef             *) CAN_MO187_BASE)
-#define CAN_MO188                       ((CAN_MO_TypeDef             *) CAN_MO188_BASE)
-#define CAN_MO189                       ((CAN_MO_TypeDef             *) CAN_MO189_BASE)
-#define CAN_MO190                       ((CAN_MO_TypeDef             *) CAN_MO190_BASE)
-#define CAN_MO191                       ((CAN_MO_TypeDef             *) CAN_MO191_BASE)
-#define CAN_MO192                       ((CAN_MO_TypeDef             *) CAN_MO192_BASE)
-#define CAN_MO193                       ((CAN_MO_TypeDef             *) CAN_MO193_BASE)
-#define CAN_MO194                       ((CAN_MO_TypeDef             *) CAN_MO194_BASE)
-#define CAN_MO195                       ((CAN_MO_TypeDef             *) CAN_MO195_BASE)
-#define CAN_MO196                       ((CAN_MO_TypeDef             *) CAN_MO196_BASE)
-#define CAN_MO197                       ((CAN_MO_TypeDef             *) CAN_MO197_BASE)
-#define CAN_MO198                       ((CAN_MO_TypeDef             *) CAN_MO198_BASE)
-#define CAN_MO199                       ((CAN_MO_TypeDef             *) CAN_MO199_BASE)
-#define CAN_MO200                       ((CAN_MO_TypeDef             *) CAN_MO200_BASE)
-#define CAN_MO201                       ((CAN_MO_TypeDef             *) CAN_MO201_BASE)
-#define CAN_MO202                       ((CAN_MO_TypeDef             *) CAN_MO202_BASE)
-#define CAN_MO203                       ((CAN_MO_TypeDef             *) CAN_MO203_BASE)
-#define CAN_MO204                       ((CAN_MO_TypeDef             *) CAN_MO204_BASE)
-#define CAN_MO205                       ((CAN_MO_TypeDef             *) CAN_MO205_BASE)
-#define CAN_MO206                       ((CAN_MO_TypeDef             *) CAN_MO206_BASE)
-#define CAN_MO207                       ((CAN_MO_TypeDef             *) CAN_MO207_BASE)
-#define CAN_MO208                       ((CAN_MO_TypeDef             *) CAN_MO208_BASE)
-#define CAN_MO209                       ((CAN_MO_TypeDef             *) CAN_MO209_BASE)
-#define CAN_MO210                       ((CAN_MO_TypeDef             *) CAN_MO210_BASE)
-#define CAN_MO211                       ((CAN_MO_TypeDef             *) CAN_MO211_BASE)
-#define CAN_MO212                       ((CAN_MO_TypeDef             *) CAN_MO212_BASE)
-#define CAN_MO213                       ((CAN_MO_TypeDef             *) CAN_MO213_BASE)
-#define CAN_MO214                       ((CAN_MO_TypeDef             *) CAN_MO214_BASE)
-#define CAN_MO215                       ((CAN_MO_TypeDef             *) CAN_MO215_BASE)
-#define CAN_MO216                       ((CAN_MO_TypeDef             *) CAN_MO216_BASE)
-#define CAN_MO217                       ((CAN_MO_TypeDef             *) CAN_MO217_BASE)
-#define CAN_MO218                       ((CAN_MO_TypeDef             *) CAN_MO218_BASE)
-#define CAN_MO219                       ((CAN_MO_TypeDef             *) CAN_MO219_BASE)
-#define CAN_MO220                       ((CAN_MO_TypeDef             *) CAN_MO220_BASE)
-#define CAN_MO221                       ((CAN_MO_TypeDef             *) CAN_MO221_BASE)
-#define CAN_MO222                       ((CAN_MO_TypeDef             *) CAN_MO222_BASE)
-#define CAN_MO223                       ((CAN_MO_TypeDef             *) CAN_MO223_BASE)
-#define CAN_MO224                       ((CAN_MO_TypeDef             *) CAN_MO224_BASE)
-#define CAN_MO225                       ((CAN_MO_TypeDef             *) CAN_MO225_BASE)
-#define CAN_MO226                       ((CAN_MO_TypeDef             *) CAN_MO226_BASE)
-#define CAN_MO227                       ((CAN_MO_TypeDef             *) CAN_MO227_BASE)
-#define CAN_MO228                       ((CAN_MO_TypeDef             *) CAN_MO228_BASE)
-#define CAN_MO229                       ((CAN_MO_TypeDef             *) CAN_MO229_BASE)
-#define CAN_MO230                       ((CAN_MO_TypeDef             *) CAN_MO230_BASE)
-#define CAN_MO231                       ((CAN_MO_TypeDef             *) CAN_MO231_BASE)
-#define CAN_MO232                       ((CAN_MO_TypeDef             *) CAN_MO232_BASE)
-#define CAN_MO233                       ((CAN_MO_TypeDef             *) CAN_MO233_BASE)
-#define CAN_MO234                       ((CAN_MO_TypeDef             *) CAN_MO234_BASE)
-#define CAN_MO235                       ((CAN_MO_TypeDef             *) CAN_MO235_BASE)
-#define CAN_MO236                       ((CAN_MO_TypeDef             *) CAN_MO236_BASE)
-#define CAN_MO237                       ((CAN_MO_TypeDef             *) CAN_MO237_BASE)
-#define CAN_MO238                       ((CAN_MO_TypeDef             *) CAN_MO238_BASE)
-#define CAN_MO239                       ((CAN_MO_TypeDef             *) CAN_MO239_BASE)
-#define CAN_MO240                       ((CAN_MO_TypeDef             *) CAN_MO240_BASE)
-#define CAN_MO241                       ((CAN_MO_TypeDef             *) CAN_MO241_BASE)
-#define CAN_MO242                       ((CAN_MO_TypeDef             *) CAN_MO242_BASE)
-#define CAN_MO243                       ((CAN_MO_TypeDef             *) CAN_MO243_BASE)
-#define CAN_MO244                       ((CAN_MO_TypeDef             *) CAN_MO244_BASE)
-#define CAN_MO245                       ((CAN_MO_TypeDef             *) CAN_MO245_BASE)
-#define CAN_MO246                       ((CAN_MO_TypeDef             *) CAN_MO246_BASE)
-#define CAN_MO247                       ((CAN_MO_TypeDef             *) CAN_MO247_BASE)
-#define CAN_MO248                       ((CAN_MO_TypeDef             *) CAN_MO248_BASE)
-#define CAN_MO249                       ((CAN_MO_TypeDef             *) CAN_MO249_BASE)
-#define CAN_MO250                       ((CAN_MO_TypeDef             *) CAN_MO250_BASE)
-#define CAN_MO251                       ((CAN_MO_TypeDef             *) CAN_MO251_BASE)
-#define CAN_MO252                       ((CAN_MO_TypeDef             *) CAN_MO252_BASE)
-#define CAN_MO253                       ((CAN_MO_TypeDef             *) CAN_MO253_BASE)
-#define CAN_MO254                       ((CAN_MO_TypeDef             *) CAN_MO254_BASE)
-#define CAN_MO255                       ((CAN_MO_TypeDef             *) CAN_MO255_BASE)
+#define CAN_MO                          ((CAN_MO_CLUSTER_Type     *) CAN_MO_BASE)
 #define VADC                            ((VADC_GLOBAL_TypeDef               *) VADC_BASE)
 #define VADC_G0                         ((VADC_G_TypeDef             *) VADC_G0_BASE)
 #define VADC_G1                         ((VADC_G_TypeDef             *) VADC_G1_BASE)

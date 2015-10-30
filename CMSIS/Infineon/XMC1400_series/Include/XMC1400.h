@@ -24,11 +24,11 @@ Copyright (C) 2011-2015 Infineon Technologies AG. All rights reserved.
  * @brief    CMSIS Cortex-M0 Peripheral Access Layer Header File for
  *           XMC1400 from Infineon.
  *
- * @version  V1.0.4 (Reference Manual v0.1)
- * @date     24. June 2015
+ * @version  V1.0.5 (Reference Manual v1.0)
+ * @date     24. September 2015
  *
  * @note     Generated with SVDConv V2.86c 
- *           from CMSIS SVD File 'XMC1400_Processed_SVD.xml' Version 1.0.4 (Reference Manual v0.1),
+ *           from CMSIS SVD File 'XMC1400_Processed_SVD.xml' Version 1.0.5 (Reference Manual v1.0),
  *******************************************************************************************************/
 
 
@@ -212,6 +212,21 @@ reg = (uint##size##_t) (VAL2 | VAL4);\
   #warning Not supported compiler type
 #endif
 
+
+typedef struct {
+  __IO uint32_t  MOFCR;                             /*!< (@ 0x50041000) Message Object Function Control Register               */
+  __IO uint32_t  MOFGPR;                            /*!< (@ 0x50041004) Message Object FIFO/Gateway Pointer Register           */
+  __IO uint32_t  MOIPR;                             /*!< (@ 0x50041008) Message Object Interrupt Pointer Register              */
+  __IO uint32_t  MOAMR;                             /*!< (@ 0x5004100C) Message Object Acceptance Mask Register                */
+  __IO uint32_t  MODATAL;                           /*!< (@ 0x50041010) Message Object Data Register Low                       */
+  __IO uint32_t  MODATAH;                           /*!< (@ 0x50041014) Message Object Data Register High                      */
+  __IO uint32_t  MOAR;                              /*!< (@ 0x50041018) Message Object Arbitration Register                    */
+  
+  union {
+    __I  uint32_t  MOSTAT;                          /*!< (@ 0x5004101C) Message Object Status Register                         */
+    __O  uint32_t  MOCTR;                           /*!< (@ 0x5004101C) Message Object Control Register                        */
+  };
+} CAN_MO_TypeDef;                                      /*!< (@ 0x50041020) Cluster End. Size = 32 (0x20)                          */
 
 
 /* ================================================================================ */
@@ -572,28 +587,17 @@ typedef struct {                                    /*!< (@ 0x50040200) CAN_NODE
 
 
 /* ================================================================================ */
-/* ================                CAN_MO [CAN_MO0]                ================ */
+/* ================             CAN_MO_CLUSTER [CAN_MO]            ================ */
 /* ================================================================================ */
 
 
 /**
-  * @brief Controller Area Networks (CAN_MO)
+  * @brief Controller Area Networks (CAN_MO_CLUSTER)
   */
 
-typedef struct {                                    /*!< (@ 0x50041000) CAN_MO Structure                                       */
-  __IO uint32_t  MOFCR;                             /*!< (@ 0x50041000) Message Object Function Control Register               */
-  __IO uint32_t  MOFGPR;                            /*!< (@ 0x50041004) Message Object FIFO/Gateway Pointer Register           */
-  __IO uint32_t  MOIPR;                             /*!< (@ 0x50041008) Message Object Interrupt Pointer Register              */
-  __IO uint32_t  MOAMR;                             /*!< (@ 0x5004100C) Message Object Acceptance Mask Register                */
-  __IO uint32_t  MODATAL;                           /*!< (@ 0x50041010) Message Object Data Register Low                       */
-  __IO uint32_t  MODATAH;                           /*!< (@ 0x50041014) Message Object Data Register High                      */
-  __IO uint32_t  MOAR;                              /*!< (@ 0x50041018) Message Object Arbitration Register                    */
-  
-  union {
-    __I  uint32_t  MOSTAT;                          /*!< (@ 0x5004101C) Message Object Status Register                         */
-    __O  uint32_t  MOCTR;                           /*!< (@ 0x5004101C) Message Object Control Register                        */
-  };
-} CAN_MO_TypeDef;
+typedef struct {                                    /*!< (@ 0x50041000) CAN_MO_CLUSTER Structure                               */
+  CAN_MO_TypeDef MO[32];                               /*!< (@ 0x50041000) Message Object Registers                               */
+} CAN_MO_CLUSTER_Type;
 
 
 /* ================================================================================ */
@@ -3788,7 +3792,7 @@ typedef struct {                                    /*!< (@ 0x40040400) PORT4 St
 
 
 /* ================================================================================ */
-/* ================         Group 'CAN_MO' Position & Mask         ================ */
+/* ================     Cluster Group 'CAN_MO' Position & Mask     ================ */
 /* ================================================================================ */
 
 
@@ -8729,38 +8733,7 @@ typedef struct {                                    /*!< (@ 0x40040400) PORT4 St
 #define CAN_BASE                        0x50040000UL
 #define CAN_NODE0_BASE                  0x50040200UL
 #define CAN_NODE1_BASE                  0x50040300UL
-#define CAN_MO0_BASE                    0x50041000UL
-#define CAN_MO1_BASE                    0x50041020UL
-#define CAN_MO2_BASE                    0x50041040UL
-#define CAN_MO3_BASE                    0x50041060UL
-#define CAN_MO4_BASE                    0x50041080UL
-#define CAN_MO5_BASE                    0x500410A0UL
-#define CAN_MO6_BASE                    0x500410C0UL
-#define CAN_MO7_BASE                    0x500410E0UL
-#define CAN_MO8_BASE                    0x50041100UL
-#define CAN_MO9_BASE                    0x50041120UL
-#define CAN_MO10_BASE                   0x50041140UL
-#define CAN_MO11_BASE                   0x50041160UL
-#define CAN_MO12_BASE                   0x50041180UL
-#define CAN_MO13_BASE                   0x500411A0UL
-#define CAN_MO14_BASE                   0x500411C0UL
-#define CAN_MO15_BASE                   0x500411E0UL
-#define CAN_MO16_BASE                   0x50041200UL
-#define CAN_MO17_BASE                   0x50041220UL
-#define CAN_MO18_BASE                   0x50041240UL
-#define CAN_MO19_BASE                   0x50041260UL
-#define CAN_MO20_BASE                   0x50041280UL
-#define CAN_MO21_BASE                   0x500412A0UL
-#define CAN_MO22_BASE                   0x500412C0UL
-#define CAN_MO23_BASE                   0x500412E0UL
-#define CAN_MO24_BASE                   0x50041300UL
-#define CAN_MO25_BASE                   0x50041320UL
-#define CAN_MO26_BASE                   0x50041340UL
-#define CAN_MO27_BASE                   0x50041360UL
-#define CAN_MO28_BASE                   0x50041380UL
-#define CAN_MO29_BASE                   0x500413A0UL
-#define CAN_MO30_BASE                   0x500413C0UL
-#define CAN_MO31_BASE                   0x500413E0UL
+#define CAN_MO_BASE                     0x50041000UL
 #define SCU_GENERAL_BASE                0x40010000UL
 #define SCU_INTERRUPT_BASE              0x40010038UL
 #define SCU_POWER_BASE                  0x40010200UL
@@ -8844,38 +8817,7 @@ typedef struct {                                    /*!< (@ 0x40040400) PORT4 St
 #define CAN                             ((CAN_GLOBAL_TypeDef                *) CAN_BASE)
 #define CAN_NODE0                       ((CAN_NODE_TypeDef           *) CAN_NODE0_BASE)
 #define CAN_NODE1                       ((CAN_NODE_TypeDef           *) CAN_NODE1_BASE)
-#define CAN_MO0                         ((CAN_MO_TypeDef             *) CAN_MO0_BASE)
-#define CAN_MO1                         ((CAN_MO_TypeDef             *) CAN_MO1_BASE)
-#define CAN_MO2                         ((CAN_MO_TypeDef             *) CAN_MO2_BASE)
-#define CAN_MO3                         ((CAN_MO_TypeDef             *) CAN_MO3_BASE)
-#define CAN_MO4                         ((CAN_MO_TypeDef             *) CAN_MO4_BASE)
-#define CAN_MO5                         ((CAN_MO_TypeDef             *) CAN_MO5_BASE)
-#define CAN_MO6                         ((CAN_MO_TypeDef             *) CAN_MO6_BASE)
-#define CAN_MO7                         ((CAN_MO_TypeDef             *) CAN_MO7_BASE)
-#define CAN_MO8                         ((CAN_MO_TypeDef             *) CAN_MO8_BASE)
-#define CAN_MO9                         ((CAN_MO_TypeDef             *) CAN_MO9_BASE)
-#define CAN_MO10                        ((CAN_MO_TypeDef             *) CAN_MO10_BASE)
-#define CAN_MO11                        ((CAN_MO_TypeDef             *) CAN_MO11_BASE)
-#define CAN_MO12                        ((CAN_MO_TypeDef             *) CAN_MO12_BASE)
-#define CAN_MO13                        ((CAN_MO_TypeDef             *) CAN_MO13_BASE)
-#define CAN_MO14                        ((CAN_MO_TypeDef             *) CAN_MO14_BASE)
-#define CAN_MO15                        ((CAN_MO_TypeDef             *) CAN_MO15_BASE)
-#define CAN_MO16                        ((CAN_MO_TypeDef             *) CAN_MO16_BASE)
-#define CAN_MO17                        ((CAN_MO_TypeDef             *) CAN_MO17_BASE)
-#define CAN_MO18                        ((CAN_MO_TypeDef             *) CAN_MO18_BASE)
-#define CAN_MO19                        ((CAN_MO_TypeDef             *) CAN_MO19_BASE)
-#define CAN_MO20                        ((CAN_MO_TypeDef             *) CAN_MO20_BASE)
-#define CAN_MO21                        ((CAN_MO_TypeDef             *) CAN_MO21_BASE)
-#define CAN_MO22                        ((CAN_MO_TypeDef             *) CAN_MO22_BASE)
-#define CAN_MO23                        ((CAN_MO_TypeDef             *) CAN_MO23_BASE)
-#define CAN_MO24                        ((CAN_MO_TypeDef             *) CAN_MO24_BASE)
-#define CAN_MO25                        ((CAN_MO_TypeDef             *) CAN_MO25_BASE)
-#define CAN_MO26                        ((CAN_MO_TypeDef             *) CAN_MO26_BASE)
-#define CAN_MO27                        ((CAN_MO_TypeDef             *) CAN_MO27_BASE)
-#define CAN_MO28                        ((CAN_MO_TypeDef             *) CAN_MO28_BASE)
-#define CAN_MO29                        ((CAN_MO_TypeDef             *) CAN_MO29_BASE)
-#define CAN_MO30                        ((CAN_MO_TypeDef             *) CAN_MO30_BASE)
-#define CAN_MO31                        ((CAN_MO_TypeDef             *) CAN_MO31_BASE)
+#define CAN_MO                          ((CAN_MO_CLUSTER_Type     *) CAN_MO_BASE)
 #endif /* (UC_DEVICE == XMC1403) || (UC_DEVICE == XMC1404) */
 #define SCU_GENERAL                     ((SCU_GENERAL_Type        *) SCU_GENERAL_BASE)
 #define SCU_INTERRUPT                   ((SCU_INTERRUPT_TypeDef      *) SCU_INTERRUPT_BASE)

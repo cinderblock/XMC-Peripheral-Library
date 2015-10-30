@@ -6914,7 +6914,6 @@ typedef struct {                                    /*!< (@ 0x40040200) PORT2 St
 #define PORT1                           ((PORT1_Type              *) PORT1_BASE)
 #define PORT2                           ((PORT2_Type              *) PORT2_BASE)
 
-
 /** @} */ /* End of group Device_Peripheral_Registers */
 /** @} */ /* End of group XMC1300 */
 /** @} */ /* End of group Infineon */

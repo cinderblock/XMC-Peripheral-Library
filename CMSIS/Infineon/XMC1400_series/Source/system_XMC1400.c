@@ -1,33 +1,43 @@
-/******************************************************************************
+/*********************************************************************************************************************
  * @file     system_XMC1400.c
- * @brief    Device specific initialization for the XMC1300-Series according 
- * to CMSIS
+ * @brief    Device specific initialization for the XMC1400-Series according to CMSIS
  * @version  V1.0
- * @date     14 April 2015
+ * @date     03 Sep 2015
  *
- * @note
- * Copyright (C) 2012-2015 Infineon Technologies AG. All rights reserved.
-
+ * @cond
+ *********************************************************************************************************************
+ * Copyright (c) 2015, Infineon Technologies AG
+ * All rights reserved.
  *
- * @par
- * Infineon Technologies AG (Infineon) is supplying this software for use with 
- * Infineon?s microcontrollers.
- *   
- * This file can be freely distributed within development tools that are 
- * supporting such microcontrollers.
- *  
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the
+ * following conditions are met:
  *
- * @par
- * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+ * disclaimer.
  *
- ******************************************************************************/
-/*
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+ * disclaimer in the documentation and/or other materials provided with the distribution.
+ *
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote
+ * products derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with
+ * Infineon Technologies AG dave@infineon.com).
+ *********************************************************************************************************************
+ *
  * *************************** Change history ********************************
- * V1.0, 7 May 2015, JFT : initial version
+ * V1.0, 03 Sep 2015, JFT : Initial version
+ *                          MCLK = 48MHz, PCLK = 96MHz
+ *
+ * @endcond
  */
 
 /*******************************************************************************
@@ -92,19 +102,18 @@
 //    <i> Default: Crystal mode
 */
 #define OSCHP_MODE 0
-#define OSCHP_MODE_XTAL (0 << SCU_ANALOG_ANAOSCHPCTRL_MODE_Pos)
-#define OSCHP_MODE_DIRECT (1 << SCU_ANALOG_ANAOSCHPCTRL_MODE_Pos)
+#define OSCHP_MODE_XTAL 0
+#define OSCHP_MODE_DIRECT 1
 
 /*
 //    <o> RTC clock source selection
 //       <0=> Internal oscillator DCO2 (32768Hz)
-//       <1=> External crystal oscillator
-//       <2=> External clock
+//       <5=> External crystal oscillator
 //    <i> Default: Internal oscillator DCO2 (32768Hz)
 */
 #define RTC_CLOCK_SRC 0
-#define RTC_CLOCK_SRC_DCO2 (0 << SCU_CLK_CLKCR_RTCCLKSEL_Pos)
-#define RTC_CLOCK_SRC_EXT_XTAL (1 << SCU_CLK_CLKCR_RTCCLKSEL_Pos)
+#define RTC_CLOCK_SRC_DCO2 0
+#define RTC_CLOCK_SRC_EXT_XTAL 5
 /*
 //    <o> PCLK clock source selection
 //       <0=> MCLK
@@ -112,8 +121,8 @@
 //    <i> Default: 2xMCLK
 */
 #define PCLK_CLOCK_SRC 1
-#define PCLK_CLOCK_SRC_MCLK (0 << SCU_CLK_CLKCR_RTCCLKSEL_Pos)
-#define PCLK_CLOCK_SRC_2XMCLK (1 << SCU_CLK_CLKCR_RTCCLKSEL_Pos)
+#define PCLK_CLOCK_SRC_MCLK 0
+#define PCLK_CLOCK_SRC_2XMCLK 1
 
 /*
 //-------- <<< end of configuration section >>> ------------------
@@ -136,22 +145,23 @@ uint32_t SystemCoreClock __at( 0x20003FFC );
 /*******************************************************************************
  * LOCAL FUNCTIONS
  *******************************************************************************/
-static void delay(uint32_t cycles)
+#if DCLK_CLOCK_SRC != DCLK_CLOCK_SRC_DCO1
+static inline void delay(uint32_t cycles)
 {
-  volatile uint32_t i;
-
-  for(i = 0UL; i < cycles ;++i)
+  while(cycles > 0)
   {
     __NOP();
+    cycles--;
   }
 }
+#endif
 
 /*******************************************************************************
  * API IMPLEMENTATION
  *******************************************************************************/
 
 __WEAK void SystemInit(void)
-{    
+{
   SystemCoreSetup();
   SystemCoreClockSetup();
 }
@@ -165,56 +175,56 @@ __WEAK void SystemCoreClockSetup(void)
   /* Clock setup done during SSW using the CLOCK_VAL1 and CLOCK_VAL2 defined in vector table */
 
   /* disable bit protection */
-  SCU_GENERAL->PASSWD = 0x000000C0UL; 
+  SCU_GENERAL->PASSWD = 0x000000C0UL;
 
 #if DCLK_CLOCK_SRC != DCLK_CLOCK_SRC_DCO1
-  
-  /* OSCHP source selection - OSC mode */
-  SCU_ANALOG->ANAOSCHPCTRL = (SCU_ANALOG->ANAOSCHPCTRL & ~SCU_ANALOG_ANAOSCHPCTRL_MODE_Msk) |
-		                     OSCHP_MODE;
 
   if (OSCHP_GetFrequency() > 20000000U)
   {
-	SCU_ANALOG->ANAOSCHPCTRL |= SCU_ANALOG_ANAOSCHPCTRL_HYSCTRL_Msk;
+    SCU_ANALOG->ANAOSCHPCTRL |= SCU_ANALOG_ANAOSCHPCTRL_HYSCTRL_Msk;
   }
 
-  /* Oscillator start-up time, max = 10ms */
-  delay(480000);
+  /* OSCHP source selection - OSC mode */
+  SCU_ANALOG->ANAOSCHPCTRL = (SCU_ANALOG->ANAOSCHPCTRL & ~SCU_ANALOG_ANAOSCHPCTRL_MODE_Msk) |
+                             (OSCHP_MODE << SCU_ANALOG_ANAOSCHPCTRL_MODE_Pos);
 
-  /* Enable oscillator watchdog*/
+  /* Enable OSC_HP oscillator watchdog*/
   SCU_CLK->OSCCSR |= SCU_CLK_OSCCSR_XOWDEN_Msk;
 
-  /* Restart detection */
-  SCU_INTERRUPT->SRCLR1 = SCU_INTERRUPT_SRCLR1_LOECI_Msk;
-  SCU_CLK->OSCCSR |= SCU_CLK_OSCCSR_XOWDRES_Msk;
+  do
+  {
+    /* Restart OSC_HP oscillator watchdog */
+    SCU_INTERRUPT->SRCLR1 = SCU_INTERRUPT_SRCLR1_LOECI_Msk;
+    SCU_CLK->OSCCSR |= SCU_CLK_OSCCSR_XOWDRES_Msk;
 
-  /* Wait a few DCO2 cycles for the update of the clock detection result */
-  while(SCU_CLK->OSCCSR & SCU_CLK_OSCCSR_XOWDRES_Msk);
-  delay(7200);
+    /* Wait a few DCO2 cycles for the update of the clock detection result */
+    delay(2500);
 
+    /* check clock is ok */
+  }
   while(SCU_INTERRUPT->SRRAW1 & SCU_INTERRUPT_SRRAW1_LOECI_Msk);
 
-  /* DCLK source using DCO1 */
+  /* DCLK source using OSC_HP */
   SCU_CLK->CLKCR1 |= SCU_CLK_CLKCR1_DCLKSEL_Msk;
-
-#else
-  /* Enable oscillator watchdog */
-  SCU_CLK->OSCCSR |= SCU_CLK_OSCCSR_OWDEN_Msk;
-
-  /* Restart oscillator watchdog */
-  SCU_CLK->OSCCSR |= SCU_CLK_OSCCSR_OWDRES_Msk;
-  /* Wait a few DCO2 cycles for the update of the clock detection result */
-  while(SCU_CLK->OSCCSR & SCU_CLK_OSCCSR_OWDRES_Msk);
-  delay(7200);
-
-  /* check clock is ok */
-  while((SCU_CLK->OSCCSR & (SCU_CLK_OSCCSR_OSC2L_Msk | SCU_CLK_OSCCSR_OSC2H_Msk)) != 0U);
-#endif
   
+#else
+    
+  /* DCLK source using DCO1 */
+  SCU_CLK->CLKCR1 &= ~SCU_CLK_CLKCR1_DCLKSEL_Msk;
+  
+#endif    
+
+#if RTC_CLOCK_SRC == RTC_CLOCK_SRC_EXT_XTAL
+  /* Enable OSC_LP */
+  SCU_ANALOG->ANAOSCLPCTRL &= ~SCU_ANALOG_ANAOSCLPCTRL_MODE_Msk;
+#endif  
+
   /* Update PCLK selection mux. */
+  /* Fractional divider enabled, MCLK frequency equal DCO1 frequency or external crystal frequency */
   SCU_CLK->CLKCR = (1023UL <<SCU_CLK_CLKCR_CNTADJ_Pos) |
-		           RTC_CLOCK_SRC |
-				   PCLK_CLOCK_SRC;
+                    (RTC_CLOCK_SRC << SCU_CLK_CLKCR_RTCCLKSEL_Pos) |
+                    (PCLK_CLOCK_SRC << SCU_CLK_CLKCR_PCLKSEL_Pos) |
+                    0x100U; /* IDIV = 1 */
 
   /* enable bit protection */
   SCU_GENERAL->PASSWD = 0x000000C3UL;
@@ -227,26 +237,33 @@ __WEAK void SystemCoreClockUpdate(void)
   static uint32_t IDIV, FDIV;
 
   IDIV = ((SCU_CLK->CLKCR) & SCU_CLK_CLKCR_IDIV_Msk) >> SCU_CLK_CLKCR_IDIV_Pos;
-  FDIV = (((SCU_CLK->CLKCR) & SCU_CLK_CLKCR_FDIV_Msk) >> SCU_CLK_CLKCR_FDIV_Pos) |
-         (((SCU_CLK->CLKCR1) & SCU_CLK_CLKCR1_FDIV_Msk) << 8);
-  
+
   if (IDIV != 0)
   {
+    FDIV = ((SCU_CLK->CLKCR) & SCU_CLK_CLKCR_FDIV_Msk) >> SCU_CLK_CLKCR_FDIV_Pos;
+    FDIV |= ((SCU_CLK->CLKCR1) & SCU_CLK_CLKCR1_FDIV_Msk) << 8;
+    
     /* Fractional divider is enabled and used */
-#if DCLK_CLOCK_SRC == DCLK_CLOCK_SRC_DCO1
-    SystemCoreClock = ((uint32_t)((DCO1_FREQUENCY << 6U) / ((IDIV << 10) + FDIV))) << 4U;
-#else
-    SystemCoreClock = ((uint32_t)((OSCHP_GetFrequency() << 6U) / ((IDIV << 10) + FDIV))) << 4U;
-#endif	
+    if (((SCU_CLK->CLKCR1) & SCU_CLK_CLKCR1_DCLKSEL_Msk) == 0U)
+    {
+       SystemCoreClock = ((uint32_t)((DCO1_FREQUENCY << 6U) / ((IDIV << 10) + FDIV))) << 4U;
+    }
+    else
+    {
+       SystemCoreClock = ((uint32_t)((OSCHP_GetFrequency() << 6U) / ((IDIV << 10) + FDIV))) << 4U;
+    }
   }
   else
   {
     /* Fractional divider bypassed. */
-#if DCLK_CLOCK_SRC == DCLK_CLOCK_SRC_DCO1
-    SystemCoreClock = DCO1_FREQUENCY;
-#else
-    SystemCoreClock = OSCHP_GetFrequency();
-#endif	
+    if (((SCU_CLK->CLKCR1) & SCU_CLK_CLKCR1_DCLKSEL_Msk) == 0U)
+    {
+        SystemCoreClock = DCO1_FREQUENCY;
+    }
+    else
+    {
+        SystemCoreClock = OSCHP_GetFrequency();
+    }
   }
 }
 

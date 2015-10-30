@@ -1,6 +1,6 @@
 /**
  * @file XMC4504x512.ld
- * @date 2015-07-07
+ * @date 2015-08-26
  *
  * @cond
  *********************************************************************************************************************
@@ -41,6 +41,9 @@
  * 2015-07-07:
  *     - Product splitting
  *     - Copyright notice update
+ *      
+ * 2015-08-26:
+ *     - Fix error on not existing DSRAM2
  *      
  * @endcond 
  *
@@ -163,7 +166,7 @@ SECTIONS
         . = ALIGN(4);
         __bss3_end = .;
         . = ALIGN(8);        
-        Heap_Bank3_Start = .;
+        Heap_Bank2_Start = .;
     } > PSRAM_1
 	__bss3_size = __bss3_end - __bss3_start;
     
@@ -203,32 +206,9 @@ SECTIONS
         * (.no_init);
     } > DSRAM_1_system
 
-    DSRAM2_DATA : AT(LOADADDR(.data) + SIZEOF(.data))
-    {
-		__data2_start = .;
-		*(DSRAM2_DATA)  	
-        . = ALIGN(4);
-		__data2_end = .;
-    } > DSRAM_2_comm
-	__data2_load = LOADADDR(DSRAM2_DATA);
-	__data2_size = __data2_end - __data2_start;
-
-    DSRAM2_BSS (NOLOAD) :
-    {
-		__bss2_start = .;
-		*(ETH_RAM)
-        *(USB_RAM)
-		*(DSRAM2_BSS)  	
-        . = ALIGN(4);
-        __bss2_end = .;
-        . = ALIGN(8);
-		Heap_Bank2_Start = .;
-    } > DSRAM_2_comm
-	__bss2_size = __bss2_end - __bss2_start;
 
 	Heap_Bank1_Size = Heap_Bank1_End - Heap_Bank1_Start;
-	Heap_Bank2_Size = LENGTH(DSRAM_2_comm) - (Heap_Bank2_Start - ORIGIN(DSRAM_2_comm));
-	Heap_Bank3_Size = LENGTH(PSRAM_1) - (Heap_Bank3_Start - ORIGIN(PSRAM_1));
+	Heap_Bank2_Size = LENGTH(PSRAM_1) - (Heap_Bank2_Start - ORIGIN(PSRAM_1));
 
 	/DISCARD/ :
 	{
