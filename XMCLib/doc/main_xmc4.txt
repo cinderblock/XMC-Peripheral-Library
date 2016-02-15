@@ -13,6 +13,7 @@
  * - XMC4800 series
  * - XMC4700 series
  * - XMC4500 series
+ * - XMC4300 series
  * - XMC4400 series
  * - XMC4200 series
  * - XMC4100 series
@@ -197,6 +198,9 @@
  * - XMC4400_F64x256
  * - XMC4402_F100x256
  * - XMC4402_F64x256
+ *
+ * XMC4300 Series device names:
+ * - XMC4300_F100x256
  *
  * XMC4200 Series device names:
  * - XMC4200_F64x256 

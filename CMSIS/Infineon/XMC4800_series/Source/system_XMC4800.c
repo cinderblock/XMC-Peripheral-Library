@@ -2,10 +2,10 @@
  * @file     system_XMC4800.c
  * @brief    CMSIS Cortex-M4 Device Peripheral Access Layer Header File
  *           for the Infineon XMC4800 Device Series
- * @version  V1.0.0
- * @date     22. May 2014
+ * @version  V1.0.1
+ * @date     26. Jan 2016
  *
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
+ * Copyright (C) 2015-2016 Infineon Technologies AG. All rights reserved.
  *
  *
  * @par
@@ -24,6 +24,7 @@
 
 /********************** Version History ***************************************
  * V1.0.0, 22. May 2015, Initial version
+ * V1.0.1, 26. Jan 2016, Disable trap generation from clock unit
  ******************************************************************************/
 
 /*******************************************************************************
@@ -416,16 +417,6 @@ __WEAK void SystemCoreSetup(void)
 
 __WEAK void SystemCoreClockSetup(void)
 {
-    SCU_TRAP->TRAPDIS |= SCU_TRAP_TRAPCLR_SOSCWDGT_Msk |
-                         SCU_TRAP_TRAPCLR_ULPWDGT_Msk |
-                         SCU_TRAP_TRAPCLR_SVCOLCKT_Msk |
-                         SCU_TRAP_TRAPCLR_UVCOLCKT_Msk;
-
-    SCU_TRAP->TRAPCLR = SCU_TRAP_TRAPCLR_SOSCWDGT_Msk |
-                        SCU_TRAP_TRAPCLR_ULPWDGT_Msk |
-                        SCU_TRAP_TRAPCLR_SVCOLCKT_Msk |
-                        SCU_TRAP_TRAPCLR_UVCOLCKT_Msk;
-
 #if FOFI_CALIBRATION_MODE == FOFI_CALIBRATION_MODE_FACTORY
   /* Enable factory calibration */
   SCU_PLL->PLLCON0 |= SCU_PLL_PLLCON0_FOTR_Msk;
@@ -491,9 +482,6 @@ __WEAK void SystemCoreClockSetup(void)
     /* check SCU_MIRRSTS to ensure that no transfer over serial interface is pending */
   }
   SCU_HIBERNATE->HDCR |= SCU_HIBERNATE_HDCR_RCS_Msk | SCU_HIBERNATE_HDCR_STDBYSEL_Msk;
-
-  SCU_TRAP->TRAPDIS &= ~SCU_TRAP_TRAPDIS_ULPWDT_Msk;
-
 #endif /* STDBY_CLOCK_SRC == STDBY_CLOCK_SRC_OSCULP */
 
   /* Enable automatic calibration of internal fast oscillator */
@@ -524,8 +512,6 @@ __WEAK void SystemCoreClockSetup(void)
     {
       /* wait till OSC_HP output frequency is usable */
     }
-
-    SCU_TRAP->TRAPDIS &= ~SCU_TRAP_TRAPDIS_SOSCWDGT_Msk;
   }
 #else /* PLL_CLOCK_SRC != PLL_CLOCK_SRC_OFI */
 
@@ -565,7 +551,6 @@ __WEAK void SystemCoreClockSetup(void)
     /* wait for normal mode */
   }
 
-  SCU_TRAP->TRAPDIS &= ~SCU_TRAP_TRAPDIS_SVCOLCKT_Msk;
 #endif /* ENABLE_PLL */
 
   /* Before scaling to final frequency we need to setup the clock dividers */
@@ -667,8 +652,6 @@ __WEAK void SystemCoreClockSetup(void)
   {
     /* wait for PLL Lock */
   }
-
-  SCU_TRAP->TRAPDIS &= ~SCU_TRAP_TRAPDIS_UVCOLCKT_Msk;
 #endif
 
   /* Enable selected clocks */

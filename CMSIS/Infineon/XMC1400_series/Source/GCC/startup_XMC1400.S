@@ -1,12 +1,12 @@
 /*********************************************************************************************************************
  * @file     startup_XMC1400.S
  * @brief    CMSIS Core Device Startup File for Infineon XMC1400 Device Series
- * @version  V1.0
- * @date     03 Sep 2015
+ * @version  V1.1
+ * @date     05 Jan 2016
  *
  * @cond
  *********************************************************************************************************************
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -36,6 +36,8 @@
  **************************** Change history ********************************
  * V1.0, Sep, 03, 2015 JFT:Initial version
  *                         MCLK=8MHz, PCLK=16MHz
+ * V1.1, Jan, 05, 2016 JFT:Fix .reset section attributes
+ *
  * @endcond 
  */
 
@@ -107,7 +109,7 @@
     .syntax unified   
     .cpu cortex-m0
 
-    .section ".reset"
+    .section .reset, "a", %progbits
     
  	.align 2
     

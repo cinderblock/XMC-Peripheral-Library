@@ -1,12 +1,12 @@
 /**
  * @file xmc4_scu.h
- * @date 2015-10-27
+ * @date 2016-01-12
  *
  * @cond
   *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.4 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -39,6 +39,9 @@
  * 2015-06-20:
  *     - Initial version
  *     - Documentation improved
+ *
+ * 2015-11-30:
+ *     - Documentation improved <br>
  *      
  * @endcond 
  *
@@ -68,17 +71,17 @@
 /*********************************************************************************************************************
  * MACROS
  ********************************************************************************************************************/
-#define PLL_PDIV_XTAL_8MHZ (1U)
-#define PLL_NDIV_XTAL_8MHZ (89U)
-#define PLL_K2DIV_XTAL_8MHZ (2U)
+#define PLL_PDIV_XTAL_8MHZ (1U)  /* PDIV value for main PLL settings, fPLL = 120MHz with fOSC = 8MHz */
+#define PLL_NDIV_XTAL_8MHZ (89U)  /* NDIV value for main PLL settings, fPLL = 120MHz with fOSC = 8MHz */
+#define PLL_K2DIV_XTAL_8MHZ (2U)  /* K2DIV value for main PLL settings, fPLL = 120MHz with fOSC = 8MHz */
 
-#define PLL_PDIV_XTAL_12MHZ (1U)
-#define PLL_NDIV_XTAL_12MHZ (79U)
-#define PLL_K2DIV_XTAL_12MHZ (3U)
+#define PLL_PDIV_XTAL_12MHZ (1U)  /* PDIV value for main PLL settings, fPLL = 120MHz with fOSC = 12MHz */
+#define PLL_NDIV_XTAL_12MHZ (79U)  /* NDIV value for main PLL settings, fPLL = 120MHz with fOSC = 12MHz */
+#define PLL_K2DIV_XTAL_12MHZ (3U)  /* K2DIV value for main PLL settings, fPLL = 120MHz with fOSC = 12MHz */
 
-#define PLL_PDIV_XTAL_16MHZ (1U)
-#define PLL_NDIV_XTAL_16MHZ (59U)
-#define PLL_K2DIV_XTAL_16MHZ (3U)
+#define PLL_PDIV_XTAL_16MHZ (1U)  /* PDIV value for main PLL settings, fPLL = 120MHz with fOSC = 16MHz */
+#define PLL_NDIV_XTAL_16MHZ (59U)  /* NDIV value for main PLL settings, fPLL = 120MHz with fOSC = 16MHz */
+#define PLL_K2DIV_XTAL_16MHZ (3U)  /* K2DIV value for main PLL settings, fPLL = 120MHz with fOSC = 16MHz */
 
 #define XMC_SCU_INTERRUPT_EVENT_WDT_WARN           SCU_INTERRUPT_SRSTAT_PRWARN_Msk /**< Watchdog prewarning event. */
 #define XMC_SCU_INTERRUPT_EVENT_RTC_PERIODIC       SCU_INTERRUPT_SRSTAT_PI_Msk     /**< RTC periodic interrupt. */
@@ -183,7 +186,7 @@ typedef enum XMC_SCU_TRAP
   XMC_SCU_TRAP_DIETEMP_LOW  = SCU_TRAP_TRAPSTAT_TEMPLOT_Msk,  /**< Die temperature lower than expected. */ 
 #endif
 #if defined(ECAT0)
-  XMC_SCU_TRAP_ECAT_PARITY_ERROR = SCU_TRAP_TRAPSTAT_ECAT0RST_Msk, /**< EtherCat Reset */ 
+  XMC_SCU_TRAP_ECAT_RESET = SCU_TRAP_TRAPSTAT_ECAT0RST_Msk, /**< EtherCat Reset */ 
 #endif
 } XMC_SCU_TRAP_t;
 
@@ -496,12 +499,12 @@ typedef enum XMC_SCU_CLOCK_USBCLKSRC
 
 #if defined(ECAT0) 
 /**
- * Defines options for selecting the PERIPH2 clock source.
+ * Defines options for selecting the ECAT clock source.
  */ 
 typedef enum XMC_SCU_CLOCK_ECATCLKSRC
 {
-  XMC_SCU_CLOCK_ECATCLKSRC_USBPLL = (0UL << SCU_CLK_ECATCLKCR_ECATSEL_Pos), /**< USB PLL (fUSBPLL) as a source for PERIPH2 clock. */
-  XMC_SCU_CLOCK_ECATCLKSRC_SYSPLL = (1UL << SCU_CLK_ECATCLKCR_ECATSEL_Pos)  /**< Main PLL output (fPLL) as a source for PERIPH2 clock. */
+  XMC_SCU_CLOCK_ECATCLKSRC_USBPLL = (0UL << SCU_CLK_ECATCLKCR_ECATSEL_Pos), /**< USB PLL (fUSBPLL) as a source for ECAT clock. */
+  XMC_SCU_CLOCK_ECATCLKSRC_SYSPLL = (1UL << SCU_CLK_ECATCLKCR_ECATSEL_Pos)  /**< Main PLL output (fPLL) as a source for ECAT clock. */
 } XMC_SCU_CLOCK_ECATCLKSRC_t;
 #endif
 
@@ -852,6 +855,7 @@ XMC_SCU_STATUS_t XMC_SCU_StartTemperatureMeasurement(void);
  * \par<b>Description</b><br>
  * Reads the measured value of die temperature.\n\n
  * Temperature measurement result is read from \a RESULT bit field of \a DTSSTAT register.
+ * The temperature measured in °C is given by (RESULT - 605) / 2.05 [°C]
  * \par<b>Related APIs:</b><BR>
  * XMC_SCU_IsTemperatureSensorBusy() \n\n\n
  */
@@ -1666,12 +1670,39 @@ __STATIC_INLINE XMC_SCU_CLOCK_SYSPLLCLKSRC_t XMC_SCU_CLOCK_GetSystemPllClockSour
 }
 
 #if defined(ECAT0) 
+/**
+ *
+ * @param source  Source of ECAT clock.\n
+ *            \b Range: Use type @ref XMC_SCU_CLOCK_ECATCLKSRC_t to identify the clock source.\n
+ *                       XMC_SCU_CLOCK_ECATCLKSRC_USBPLL - USB PLL (fUSBPLL) as a source for ECAT clock. \n
+ *                       XMC_SCU_CLOCK_ECATCLKSRC_SYSPLL - Main PLL output (fPLL) as a source for ECAT clock. \n
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Selects the source of ECAT clock (fECAT).\n\n
+ * The value is configured to \a ECATSEL bit of \a ECATCLKCR register.
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_GetECATClockSource() \n\n\n
+ */
 __STATIC_INLINE void XMC_SCU_CLOCK_SetECATClockSource(const XMC_SCU_CLOCK_ECATCLKSRC_t source)
 {
   SCU_CLK->ECATCLKCR = (SCU_CLK->ECATCLKCR & ((uint32_t)~SCU_CLK_ECATCLKCR_ECATSEL_Msk)) |
                       ((uint32_t)source);
 }
 
+/**
+ * @return XMC_SCU_CLOCK_ECATCLKSRC_t   Source of ECAT clock.\n
+ *            \b Range: Use type @ref XMC_SCU_CLOCK_ECATCLKSRC_t to identify the clock source.\n
+ *                       XMC_SCU_CLOCK_ECATCLKSRC_USBPLL - USB PLL (fUSBPLL) as a source for ECAT clock. \n
+ *                       XMC_SCU_CLOCK_ECATCLKSRC_SYSPLL - Main PLL output (fPLL) as a source for ECAT clock. \n
+ *
+ * \par<b>Description</b><br>
+ * Provides the source of ECAT clock (fECAT).
+ * The value is obtained by reading \a ECATSEL bit of \a ECATCLKCR register.
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_HIB_SetRtcClockSource() \n\n\n
+ */
 __STATIC_INLINE XMC_SCU_CLOCK_ECATCLKSRC_t XMC_SCU_CLOCK_GetECATClockSource(void)
 {
   return (XMC_SCU_CLOCK_ECATCLKSRC_t)((SCU_CLK->ECATCLKCR & SCU_CLK_ECATCLKCR_ECATSEL_Msk) >> SCU_CLK_ECATCLKCR_ECATSEL_Pos);
@@ -1696,7 +1727,7 @@ void XMC_SCU_CLOCK_SetSystemClockDivider(const uint32_t divider);
 
 /**
  * @return uint32_t   Ratio of fSYS clock source to the value of fSYS.
- *              \b Range: 1 to 256.
+ *              \b Range: 0 to 255.
  *
  * \par<b>Description</b><br>
  * Provides the value of ratio between the source of system clock to the the value of system clock frequency. \n\n
@@ -1712,9 +1743,9 @@ __STATIC_INLINE uint32_t XMC_SCU_CLOCK_GetSystemClockDivider(void)
 /**
  *
  * @param ratio  Ratio of fCCU clock source to the value of fCCU.
- *              \b Range: 0 or 1.\n
- *                  0-> fCCU= fSYS \n
- *                  1-> fCCU= fSYS/2.
+ *              \b Range: 1 or 2.\n
+ *                  1-> fCCU= fSYS \n
+ *                  2-> fCCU= fSYS/2.
  *
  * @return None
  *
@@ -1749,9 +1780,9 @@ __STATIC_INLINE uint32_t XMC_SCU_CLOCK_GetCcuClockDivider(void)
 /**
  *
  * @param ratio  Ratio between system clock(fSYS) and CPU clock(fCPU).
- *          \b Range: 0 or 1.\n
- *            0-> fCPU= fSYS. \n
- *            1-> fCPU= fSYS/2.
+ *          \b Range: 1 or 2.\n
+ *            1-> fCPU= fSYS. \n
+ *            2-> fCPU= fSYS/2.
  *
  * @return None
  *
@@ -1783,9 +1814,9 @@ __STATIC_INLINE uint32_t XMC_SCU_CLOCK_GetCpuClockDivider(void)
 /**
  *
  * @param ratio  Ratio of peripheral clock source to the value of peripheral clock.\n
- *          \b Range: 0 or 1.\n
- *                0-> fPERIPH= fCPU.\n
- *                1-> fPERIPH= fCPU/2.
+ *          \b Range: 1 or 2.\n
+ *                1-> fPERIPH= fCPU.\n
+ *                2-> fPERIPH= fCPU/2.
  *
  * @return None
  *
@@ -1834,7 +1865,7 @@ void XMC_SCU_CLOCK_SetUsbClockDivider(const uint32_t ratio);
 /**
  *
  * @return uint32_t  Ratio of PLL output clock(fPLL) to USB clock(fUSB).
- *          \b Range: 1 to 8.
+ *          \b Range: 0 to 7.
  *
  * \par<b>Description</b><br>
  * Provides the ratio between PLL output frequency(fPLL) and USB clock(fUSB).\n\n
@@ -1868,7 +1899,7 @@ void XMC_SCU_CLOCK_SetEbuClockDivider(const uint32_t ratio);
 /**
  *
  * @return uint32_t  Ratio of PLL clock(fPLL) to EBU clock(fEBU).\n
- *          \b Range: 1 to 64.
+ *          \b Range: 0 to 63.
  *
  * \par<b>Description</b><br>
  * Provides the ratio between PLL clock(fPLL) and EBU clock(fEBU).\n\n
@@ -1902,7 +1933,7 @@ void XMC_SCU_CLOCK_SetWdtClockDivider(const uint32_t ratio);
 /**
  *
  * @return uint32_t  Ratio between the source of WDT clock and the WDT clock.\n
- *          \b Range: 1 to 256.
+ *          \b Range: 0 to 255.
  *
  * \par<b>Description</b><br>
  * Provides the ratio between the WDT parent clock and the WDT clock. \n\n
@@ -1938,7 +1969,7 @@ void XMC_SCU_CLOCK_SetExternalOutputClockDivider(const uint32_t ratio);
 /**
  *
  * @return uint32_t  Ratio between the external output parent clock selected and the output clock.\n
- *          \b Range: 1 to 512.
+ *          \b Range: 0 to 511.
  *
  * \par<b>Description</b><br>
  * Provides the divider value applied on parent clock before the generation of external output clock. \n\n
@@ -1952,8 +1983,33 @@ __STATIC_INLINE uint32_t XMC_SCU_CLOCK_GetExternalOutputClockDivider(void)
 }
 
 #if defined(ECAT0)
+/**
+ *
+ * @param ratio   Ratio between the source of ECAT clock and the ECAT clock.\n
+ *          \b Range: 1 to 4.
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Configures the ECAT clock by setting the clock divider for the ECAT clock source.\n\n
+ * The value is configured to \a ECADIV bits of \a ECATCLKCR register. The value of divider
+ * is decremented by 1 before configuring.
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_SetECATClockSource(), XMC_SCU_CLOCK_GetECATClockDivider() \n\n\n
+ */
 void XMC_SCU_CLOCK_SetECATClockDivider(const uint32_t divider);
 
+/**
+ *
+ * @return uint32_t  Ratio between the source of ECAT clock and the ECAT clock.\n
+ *          \b Range: 0 to 3.
+ *
+ * \par<b>Description</b><br>
+ * Provides the ratio between the ECAT parent clock and the ECAT clock. \n\n
+ * The value is obtained by reading \a ECADIV bits of \a ECATCLKCR register.
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_SetECATClockSource(), XMC_SCU_CLOCK_SetECATClockDivider() \n\n\n
+ */
 __STATIC_INLINE uint32_t XMC_SCU_CLOCK_GetECATClockDivider(void)
 {
   return (uint32_t)((SCU_CLK->ECATCLKCR & SCU_CLK_ECATCLKCR_ECADIV_Msk) >> SCU_CLK_ECATCLKCR_ECADIV_Pos);
@@ -2176,7 +2232,17 @@ uint32_t XMC_SCU_CLOCK_GetExternalOutputClockFrequency(void);
 
 #if defined(ECAT)
 /**
+ * @return uint32_t   ECAT clock frequency in Hertz.
  *
+ * \par<b>Description</b><br>
+ * Provides the frequency of ECAT clock(fECAT).\n\n
+ * The value is derived using \a ECADIV bits of \a ECATCLKCR register and ECAT clock source.
+ * Based on these values it is calculated using the following formula:\n
+ * if ECAT clock source = PLL:  fECAT = fPLL/(ECADIV + 1).\n
+ * if ECAT clock source =  USBPLL:  fECAT = fUSBPLL/(ECADIV + 1).\n
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_GetECATClockSource(), XMC_SCU_CLOCK_GetECATClockDivider() \n\n\n
  */
 uint32_t XMC_SCU_CLOCK_GetECATClockFrequency(void);
 #endif
@@ -2388,7 +2454,7 @@ bool XMC_SCU_CLOCK_IsUsbPllLocked(void);
  * @return None
  *
  * \par<b>Description</b><br>
- * Configures the calibration of internal oscillator.\n\n
+ * Configures the calibration mode of internal oscillator.\n\n
  * Based on the calibration mode selected, the internal oscillator calibration will be configured.
  * The calibration is useful while using fast internal clock(fOFI). When factory mode calibration is used,
  * the internal oscillator is trimmed using the firmware configured values. If automatic calibration is 
@@ -2521,6 +2587,21 @@ void XMC_SCU_HIB_EnableInternalSlowClock(void);
 void XMC_SCU_HIB_DisableInternalSlowClock(void);
 
 /**
+ * @param config  Register configuration value that defines some system behavior aspects while in Deep Sleep mode.\n
+ * Note: Refer user manual for valid register value before configuring the register. \n
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Configuration register that defines some system behavior aspects while in Deep Sleep mode.
+ * The PLL re-initialization is required after wake-up from Deep Sleep mode if was enabled
+ * before entering Deep Sleep mode and configured to go into power down while in Deep Sleep mode. \n
+ * Note: Swiching off a module clock during operation may result in unexpected effects like
+ * e.g. clock spikes or protocol violations. Before entering Deep Sleep mode the affected
+ * modules should be in reset state. After restoration of the clocks the modules need
+ * to be re-initialized in order to ensure proper function. \n
+ *\par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_Init() \n\n\n
  *
  */
 __STATIC_INLINE void XMC_SCU_CLOCK_SetDeepSleepConfig(uint32_t config)
@@ -2529,6 +2610,20 @@ __STATIC_INLINE void XMC_SCU_CLOCK_SetDeepSleepConfig(uint32_t config)
 }
 
 /**
+ * @param config  Register configuration value that defines some system behavior aspects while in Sleep mode.\n
+ * Note: Refer user manual for valid register value before configuring the register. \n
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Configuration register that defines some system behavior aspects while in Deep Sleep mode.
+ * The original clock configuration gets restored upon wake-up from sleep mode. \n
+ * Note: Swiching off a module clock during operation may result in unexpected effects like
+ * e.g. clock spikes or protocol violations. Before entering Sleep mode the affected
+ * modules should be in reset state. After restoration of the clocks the modules need
+ * to be re-initialized in order to ensure proper function. \n
+ *\par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_Init() \n\n\n
  *
  */
 __STATIC_INLINE void XMC_SCU_CLOCK_SetSleepConfig(uint32_t config)

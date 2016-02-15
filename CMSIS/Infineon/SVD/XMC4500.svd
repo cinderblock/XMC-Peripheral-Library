@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--/*****************************************************************************
  *
- * Copyright (C) 2014 Infineon Technologies AG. All rights reserved.
+ * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
  *
  * Infineon Technologies AG (Infineon) is supplying this software for use with
  * Infineon's microcontrollers.  This file can be freely distributed within 
@@ -20,14 +20,34 @@
 <!--Configuration of XSLT: with bit extraction =Yes;  with bit coding =Yes; decodeThe3knownBitAccessTypes = Yes; 0,r and 1,r bit extraction = No-->
 <!--Release Notes
 -->
+<!--V1.5.3
+
+Changes versus V1.5.2
+- Switch to SVD scheme V1.2
+- Corrected CAN block size to 0x200
+- Corrected CAN_NODEx block sizes to 0x100
+- Corrected VADC block size to 0x400
+- Corrected DSD block size to 0x100
+- Corrected CCU4x block sizes to 0x100
+- Corrected CCU8x block sizes to 0x100
+- Removed enumeration type from CLK_PS bit field of LEDTS GLOBCTL register
+- Removed enumeration type from TX_BLOCK_SIZE bit field of SDMMC BLOCK_SIZE register
+- Removed enumeration type from BLOCK_COUNT bit field of SDMMC BLOCK_COUNT register
+- Added service request information to "interrupt" elements
+-->
+<!--Release History
+-->
+<!--V1.5.2
+
+Changes versus V1.5.1
+- Added CAPABILITIES, CAPABILITIES_HI and MAX_CURRENT_CAP to SDMMC registers
+-->
 <!--V1.5.1
 
 Changes versus V1.5.0
 - Replaced binary number identifiers (0b) by (#)
 - Corrected FCE address block size 0x1D to 0x20
 - Added ATDS bit to BUS_MODE register of ETH
--->
-<!--Release History
 -->
 <!--V1.5.0 - is the first version for Reference Manual V1.5
 
@@ -63,13 +83,13 @@ Changes versus V1.3.0
 -->
 <!--Compliance
 
-- CMSIS-SVD V1.1
-- Tested with ARM CMSIS-SVD SVD Consistency Checker / Header File Generator V2.83e
+- CMSIS-SVD V1.2
+- Tested with ARM CMSIS-SVD SVD Consistency Checker / Header File Generator V2.87g
 -->
-<device xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.1" xs:noNamespaceSchemaLocation="c:\fm8_xml\XSLT\RD2ISFR\CMSIS-SVD_Schema_1_1.xsd">
+<device xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.2" xs:noNamespaceSchemaLocation="c:\fm8_xml\XSLT\RD2ISFR\CMSIS-SVD_Schema_1_2.xsd">
 	<vendor>Infineon</vendor>
 	<name>XMC4500</name>
-	<version>1.5.1 (Reference Manual v1.5)</version>
+	<version>1.5.3 (Reference Manual v1.5)</version>
 	<description>SVD file</description>
 	<cpu>
 		<name>CM4</name>
@@ -4639,6 +4659,26 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>ERU0</name>
 			<description>Event Request Unit 0</description>
+			<interrupt>
+				<name>ERU0_0_IRQn</name>
+				<description>External Request Unit 0</description>
+				<value>1</value>
+			</interrupt>
+			<interrupt>
+				<name>ERU0_1_IRQn</name>
+				<description>External Request Unit 0</description>
+				<value>2</value>
+			</interrupt>
+			<interrupt>
+				<name>ERU0_2_IRQn</name>
+				<description>External Request Unit 0</description>
+				<value>3</value>
+			</interrupt>
+			<interrupt>
+				<name>ERU0_3_IRQn</name>
+				<description>External Request Unit 0</description>
+				<value>4</value>
+			</interrupt>
 			<groupName>ERU</groupName>
 			<headerStructName>ERU</headerStructName>
 			<baseAddress>0x50004800</baseAddress>
@@ -5282,6 +5322,26 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="ERU0">
 			<name>ERU1</name>
 			<description>Event Request Unit 1</description>
+			<interrupt>
+				<name>ERU1_0_IRQn</name>
+				<description>External Request Unit 1</description>
+				<value>5</value>
+			</interrupt>
+			<interrupt>
+				<name>ERU1_1_IRQn</name>
+				<description>External Request Unit 1</description>
+				<value>6</value>
+			</interrupt>
+			<interrupt>
+				<name>ERU1_2_IRQn</name>
+				<description>External Request Unit 1</description>
+				<value>7</value>
+			</interrupt>
+			<interrupt>
+				<name>ERU1_3_IRQn</name>
+				<description>External Request Unit 1</description>
+				<value>8</value>
+			</interrupt>
 			<groupName>ERU</groupName>
 			<baseAddress>0x40044000</baseAddress>
 			<addressBlock>
@@ -5293,6 +5353,11 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>GPDMA0</name>
 			<description>General Purpose DMA Unit 0</description>
+			<interrupt>
+				<name>GPDMA0_0_IRQn</name>
+				<description>General Purpose DMA Unit 0</description>
+				<value>105</value>
+			</interrupt>
 			<groupName>GPDMA</groupName>
 			<baseAddress>0x500142C0</baseAddress>
 			<addressBlock>
@@ -11168,6 +11233,11 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>GPDMA1</name>
 			<description>General Purpose DMA Unit 1</description>
+			<interrupt>
+				<name>GPDMA1_0_IRQn</name>
+				<description>General Purpose DMA Unit 1</description>
+				<value>110</value>
+			</interrupt>
 			<groupName>GPDMA</groupName>
 			<baseAddress>0x500182C0</baseAddress>
 			<addressBlock>
@@ -14216,6 +14286,11 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>FCE</name>
 			<description>Flexible CRC Engine</description>
+			<interrupt>
+				<name>FCE0_0_IRQn</name>
+				<description>Flexible CRC Engine</description>
+				<value>104</value>
+			</interrupt>
 			<groupName>FCE</groupName>
 			<baseAddress>0x50020000</baseAddress>
 			<addressBlock>
@@ -16239,6 +16314,11 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>PMU0</name>
 			<description>Program Management Unit</description>
+			<interrupt>
+				<name>PMU0_0_IRQn</name>
+				<description>Program Management Unit</description>
+				<value>12</value>
+			</interrupt>
 			<headerStructName>PMU</headerStructName>
 			<baseAddress>0x58000508</baseAddress>
 			<addressBlock>
@@ -19736,6 +19816,11 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>SCU_INTERRUPT</name>
 			<description>System Control Unit</description>
+			<interrupt>
+				<name>SCU_0_IRQn</name>
+				<description>System Control</description>
+				<value>0</value>
+			</interrupt>
 			<groupName>SCU</groupName>
 			<baseAddress>0x50004074</baseAddress>
 			<addressBlock>
@@ -26614,6 +26699,11 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>LEDTS0</name>
 			<description>LED and Touch Sense Unit 0</description>
+			<interrupt>
+				<name>LEDTS0_0_IRQn</name>
+				<description>LED and Touch Sense Control Unit (Module 0)</description>
+				<value>102</value>
+			</interrupt>
 			<headerStructName>LEDTS</headerStructName>
 			<baseAddress>0x48010000</baseAddress>
 			<addressBlock>
@@ -26838,23 +26928,6 @@ Changes versus V1.3.0
 							<lsb>16</lsb>
 							<msb>31</msb>
 							<access>read-write</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>No clock</description>
-									<value>0</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>Divide by 1</description>
-									<value>1</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value3</name>
-									<description>Divide by 65535</description>
-									<value>65535</value>
-								</enumeratedValue>
-							</enumeratedValues>
 						</field>
 					</fields>
 				</register>
@@ -27493,6 +27566,11 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>SDMMC</name>
 			<description>SD and Multimediacard Interface</description>
+			<interrupt>
+				<name>SDMMC0_0_IRQn</name>
+				<description>Multi Media Card Interface</description>
+				<value>106</value>
+			</interrupt>
 			<baseAddress>0x4801C000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
@@ -27521,43 +27599,6 @@ Changes versus V1.3.0
 							<lsb>0</lsb>
 							<msb>11</msb>
 							<access>read-write</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>No Data Transfer</description>
-									<value>0x0000</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>1 Byte</description>
-									<value>0x0001</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value3</name>
-									<description>2 Bytes</description>
-									<value>0x0002</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value4</name>
-									<description>3 Bytes</description>
-									<value>0x0003</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value5</name>
-									<description>4 Bytes</description>
-									<value>0x0004</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value6</name>
-									<description>511 Bytes</description>
-									<value>0x01FF</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value7</name>
-									<description>512 Bytes (Maximum Block Size)</description>
-									<value>0x0200</value>
-								</enumeratedValue>
-							</enumeratedValues>
 						</field>
 					</fields>
 				</register>
@@ -27575,28 +27616,6 @@ Changes versus V1.3.0
 							<lsb>0</lsb>
 							<msb>15</msb>
 							<access>read-write</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>Stop Count</description>
-									<value>0x0000</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>1 block</description>
-									<value>0x0001</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value3</name>
-									<description>2 blocks</description>
-									<value>0x0002</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value4</name>
-									<description>65535 blocks</description>
-									<value>0xFFFF</value>
-								</enumeratedValue>
-							</enumeratedValues>
 						</field>
 					</fields>
 				</register>
@@ -30017,6 +30036,393 @@ Changes versus V1.3.0
 									<value>#1</value>
 								</enumeratedValue>
 							</enumeratedValues>
+						</field>
+					</fields>
+				</register>
+				<register>
+					<name>CAPABILITIES</name>
+					<description>Capabilities Register</description>
+					<addressOffset>0x0040</addressOffset>
+					<size>32</size>
+					<resetValue>0x01A030B0</resetValue>
+					<resetMask>0xFFFFFFFF</resetMask>
+					<fields>
+						<field>
+							<name>TIMEOUT_CLOCK_FREQ</name>
+							<description>Timeout Clock Frequency</description>
+							<lsb>0</lsb>
+							<msb>5</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>48 MHz</description>
+									<value>#110000</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>TIMEOUT_CLOCK_UNIT</name>
+							<description>Timeout Clock Unit</description>
+							<lsb>7</lsb>
+							<msb>7</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>MHz</description>
+									<value>#1</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>BASE_SD_CLOCK_FREQ</name>
+							<description>Base Clock Frequency for SD Clock</description>
+							<lsb>8</lsb>
+							<msb>15</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>48 MHz</description>
+									<value>0x30</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>MAX_BLOCK_LENGTH</name>
+							<description>Max Block Length</description>
+							<lsb>16</lsb>
+							<msb>17</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>512 byte</description>
+									<value>#00</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>EXT_MEDIA_BUS_SUPPORT</name>
+							<description>Extended Media Bus Support</description>
+							<lsb>18</lsb>
+							<msb>18</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>Extended Media Bus not supported</description>
+									<value>#0</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>ADMA2_SUPPORT</name>
+							<description>ADMA2 Support</description>
+							<lsb>19</lsb>
+							<msb>19</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>ADMA not supported</description>
+									<value>#0</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>HIGH_SPEED_SUPPORT</name>
+							<description>High Speed Support</description>
+							<lsb>21</lsb>
+							<msb>21</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>High Speed supported</description>
+									<value>#1</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>SDMA_SUPPORT</name>
+							<description>SDMA Support</description>
+							<lsb>22</lsb>
+							<msb>22</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>SDMA not supported</description>
+									<value>#0</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>SUSPEND_RESUME_SUPPORT</name>
+							<description>Suspend / Resume Support</description>
+							<lsb>23</lsb>
+							<msb>23</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>Supported</description>
+									<value>#1</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>VOLTAGE_SUPPORT_3_3V</name>
+							<description>Voltage Support 3.3V</description>
+							<lsb>24</lsb>
+							<msb>24</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>3.3V supported</description>
+									<value>#1</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>VOLTAGE_SUPPORT_3V</name>
+							<description>Voltage Support 3.0V</description>
+							<lsb>25</lsb>
+							<msb>25</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>3.0V not supported</description>
+									<value>#0</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>VOLTAGE_SUPPORT_1_8V</name>
+							<description>Voltage Support 1.8V</description>
+							<lsb>26</lsb>
+							<msb>26</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>1.8V not supported</description>
+									<value>#0</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>SYSBUS_64_SUPPORT</name>
+							<description>64-bit System Bus Support</description>
+							<lsb>28</lsb>
+							<msb>28</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>Does not support 64-bit system address</description>
+									<value>#0</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>ASYNC_INT_SUPPORT</name>
+							<description>Asynchronous Interrupt Support</description>
+							<lsb>29</lsb>
+							<msb>29</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>Asynchronous Interrupt not supported</description>
+									<value>#0</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>SLOT_TYPE</name>
+							<description>Slot Type</description>
+							<lsb>30</lsb>
+							<msb>31</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>Removable Card Slot</description>
+									<value>#00</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+					</fields>
+				</register>
+				<register>
+					<name>CAPABILITIES_HI</name>
+					<description>Capabilities Register High</description>
+					<addressOffset>0x0044</addressOffset>
+					<size>32</size>
+					<resetValue>0x03000000</resetValue>
+					<resetMask>0xFFFFFFFF</resetMask>
+					<fields>
+						<field>
+							<name>SDR50_SUPPORT</name>
+							<description>SDR50 Support</description>
+							<lsb>0</lsb>
+							<msb>0</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>SDR50 is not supported</description>
+									<value>#0</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>SDR104_SUPPORT</name>
+							<description>SDR104 Support</description>
+							<lsb>1</lsb>
+							<msb>1</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>SDR104 is not supported</description>
+									<value>#0</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>DDR50_SUPPORT</name>
+							<description>DDR50 Support</description>
+							<lsb>2</lsb>
+							<msb>2</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>DDR50 is not supported</description>
+									<value>#0</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>DRV_A_SUPPORT</name>
+							<description>Driver Type A Support</description>
+							<lsb>4</lsb>
+							<msb>4</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>Driver Type A is not supported</description>
+									<value>#0</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>DRV_C_SUPPORT</name>
+							<description>Driver Type C Support</description>
+							<lsb>5</lsb>
+							<msb>5</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>Driver Type C is not supported</description>
+									<value>#0</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>DRV_D_SUPPORT</name>
+							<description>Driver Type D Support</description>
+							<lsb>6</lsb>
+							<msb>6</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>Driver Type D is not supported</description>
+									<value>#0</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>TIM_CNT_RETUNE</name>
+							<description>Timer count for Re-Tuning</description>
+							<lsb>8</lsb>
+							<msb>11</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>Get information via other source</description>
+									<value>0x0</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>USE_TUNING_SDR50</name>
+							<description>Use Tuning for SDR50</description>
+							<lsb>13</lsb>
+							<msb>13</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>SDR50 does not require tuning</description>
+									<value>#0</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>RE_TUNING_MODES</name>
+							<description>Re-tuning modes</description>
+							<lsb>14</lsb>
+							<msb>15</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>Mode 1</description>
+									<value>#00</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+						<field>
+							<name>CLK_MULT</name>
+							<description>Clock Multiplier</description>
+							<lsb>16</lsb>
+							<msb>23</msb>
+							<access>read-only</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>Clock Multiplier not supported</description>
+									<value>0x00</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
+					</fields>
+				</register>
+				<register>
+					<name>MAX_CURRENT_CAP</name>
+					<description>Maximum Current Capabilities Register</description>
+					<addressOffset>0x0048</addressOffset>
+					<size>32</size>
+					<resetValue>0x00000001</resetValue>
+					<resetMask>0xFFFFFFFF</resetMask>
+					<fields>
+						<field>
+							<name>MAX_CURRENT_FOR_3_3V</name>
+							<description>Maximum Current for 3.3V</description>
+							<lsb>0</lsb>
+							<msb>7</msb>
+							<access>read-only</access>
 						</field>
 					</fields>
 				</register>
@@ -36015,6 +36421,11 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>ETH0</name>
 			<description>Ethernet Unit 0</description>
+			<interrupt>
+				<name>ETH0_0_IRQn</name>
+				<description>Ethernet (Module 0)</description>
+				<value>108</value>
+			</interrupt>
 			<groupName>ETH</groupName>
 			<headerStructName>ETH</headerStructName>
 			<baseAddress>0x5000C000</baseAddress>
@@ -40892,6 +41303,11 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>USB0</name>
 			<description>Universal Serial Bus</description>
+			<interrupt>
+				<name>USB0_0_IRQn</name>
+				<description>Universal Serial Bus (Module 0)</description>
+				<value>107</value>
+			</interrupt>
 			<groupName>USB</groupName>
 			<headerStructName>USB</headerStructName>
 			<baseAddress>0x50040000</baseAddress>
@@ -46282,6 +46698,36 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>USIC0</name>
 			<description>Universal Serial Interface Controller 0</description>
+			<interrupt>
+				<name>USIC0_0_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>84</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC0_1_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>85</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC0_2_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>86</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC0_3_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>87</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC0_4_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>88</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC0_5_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>89</value>
+			</interrupt>
 			<groupName>USIC</groupName>
 			<headerStructName>USIC</headerStructName>
 			<baseAddress>0x40030008</baseAddress>
@@ -46327,6 +46773,36 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="USIC0">
 			<name>USIC1</name>
 			<description>Universal Serial Interface Controller 1</description>
+			<interrupt>
+				<name>USIC1_0_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 1)</description>
+				<value>90</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC1_1_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 1)</description>
+				<value>91</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC1_2_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 1)</description>
+				<value>92</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC1_3_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 1)</description>
+				<value>93</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC1_4_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 1)</description>
+				<value>94</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC1_5_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 1)</description>
+				<value>95</value>
+			</interrupt>
 			<groupName>USIC</groupName>
 			<baseAddress>0x48020008</baseAddress>
 			<addressBlock>
@@ -46338,6 +46814,36 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="USIC0">
 			<name>USIC2</name>
 			<description>Universal Serial Interface Controller 2</description>
+			<interrupt>
+				<name>USIC2_0_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 2)</description>
+				<value>96</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC2_1_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 2)</description>
+				<value>97</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC2_2_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 2)</description>
+				<value>98</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC2_3_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 2)</description>
+				<value>99</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC2_4_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 2)</description>
+				<value>100</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC2_5_IRQn</name>
+				<description>Universal Serial Interface Channel (Module 2)</description>
+				<value>101</value>
+			</interrupt>
 			<groupName>USIC</groupName>
 			<baseAddress>0x48024008</baseAddress>
 			<addressBlock>
@@ -53649,11 +54155,51 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>CAN</name>
 			<description>Controller Area Networks</description>
+			<interrupt>
+				<name>CAN0_0_IRQn</name>
+				<description>MultiCAN</description>
+				<value>76</value>
+			</interrupt>
+			<interrupt>
+				<name>CAN0_1_IRQn</name>
+				<description>MultiCAN</description>
+				<value>77</value>
+			</interrupt>
+			<interrupt>
+				<name>CAN0_2_IRQn</name>
+				<description>MultiCAN</description>
+				<value>78</value>
+			</interrupt>
+			<interrupt>
+				<name>CAN0_3_IRQn</name>
+				<description>MultiCAN</description>
+				<value>79</value>
+			</interrupt>
+			<interrupt>
+				<name>CAN0_4_IRQn</name>
+				<description>MultiCAN</description>
+				<value>80</value>
+			</interrupt>
+			<interrupt>
+				<name>CAN0_5_IRQn</name>
+				<description>MultiCAN</description>
+				<value>81</value>
+			</interrupt>
+			<interrupt>
+				<name>CAN0_6_IRQn</name>
+				<description>MultiCAN</description>
+				<value>82</value>
+			</interrupt>
+			<interrupt>
+				<name>CAN0_7_IRQn</name>
+				<description>MultiCAN</description>
+				<value>83</value>
+			</interrupt>
 			<groupName>CAN</groupName>
 			<baseAddress>0x48014000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
-				<size>0x4000</size>
+				<size>0x200</size>
 				<usage>registers</usage>
 			</addressBlock>
 			<registers>
@@ -54026,7 +54572,7 @@ Changes versus V1.3.0
 			<baseAddress>0x48014200</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
-				<size>0x4000</size>
+				<size>0x100</size>
 				<usage>registers</usage>
 			</addressBlock>
 			<registers>
@@ -54695,7 +55241,7 @@ Changes versus V1.3.0
 			<baseAddress>0x48014300</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
-				<size>0x4000</size>
+				<size>0x100</size>
 				<usage>registers</usage>
 			</addressBlock>
 		</peripheral>
@@ -54706,7 +55252,7 @@ Changes versus V1.3.0
 			<baseAddress>0x48014400</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
-				<size>0x4000</size>
+				<size>0x100</size>
 				<usage>registers</usage>
 			</addressBlock>
 		</peripheral>
@@ -56381,11 +56927,31 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>VADC</name>
 			<description>Analog to Digital Converter</description>
+			<interrupt>
+				<name>VADC0_C0_0_IRQn</name>
+				<description>Analog to Digital Converter Common Block 0</description>
+				<value>14</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_C0_1_IRQn</name>
+				<description>Analog to Digital Converter Common Block 0</description>
+				<value>15</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_C0_2_IRQn</name>
+				<description>Analog to Digital Converter Common Block 0</description>
+				<value>16</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_C0_3_IRQn</name>
+				<description>Analog to Digital Converter Common Block 0</description>
+				<value>17</value>
+			</interrupt>
 			<groupName>VADC</groupName>
 			<baseAddress>0x40004000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
-				<size>0x4000</size>
+				<size>0x400</size>
 				<usage>registers</usage>
 			</addressBlock>
 			<registers>
@@ -58064,6 +58630,26 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>VADC_G0</name>
 			<description>Analog to Digital Converter</description>
+			<interrupt>
+				<name>VADC0_G0_0_IRQn</name>
+				<description>Analog to Digital Converter Group 0</description>
+				<value>18</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G0_1_IRQn</name>
+				<description>Analog to Digital Converter Group 0</description>
+				<value>19</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G0_2_IRQn</name>
+				<description>Analog to Digital Converter Group 0</description>
+				<value>20</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G0_3_IRQn</name>
+				<description>Analog to Digital Converter Group 0</description>
+				<value>21</value>
+			</interrupt>
 			<groupName>VADC</groupName>
 			<headerStructName>VADC_G</headerStructName>
 			<baseAddress>0x40004400</baseAddress>
@@ -63228,6 +63814,26 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="VADC_G0">
 			<name>VADC_G1</name>
 			<description>Analog to Digital Converter</description>
+			<interrupt>
+				<name>VADC0_G1_0_IRQn</name>
+				<description>Analog to Digital Converter Group 1</description>
+				<value>22</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G1_1_IRQn</name>
+				<description>Analog to Digital Converter Group 1</description>
+				<value>23</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G1_2_IRQn</name>
+				<description>Analog to Digital Converter Group 1</description>
+				<value>24</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G1_3_IRQn</name>
+				<description>Analog to Digital Converter Group 1</description>
+				<value>25</value>
+			</interrupt>
 			<groupName>VADC</groupName>
 			<baseAddress>0x40004800</baseAddress>
 			<addressBlock>
@@ -63239,6 +63845,26 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="VADC_G0">
 			<name>VADC_G2</name>
 			<description>Analog to Digital Converter</description>
+			<interrupt>
+				<name>VADC0_G2_0_IRQn</name>
+				<description>Analog to Digital Converter Group 2</description>
+				<value>26</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G2_1_IRQn</name>
+				<description>Analog to Digital Converter Group 2</description>
+				<value>27</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G2_2_IRQn</name>
+				<description>Analog to Digital Converter Group 2</description>
+				<value>28</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G2_3_IRQn</name>
+				<description>Analog to Digital Converter Group 2</description>
+				<value>29</value>
+			</interrupt>
 			<groupName>VADC</groupName>
 			<baseAddress>0x40004C00</baseAddress>
 			<addressBlock>
@@ -63250,6 +63876,26 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="VADC_G0">
 			<name>VADC_G3</name>
 			<description>Analog to Digital Converter</description>
+			<interrupt>
+				<name>VADC0_G3_0_IRQn</name>
+				<description>Analog to Digital Converter Group 3</description>
+				<value>30</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G3_1_IRQn</name>
+				<description>Analog to Digital Converter Group 3</description>
+				<value>31</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G3_2_IRQn</name>
+				<description>Analog to Digital Converter Group 3</description>
+				<value>32</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G3_3_IRQn</name>
+				<description>Analog to Digital Converter Group 3</description>
+				<value>33</value>
+			</interrupt>
 			<groupName>VADC</groupName>
 			<baseAddress>0x40005000</baseAddress>
 			<addressBlock>
@@ -63265,7 +63911,7 @@ Changes versus V1.3.0
 			<baseAddress>0x40008000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
-				<size>0x4000</size>
+				<size>0x100</size>
 				<usage>registers</usage>
 			</addressBlock>
 			<registers>
@@ -64191,6 +64837,16 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>DSD_CH0</name>
 			<description>Delta Sigma Demodulator</description>
+			<interrupt>
+				<name>DSD0_M_0_IRQn</name>
+				<description>Delta Sigma Demodulator Main</description>
+				<value>34</value>
+			</interrupt>
+			<interrupt>
+				<name>DSD0_A_4_IRQn</name>
+				<description>Delta Sigma Demodulator Auxiliary</description>
+				<value>38</value>
+			</interrupt>
 			<groupName>DSD</groupName>
 			<headerStructName>DSD_CH</headerStructName>
 			<baseAddress>0x40008100</baseAddress>
@@ -65052,6 +65708,16 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="DSD_CH0">
 			<name>DSD_CH1</name>
 			<description>Delta Sigma Demodulator</description>
+			<interrupt>
+				<name>DSD0_M_1_IRQn</name>
+				<description>Delta Sigma Demodulator Main</description>
+				<value>35</value>
+			</interrupt>
+			<interrupt>
+				<name>DSD0_A_5_IRQn</name>
+				<description>Delta Sigma Demodulator Auxiliary</description>
+				<value>39</value>
+			</interrupt>
 			<groupName>DSD</groupName>
 			<baseAddress>0x40008200</baseAddress>
 			<addressBlock>
@@ -65063,6 +65729,16 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="DSD_CH0">
 			<name>DSD_CH2</name>
 			<description>Delta Sigma Demodulator</description>
+			<interrupt>
+				<name>DSD0_M_2_IRQn</name>
+				<description>Delta Sigma Demodulator Main</description>
+				<value>36</value>
+			</interrupt>
+			<interrupt>
+				<name>DSD0_A_6_IRQn</name>
+				<description>Delta Sigma Demodulator Auxiliary</description>
+				<value>40</value>
+			</interrupt>
 			<groupName>DSD</groupName>
 			<baseAddress>0x40008300</baseAddress>
 			<addressBlock>
@@ -65074,6 +65750,16 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="DSD_CH0">
 			<name>DSD_CH3</name>
 			<description>Delta Sigma Demodulator</description>
+			<interrupt>
+				<name>DSD0_M_3_IRQn</name>
+				<description>Delta Sigma Demodulator Main</description>
+				<value>37</value>
+			</interrupt>
+			<interrupt>
+				<name>DSD0_A_7_IRQn</name>
+				<description>Delta Sigma Demodulator Auxiliary</description>
+				<value>41</value>
+			</interrupt>
 			<groupName>DSD</groupName>
 			<baseAddress>0x40008400</baseAddress>
 			<addressBlock>
@@ -65085,6 +65771,16 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>DAC</name>
 			<description>Digital to Analog Converter</description>
+			<interrupt>
+				<name>DAC0_0_IRQn</name>
+				<description>Digital to Analog Converter</description>
+				<value>42</value>
+			</interrupt>
+			<interrupt>
+				<name>DAC0_1_IRQn</name>
+				<description>Digital to Analog Converter</description>
+				<value>43</value>
+			</interrupt>
 			<baseAddress>0x48018000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
@@ -66057,12 +66753,32 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>CCU40</name>
 			<description>Capture Compare Unit 4 - Unit 0</description>
+			<interrupt>
+				<name>CCU40_0_IRQn</name>
+				<description>Capture Compare Unit 4 (Module 0)</description>
+				<value>44</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU40_1_IRQn</name>
+				<description>Capture Compare Unit 4 (Module 0)</description>
+				<value>45</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU40_2_IRQn</name>
+				<description>Capture Compare Unit 4 (Module 0)</description>
+				<value>46</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU40_3_IRQn</name>
+				<description>Capture Compare Unit 4 (Module 0)</description>
+				<value>47</value>
+			</interrupt>
 			<groupName>CCU4</groupName>
 			<headerStructName>CCU4</headerStructName>
 			<baseAddress>0x4000C000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
-				<size>0x4000</size>
+				<size>0x100</size>
 				<usage>registers</usage>
 			</addressBlock>
 			<registers>
@@ -67118,33 +67834,93 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="CCU40">
 			<name>CCU41</name>
 			<description>Capture Compare Unit 4 - Unit 1</description>
+			<interrupt>
+				<name>CCU41_0_IRQn</name>
+				<description>Capture Compare Unit 4 (Module 1)</description>
+				<value>48</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU41_1_IRQn</name>
+				<description>Capture Compare Unit 4 (Module 1)</description>
+				<value>49</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU41_2_IRQn</name>
+				<description>Capture Compare Unit 4 (Module 1)</description>
+				<value>50</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU41_3_IRQn</name>
+				<description>Capture Compare Unit 4 (Module 1)</description>
+				<value>51</value>
+			</interrupt>
 			<groupName>CCU4</groupName>
 			<baseAddress>0x40010000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
-				<size>0x4000</size>
+				<size>0x100</size>
 				<usage>registers</usage>
 			</addressBlock>
 		</peripheral>
 		<peripheral derivedFrom="CCU40">
 			<name>CCU42</name>
 			<description>Capture Compare Unit 4 - Unit 2</description>
+			<interrupt>
+				<name>CCU42_0_IRQn</name>
+				<description>Capture Compare Unit 4 (Module 2)</description>
+				<value>52</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU42_1_IRQn</name>
+				<description>Capture Compare Unit 4 (Module 2)</description>
+				<value>53</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU42_2_IRQn</name>
+				<description>Capture Compare Unit 4 (Module 2)</description>
+				<value>54</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU42_3_IRQn</name>
+				<description>Capture Compare Unit 4 (Module 2)</description>
+				<value>55</value>
+			</interrupt>
 			<groupName>CCU4</groupName>
 			<baseAddress>0x40014000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
-				<size>0x4000</size>
+				<size>0x100</size>
 				<usage>registers</usage>
 			</addressBlock>
 		</peripheral>
 		<peripheral derivedFrom="CCU40">
 			<name>CCU43</name>
 			<description>Capture Compare Unit 4 - Unit 3</description>
+			<interrupt>
+				<name>CCU43_0_IRQn</name>
+				<description>Capture Compare Unit 4 (Module 3)</description>
+				<value>56</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU43_1_IRQn</name>
+				<description>Capture Compare Unit 4 (Module 3)</description>
+				<value>57</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU43_2_IRQn</name>
+				<description>Capture Compare Unit 4 (Module 3)</description>
+				<value>58</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU43_3_IRQn</name>
+				<description>Capture Compare Unit 4 (Module 3)</description>
+				<value>59</value>
+			</interrupt>
 			<groupName>CCU4</groupName>
 			<baseAddress>0x48004000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
-				<size>0x4000</size>
+				<size>0x100</size>
 				<usage>registers</usage>
 			</addressBlock>
 		</peripheral>
@@ -69571,12 +70347,32 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>CCU80</name>
 			<description>Capture Compare Unit 8 - Unit 0</description>
+			<interrupt>
+				<name>CCU80_0_IRQn</name>
+				<description>Capture Compare Unit 8 (Module 0)</description>
+				<value>60</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU80_1_IRQn</name>
+				<description>Capture Compare Unit 8 (Module 0)</description>
+				<value>61</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU80_2_IRQn</name>
+				<description>Capture Compare Unit 8 (Module 0)</description>
+				<value>62</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU80_3_IRQn</name>
+				<description>Capture Compare Unit 8 (Module 0)</description>
+				<value>63</value>
+			</interrupt>
 			<groupName>CCU8</groupName>
 			<headerStructName>CCU8</headerStructName>
 			<baseAddress>0x40020000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
-				<size>0x4000</size>
+				<size>0x100</size>
 				<usage>registers</usage>
 			</addressBlock>
 			<registers>
@@ -70907,11 +71703,31 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="CCU80">
 			<name>CCU81</name>
 			<description>Capture Compare Unit 8 - Unit 1</description>
+			<interrupt>
+				<name>CCU81_0_IRQn</name>
+				<description>Capture Compare Unit 8 (Module 1)</description>
+				<value>64</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU81_1_IRQn</name>
+				<description>Capture Compare Unit 8 (Module 1)</description>
+				<value>65</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU81_2_IRQn</name>
+				<description>Capture Compare Unit 8 (Module 1)</description>
+				<value>66</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU81_3_IRQn</name>
+				<description>Capture Compare Unit 8 (Module 1)</description>
+				<value>67</value>
+			</interrupt>
 			<groupName>CCU8</groupName>
 			<baseAddress>0x40024000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
-				<size>0x4000</size>
+				<size>0x100</size>
 				<usage>registers</usage>
 			</addressBlock>
 		</peripheral>
@@ -73944,6 +74760,16 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>POSIF0</name>
 			<description>Position Interface 0</description>
+			<interrupt>
+				<name>POSIF0_0_IRQn</name>
+				<description>Position Interface (Module 0)</description>
+				<value>68</value>
+			</interrupt>
+			<interrupt>
+				<name>POSIF0_1_IRQn</name>
+				<description>Position Interface (Module 0)</description>
+				<value>69</value>
+			</interrupt>
 			<groupName>POSIF</groupName>
 			<headerStructName>POSIF</headerStructName>
 			<baseAddress>0x40028000</baseAddress>
@@ -75563,6 +76389,16 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="POSIF0">
 			<name>POSIF1</name>
 			<description>Position Interface 1</description>
+			<interrupt>
+				<name>POSIF1_0_IRQn</name>
+				<description>Position Interface (Module 1)</description>
+				<value>70</value>
+			</interrupt>
+			<interrupt>
+				<name>POSIF1_1_IRQn</name>
+				<description>Position Interface (Module 1)</description>
+				<value>71</value>
+			</interrupt>
 			<groupName>POSIF</groupName>
 			<baseAddress>0x4002C000</baseAddress>
 			<addressBlock>

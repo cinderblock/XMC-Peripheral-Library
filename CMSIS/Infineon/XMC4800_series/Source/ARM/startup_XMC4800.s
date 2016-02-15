@@ -82,7 +82,7 @@ __Vectors       DCD     __initial_sp              ; 0 Top of Stack
                 Entry   PendSV_Handler            ; 14 PendSV Handler
                 Entry   SysTick_Handler           ; 15 SysTick Handler
 
-; Interrupt Handlers for Service Requests (SR) from XMC4500 Peripherals */
+; Interrupt Handlers for Service Requests (SR) from XMC4800 Peripherals */
                 Entry   SCU_0_IRQHandler            ; Handler name for SR SCU_0     
                 Entry   ERU0_0_IRQHandler           ; Handler name for SR ERU0_0    
                 Entry   ERU0_1_IRQHandler           ; Handler name for SR ERU0_1    

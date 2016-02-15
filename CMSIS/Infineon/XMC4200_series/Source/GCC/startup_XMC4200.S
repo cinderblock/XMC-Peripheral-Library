@@ -1,28 +1,39 @@
-/******************************************************************************
- * @file     startup_XMC4200.s
- * @brief    CMSIS Cortex-M4 Core Device Startup File for
- *           Infineon XMC4200 Device Series
- * @version  V0.7
- * @date     Nov 2014
+/*********************************************************************************************************************
+ * @file     startup_XMC4200.S
+ * @brief    CMSIS Core Device Startup File for Infineon XMC4200 Device Series
+ * @version  V0.8
+ * @date     05 Jan 2016
  *
- * Copyright (C) 2014 Infineon Technologies AG. All rights reserved.
+ * @cond
+ *********************************************************************************************************************
+ * Copyright (c) 2016, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
  *
- *
- * @par
- * Infineon Technologies AG (Infineon) is supplying this software for use with 
- * Infineon's microcontrollers.  This file can be freely distributed
- * within development tools that are supporting such microcontrollers.
- *
- * @par
- * THIS SOFTWARE IS PROVIDED AS IS.  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
- * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- *
- ******************************************************************************/
-
-/********************** Version History ***************************************
+ **************************** Change history ********************************
  * V0.1,Sep, 13, 2012 ES : initial version
  * V0.2,Oct, 12, 2012 PKB: C++ support
  * V0.3,Jan, 26, 2013 PKB: Workaround for prefetch bug
@@ -31,7 +42,10 @@
  * V0.6,May, 05, 2014 JFT: Added ram_code section
  * V0.7,Nov, 25, 2014 JFT: CPU workaround disabled. Single default handler.
  *                         Removed DAVE3 dependency
- ******************************************************************************/
+ * V0.8,Jan, 05, 2016 JFT: Fix .reset section attributes
+ *
+ * @endcond 
+ */
 
 /* ===========START : MACRO DEFINITION MACRO DEFINITION ================== */
  
@@ -64,7 +78,7 @@
 /* Vector Table - This gets programed into VTOR register by onchip BootROM */
     .syntax unified
 
-    .section .reset
+    .section .reset, "a", %progbits
     
 	.align 2
     .globl  __Vectors

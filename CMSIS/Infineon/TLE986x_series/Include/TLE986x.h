@@ -5,8 +5,8 @@
  * @brief    CMSIS Cortex-M3 Peripheral Access Layer Header File for
  *           Infineon Technologies ePower Family TLE986x
  *
- * @version  V2.9
- * @date     20. July 2015
+ * @version  V2.10
+ * @date     14. Jan 2016
  *
  * @note     Generated with SVDConv V2.78b 
  *
@@ -2885,9 +2885,12 @@ typedef struct {                                    /*!< (@ 0x50006000) SCUPM St
            uint32_t             :  5;
       __IO uint32_t  FAIL_PS_DIS:  1;               /*!< [7..7] Disable LIN, BDRV and CP because of Overtemperature            */
       __IO uint32_t  LIN_VS_UV_SD_DIS:  1;          /*!< [8..8] LIN Module VS Undervoltage Transmitter Shutdown                */
-           uint32_t             : 15;
+           uint32_t             : 5;
+      __IO uint32_t  SYS_VSD_OV_SLM_DIS:  1;        /*!< [14..14] VSD Overvoltage Shutdown for Peripherals Disable             */
+           uint32_t             : 9;
       __IO uint32_t  SYS_OT_PS_DIS:  1;             /*!< [24..24] System Overtemperature Power Switches Shutdown Disable       */
       __IO uint32_t  CLKLOSS_SD_DIS:  1;            /*!< [25..25] Power Switches Loss of Clock Shutdown Disable (AMCLK3)       */
+      __IO uint32_t  CLKWDT_RES_SD_DIS:  1;         /*!< [26..26] Clock Watchdog Reset Disable                                 */
     } bit;                                          /*!< [26] BitSize                                                          */
   } PCU_CTRL_STS;
   
@@ -3963,10 +3966,14 @@ typedef struct {                                    /*!< (@ 0x4801C000) ADC2 Str
     
     struct {
       __IO uint32_t  MCM_PD_N   :  1;               /*!< [0..0] Power Down Signal for MCM                                      */
-           uint32_t             :  6;
+      __IO uint32_t  TS_SD_SEL_CONF:  1;            /*!< [1..1] Temperature Sensor Control Configuration                       */
+      __IO uint32_t  TSENSE_SD_SEL:  1;             /*!< [2..2] TSENSE select for channel 9                                    */
+           uint32_t             :  4;
       __I  uint32_t  MCM_RDY    :  1;               /*!< [7..7] Ready Signal for MCM after Power On or Reset                   */
       __IO uint32_t  SAMPLE_TIME_int:  4;           /*!< [8..11] Sample time of ADC2                                           */
-    } bit;                                          /*!< [12] BitSize                                                          */
+           uint32_t             :  4;
+      __IO uint32_t  SEL_TS_COUNT:  4;              /*!< [16..19] Time for Automatic Muxing of SEL_TS                          */
+    } bit;                                          /*!< [20] BitSize                                                          */
   } CTRL2;
   
   union {

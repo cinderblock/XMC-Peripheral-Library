@@ -1,12 +1,12 @@
 /**
  * @file xmc_ecat_map.h
- * @date 2015-10-27
+ * @date 2016-01-12
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.4 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -242,6 +242,8 @@ typedef enum XMC_ECAT_PORT_CTRL_LATCHIN0
 {
   XMC_ECAT_PORT_CTRL_LATCHIN0_P14_5 = 0U, /**< LATCH0A line */
   XMC_ECAT_PORT_CTRL_LATCHIN0_9_0   = 1U, /**< LATCH0B line */
+  XMC_ECAT_PORT_CTRL_LATCHIN0_ERU0_PDOUT0   = 2U, /**< LATCH0C line */
+  XMC_ECAT_PORT_CTRL_LATCHIN0_ERU1_PDOUT0   = 3U, /**< LATCH0D line */  
 } XMC_ECAT_PORT_CTRL_LATCHIN0_t;
 
 /**
@@ -249,8 +251,10 @@ typedef enum XMC_ECAT_PORT_CTRL_LATCHIN0
  */
 typedef enum XMC_ECAT_PORT_CTRL_LATCHIN1
 {
-  XMC_ECAT_PORT_CTRL_LATCHIN1_P14_4 = 0U, /**< LATCH1A line */
-  XMC_ECAT_PORT_CTRL_LATCHIN1_9_1   = 1U, /**< LATCH1B line */
+  XMC_ECAT_PORT_CTRL_LATCHIN1_P14_4 = 0U, /**< LATCH1 A line */
+  XMC_ECAT_PORT_CTRL_LATCHIN1_9_1   = 1U, /**< LATCH1 B line */
+  XMC_ECAT_PORT_CTRL_LATCHIN1_ERU0_PDOUT1   = 2U, /**< LATCH1C line */
+  XMC_ECAT_PORT_CTRL_LATCHIN1_ERU1_PDOUT1   = 3U, /**< LATCH1D line */  
 } XMC_ECAT_PORT_CTRL_LATCHIN1_t;
 
 /**
@@ -258,10 +262,10 @@ typedef enum XMC_ECAT_PORT_CTRL_LATCHIN1
  */
 typedef enum XMC_ECAT_PORT0_CTRL_TX_SHIFT
 {
-  XMC_ECAT_PORT0_CTRL_TX_SHIFT_0NS = 0,
-  XMC_ECAT_PORT0_CTRL_TX_SHIFT_10NS = 1,
-  XMC_ECAT_PORT0_CTRL_TX_SHIFT_20NS = 2,
-  XMC_ECAT_PORT0_CTRL_TX_SHIFT_30NS = 3
+  XMC_ECAT_PORT0_CTRL_TX_SHIFT_0NS  = 0U, /**< ECAT Port 0 Manual TX Shift compensation 0 nanoseconds */
+  XMC_ECAT_PORT0_CTRL_TX_SHIFT_10NS = 1U, /**< ECAT Port 0 Manual TX Shift compensation 10 nanoseconds */
+  XMC_ECAT_PORT0_CTRL_TX_SHIFT_20NS = 2U, /**< ECAT Port 0 Manual TX Shift compensation 20 nanoseconds */
+  XMC_ECAT_PORT0_CTRL_TX_SHIFT_30NS = 3U  /**< ECAT Port 0 Manual TX Shift compensation 30 nanoseconds */
 } XMC_ECAT_PORT0_CTRL_TX_SHIFT_t;
 
 /**
@@ -269,10 +273,10 @@ typedef enum XMC_ECAT_PORT0_CTRL_TX_SHIFT
  */
 typedef enum XMC_ECAT_PORT1_CTRL_TX_SHIFT
 {
-  XMC_ECAT_PORT1_CTRL_TX_SHIFT_0NS = 0,
-  XMC_ECAT_PORT1_CTRL_TX_SHIFT_10NS = 1,
-  XMC_ECAT_PORT1_CTRL_TX_SHIFT_20NS = 2,
-  XMC_ECAT_PORT1_CTRL_TX_SHIFT_30NS = 3
+  XMC_ECAT_PORT1_CTRL_TX_SHIFT_0NS  = 0U, /**< ECAT Port 0 Manual TX Shift compensation 0 nanoseconds */
+  XMC_ECAT_PORT1_CTRL_TX_SHIFT_10NS = 1U, /**< ECAT Port 0 Manual TX Shift compensation 10 nanoseconds */
+  XMC_ECAT_PORT1_CTRL_TX_SHIFT_20NS = 2U, /**< ECAT Port 0 Manual TX Shift compensation 20 nanoseconds */
+  XMC_ECAT_PORT1_CTRL_TX_SHIFT_30NS = 3U  /**< ECAT Port 0 Manual TX Shift compensation 30 nanoseconds */
 } XMC_ECAT_PORT1_CTRL_TX_SHIFT_t;
 
 #endif

@@ -1,12 +1,12 @@
 /**
  * @file xmc_vadc.c
- * @date 2015-10-27
+ * @date 2016-01-12
  *
  * @cond
 *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.4 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -67,6 +67,10 @@
  *           - XMC_VADC_GROUP_ChannelGetResultAlignment
  *           - XMC_VADC_GROUP_ChannelGetInputClass
  *           - XMC_VADC_GROUP_SetResultSubtractionValue
+ *
+ * 2015-12-01:
+ *     - Fixed the analog calibration voltage for XMC1100 to external reference upper supply range.
+ *     - Fixed the XMC_VADC_GLOBAL_StartupCalibration() for XMC1100.
  * @endcond 
  *
  */
@@ -196,8 +200,6 @@ void XMC_VADC_GLOBAL_Init(XMC_VADC_GLOBAL_t *const global_ptr, const XMC_VADC_GL
 
   /* Configure the SHS register that are needed for XMC11xx devices*/
 #if (XMC_VADC_GROUP_AVAILABLE == 0U)
-  /* Select Internal reference Upper suppy range*/
-  SHS0->SHSCFG |= SHS_SHSCFG_SCWC_Msk |(2 <<SHS_SHSCFG_AREF_Pos);
 
   /* Enabling the Analog part of the converter*/
   reg = SHS0->SHSCFG  | SHS_SHSCFG_SCWC_Msk;
@@ -262,7 +264,8 @@ void XMC_VADC_GLOBAL_StartupCalibration(XMC_VADC_GLOBAL_t *const global_ptr)
   }
 #else
   /* Loop until it finishes calibration */
-  while( ( (SHS0->SHSCFG) & (uint32_t)SHS_SHSCFG_STATE_Msk) == XMC_VADC_SHS_START_UP_CAL_ACTIVE )
+  while ((((SHS0->SHSCFG) & (uint32_t)SHS_SHSCFG_STATE_Msk) >> (uint32_t)SHS_SHSCFG_STATE_Pos) ==
+         XMC_VADC_SHS_START_UP_CAL_ACTIVE )
   {
     /* NOP */
   }

@@ -12,10 +12,14 @@ The following tool chains are supported:
 - TASKING VX-toolset for ARM v5.(carm)
 
 The following 32-Bit Industrial Microcontrollers based on ARM Cortex are supported:
+- XMC4800 series
+- XMC4700 series
 - XMC4500 series
 - XMC4400 series
+- XMC4300 series
 - XMC4200 series
 - XMC4100 series
+- XMC1400 series
 - XMC1300 series
 - XMC1200 series
 - XMC1100 series
@@ -36,10 +40,14 @@ The following 32-Bit Industrial Microcontrollers based on ARM Cortex are support
       XMC1100_series/
       XMC1200_series/
       XMC1300_series/
+      XMC1400_series/
       XMC4100_series/
       XMC4200_series/
+      XMC4300_series/
       XMC4400_series/
       XMC4500_series/
+      XMC4700_series/
+      XMC4800_series/
     Lib/
 
 Now let's explain the purpose of each directory:

@@ -1,14 +1,11 @@
 /**
- * @file XMC4100x64.ld
- * @date 2015-07-07
+ * @file TLE9871.ld
+ * @date 2015-07-20
  *
  * @cond
  *********************************************************************************************************************
  * Linker file for the GNU C Compiler v1.5
- * Supported devices: XMC4104-F64x64
- *                    XMC4104-Q48x64
- *                    XMC4108-F64x64
- *                    XMC4108-Q48x64
+ * Supported devices: TLE9873QXW40
  *
  * Copyright (c) 2015, Infineon Technologies AG
  * All rights reserved.                        
@@ -40,10 +37,14 @@
  * Change History
  * --------------
  *
- * 2015-07-07:
- *     - Product splitting
- *     - Copyright notice update
- *      
+ * 2015-07-20:
+ *     - Fix heap size
+ *     - Make ARM.extab an own section.
+ *     - Removed 'ARM <->THUMB interworking'
+ *
+ * 2015-07-13:
+ *     - Fix warning message 'sh_link not set for section .ARM.exidx
+ * 
  * @endcond 
  *
  */
@@ -54,29 +55,22 @@ ENTRY(Reset_Handler)
 
 MEMORY
 {
-	FLASH_1_cached(RX) : ORIGIN = 0x08000000, LENGTH = 0x10000
-	FLASH_1_uncached(RX) : ORIGIN = 0x0C000000, LENGTH = 0x10000
-	PSRAM_1(!RX) : ORIGIN = 0x1FFFE000, LENGTH = 0x2000
-	DSRAM_1_system(!RX) : ORIGIN = 0x20000000, LENGTH = 0x3000
-	SRAM_combined(!RX) : ORIGIN = 0x1FFFE000, LENGTH = 0x5000
+	FLASH_1(RX) : ORIGIN = 0x11000000, LENGTH = 0xAFFC
+	FLASH_2(RX) : ORIGIN = 0x1100AFFC, LENGTH = 0x4
+	SRAM_1(!RX) : ORIGIN = 0x18000000, LENGTH = 0xC00
 }
 
-stack_size = 2048;
+stack_size = 256;
 
 SECTIONS
 {
 	/* TEXT section */
 
-	.text : AT(ORIGIN(FLASH_1_uncached))
+	.text : AT(ORIGIN(FLASH_1))
 	{
 		sText = .;
 		KEEP(*(.reset));
 		*(.text .text.* .gnu.linkonce.t.*);
-
-		/* ARM <->THUMB interworking */
-		*(.glue*)
-		*(.v4*)
-		*(.vfp11_veneer)
 
 		/* C++ Support */
 		KEEP(*(.init))
@@ -102,40 +96,49 @@ SECTIONS
 		KEEP (*(SORT(.dtors.*)))
 		KEEP (*crtend.o(.dtors))
 
-		/* Exception handling support */
-		__extab_start = .;
-		*(.ARM.extab* .gnu.linkonce.armextab.*)
-		. = ALIGN(4);
-		__extab_end = ABSOLUTE(.);
-	} > FLASH_1_cached
+	} > FLASH_1
+
+    .secNACNAD : AT(ORIGIN(FLASH_2))
+    {
+      KEEP(*(.secNACNAD)) /* keep my variable even if not referenced */
+    } > FLASH_2
+     
 
 	/* Exception handling, exidx needs a dedicated section */
-	.ARM.exidx ABSOLUTE(__extab_end): AT(__extab_end | 0x04000000)
+	.ARM.extab : 
 	{
-		__exidx_start = .;
-		*(.ARM.exidx* .gnu.linkonce.armexidx.*)
 		. = ALIGN(4);
-		__exidx_end = ABSOLUTE(.);
-	} > FLASH_1_cached
+		*(.ARM.extab* .gnu.linkonce.armextab.*)
+	} > FLASH_1
+
+	__exidx_start = .;
+	.ARM.exidx : 
+	{
+		. = ALIGN(4);
+		*(.ARM.exidx* .gnu.linkonce.armexidx.*)
+	} > FLASH_1
+	__exidx_end = .;
 
 	/* CONST data section */
-	.rodata ABSOLUTE(__exidx_end): AT(__exidx_end | 0x04000000)
+	.rodata : 
 	{
+		. = ALIGN(4);
 		*(.rodata .rodata.*)
 		*(.gnu.linkonce.r*)
-	} > FLASH_1_cached
+	} > FLASH_1
 
 	. = ALIGN(16);
-	
-	/* End of RO-DATA and start of LOAD region for DATA */
-	__ram_load = . | 0x04000000;
 
-    /* DSRAM layout (Lowest to highest)*/
+	/* End of RO-DATA and start of LOAD region for DATA */
+	__ram_load = .;
+
+	/* DSRAM layout (Lowest to highest)*/
+
 	Stack (NOLOAD) : 
 	{
 		. = . + stack_size;
 		__initial_sp = .;
-	} > SRAM_combined
+	} > SRAM_1
 
 	/* functions with __attribute__((section(".ram_code"))) */
     .ram_code : AT(__ram_load)
@@ -144,7 +147,7 @@ SECTIONS
 		*(.ram_code)  	
         . = ALIGN(4);
 		__ram_code_end = .;
-	} > SRAM_combined
+	} > SRAM_1
 	__ram_code_load = LOADADDR (.ram_code);
 	__ram_code_size = __ram_code_end - __ram_code_start;
 
@@ -158,7 +161,7 @@ SECTIONS
 		*(.gnu.linkonce.d*)
         . = ALIGN(4);
         __data_end = .;
-	} > SRAM_combined
+	} > SRAM_1
     __data_load = LOADADDR (.data);
 	__data_size = __data_end - __data_start;
         
@@ -172,31 +175,13 @@ SECTIONS
 		*(.gnu.linkonce.b*)
         . = ALIGN(4);
         __bss_end = .;
-	} > SRAM_combined
+        . = ALIGN(8);
+        Heap_Bank1_Start = .;
+	} > SRAM_1
 	__bss_size = __bss_end - __bss_start;
 
-    /* Shift location counter, so that USB_RAM is located in DSRAM1 */    
-    __shift_loc =  (__bss_end >= ORIGIN(DSRAM_1_system)) ? 0 : (ORIGIN(DSRAM_1_system) - __bss_end);
-
-    USB_RAM  (__bss_end + __shift_loc) (NOLOAD) :
-    {
-        USB_RAM_start = .;
-        *(USB_RAM)
-        . = ALIGN(4);
-        USB_RAM_end = .;
-		. = ALIGN(8);
-		Heap_Bank1_Start = .;
-    } > SRAM_combined
-	USB_RAM_size = USB_RAM_end - USB_RAM_start;
-
-    /* .no_init section */
-    .no_init 0x20002FC0 (NOLOAD) : 
-    {
-        Heap_Bank1_End = .;
-        * (.no_init);
-    } > SRAM_combined
-        
 	/* Heap - Bank1*/
+    Heap_Bank1_End   = ORIGIN(SRAM_1) + LENGTH(SRAM_1);
 	Heap_Bank1_Size  = Heap_Bank1_End - Heap_Bank1_Start;
 
 	/DISCARD/ :

@@ -22,6 +22,9 @@
  *
  ******************************************************************************/
 
+#ifndef _TLE_DEVICE_H
+#define _TLE_DEVICE_H
+
 /* Family definitions  */
 #define    TLE98      (98)
 
@@ -34,6 +37,7 @@
 #define    TLE9867    (9867)
 #define    TLE9869    (9869)
 #define    TLE9871    (9871)
+#define    TLE9873    (9873)
 #define    TLE9877    (9877)
 #define    TLE9879    (9879)
 
@@ -96,6 +100,15 @@
 #define ProgFlashSize   (0x8000U)
 #define RAMSize         (0xC00U)
 
+#elif defined(TLE9873QXW40)	
+#define UC_FAMILY       TLE98
+#define UC_SERIES       TLE987
+#define UC_DEVICE       TLE9873
+#define UC_PACKAGE      VQFN48
+#define UC_FLASH        (48UL)
+#define ProgFlashSize   (0xB000U)
+#define RAMSize         (0xC00U)
+
 #elif defined(TLE9877QXA20)
 #define UC_FAMILY       TLE98
 #define UC_SERIES       TLE987
@@ -106,6 +119,15 @@
 #define RAMSize         (0x1800U)
 
 #elif defined(TLE9877QXA40)
+#define UC_FAMILY       TLE98
+#define UC_SERIES       TLE987
+#define UC_DEVICE       TLE9877
+#define UC_PACKAGE      VQFN48
+#define UC_FLASH        (64UL)
+#define ProgFlashSize   (0xF000U)
+#define RAMSize         (0x1800U)
+
+#elif defined(TLE9877QXW40)
 #define UC_FAMILY       TLE98
 #define UC_SERIES       TLE987
 #define UC_DEVICE       TLE9877
@@ -132,6 +154,15 @@
 #define ProgFlashSize   (0x1F000U)
 #define RAMSize         (0x1800U)
 
+#elif defined(TLE9879QXW40)
+#define UC_FAMILY       TLE98
+#define UC_SERIES       TLE987
+#define UC_DEVICE       TLE9879
+#define UC_PACKAGE      VQFN48
+#define UC_FLASH        (128UL)
+#define ProgFlashSize   (0x1F000U)
+#define RAMSize         (0x1800U)
+
 #else
 #error "tle_device.h: device not supported"
 #endif 	    
@@ -143,5 +174,6 @@
 #elif UC_SERIES == TLE987
 #include <TLE987x.h>
 #include <Types.h>
+#endif
 
 #endif

@@ -1,13 +1,13 @@
 
 /**
  * @file xmc_ecat.h
- * @date 2015-10-27
+ * @date 2016-01-12
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.4 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -37,8 +37,8 @@
  * Change History
  * --------------
  *
- * 2015-09-03:
- *     - Initial <br>
+ * 2015-12-27:
+ *     - Initial Version<br>
  *
  * @endcond
  */
@@ -50,16 +50,22 @@
 
 /**
  * @addtogroup ECAT
- * @brief EtherCAT Low level driver for XMC4800 series.
+ * @brief EtherCAT Low level driver for XMC4800/XMC4300 series.
  *
- * The Ethernet MAC (ETH) is a major communication peripheral that supports 10/100
- * MBit/s data transfer rates in compliance with the IEEE 802.3-2002 standard. The ETH
- * may be used to implement internet connected applications using IPv4 and IPv6. The
- * ETH also includes support for IEEE1588 time synchronisation to allow implementation
- * of Real Time Ethernet protocols.
+ * EtherCAT is an Ethernet-based fieldbus system.
+ * The EtherCAT Slave Controller (ECAT) read the data addressed to them while the telegram passes through the device.
+ * An EtherCAT Slave Controller (ESC) takes care of the EtherCAT communication as an interface between the EtherCAT
+ * fieldbus and the slave application. EtherCAT uses standard IEEE 802.3 Ethernet frames, thus a standard network
+ * controller can be used and no special hardware is required on master side. EtherCAT has a reserved EtherType of
+ * 0x88A4 that distinguishes it from other Ethernet frames. Thus, EtherCAT can run in parallel to other Ethernet
+ * protocols. EtherCAT does not require the IP protocol, however it can be encapsulated in IP/UDP. The EtherCAT
+ * Slave Controller processes the frame in hardware. Thus, communication performance is independent from processor
+ * power.
  *
- * The XMC_ETH_MAC low level driver provides functions to configure and initialize
- * the ETH_MAC hardware peripheral.
+ * The XMC_ECAT low level driver provides functions to configure and initialize the ECAT hardware peripheral. 
+ * For EHTERCAT stack integration, the necessary hardware accees layer APIs shall be explicitly implemented depending
+ * upon the stack provider. The XMC_ECAT lld layer provides only the hardware initialization functions for start up and
+ * basic functionalities.
  * @{
  */
 
@@ -95,25 +101,25 @@ typedef enum XMC_ECAT_STATUS
 } XMC_ECAT_STATUS_t;
 
 /**
- * ECAT event
+ * EtherCAT event enumeration types
  */
 typedef enum XMC_ECAT_EVENT
 {
-  XMC_ECAT_EVENT_AL_CONTROL = ECAT_AL_EVENT_MASK_AL_CE_MASK_Msk,
-  XMC_ECAT_EVENT_DC_LATCH = ECAT_AL_EVENT_MASK_DC_LE_MASK_Msk,
-  XMC_ECAT_EVENT_DC_SYNC0 = ECAT_AL_EVENT_MASK_ST_S0_MASK_Msk,
-  XMC_ECAT_EVENT_DC_SYNC1 = ECAT_AL_EVENT_MASK_ST_S1_MASK_Msk,
-  XMC_ECAT_EVENT_SM_ACTIVATION_REGISTER = ECAT_AL_EVENT_MASK_SM_A_MASK_Msk,
-  XMC_ECAT_EVENT_EEPROM = ECAT_AL_EVENT_MASK_EEP_E_MASK_Msk,
-  XMC_ECAT_EVENT_WATCHDOG = ECAT_AL_EVENT_MASK_WP_D_MASK_Msk,
-  XMC_ECAT_EVENT_SM0 = ECAT_AL_EVENT_MASK_SMI_0_MASK_Msk,
-  XMC_ECAT_EVENT_SM1 = ECAT_AL_EVENT_MASK_SMI_1_MASK_Msk,
-  XMC_ECAT_EVENT_SM2 = ECAT_AL_EVENT_MASK_SMI_2_MASK_Msk,
-  XMC_ECAT_EVENT_SM3 = ECAT_AL_EVENT_MASK_SMI_3_MASK_Msk,
-  XMC_ECAT_EVENT_SM4 = ECAT_AL_EVENT_MASK_SMI_4_MASK_Msk,
-  XMC_ECAT_EVENT_SM5 = ECAT_AL_EVENT_MASK_SMI_5_MASK_Msk,
-  XMC_ECAT_EVENT_SM6 = ECAT_AL_EVENT_MASK_SMI_6_MASK_Msk,
-  XMC_ECAT_EVENT_SM7 = ECAT_AL_EVENT_MASK_SMI_7_MASK_Msk
+  XMC_ECAT_EVENT_AL_CONTROL = ECAT_AL_EVENT_MASK_AL_CE_MASK_Msk, /**< Application control event mask */
+  XMC_ECAT_EVENT_DC_LATCH = ECAT_AL_EVENT_MASK_DC_LE_MASK_Msk,  /**< Distributed Clock latch event mask */
+  XMC_ECAT_EVENT_DC_SYNC0 = ECAT_AL_EVENT_MASK_ST_S0_MASK_Msk, /**< State of distributed clock sync-0 event mask */
+  XMC_ECAT_EVENT_DC_SYNC1 = ECAT_AL_EVENT_MASK_ST_S1_MASK_Msk, /**< State of distributed clock sync-1 event mask */
+  XMC_ECAT_EVENT_SM_ACTIVATION_REGISTER = ECAT_AL_EVENT_MASK_SM_A_MASK_Msk, /**< SyncManager activation register mask*/
+  XMC_ECAT_EVENT_EEPROM = ECAT_AL_EVENT_MASK_EEP_E_MASK_Msk, /**< EEPROM Emulation event mask*/
+  XMC_ECAT_EVENT_WATCHDOG = ECAT_AL_EVENT_MASK_WP_D_MASK_Msk, /**< WATCHDOG process data event mask*/
+  XMC_ECAT_EVENT_SM0 = ECAT_AL_EVENT_MASK_SMI_0_MASK_Msk, /**< Sync Manager 0 event mask*/
+  XMC_ECAT_EVENT_SM1 = ECAT_AL_EVENT_MASK_SMI_1_MASK_Msk, /**< Sync Manager 1 event mask*/
+  XMC_ECAT_EVENT_SM2 = ECAT_AL_EVENT_MASK_SMI_2_MASK_Msk, /**< Sync Manager 2 event mask*/
+  XMC_ECAT_EVENT_SM3 = ECAT_AL_EVENT_MASK_SMI_3_MASK_Msk, /**< Sync Manager 3 event mask*/
+  XMC_ECAT_EVENT_SM4 = ECAT_AL_EVENT_MASK_SMI_4_MASK_Msk, /**< Sync Manager 4 event mask*/
+  XMC_ECAT_EVENT_SM5 = ECAT_AL_EVENT_MASK_SMI_5_MASK_Msk, /**< Sync Manager 5 event mask*/
+  XMC_ECAT_EVENT_SM6 = ECAT_AL_EVENT_MASK_SMI_6_MASK_Msk, /**< Sync Manager 6 event mask*/
+  XMC_ECAT_EVENT_SM7 = ECAT_AL_EVENT_MASK_SMI_7_MASK_Msk  /**< Sync Manager 7 event mask*/
 } XMC_ECAT_EVENT_t;
 
 /**********************************************************************************************************************
@@ -129,7 +135,7 @@ typedef enum XMC_ECAT_EVENT
 #endif
 
 /**
- * ECAT port control
+ * ECAT port control data structure
  */
 typedef struct XMC_ECAT_PORT_CTRL
 {
@@ -137,7 +143,7 @@ typedef struct XMC_ECAT_PORT_CTRL
   {
     struct
     {
-      uint32_t enable_rstreq: 1;     /**< Receive data bit 0 (::bool) */
+      uint32_t enable_rstreq: 1;     /**< Master can trigger a reset of the XMC4700 / XMC4800 (::bool) */
       uint32_t: 7;                   /**< Reserved bits */
       uint32_t latch_input0: 2;      /**< Latch input 0 selection (::XMC_ECAT_PORT_LATCHIN0_t) */
       uint32_t: 2;                   /**< Reserved bits */
@@ -196,6 +202,40 @@ typedef struct XMC_ECAT_PORT_CTRL
   
 } XMC_ECAT_PORT_CTRL_t;
 
+/**
+ * ECAT EEPROM configuration area data structure
+ */
+typedef union XMC_ECAT_CONFIG
+{
+  struct
+  {
+    uint32_t : 8;
+
+    uint32_t : 2;
+    uint32_t enable_dc_sync_out : 1;
+    uint32_t enable_dc_latch_in : 1;
+    uint32_t enable_enhanced_link_p0 : 1;
+    uint32_t enable_enhanced_link_p1 : 1;
+    uint32_t : 2;
+
+    uint32_t : 16;
+
+    uint16_t sync_pulse_length; /**< Initialization value for Pulse Length of SYNC Signals register*/
+
+    uint32_t : 16;
+
+    uint16_t station_alias; /**< Initialization value for Configured Station Alias Address register */
+
+    uint16_t : 16;
+
+    uint16_t : 16;
+
+    uint16_t checksum;
+  };
+
+  uint32_t dword[4]; /**< Four 32 bit double word equivalent to 8 16 bit configuration area word. */
+} XMC_ECAT_CONFIG_t;
+
 /* Anonymous structure/union guard end */
 #if defined (__CC_ARM)
 #pragma pop
@@ -212,8 +252,8 @@ extern "C" {
 #endif
 
 /**
- * @param None
- * @return XMC_ETH_MAC_STATUS_t Initialization status
+ * @param config XMC_ECAT_CONFIG_t
+ * @return XMC_ECAT_STATUS_t ECAT Initialization status
  *
  * \par<b>Description: </b><br>
  * Initialize the Ethernet MAC peripheral <br>
@@ -222,14 +262,14 @@ extern "C" {
  * The function sets the link speed, applies the duplex mode, sets auto-negotiation
  * and loop-back settings.
  */
-XMC_ECAT_STATUS_t XMC_ECAT_Init(void);
+void XMC_ECAT_Init(XMC_ECAT_CONFIG_t *const config);
 
 /**
  * @param None
  * @return None
  *
  * \par<b>Description: </b><br>
- * Enable the Ethernet MAC peripheral <br>
+ * Enable the EtherCAT peripheral <br>
  *
  * \par
  * The function de-asserts the peripheral reset.
@@ -241,7 +281,7 @@ void XMC_ECAT_Enable(void);
  * @return None
  *
  * \par<b>Description: </b><br>
- * Disable the Ethernet MAC peripheral <br>
+ * Disable the EtherCAT peripheral <br>
  *
  * \par
  * The function asserts the peripheral reset.
@@ -249,23 +289,11 @@ void XMC_ECAT_Enable(void);
 void XMC_ECAT_Disable(void);
 
 /**
- * @param None
- * @return bool
- *
- * \par<b>Description: </b><br>
- * Check if the ETH MAC is enabled <br>
- *
- * \par
- * The function checks if the ETH MAC is enabled or not. It returns "true" if the
- * peripheral is enabled, "false" otherwise.
- */
-bool XMC_ECAT_IsEnabled(void);
-
-/**
  * @param phy_addr PHY address
  * @param reg_addr Register address
- * @param data The destination to which the read data needs to be copied to
- * @return XMC_ETH_MAC_STATUS_t ETH MAC status
+ * @param data The destination to which the read data needs to be copied to.
+ *
+ * @return XMC_ECAT_STATUS_t EtherCAT Read PHY API return status
  *
  * \par<b>Description: </b><br>
  * Read a PHY register <br>
@@ -280,7 +308,7 @@ XMC_ECAT_STATUS_t XMC_ECAT_ReadPhy(uint8_t phy_addr, uint8_t reg_addr, uint16_t 
  * @param phy_addr PHY address
  * @param reg_addr Register address
  * @param data The data to write
- * @return XMC_ETH_MAC_STATUS_t ETH MAC status
+ * @return XMC_ECAT_STATUS_t EtherCAT Write PHY API return status
  *
  * \par<b>Description: </b><br>
  * Write a PHY register <br>
@@ -299,8 +327,7 @@ XMC_ECAT_STATUS_t XMC_ECAT_WritePhy(uint8_t phy_addr, uint8_t reg_addr, uint16_t
  * Set port control configuration <br>
  *
  * \par
- * The function sets the port control by writing the configuration into the
- * CON register.
+ * The function sets the port control by writing the configuration into the ECAT CON register.
  *
  */
 __STATIC_INLINE void XMC_ECAT_SetPortControl(const XMC_ECAT_PORT_CTRL_t port_ctrl)
@@ -311,51 +338,112 @@ __STATIC_INLINE void XMC_ECAT_SetPortControl(const XMC_ECAT_PORT_CTRL_t port_ctr
 }
 
 /**
- * @param event Which event (or a combination of logically OR'd events) needs to be enabled?
+ * @param event Single or logically OR'd events specified in the enum type @refXMC_ECAT_EVENT_t
  * @return None
  *
  * \par<b>Description: </b><br>
- * Enable ETH MAC event(s) <br>
+ * Enable ECAT event(s) <br>
  *
  * \par
- * The function can be used to enable ETH MAC event(s).
+ * The function can be used to enable ECAT event(s).
  */
 void XMC_ECAT_EnableEvent(uint32_t event);
 
 /**
- * @param event Which event (or a combination of logically OR'd events) needs to be disabled?
+ * @param event Single or logically OR'd events specified in the enum type @refXMC_ECAT_EVENT_t
  * @return None
  *
  * \par<b>Description: </b><br>
- * Disable an ETH MAC event(s) <br>
+ * Disable an ECAT event(s) <br>
  *
  * \par
- * The function can be used to disable ETH MAC event(s).
+ * The function can be used to disable ECAT event(s).
  */
 void XMC_ECAT_DisableEvent(uint32_t event);
 
 /**
+ * @param None
  * @return uint32_t Event status
  *
  * \par<b>Description: </b><br>
  * Get event status <br>
  *
  * \par
- * The function returns the ETH status and interrupt status as a single word. The user
+ * The function returns the ECAT status and interrupt status as a single word. The user
  * can then check the status of the events by using an appropriate mask.
  */
 uint32_t XMC_ECAT_GetEventStatus(void);
 
 
 /**
+ * @param channel SyncManager channel number.
+ * @return None
  *
+ * \par<b>Description: </b><br>
+ * Disables selected SyncManager channel <br>
+ *
+ * \par
+ * Sets bit 0 of the corresponding 0x807 register.
  */
 void XMC_ECAT_DisableSyncManChannel(const uint8_t channel);
 
 /**
+ * @param channel SyncManager channel number.
+ * @return None
  *
+ * \par<b>Description: </b><br>
+ * Enables selected SyncManager channel <br>
+ *
+ * \par
+ * Resets bit 0 of the corresponding 0x807 register.
  */
 void XMC_ECAT_EnableSyncManChannel(const uint8_t channel);
+
+/**
+ * @param None
+ * @return uint16_t Content of register 0x220-0x221
+ *
+ * \par<b>Description: </b><br>
+ * Get content of AL event register <br>
+ *
+ * \par
+ * Get the first two bytes of the AL Event register (0x220-0x221).
+ */
+__STATIC_INLINE uint16_t XMC_ECAT_GetALEventRegister(void)
+{
+  return ((uint16_t)ECAT0->AL_EVENT_REQ);
+}
+
+/**
+ * @param None
+ * @return uint16_t Content of register 0x220-0x221
+ *
+ * \par<b>Description: </b><br>
+ * Get content of AL event register <br>
+ *
+ * \par
+ * Get the first two bytes of the AL Event register (0x220-0x221).
+ */
+__STATIC_INLINE uint16_t XMC_ECAT_GetALEventMask(void)
+{
+  return ((uint16_t)ECAT0->AL_EVENT_MASK);
+}
+
+/**
+ * @param intMask Interrupt mask (disabled interrupt shall be zero)
+ * @return None
+ *
+ * \par<b>Description: </b><br>
+ * Sets application event mask register <br>
+ *
+ * \par
+ * Performs a logical OR with the AL Event Mask register (0x0204 : 0x0205).
+ */
+__STATIC_INLINE void XMC_ECAT_SetALEventMask(uint16_t intMask)
+{
+  ECAT0->AL_EVENT_MASK |= (uint32_t)(intMask);
+}
+
 
 #ifdef __cplusplus
 }
@@ -369,6 +457,6 @@ void XMC_ECAT_EnableSyncManChannel(const uint8_t channel);
  * @}
  */
  
-#endif /* defined (ETH0) */
+#endif /* defined (ECAT) */
 
-#endif /* XMC_ETH_MAC_H */
+#endif /* XMC_ECAT_H */

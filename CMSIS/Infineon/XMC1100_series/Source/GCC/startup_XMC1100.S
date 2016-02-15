@@ -1,12 +1,12 @@
 /*********************************************************************************************************************
  * @file     startup_XMC1100.S
  * @brief    CMSIS Core Device Startup File for Infineon XMC1100 Device Series
- * @version  V1.14
- * @date     03 Sep 2015
+ * @version  V1.15
+ * @date     05 Jan 2016
  *
  * @cond
  *********************************************************************************************************************
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -54,6 +54,7 @@
  *                          Misc optimizations
  * V1.13, Dec, 11,2014 JFT:Default clocking changed, MCLK=32MHz and PCLK=64MHz
  * V1.14, Sep, 03,2015 JFT:SSW default clocking changed, MCLK=8MHz and PCLK=16MHz avoid problems with BMI tool timeout
+ * V1.15, Jan, 05,2016 JFT:Fix .reset section attributes
  *
  * @endcond 
  */
@@ -125,7 +126,7 @@
     .syntax unified   
     .cpu cortex-m0
 
-    .section ".reset"
+    .section .reset, "a", %progbits
     
  	.align 2
     

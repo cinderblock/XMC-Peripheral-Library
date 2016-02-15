@@ -2,10 +2,10 @@
  * @file     system_XMC4100.c
  * @brief    CMSIS Cortex-M4 Device Peripheral Access Layer Header File
  *           for the Infineon XMC4100 Device Series
- * @version  V3.1.0
- * @date     20. Dec 2014
+ * @version  V3.2.0
+ * @date     30. Nov 2015
  *
- * Copyright (C) 2014 Infineon Technologies AG. All rights reserved.
+ * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
  *
  *
  * @par
@@ -24,6 +24,7 @@
 
 /********************** Version History ***************************************
  * V3.1.0, Dec 2014, Added options to configure clock settings
+ * V3.2.0, Nov 2015, HRPWM calibration data not available in XMC4108 devices
  ******************************************************************************/
 
 /*******************************************************************************
@@ -264,7 +265,9 @@
 #if defined ( __CC_ARM )
 uint32_t SystemCoreClock __attribute__((at(0x20002FC0)));
 uint8_t g_chipid[16] __attribute__((at(0x20002FC4)));
+#if !defined(XMC4108_F64x64) && !defined(XMC4108-Q48x64)
 uint32_t g_hrpwm_char_data[3] __attribute__((at(0x20002FD4)));
+#endif
 #elif defined ( __ICCARM__ )
 __no_init uint32_t SystemCoreClock;
 __no_init uint8_t g_chipid[16];
@@ -276,7 +279,9 @@ uint32_t g_hrpwm_char_data[3] __attribute__((section(".no_init")));
 #elif defined ( __TASKING__ )
 uint32_t SystemCoreClock __at( 0x20002FC0 );
 uint8_t g_chipid[16] __at( 0x20002FC4 );
+#if !defined(XMC4108_F64x64) && !defined(XMC4108-Q48x64)
 uint32_t g_hrpwm_char_data[3] __at( 0x20002FD4 );
+#endif
 #endif
 
 extern uint32_t __Vectors;

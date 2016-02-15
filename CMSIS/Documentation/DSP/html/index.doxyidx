@@ -4,9 +4,9 @@
  *  Copyright (C) 2013 ARM Ltd and ARM Germany GmbH. All rights reserved.
  *
  *  File: index.doxyidx
- *  Date: 14. September 2015
+ *  Date: 29. October 2015
  *
- *  Note: Generated with DoxyIndex V1.01  on Monday, 14.09.2015 13:48:07
+ *  Note: Generated with DoxyIndex V1.01  on Thursday, 29.10.2015 13:23:21
  *
  *******************************************************************************************************/
 
@@ -725,7 +725,7 @@ arm_shift_q7.c, arm__shift__q7_8c.html,
 arm_signal_converge_data.c, arm__signal__converge__data_8c.html, 
 arm_signal_converge_example_f32.c, arm__signal__converge__example__f32_8c.html, 
 arm_sin_cos_example_f32.c, arm__sin__cos__example__f32_8c.html, 
-arm_sin_cos_f32, group___sin_cos.html#ga4420d45c37d58c310ef9ae1b5fe58020, arm_sin_cos_f32(float32_t theta, float32_t *pSinVal, float32_t *pCcosVal):&#160;arm_sin_cos_f32.c
+arm_sin_cos_f32, group___sin_cos.html#ga4420d45c37d58c310ef9ae1b5fe58020, arm_sin_cos_f32(float32_t theta, float32_t *pSinVal, float32_t *pCosVal):&#160;arm_sin_cos_f32.c
 arm_sin_cos_f32.c, arm__sin__cos__f32_8c.html, 
 arm_sin_cos_q31, group___sin_cos.html#gae9e4ddebff9d4eb5d0a093e28e0bc504, arm_sin_cos_q31(q31_t theta, q31_t *pSinVal, q31_t *pCosVal):&#160;arm_sin_cos_q31.c
 arm_sin_cos_q31.c, arm__sin__cos__q31_8c.html, 

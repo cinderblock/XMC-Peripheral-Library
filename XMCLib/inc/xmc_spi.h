@@ -1,12 +1,12 @@
 /**
  * @file xmc_spi.h
- * @date 2015-10-27
+ * @date 2016-01-12
  *
  * @cond
   *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.4 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -1168,6 +1168,35 @@ __STATIC_INLINE void XMC_SPI_CH_ConfigExternalInputSignalToBRG(XMC_USIC_CH_t *co
 												               const XMC_USIC_CH_INPUT_COMBINATION_MODE_t combination_mode)
 {
   XMC_USIC_CH_ConfigExternalInputSignalToBRG(channel,pdiv,2U,combination_mode);
+}
+
+/**
+ * @param  channel A constant pointer to XMC_USIC_CH_t, pointing to the USIC channel base address.
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * The SELOx lines (with x = 1-7) can be used as addresses for an external address
+ * decoder to increase the number of external slave devices.
+ */
+__STATIC_INLINE void XMC_SPI_CH_EnableSlaveSelectCodedMode(XMC_USIC_CH_t *const channel)
+{
+  /* Configuration of Protocol Control Register */
+  channel->PCR_SSCMode = (uint32_t)(channel->PCR_SSCMode & (~USIC_CH_PCR_SSCMode_SELCTR_Msk));
+}
+
+/**
+ * @param  channel A constant pointer to XMC_USIC_CH_t, pointing to the USIC channel base address.
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Each SELOx line (with x = 0-7) can be directly connected to an external slave device.
+ */
+__STATIC_INLINE void XMC_SPI_CH_DisableSlaveSelectCodedMode(XMC_USIC_CH_t *const channel)
+{
+  /* Configuration of Protocol Control Register */
+  channel->PCR_SSCMode |= (uint32_t)USIC_CH_PCR_SSCMode_SELCTR_Msk;
 }
 
 #ifdef __cplusplus

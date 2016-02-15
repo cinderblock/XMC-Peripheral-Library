@@ -24,11 +24,11 @@ Copyright (C) 2011-2015 Infineon Technologies AG. All rights reserved.
  * @brief    CMSIS Cortex-M4 Peripheral Access Layer Header File for
  *           XMC4200 from Infineon.
  *
- * @version  V1.5.1 (Reference Manual v1.5)
- * @date     23. January 2015
+ * @version  V1.5.2 (Reference Manual v1.5)
+ * @date     3. February 2016
  *
  * @note     Generated with SVDConv V2.85d 
- *           from CMSIS SVD File 'XMC4200_Processed_SVD.xml' Version 1.5.1 (Reference Manual v1.5),
+ *           from CMSIS SVD File 'XMC4200_Processed_SVD.xml' Version 1.5.2 (Reference Manual v1.5),
  *******************************************************************************************************/
 
 
@@ -13233,13 +13233,15 @@ typedef struct {                                    /*!< (@ 0x48028E00) PORT14 S
 #define PORT3                           ((PORT3_Type              *) PORT3_BASE)
 #define PORT14                          ((PORT14_Type             *) PORT14_BASE)
 
+
 /** @} */ /* End of group Device_Peripheral_Registers */
-/** @} */ /* End of group XMC4100 */
+/** @} */ /* End of group XMC4200 */
 /** @} */ /* End of group Infineon */
 
 #ifdef __cplusplus
 }
 #endif
+
 
 #endif  /* XMC4200_H */
 

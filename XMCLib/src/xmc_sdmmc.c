@@ -1,13 +1,13 @@
 
 /**
  * @file xmc_sdmmc.c
- * @date 2015-10-27
+ * @date 2016-01-12
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.4 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -319,7 +319,8 @@ void XMC_SDMMC_SetDataTransferMode(XMC_SDMMC_t *const sdmmc, XMC_SDMMC_TRANSFER_
   sdmmc->BLOCK_COUNT = (uint16_t)(response->num_blocks);
 
   /* Type of data transfer: single, infinite, multiple or stop multiple */
-  sdmmc->TRANSFER_MODE |= (uint16_t)response->type;
+  sdmmc->TRANSFER_MODE = (uint16_t)((sdmmc->TRANSFER_MODE & (uint16_t)~SDMMC_TRANSFER_MODE_MULTI_BLOCK_SELECT_Msk) |
+                                    ((uint16_t)response->type));
 
   /*
    * Clear block count enable bit; that's only valid for

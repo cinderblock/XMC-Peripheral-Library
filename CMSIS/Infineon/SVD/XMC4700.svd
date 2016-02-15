@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--
  *********************************************************************************************************************
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -33,21 +33,24 @@
 <!--Version of used XSLT: ISFR2SVD.xslt  V0.8-->
 <!--Configuration of XSLT: with bit extraction =Yes;  with bit coding =Yes; decodeThe3knownBitAccessTypes = Yes; 0,r and 1,r bit extraction = No-->
 <!--Release History
+V1.0.2
+- Added service request information to "interrupt" elements
 V1.0.1
-	- Switch to SVD scheme V1.2 to enable register clustering
-	- Changed CAN_MO registers from instance to cluster scheme
-	- Corrected CAN block size to 0x200
-	- Corrected CAN_NODEx block sizes to 0x100
-	- Corrected VADC block size to 0x400
-	- Corrected DSD block size to 0x100
-	- Corrected CCU4x block sizes to 0x100
-	- Corrected CCU8x block sizes to 0x100
-	- Removed enumeration type from CLK_PS bit field of LEDTS GLOBCTL register
-	- Removed enumeration type from TX_BLOCK_SIZE bit field of SDMMC BLOCK_SIZE register
-	- Removed enumeration type from BLOCK_COUNT bit field of SDMMC BLOCK_COUNT register
-	- Corrected enumeration value "value4" of STOS bit field of CCU8 register TC
-	- Removed enumeration value "Reserved" from WDTSEL bit field of SCU register MLINKCLKCR
-V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1 
+- Switch to SVD scheme V1.2 to enable register clustering
+- Changed CAN_MO registers from instance to cluster scheme
+- Corrected CAN block size to 0x200
+- Corrected CAN_NODEx block sizes to 0x100
+- Corrected VADC block size to 0x400
+- Corrected DSD block size to 0x100
+- Corrected CCU4x block sizes to 0x100
+- Corrected CCU8x block sizes to 0x100
+- Removed enumeration type from CLK_PS bit field of LEDTS GLOBCTL register
+- Removed enumeration type from TX_BLOCK_SIZE bit field of SDMMC BLOCK_SIZE register
+- Removed enumeration type from BLOCK_COUNT bit field of SDMMC BLOCK_COUNT register
+- Corrected enumeration value "value4" of STOS bit field of CCU8 register TC
+- Removed enumeration value "Reserved" from WDTSEL bit field of SCU register MLINKCLKCR
+V1.0.0 
+- First Version based on XMC4800 SVD Version V1.1.1 
 -->
 <!--Compliance
 - CMSIS-SVD V1.2
@@ -56,7 +59,7 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 <device xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.2" xs:noNamespaceSchemaLocation="c:\fm8_xml\XSLT\RD2ISFR\CMSIS-SVD_Schema_1_2.xsd">
 	<vendor>Infineon</vendor>
 	<name>XMC4700</name>
-	<version>1.0.1 (Reference Manual v1.0)</version>
+	<version>1.0.2 (Reference Manual v1.0)</version>
 	<description>SVD file</description>
 	<cpu>
 		<name>CM4</name>
@@ -4626,6 +4629,26 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>ERU0</name>
 			<description>Event Request Unit 0</description>
+			<interrupt>
+				<name>ERU0_0</name>
+				<description>External Request Unit 0</description>
+				<value>1</value>
+			</interrupt>
+			<interrupt>
+				<name>ERU0_1</name>
+				<description>External Request Unit 0</description>
+				<value>2</value>
+			</interrupt>
+			<interrupt>
+				<name>ERU0_2</name>
+				<description>External Request Unit 0</description>
+				<value>3</value>
+			</interrupt>
+			<interrupt>
+				<name>ERU0_3</name>
+				<description>External Request Unit 0</description>
+				<value>4</value>
+			</interrupt>
 			<groupName>ERU</groupName>
 			<headerStructName>ERU</headerStructName>
 			<baseAddress>0x50004800</baseAddress>
@@ -5269,6 +5292,26 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral derivedFrom="ERU0">
 			<name>ERU1</name>
 			<description>Event Request Unit 1</description>
+			<interrupt>
+				<name>ERU1_0</name>
+				<description>External Request Unit 1</description>
+				<value>5</value>
+			</interrupt>
+			<interrupt>
+				<name>ERU1_1</name>
+				<description>External Request Unit 1</description>
+				<value>6</value>
+			</interrupt>
+			<interrupt>
+				<name>ERU1_2</name>
+				<description>External Request Unit 1</description>
+				<value>7</value>
+			</interrupt>
+			<interrupt>
+				<name>ERU1_3</name>
+				<description>External Request Unit 1</description>
+				<value>8</value>
+			</interrupt>
 			<groupName>ERU</groupName>
 			<baseAddress>0x40044000</baseAddress>
 			<addressBlock>
@@ -5280,6 +5323,11 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>GPDMA0</name>
 			<description>General Purpose DMA Unit 0</description>
+			<interrupt>
+				<name>GPDMA0_0</name>
+				<description>General Purpose DMA Unit 0</description>
+				<value>105</value>
+			</interrupt>
 			<groupName>GPDMA</groupName>
 			<baseAddress>0x500142C0</baseAddress>
 			<addressBlock>
@@ -11155,6 +11203,11 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>GPDMA1</name>
 			<description>General Purpose DMA Unit 1</description>
+			<interrupt>
+				<name>GPDMA1_0</name>
+				<description>General Purpose DMA Unit 1</description>
+				<value>110</value>
+			</interrupt>
 			<groupName>GPDMA</groupName>
 			<baseAddress>0x500182C0</baseAddress>
 			<addressBlock>
@@ -14203,6 +14256,11 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>FCE</name>
 			<description>Flexible CRC Engine</description>
+			<interrupt>
+				<name>FCE0_0</name>
+				<description>Flexible CRC Engine</description>
+				<value>104</value>
+			</interrupt>
 			<groupName>FCE</groupName>
 			<baseAddress>0x50020000</baseAddress>
 			<addressBlock>
@@ -16378,6 +16436,11 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>PMU0</name>
 			<description>Program Management Unit</description>
+			<interrupt>
+				<name>PMU0_0</name>
+				<description>Program Management Unit</description>
+				<value>12</value>
+			</interrupt>
 			<headerStructName>PMU</headerStructName>
 			<baseAddress>0x58000508</baseAddress>
 			<addressBlock>
@@ -21637,6 +21700,11 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>SCU_INTERRUPT</name>
 			<description>System Control Unit</description>
+			<interrupt>
+				<name>SCU_0</name>
+				<description>System Control</description>
+				<value>0</value>
+			</interrupt>
 			<groupName>SCU</groupName>
 			<baseAddress>0x50004074</baseAddress>
 			<addressBlock>
@@ -28525,6 +28593,11 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>LEDTS0</name>
 			<description>LED and Touch Sense Unit 0</description>
+			<interrupt>
+				<name>LEDTS0_0</name>
+				<description>LED and Touch Sense Control Unit (Module 0)</description>
+				<value>102</value>
+			</interrupt>
 			<headerStructName>LEDTS</headerStructName>
 			<baseAddress>0x48010000</baseAddress>
 			<addressBlock>
@@ -29485,6 +29558,11 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>SDMMC</name>
 			<description>SD and Multimediacard Interface</description>
+			<interrupt>
+				<name>SDMMC0_0</name>
+				<description>Multi Media Card Interface</description>
+				<value>106</value>
+			</interrupt>
 			<baseAddress>0x4801C000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
@@ -38335,6 +38413,11 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>ETH0</name>
 			<description>Ethernet Unit 0</description>
+			<interrupt>
+				<name>ETH0_0</name>
+				<description>Ethernet (Module 0)</description>
+				<value>108</value>
+			</interrupt>
 			<groupName>ETH</groupName>
 			<headerStructName>ETH</headerStructName>
 			<baseAddress>0x5000C000</baseAddress>
@@ -43139,6 +43222,11 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>USB0</name>
 			<description>Universal Serial Bus</description>
+			<interrupt>
+				<name>USB0_0</name>
+				<description>Universal Serial Bus (Module 0)</description>
+				<value>107</value>
+			</interrupt>
 			<groupName>USB</groupName>
 			<headerStructName>USB</headerStructName>
 			<baseAddress>0x50040000</baseAddress>
@@ -48557,6 +48645,36 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>USIC0</name>
 			<description>Universal Serial Interface Controller 0</description>
+			<interrupt>
+				<name>USIC0_0</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>84</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC0_1</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>85</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC0_2</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>86</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC0_3</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>87</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC0_4</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>88</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC0_5</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>89</value>
+			</interrupt>
 			<groupName>USIC</groupName>
 			<headerStructName>USIC</headerStructName>
 			<baseAddress>0x40030008</baseAddress>
@@ -48602,6 +48720,36 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral derivedFrom="USIC0">
 			<name>USIC1</name>
 			<description>Universal Serial Interface Controller 1</description>
+			<interrupt>
+				<name>USIC1_0</name>
+				<description>Universal Serial Interface Channel (Module 1)</description>
+				<value>90</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC1_1</name>
+				<description>Universal Serial Interface Channel (Module 1)</description>
+				<value>91</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC1_2</name>
+				<description>Universal Serial Interface Channel (Module 1)</description>
+				<value>92</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC1_3</name>
+				<description>Universal Serial Interface Channel (Module 1)</description>
+				<value>93</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC1_4</name>
+				<description>Universal Serial Interface Channel (Module 1)</description>
+				<value>94</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC1_5</name>
+				<description>Universal Serial Interface Channel (Module 1)</description>
+				<value>95</value>
+			</interrupt>
 			<groupName>USIC</groupName>
 			<baseAddress>0x48020008</baseAddress>
 			<addressBlock>
@@ -48613,6 +48761,36 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral derivedFrom="USIC0">
 			<name>USIC2</name>
 			<description>Universal Serial Interface Controller 2</description>
+			<interrupt>
+				<name>USIC2_0</name>
+				<description>Universal Serial Interface Channel (Module 2)</description>
+				<value>96</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC2_1</name>
+				<description>Universal Serial Interface Channel (Module 2)</description>
+				<value>97</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC2_2</name>
+				<description>Universal Serial Interface Channel (Module 2)</description>
+				<value>98</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC2_3</name>
+				<description>Universal Serial Interface Channel (Module 2)</description>
+				<value>99</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC2_4</name>
+				<description>Universal Serial Interface Channel (Module 2)</description>
+				<value>100</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC2_5</name>
+				<description>Universal Serial Interface Channel (Module 2)</description>
+				<value>101</value>
+			</interrupt>
 			<groupName>USIC</groupName>
 			<baseAddress>0x48024008</baseAddress>
 			<addressBlock>
@@ -55955,6 +56133,46 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>CAN</name>
 			<description>Controller Area Networks</description>
+			<interrupt>
+				<name>CAN0_0</name>
+				<description>MultiCAN</description>
+				<value>76</value>
+			</interrupt>
+			<interrupt>
+				<name>CAN0_1</name>
+				<description>MultiCAN</description>
+				<value>77</value>
+			</interrupt>
+			<interrupt>
+				<name>CAN0_2</name>
+				<description>MultiCAN</description>
+				<value>78</value>
+			</interrupt>
+			<interrupt>
+				<name>CAN0_3</name>
+				<description>MultiCAN</description>
+				<value>79</value>
+			</interrupt>
+			<interrupt>
+				<name>CAN0_4</name>
+				<description>MultiCAN</description>
+				<value>80</value>
+			</interrupt>
+			<interrupt>
+				<name>CAN0_5</name>
+				<description>MultiCAN</description>
+				<value>81</value>
+			</interrupt>
+			<interrupt>
+				<name>CAN0_6</name>
+				<description>MultiCAN</description>
+				<value>82</value>
+			</interrupt>
+			<interrupt>
+				<name>CAN0_7</name>
+				<description>MultiCAN</description>
+				<value>83</value>
+			</interrupt>
 			<groupName>CAN</groupName>
 			<baseAddress>0x48014000</baseAddress>
 			<addressBlock>
@@ -58029,6 +58247,26 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>VADC</name>
 			<description>Analog to Digital Converter</description>
+			<interrupt>
+				<name>VADC0_C0_0</name>
+				<description>Analog to Digital Converter Common Block 0</description>
+				<value>14</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_C0_1</name>
+				<description>Analog to Digital Converter Common Block 0</description>
+				<value>15</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_C0_2</name>
+				<description>Analog to Digital Converter Common Block 0</description>
+				<value>16</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_C0_3</name>
+				<description>Analog to Digital Converter Common Block 0</description>
+				<value>17</value>
+			</interrupt>
 			<groupName>VADC</groupName>
 			<baseAddress>0x40004000</baseAddress>
 			<addressBlock>
@@ -59736,6 +59974,26 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>VADC_G0</name>
 			<description>Analog to Digital Converter</description>
+			<interrupt>
+				<name>VADC0_G0_0</name>
+				<description>Analog to Digital Converter Group 0</description>
+				<value>18</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G0_1</name>
+				<description>Analog to Digital Converter Group 0</description>
+				<value>19</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G0_2</name>
+				<description>Analog to Digital Converter Group 0</description>
+				<value>20</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G0_3</name>
+				<description>Analog to Digital Converter Group 0</description>
+				<value>21</value>
+			</interrupt>
 			<groupName>VADC</groupName>
 			<headerStructName>VADC_G</headerStructName>
 			<baseAddress>0x40004400</baseAddress>
@@ -65477,6 +65735,26 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral derivedFrom="VADC_G0">
 			<name>VADC_G1</name>
 			<description>Analog to Digital Converter</description>
+			<interrupt>
+				<name>VADC0_G1_0</name>
+				<description>Analog to Digital Converter Group 1</description>
+				<value>22</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G1_1</name>
+				<description>Analog to Digital Converter Group 1</description>
+				<value>23</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G1_2</name>
+				<description>Analog to Digital Converter Group 1</description>
+				<value>24</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G1_3</name>
+				<description>Analog to Digital Converter Group 1</description>
+				<value>25</value>
+			</interrupt>
 			<groupName>VADC</groupName>
 			<baseAddress>0x40004800</baseAddress>
 			<addressBlock>
@@ -65488,6 +65766,26 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral derivedFrom="VADC_G0">
 			<name>VADC_G2</name>
 			<description>Analog to Digital Converter</description>
+			<interrupt>
+				<name>VADC0_G2_0</name>
+				<description>Analog to Digital Converter Group 2</description>
+				<value>26</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G2_1</name>
+				<description>Analog to Digital Converter Group 2</description>
+				<value>27</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G2_2</name>
+				<description>Analog to Digital Converter Group 2</description>
+				<value>28</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G2_3</name>
+				<description>Analog to Digital Converter Group 2</description>
+				<value>29</value>
+			</interrupt>
 			<groupName>VADC</groupName>
 			<baseAddress>0x40004C00</baseAddress>
 			<addressBlock>
@@ -65499,6 +65797,26 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral derivedFrom="VADC_G0">
 			<name>VADC_G3</name>
 			<description>Analog to Digital Converter</description>
+			<interrupt>
+				<name>VADC0_G3_0</name>
+				<description>Analog to Digital Converter Group 3</description>
+				<value>30</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G3_1</name>
+				<description>Analog to Digital Converter Group 3</description>
+				<value>31</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G3_2</name>
+				<description>Analog to Digital Converter Group 3</description>
+				<value>32</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G3_3</name>
+				<description>Analog to Digital Converter Group 3</description>
+				<value>33</value>
+			</interrupt>
 			<groupName>VADC</groupName>
 			<baseAddress>0x40005000</baseAddress>
 			<addressBlock>
@@ -66326,6 +66644,16 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>DSD_CH0</name>
 			<description>Delta Sigma Demodulator</description>
+			<interrupt>
+				<name>DSD0_M_0</name>
+				<description>Delta Sigma Demodulator Main</description>
+				<value>34</value>
+			</interrupt>
+			<interrupt>
+				<name>DSD0_A_4</name>
+				<description>Delta Sigma Demodulator Auxiliary</description>
+				<value>38</value>
+			</interrupt>
 			<groupName>DSD</groupName>
 			<headerStructName>DSD_CH</headerStructName>
 			<baseAddress>0x40008100</baseAddress>
@@ -67197,6 +67525,16 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral derivedFrom="DSD_CH0">
 			<name>DSD_CH1</name>
 			<description>Delta Sigma Demodulator</description>
+			<interrupt>
+				<name>DSD0_M_1</name>
+				<description>Delta Sigma Demodulator Main</description>
+				<value>35</value>
+			</interrupt>
+			<interrupt>
+				<name>DSD0_A_5</name>
+				<description>Delta Sigma Demodulator Auxiliary</description>
+				<value>39</value>
+			</interrupt>
 			<groupName>DSD</groupName>
 			<baseAddress>0x40008200</baseAddress>
 			<addressBlock>
@@ -67208,6 +67546,16 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral derivedFrom="DSD_CH0">
 			<name>DSD_CH2</name>
 			<description>Delta Sigma Demodulator</description>
+			<interrupt>
+				<name>DSD0_M_2</name>
+				<description>Delta Sigma Demodulator Main</description>
+				<value>36</value>
+			</interrupt>
+			<interrupt>
+				<name>DSD0_A_6</name>
+				<description>Delta Sigma Demodulator Auxiliary</description>
+				<value>40</value>
+			</interrupt>
 			<groupName>DSD</groupName>
 			<baseAddress>0x40008300</baseAddress>
 			<addressBlock>
@@ -67219,6 +67567,16 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral derivedFrom="DSD_CH0">
 			<name>DSD_CH3</name>
 			<description>Delta Sigma Demodulator</description>
+			<interrupt>
+				<name>DSD0_M_3</name>
+				<description>Delta Sigma Demodulator Main</description>
+				<value>37</value>
+			</interrupt>
+			<interrupt>
+				<name>DSD0_A_7</name>
+				<description>Delta Sigma Demodulator Auxiliary</description>
+				<value>41</value>
+			</interrupt>
 			<groupName>DSD</groupName>
 			<baseAddress>0x40008400</baseAddress>
 			<addressBlock>
@@ -67230,6 +67588,16 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>DAC</name>
 			<description>Digital to Analog Converter</description>
+			<interrupt>
+				<name>DAC0_0</name>
+				<description>Digital to Analog Converter</description>
+				<value>42</value>
+			</interrupt>
+			<interrupt>
+				<name>DAC0_1</name>
+				<description>Digital to Analog Converter</description>
+				<value>43</value>
+			</interrupt>
 			<baseAddress>0x48018000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
@@ -68240,6 +68608,26 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>CCU40</name>
 			<description>Capture Compare Unit 4 - Unit 0</description>
+			<interrupt>
+				<name>CCU40_0</name>
+				<description>Capture Compare Unit 4 (Module 0)</description>
+				<value>44</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU40_1</name>
+				<description>Capture Compare Unit 4 (Module 0)</description>
+				<value>45</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU40_2</name>
+				<description>Capture Compare Unit 4 (Module 0)</description>
+				<value>46</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU40_3</name>
+				<description>Capture Compare Unit 4 (Module 0)</description>
+				<value>47</value>
+			</interrupt>
 			<groupName>CCU4</groupName>
 			<headerStructName>CCU4</headerStructName>
 			<baseAddress>0x4000C000</baseAddress>
@@ -69199,6 +69587,26 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral derivedFrom="CCU40">
 			<name>CCU41</name>
 			<description>Capture Compare Unit 4 - Unit 1</description>
+			<interrupt>
+				<name>CCU41_0</name>
+				<description>Capture Compare Unit 4 (Module 1)</description>
+				<value>48</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU41_1</name>
+				<description>Capture Compare Unit 4 (Module 1)</description>
+				<value>49</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU41_2</name>
+				<description>Capture Compare Unit 4 (Module 1)</description>
+				<value>50</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU41_3</name>
+				<description>Capture Compare Unit 4 (Module 1)</description>
+				<value>51</value>
+			</interrupt>
 			<groupName>CCU4</groupName>
 			<baseAddress>0x40010000</baseAddress>
 			<addressBlock>
@@ -69210,6 +69618,26 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral derivedFrom="CCU40">
 			<name>CCU42</name>
 			<description>Capture Compare Unit 4 - Unit 2</description>
+			<interrupt>
+				<name>CCU42_0</name>
+				<description>Capture Compare Unit 4 (Module 2)</description>
+				<value>52</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU42_1</name>
+				<description>Capture Compare Unit 4 (Module 2)</description>
+				<value>53</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU42_2</name>
+				<description>Capture Compare Unit 4 (Module 2)</description>
+				<value>54</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU42_3</name>
+				<description>Capture Compare Unit 4 (Module 2)</description>
+				<value>55</value>
+			</interrupt>
 			<groupName>CCU4</groupName>
 			<baseAddress>0x40014000</baseAddress>
 			<addressBlock>
@@ -69221,6 +69649,26 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral derivedFrom="CCU40">
 			<name>CCU43</name>
 			<description>Capture Compare Unit 4 - Unit 3</description>
+			<interrupt>
+				<name>CCU43_0</name>
+				<description>Capture Compare Unit 4 (Module 3)</description>
+				<value>56</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU43_1</name>
+				<description>Capture Compare Unit 4 (Module 3)</description>
+				<value>57</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU43_2</name>
+				<description>Capture Compare Unit 4 (Module 3)</description>
+				<value>58</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU43_3</name>
+				<description>Capture Compare Unit 4 (Module 3)</description>
+				<value>59</value>
+			</interrupt>
 			<groupName>CCU4</groupName>
 			<baseAddress>0x48004000</baseAddress>
 			<addressBlock>
@@ -71894,6 +72342,26 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>CCU80</name>
 			<description>Capture Compare Unit 8 - Unit 0</description>
+			<interrupt>
+				<name>CCU80_0</name>
+				<description>Capture Compare Unit 8 (Module 0)</description>
+				<value>60</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU80_1</name>
+				<description>Capture Compare Unit 8 (Module 0)</description>
+				<value>61</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU80_2</name>
+				<description>Capture Compare Unit 8 (Module 0)</description>
+				<value>62</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU80_3</name>
+				<description>Capture Compare Unit 8 (Module 0)</description>
+				<value>63</value>
+			</interrupt>
 			<groupName>CCU8</groupName>
 			<headerStructName>CCU8</headerStructName>
 			<baseAddress>0x40020000</baseAddress>
@@ -73230,6 +73698,26 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral derivedFrom="CCU80">
 			<name>CCU81</name>
 			<description>Capture Compare Unit 8 - Unit 1</description>
+			<interrupt>
+				<name>CCU81_0</name>
+				<description>Capture Compare Unit 8 (Module 1)</description>
+				<value>64</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU81_1</name>
+				<description>Capture Compare Unit 8 (Module 1)</description>
+				<value>65</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU81_2</name>
+				<description>Capture Compare Unit 8 (Module 1)</description>
+				<value>66</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU81_3</name>
+				<description>Capture Compare Unit 8 (Module 1)</description>
+				<value>67</value>
+			</interrupt>
 			<groupName>CCU8</groupName>
 			<baseAddress>0x40024000</baseAddress>
 			<addressBlock>
@@ -76567,6 +77055,16 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral>
 			<name>POSIF0</name>
 			<description>Position Interface 0</description>
+			<interrupt>
+				<name>POSIF0_0</name>
+				<description>Position Interface (Module 0)</description>
+				<value>68</value>
+			</interrupt>
+			<interrupt>
+				<name>POSIF0_1</name>
+				<description>Position Interface (Module 0)</description>
+				<value>69</value>
+			</interrupt>
 			<groupName>POSIF</groupName>
 			<headerStructName>POSIF</headerStructName>
 			<baseAddress>0x40028000</baseAddress>
@@ -78186,6 +78684,16 @@ V1.0.0 - First Version based on XMC4800 SVD Version V1.1.1
 		<peripheral derivedFrom="POSIF0">
 			<name>POSIF1</name>
 			<description>Position Interface 1</description>
+			<interrupt>
+				<name>POSIF1_0</name>
+				<description>Position Interface (Module 1)</description>
+				<value>70</value>
+			</interrupt>
+			<interrupt>
+				<name>POSIF1_1</name>
+				<description>Position Interface (Module 1)</description>
+				<value>71</value>
+			</interrupt>
 			<groupName>POSIF</groupName>
 			<baseAddress>0x4002C000</baseAddress>
 			<addressBlock>

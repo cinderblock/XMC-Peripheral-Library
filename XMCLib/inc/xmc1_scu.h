@@ -1,12 +1,12 @@
 /**
  * @file xmc1_scu.h
- * @date 2015-10-27
+ * @date 2016-01-12
  *
  * @cond
 *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.4 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the
@@ -48,6 +48,11 @@
  * 2015-06-20:
  *     - Added support for XMC1400
  *
+ * 2015-11-30:
+ *     - Documentation improved
+ *
+ * 2015-12-09:
+ *     - Added XMC_SCU_EnablePrefetchUnit and XMC_SCU_DisablePrefetchUnit
  * @endcond
  *
  */
@@ -726,11 +731,40 @@ extern "C" {
 
 /**
  *
+ * @param freq_khz   Required MCLK frequency value in kHz.\n
+ *                   \b Range: XMC11/XMC12/XMC13 Device: 125 to 32000.
+ *                             XMC14 Device: 188 to 48000 when DCO1 is clock source for clock control unit.
+ *                                            79 to 48000 when OSC_HP is clock source for clock control unit.\n
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * This API configures main clock (MCLK) frequency to requested frequency value.\n\n
+ * The API configures main clock by setting \a IDIV and \a FDIV bit's of the \a CLKCR register for
+ * XMC11/XMC12/XMC13/XMC14 Device and with additional \a FDIV bit (FDIV[9:8]) of the \a CLKCR1 register settings
+ * for XMC14 device.
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_ScaleMCLKFrequency()\n\n\n
  */
 void XMC_SCU_CLOCK_SetMCLKFrequency(uint32_t freq_khz);
 
 /**
  *
+ * @param idiv  Divider value.\n
+ *              \b Range: 0 to 255.\n
+ * @param fdiv  Fractional Divider value.\n
+ *              \b Range: XMC11/XMC12/XMC13 Device: 0 to 255.
+ *                        XMC14 Device: 0 to 1023.\n
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * This API configures main clock (MCLK) frequency by updating user provided divider values.\n\n
+ * The API configures main clock by setting \a IDIV and \a FDIV bit's of the \a CLKCR register for
+ * XMC11/XMC12/XMC13/XMC14 Device and with additional \a FDIV bit (FDIV[9:8]) of the \a CLKCR1 register settings
+ * for XMC14 device.
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_SetMCLKFrequency()\n\n\n
  */
 void XMC_SCU_CLOCK_ScaleMCLKFrequency(uint32_t idiv, uint32_t fdiv);
 
@@ -857,7 +891,6 @@ XMC_SCU_STATUS_t XMC_SCU_SetTempHighLimit(uint32_t limit);
  * \par<b>Related APIs:</b><BR>
  * XMC_SCU_StopTempMeasurement(), XMC_SCU_StartTempMeasurement() \n\n\n
  */
-
 void XMC_SCU_SetRawTempLimits(const uint32_t lower_temp, const uint32_t upper_temp);
 
 // /* API to program temperature limits in centigrade into temperature sensor unit */ // need to implement in future
@@ -950,7 +983,15 @@ uint32_t XMC_SCU_CalcTemperature(void);
 
 /**
  *
- * @return
+ * @param None
+ *
+ * @return true DTS Measurement Done
+ * @return false DTS Measurement not Done
+ *
+ * \par<b>Description</b><br>
+ * This functions checks the status of the DTS Measurement completion.\n\n
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_StartTempMeasurement() \n\n\n
  */
 __STATIC_INLINE bool XMC_SCU_IsTempMeasurementDone(void)
 {
@@ -1008,7 +1049,6 @@ __STATIC_INLINE void XMC_SCU_RESET_EnableResetRequest(uint32_t request)
  * XMC_SCU_CLOCK_SetFastPeripheralClockSource() \n\n\n
  */
 uint32_t XMC_SCU_CLOCK_GetFastPeripheralClockFrequency(void);
-
 
 /**
  *
@@ -1073,7 +1113,7 @@ void XMC_SCU_CLOCK_DisableDCO1ExtRefCalibration(void);
  * @param None
  *
  * @return true DCO1 is synchronized to the selected XTAL frequency
- * @return false Actual DCO1 frequency is out of targe
+ * @return false Actual DCO1 frequency is out of target
  * 
  * \par<b>Description</b><br>
  * This functions checks the status of the synchronisation
@@ -1143,7 +1183,32 @@ bool XMC_SCU_CLOCK_IsDCO1ClockFrequencyUsable(void);
  */
 void XMC_SCU_SetInterruptControl(uint8_t irq_number, XMC_SCU_IRQCTRL_t source);
 
+/**
+ * This function enables the Prefetch Unit (PFU).
+ * The purpose of the Prefetch unit is to reduce the Flash latency gap at higher system
+ * frequencies to increase the instruction per cycle performance.
+ *
+ * @note Only available for XMC1400 series
+ */
+__STATIC_INLINE void XMC_SCU_EnablePrefetchUnit(void)
+{
+  SCU_GENERAL->PFUCR &= ~SCU_GENERAL_PFUCR_PFUBYP_Msk;
+}
+
+/**
+ * This function disables the Prefetch Unit (PFU).
+ * The purpose of the Prefetch unit is to reduce the Flash latency gap at higher system
+ * frequencies to increase the instruction per cycle performance.
+ *
+ * @note Only available for XMC1400 series
+ */
+__STATIC_INLINE void XMC_SCU_DisablePrefetchUnit(void)
+{
+  SCU_GENERAL->PFUCR |= SCU_GENERAL_PFUCR_PFUBYP_Msk;
+}
+
 #endif
+
 #ifdef __cplusplus
 }
 #endif

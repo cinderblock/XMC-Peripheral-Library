@@ -24,11 +24,11 @@ Copyright (C) 2011-2015 Infineon Technologies AG. All rights reserved.
  * @brief    CMSIS Cortex-M4 Peripheral Access Layer Header File for
  *           XMC4800 from Infineon.
  *
- * @version  V1.1.2 (Reference Manual v1.0)
- * @date     11. September 2015
+ * @version  V1.1.3 (Reference Manual v1.0)
+ * @date     3. February 2016
  *
  * @note     Generated with SVDConv V2.87g 
- *           from CMSIS SVD File 'XMC4800_Processed_SVD.xml' Version 1.1.2 (Reference Manual v1.0),
+ *           from CMSIS SVD File 'XMC4800_Processed_SVD.xml' Version 1.1.3 (Reference Manual v1.0),
  *******************************************************************************************************/
 
 

@@ -1,12 +1,12 @@
 /**
  * @file xmc_device.h
- * @date 2015-10-27
+ * @date 2016-01-12
  *
  * @cond
   *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.4 - XMC Peripheral Driver Library
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -42,6 +42,9 @@
  * 2015-09-23:
  *     - Added XMC14 and XMC48/47
  *
+ * 2015-11-19:
+ *     - Added XMC43
+ *
  * @endcond 
  *
  */
@@ -58,6 +61,7 @@
 #define    XMC47      (47)
 #define    XMC45      (45)
 #define    XMC44      (44)
+#define    XMC43      (43)
 #define    XMC42      (42)
 #define    XMC41      (41)
 #define    XMC14      (14)
@@ -73,6 +77,7 @@
 #define    XMC4504    (4504)
 #define    XMC4400    (4400)
 #define    XMC4402    (4402)
+#define    XMC4300    (4300)
 #define    XMC4200    (4200)
 #define    XMC4100    (4100)
 #define    XMC4104    (4104)
@@ -379,6 +384,16 @@
 #define UC_PACKAGE   LQFP64
 #define UC_FLASH     (256UL)
 #define CCU4V1
+#define CCU8V1
+
+#elif defined(XMC4300_F100x256)	
+#define UC_FAMILY    XMC4
+#define UC_SERIES    XMC43
+#define UC_DEVICE    XMC4300
+#define UC_PACKAGE   LQFP100
+#define UC_FLASH     (256UL)
+#define MULTICAN_PLUS
+#define CCU4V2
 #define CCU8V1
 
 #elif defined(XMC4200_E64x256) 	
@@ -1303,11 +1318,19 @@
 #if UC_SERIES == XMC45
 #include "XMC4500.h"
 #define PERIPHERAL_RESET_SUPPORTED
+#define USB_OTG_SUPPORTED
 
 #elif UC_SERIES == XMC44
 #include "XMC4400.h"
 #define CLOCK_GATING_SUPPORTED
 #define PERIPHERAL_RESET_SUPPORTED
+#define USB_OTG_SUPPORTED
+
+#elif UC_SERIES == XMC43
+#include "XMC4300.h"
+#define CLOCK_GATING_SUPPORTED
+#define PERIPHERAL_RESET_SUPPORTED
+#define USB_OTG_SUPPORTED
 
 #elif UC_SERIES == XMC42
 #include "XMC4200.h"
@@ -1323,11 +1346,13 @@
 #include "XMC4700.h"
 #define CLOCK_GATING_SUPPORTED
 #define PERIPHERAL_RESET_SUPPORTED
+#define USB_OTG_SUPPORTED
 
 #elif UC_SERIES == XMC48
 #include "XMC4800.h"
 #define CLOCK_GATING_SUPPORTED
 #define PERIPHERAL_RESET_SUPPORTED
+#define USB_OTG_SUPPORTED
 
 #elif UC_SERIES == XMC11
 #include "XMC1100.h"

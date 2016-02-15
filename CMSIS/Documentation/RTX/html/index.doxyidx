@@ -4,9 +4,9 @@
  *  Copyright (C) 2013 ARM Ltd and ARM Germany GmbH. All rights reserved.
  *
  *  File: index.doxyidx
- *  Date: 14. September 2015
+ *  Date: 29. October 2015
  *
- *  Note: Generated with DoxyIndex V1.01  on Monday, 14.09.2015 13:48:07
+ *  Note: Generated with DoxyIndex V1.01  on Thursday, 29.10.2015 13:23:22
  *
  *******************************************************************************************************/
 
@@ -191,7 +191,7 @@ queue_sz, structos_mail_q_def__t.html#a8a83a3a8c0aa8057b13807d2a54077e0, osMailQ
 rtx.txt, rtx_8txt.html, 
 RTX_Conf_CM.c, _r_t_x___conf___c_m_8c.html, 
 RTX Global Functions, group___r_t_x___global___functions.html, 
-Revision History of CMSIS-RTOS RTX, rtx_revision_history.html, 
+Revision History, rtx_revision_history.html, index
 RTX Kernel Tick Timer Configuration, _timer_tick.html, Configure
 Semaphore Management, group___c_m_s_i_s___r_t_o_s___semaphore_mgmt.html, 
 Signal Management, group___c_m_s_i_s___r_t_o_s___signal_mgmt.html, 

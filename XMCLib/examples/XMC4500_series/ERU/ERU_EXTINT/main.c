@@ -16,8 +16,8 @@
 
 /**
  * @file
- * @date 04 Dec, 2014
- * @version 1.0.0
+ * @date 19 Nov, 2015
+ * @version 1.0.2
  *
  * @brief XMC4500 Relax kit ERU external interrupt
  *
@@ -25,7 +25,8 @@
  *
  * History <br>
  *
- * Version 1.0.0 Initial <br>
+ * Version 1.0.0 Initial
+ * Version 1.0.2 Use recommended .input_a instead of .input in button_event_generator_config
  *
  */
 
@@ -38,7 +39,7 @@
 
 XMC_ERU_ETL_CONFIG_t button_event_generator_config =
 {
-  .input = ERU1_ETL1_INPUTA_P1_15,
+  .input_a = ERU1_ETL1_INPUTA_P1_15,
   .source = XMC_ERU_ETL_SOURCE_A,
   .edge_detection = XMC_ERU_ETL_EDGE_DETECTION_FALLING,
   .status_flag_mode = XMC_ERU_ETL_STATUS_FLAG_MODE_HWCTRL,

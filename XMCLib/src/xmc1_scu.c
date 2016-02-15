@@ -1,12 +1,12 @@
 /**
  * @file xmc1_scu.c
- * @date 2015-10-27
+ * @date 2016-01-12
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.4 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the
@@ -51,6 +51,9 @@
  * 2015-09-23:
  *     - XMC1400 support added
  *
+ * 2015-11-30:
+ *     - Documentation improved <br>
+ *
  * @endcond
  *
  */
@@ -85,7 +88,7 @@
 /*********************************************************************************************************************
  * MACROS
  ********************************************************************************************************************/
-#define SCU_IRQ_NUM             (3U)
+#define SCU_IRQ_NUM             (3U)  /**< array index value for list of events that can generate SCU interrupt */
 #define SCU_GCU_PASSWD_PROT_ENABLE  (195UL) /**< Password for enabling protection */
 #define SCU_GCU_PASSWD_PROT_DISABLE (192UL) /**< Password for disabling protection */
 
@@ -95,40 +98,55 @@
                                                 (source == XMC_SCU_CLOCK_RTCCLKSRC_ACMP0_OUT) || \
                                                 (source == XMC_SCU_CLOCK_RTCCLKSRC_ACMP1_OUT) || \
                                                 (source == XMC_SCU_CLOCK_RTCCLKSRC_ACMP2_OUT) ) /**< Used to verify
-                                                                                                whether provided RTC */
-#define SCU_GENERAL_INTCR_INTSEL_Msk SCU_GENERAL_INTCR0_INTSEL0_Msk
-#define SCU_GENERAL_INTCR_INTSEL_Size SCU_GENERAL_INTCR0_INTSEL1_Pos
+                                                                                                whether provided RTC
+                                                                                                clock source is valid
+                                                                                                or not */
+#define SCU_GENERAL_INTCR_INTSEL_Msk SCU_GENERAL_INTCR0_INTSEL0_Msk /**< Mask value of Interrupt Source Select
+                                                                         for Node 0 */
+#define SCU_GENERAL_INTCR_INTSEL_Size SCU_GENERAL_INTCR0_INTSEL1_Pos /**< Bit position value of Interrupt Source Select
+                                                                         for Node 1 */
 
-#define ANA_TSE_T1   (0x10000F30U)
-#define ANA_TSE_T2   (0x10000F31U)
-#define DCO_ADJLO_T1 (0x10000F32U)
-#define DCO_ADJLO_T2 (0x10000F33U)
+#define ANA_TSE_T1   (0x10000F30U) /**< d is a constant data can be retrieved from Flash sector 0 to calculate OFFSET
+                                         value for DCO calibration */
+#define ANA_TSE_T2   (0x10000F31U) /**< e is a constant data can be retrieved from Flash sector 0 to calculate OFFSET
+                                         value for DCO calibration */
+#define DCO_ADJLO_T1 (0x10000F32U) /**< b is a constant data can be retrieved from Flash sector 0 to calculate OFFSET
+                                         value for DCO calibration */
+#define DCO_ADJLO_T2 (0x10000F33U) /**< a is a constant data can be retrieved from Flash sector 0 to calculate OFFSET
+                                         value for DCO calibration */
 
 #if UC_SERIES == XMC14
-#define XMC_SCU_INTERRUPT_EVENT_MAX (64U)
+#define XMC_SCU_INTERRUPT_EVENT_MAX (64U) /**< Maximum supported SCU events for XMC14 device. */
 #else
-#define XMC_SCU_INTERRUPT_EVENT_MAX (32U)
+#define XMC_SCU_INTERRUPT_EVENT_MAX (32U)  /**< Maximum supported SCU events for XMC11/12/13 device. */
 #endif
 
 #if UC_SERIES == XMC14
-#define DCO1_DIV2_FREQUENCY_KHZ_Q22_10 (48000U << 10)
+#define DCO1_DIV2_FREQUENCY_KHZ_Q22_10 (48000U << 10) /**< used to configures main clock (MCLK) frequency to requested
+                                                         frequency value during runtime for XMC14 device. */
 #else
-#define DCO1_DIV2_FREQUENCY_KHZ_Q24_8 (32000U << 8)
+#define DCO1_DIV2_FREQUENCY_KHZ_Q24_8 (32000U << 8) /**< used to configures main clock (MCLK) frequency to requested
+                                                         frequency value during runtime for XMC11/12/13  device. */
 #endif
 
 #define ROM_BmiInstallationReq \
-        (*((uint32_t (**)(uint32_t requestedBmiValue))0x00000108U))
+        (*((uint32_t (**)(uint32_t requestedBmiValue))0x00000108U)) /**< Pointer to Request BMI installation routine is
+                                                                         available inside ROM. */
 
 #define ROM_CalcTemperature \
-        (*((uint32_t (**)(void))0x0000010cU))
+        (*((uint32_t (**)(void))0x0000010cU)) /**<  Pointer to Calculate chip temperature routine is
+                                                    available inside ROM. */
 
 #define ROM_CalcTSEVAR \
-        (*((uint32_t (**)(uint32_t temperature))0x00000120U))
+        (*((uint32_t (**)(uint32_t temperature))0x00000120U)) /**<  Pointer to Calculate target level for temperature
+                                                                    comparison routine is available inside ROM. */
         
 /*********************************************************************************************************************
  * LOCAL DATA
  ********************************************************************************************************************/
-static XMC_SCU_INTERRUPT_EVENT_HANDLER_t event_handler_list[XMC_SCU_INTERRUPT_EVENT_MAX];
+static XMC_SCU_INTERRUPT_EVENT_HANDLER_t event_handler_list[XMC_SCU_INTERRUPT_EVENT_MAX]; /**< For registering callback
+                                                                                        functions on SCU event
+                                                                                        occurrence. */
 
 static XMC_SCU_INTERRUPT_EVENT_t event_masks[SCU_IRQ_NUM] =
 {
@@ -186,12 +204,18 @@ static XMC_SCU_INTERRUPT_EVENT_t event_masks[SCU_IRQ_NUM] =
 #endif
 #endif
    0)
-};
+}; /**<   Defines list of events that can generate SCU interrupt and also indicates SCU events mapping to corresponding
+         service request number. These event mask values can be used to verify which event is triggered that corresponds
+         to service request number during runtime. All the event items are tabulated as per service request sources list
+         table of SCU. */
 
 /*********************************************************************************************************************
  * LOCAL ROUTINES
  ********************************************************************************************************************/
+/* Utility routine to perform frequency up scaling */
 static void XMC_SCU_CLOCK_lFrequencyUpScaling(uint32_t curr_idiv, uint32_t idiv);
+
+/* Utility routine to perform frequency down scaling */
 static void XMC_SCU_CLOCK_lFrequencyDownScaling(uint32_t curr_idiv, uint32_t idiv);
 
 /* Calculates the value which must be installed in ANATSEIx register to get indication in
@@ -216,6 +240,7 @@ static uint32_t XMC_SCU_CalcTSEVAR(uint32_t temperature)
 }
 
 #if UC_SERIES == XMC14
+/* This is a local function used to generate the delay until register get updated with new configured value.  */
 static void delay(uint32_t cycles)
 {
   while(cycles > 0U)
@@ -230,6 +255,7 @@ static void delay(uint32_t cycles)
  * API IMPLEMENTATION
  ********************************************************************************************************************/
  #ifdef XMC_ASSERT_ENABLE
+/* API to verify SCU event weather it is valid event or not */
 __STATIC_INLINE bool XMC_SCU_INTERRUPT_IsValidEvent(XMC_SCU_INTERRUPT_EVENT_t event)
 {
   return ((event == XMC_SCU_INTERRUPT_EVENT_WDT_WARN) ||
@@ -282,6 +308,7 @@ __STATIC_INLINE bool XMC_SCU_INTERRUPT_IsValidEvent(XMC_SCU_INTERRUPT_EVENT_t ev
           (event == XMC_SCU_INTERRUPT_EVENT_TSE_LOW));
 }
  #endif
+
 /* API to enable the SCU event */
 void XMC_SCU_INTERRUPT_EnableEvent(const XMC_SCU_INTERRUPT_EVENT_t event)
 {
@@ -290,6 +317,7 @@ void XMC_SCU_INTERRUPT_EnableEvent(const XMC_SCU_INTERRUPT_EVENT_t event)
   SCU_INTERRUPT->SRMSK1 |= (uint32_t)(event >> 32U);
 #endif
 }
+
 /* API to disable the SCU event */
 void XMC_SCU_INTERRUPT_DisableEvent(const XMC_SCU_INTERRUPT_EVENT_t event)
 {
@@ -298,6 +326,7 @@ void XMC_SCU_INTERRUPT_DisableEvent(const XMC_SCU_INTERRUPT_EVENT_t event)
   SCU_INTERRUPT->SRMSK1 &= (uint32_t)~(event >> 32U);
 #endif
 }
+
 /* API to trigger the SCU event */
 void XMC_SCU_INTERRUPT_TriggerEvent(const XMC_SCU_INTERRUPT_EVENT_t event)
 {
@@ -306,6 +335,7 @@ void XMC_SCU_INTERRUPT_TriggerEvent(const XMC_SCU_INTERRUPT_EVENT_t event)
   SCU_INTERRUPT->SRSET1 |= (uint32_t)(event >> 32U);
 #endif
 }
+
 /* API to get the SCU event status */
 XMC_SCU_INTERRUPT_EVENT_t XMC_SCU_INTERUPT_GetEventStatus(void)
 {
@@ -317,6 +347,7 @@ XMC_SCU_INTERRUPT_EVENT_t XMC_SCU_INTERUPT_GetEventStatus(void)
 #endif
   return (tmp);
 }
+
 /* API to clear the SCU event status */
 void XMC_SCU_INTERRUPT_ClearEventStatus(const XMC_SCU_INTERRUPT_EVENT_t event)
 {
@@ -326,7 +357,7 @@ void XMC_SCU_INTERRUPT_ClearEventStatus(const XMC_SCU_INTERRUPT_EVENT_t event)
 #endif
 }
 
- /* API to lock protected bitfields from being modified */
+/* API to lock protected bitfields from being modified */
 void XMC_SCU_LockProtectedBits(void)
 {
   SCU_GENERAL->PASSWD = SCU_GCU_PASSWD_PROT_ENABLE;
@@ -458,6 +489,7 @@ uint32_t XMC_SCU_GetTemperature(void)
   return (temperature);
 }
 
+/* Calculates the die temperature value using ROM function */
 uint32_t XMC_SCU_CalcTemperature(void)
 {
   return (ROM_CalcTemperature());
@@ -567,13 +599,13 @@ void XMC_SCU_CLOCK_UngatePeripheralClock(const XMC_SCU_PERIPHERAL_CLOCK_t periph
   XMC_SCU_LockProtectedBits();
 }
 
+/* Checks the status of peripheral clock gating */
 bool XMC_SCU_CLOCK_IsPeripheralClockGated(const XMC_SCU_PERIPHERAL_CLOCK_t peripheral)
 {
   return (bool)((SCU_CLK->CGATSTAT0 & peripheral) != 0);
 }
 
-
-
+/* This API configures main clock (MCLK) frequency to requested frequency value. */
 void XMC_SCU_CLOCK_SetMCLKFrequency(uint32_t freq_khz)
 {
   uint32_t ratio;
@@ -669,7 +701,7 @@ void XMC_SCU_CLOCK_ScaleMCLKFrequency(uint32_t idiv, uint32_t fdiv)
 
 }
 
-/* Utility routine to perform frequency upscaling */
+/* Utility routine to perform frequency up scaling */
 static void XMC_SCU_CLOCK_lFrequencyUpScaling(uint32_t curr_idiv, uint32_t target_idiv)
 {
   while (curr_idiv > (target_idiv * 4UL))
@@ -686,7 +718,7 @@ static void XMC_SCU_CLOCK_lFrequencyUpScaling(uint32_t curr_idiv, uint32_t targe
   }
 }
 
-/* Utility routine to perform frequency downscaling */
+/* Utility routine to perform frequency down scaling */
 static void XMC_SCU_CLOCK_lFrequencyDownScaling(uint32_t curr_idiv, uint32_t target_idiv)
 {
 
@@ -716,11 +748,13 @@ uint32_t XMC_SCU_CLOCK_GetPeripheralClockFrequency(void)
   return (SystemCoreClock);
 }
 
+/* Provides the clock frequency of peripherals on the peripheral bus that are using a shared functional clock */
 uint32_t XMC_SCU_CLOCK_GetFastPeripheralClockFrequency(void)
 {
   return (SystemCoreClock << ((SCU_CLK->CLKCR & SCU_CLK_CLKCR_PCLKSEL_Msk) >> SCU_CLK_CLKCR_PCLKSEL_Pos));
 }
 
+/* DCO1 clock frequency can be calibrated during runtime to achieve a better accuracy */
 void XMC_SCU_CLOCK_CalibrateOscillatorOnTemperature(int32_t temperature)
 {
   int32_t a;
@@ -734,7 +768,7 @@ void XMC_SCU_CLOCK_CalibrateOscillatorOnTemperature(int32_t temperature)
   d = *((uint8_t*)ANA_TSE_T1);
   e = *((uint8_t*)ANA_TSE_T2);
 
-  offset = b + (uint32_t)(((a - b) * (temperature - d)) / (e - d));
+  offset = b + (((a - b) * (temperature - d)) / (e - d));
   offset &= SCU_ANALOG_ANAOFFSET_ADJL_OFFSET_Msk;
 
   XMC_SCU_UnlockProtectedBits();
@@ -743,7 +777,7 @@ void XMC_SCU_CLOCK_CalibrateOscillatorOnTemperature(int32_t temperature)
 }
 
 /*
- *
+ * API to assign the event handler function to be executed on occurrence of the selected event
  */
 XMC_SCU_STATUS_t XMC_SCU_INTERRUPT_SetEventHandler(XMC_SCU_INTERRUPT_EVENT_t event, XMC_SCU_INTERRUPT_EVENT_HANDLER_t handler)
 {
@@ -774,7 +808,7 @@ XMC_SCU_STATUS_t XMC_SCU_INTERRUPT_SetEventHandler(XMC_SCU_INTERRUPT_EVENT_t eve
 }
 
 /*
- *
+ * A common function to execute callback functions for multiple events
  */
 void XMC_SCU_IRQHandler(uint32_t sr_num)
 {
@@ -806,6 +840,7 @@ void XMC_SCU_IRQHandler(uint32_t sr_num)
 }
 
 #if (UC_SERIES == XMC14)
+/* DCO1 clock frequency can be calibrated during runtime to achieve a better accuracy */
 void XMC_SCU_CLOCK_EnableDCO1ExtRefCalibration(XMC_SCU_CLOCK_SYNC_CLKSRC_t sync_clk, uint32_t prescaler, uint32_t syn_preload)
 {
 
@@ -819,6 +854,7 @@ void XMC_SCU_CLOCK_EnableDCO1ExtRefCalibration(XMC_SCU_CLOCK_SYNC_CLKSRC_t sync_
 
 }
 
+/* This function stops the automatic DCO1 calibration based on the selected clock source */
 void XMC_SCU_CLOCK_DisableDCO1ExtRefCalibration(void)
 {
   XMC_SCU_UnlockProtectedBits();
@@ -827,13 +863,14 @@ void XMC_SCU_CLOCK_DisableDCO1ExtRefCalibration(void)
   XMC_SCU_LockProtectedBits();
 }
 
+/* This functions checks the status of the synchronisation */
 bool XMC_SCU_CLOCK_IsDCO1ExtRefCalibrationReady(void)
 {
   return (bool)((SCU_ANALOG->ANASYNC2 & SCU_ANALOG_ANASYNC2_SYNC_READY_Msk) != 0U);
 }
 
 /**
- *
+ * This function enables the watchdog on the DCO1 frequency
  */
 void XMC_SCU_CLOCK_EnableDCO1OscillatorWatchdog(void)
 {
@@ -841,7 +878,7 @@ void XMC_SCU_CLOCK_EnableDCO1OscillatorWatchdog(void)
 }
 
 /**
- *
+ * This function disables the watchdog on the DCO1 frequency
  */
 void XMC_SCU_CLOCK_DisableDCO1OscillatorWatchdog(void)
 {
@@ -849,7 +886,7 @@ void XMC_SCU_CLOCK_DisableDCO1OscillatorWatchdog(void)
 }
 
 /**
- *
+ * This function clears the status of the watchdog on the DCO1 frequency
  */
 void XMC_SCU_CLOCK_ClearDCO1OscillatorWatchdogStatus(void)
 {
@@ -857,13 +894,14 @@ void XMC_SCU_CLOCK_ClearDCO1OscillatorWatchdogStatus(void)
 }
 
 /**
- *
+ * This function checks if the DCO1 frequency is in the limits of the watchdog.
  */
 bool XMC_SCU_CLOCK_IsDCO1ClockFrequencyUsable(void)
 {
   return ((SCU_CLK->OSCCSR & (SCU_CLK_OSCCSR_OSC2L_Msk | SCU_CLK_OSCCSR_OSC2H_Msk)) == 0U);
 }
 
+/* This function selects service request source for a NVIC interrupt node */
 void XMC_SCU_SetInterruptControl(uint8_t irq_number, XMC_SCU_IRQCTRL_t source)
 {
   XMC_ASSERT("XMC_SCU_SetInterruptControl: Invalid irq_number", irq_number < 32);

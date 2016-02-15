@@ -1,6 +1,48 @@
 /**
  * @page Changelog
  * @tableofcontents
+ * @section v214 Version 2.1.4
+ * @subsection GENERAL GENERAL
+ * - Added:
+ *    - Added EtherCAT driver
+ *    - Added support for XMC4300 series
+ *
+ * @subsection ETH_MAC ETH_MAC
+ * - Fixed:
+ *    - XMC_ETH_MAC_GetRxFrameSize return value in case of errors
+ *
+ * @subsection ETH_PHY ETH_PHY
+ * - Added:
+ *    - XMC_ETH_PHY_ExitPowerDown(), XMC_ETH_PHY_Reset()
+ *
+ * @subsection VADC VADC
+ * - Fixed:
+ *    - XMC_VADC_GLOBAL_TriggerEvent API fixed. OR operation removed. 
+ *    - XMC_VADC_GLOBAL_ClearEvent API fixed. Multiple events triggering on clearing the event is fixed.   
+ *    - Wrong MACRO name defined in xmc_vadc_map.h file corrected for XMC4200/4100 devices.
+ *      XMC_VADC_G3_SAMPLE renamed to XMC_VADC_G1_SAMPLE
+ *
+ * @subsection FLASH FLASH
+ * - Fixed:
+ *    - Flash access time
+ *    - Wait until operation is finished for the next functions:
+ *       1. XMC_FLASH_InstallProtection
+ *       2. XMC_FLASH_ConfirmProtection
+ *       3. XMC_FLASH_ProgramPage
+ *       4. XMC_FLASH_EraseSector
+ *       5. XMC_FLASH_ErasePhysicalSector
+ *       6. XMC_FLASH_EraseUCB
+ *     - Fix XMC_FLASH_VerifyReadProtection and XMC_FLASH_VerifyWriteProtection
+ *
+ * @subsection SDMMC SDMMC
+ * - Added:
+ *    - XMC_SDMMC_EnableDelayCmdDatLines(), XMC_SDMMC_DisableDelayCmdDatLines(), XMC_SDMMC_SetDelay(),
+ *    - XMC_SDMMC_EnableHighSpeed(), XMC_SDMMC_DisableHighSpeed()
+ *
+ * @subsection SPI SPI
+ * - Added:
+ *    - XMC_SPI_CH_EnableSlaveSelectCodedMode() and XMC_SPI_CH_DisableSlaveSelectCodedMode()
+ *
  * @section v212 Version 2.1.2
  * @subsection GENERAL GENERAL
  * - Added:

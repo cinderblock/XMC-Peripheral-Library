@@ -1,12 +1,12 @@
 /**
  * @file xmc_math.h
- * @date 2015-10-27
+ * @date 2016-01-12
  *
  * @cond
  **********************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.4 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without           
@@ -1050,7 +1050,7 @@ void XMC_MATH_DIV_SignedModNB(int32_t dividend, int32_t divisor);
  * @return Square root of x <BR>
  *
  * \par<b>Description:</b><br>
- * Computes square root of Q31 number
+ * Computes square root of Q15 number
  *
  * \par<b>Note:</b><br>
  * x > 0
@@ -1064,7 +1064,7 @@ int16_t XMC_MATH_CORDIC_Q15_Sqrt(int16_t x);
  * @return Square root of x <BR>
  *
  * \par<b>Description:</b><br>
- * Computes square root of Q15 number
+ * Computes square root of Q31 number
  *
  * \par<b>Note:</b><br>
  * x > 0

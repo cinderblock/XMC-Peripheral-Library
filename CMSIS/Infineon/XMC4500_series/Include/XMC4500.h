@@ -24,11 +24,11 @@ Copyright (C) 2011-2015 Infineon Technologies AG. All rights reserved.
  * @brief    CMSIS Cortex-M4 Peripheral Access Layer Header File for
  *           XMC4500 from Infineon.
  *
- * @version  V1.5.1 (Reference Manual v1.5)
- * @date     14. January 2015
+ * @version  V1.5.3 (Reference Manual v1.5)
+ * @date     1. February 2016
  *
- * @note     Generated with SVDConv V2.86c 
- *           from CMSIS SVD File 'XMC4500_Processed_SVD.xml' Version 1.5.1 (Reference Manual v1.5),
+ * @note     Generated with SVDConv V2.87g 
+ *           from CMSIS SVD File 'XMC4500_Processed_SVD.xml' Version 1.5.3 (Reference Manual v1.5),
  *******************************************************************************************************/
 
 
@@ -1166,14 +1166,18 @@ typedef struct {                                    /*!< (@ 0x4801C000) SDMMC St
   __IO uint16_t  EN_INT_SIGNAL_NORM;                /*!< (@ 0x4801C038) Normal Interrupt Signal Enable Register                */
   __IO uint16_t  EN_INT_SIGNAL_ERR;                 /*!< (@ 0x4801C03A) Error Interrupt Signal Enable Register                 */
   __I  uint16_t  ACMD_ERR_STATUS;                   /*!< (@ 0x4801C03C) Auto CMD Error Status Register                         */
-  __I  uint16_t  RESERVED1[9];
+  __I  uint16_t  RESERVED1;
+  __I  uint32_t  CAPABILITIES;                      /*!< (@ 0x4801C040) Capabilities Register                                  */
+  __I  uint32_t  CAPABILITIES_HI;                   /*!< (@ 0x4801C044) Capabilities Register High                             */
+  __I  uint32_t  MAX_CURRENT_CAP;                   /*!< (@ 0x4801C048) Maximum Current Capabilities Register                  */
+  __I  uint32_t  RESERVED2;
   __O  uint16_t  FORCE_EVENT_ACMD_ERR_STATUS;       /*!< (@ 0x4801C050) Force Event Register for Auto CMD Error Status         */
   __O  uint16_t  FORCE_EVENT_ERR_STATUS;            /*!< (@ 0x4801C052) Force Event Register for Error Interrupt Status        */
-  __I  uint32_t  RESERVED2[8];
+  __I  uint32_t  RESERVED3[8];
   __O  uint32_t  DEBUG_SEL;                         /*!< (@ 0x4801C074) Debug Selection Register                               */
-  __I  uint32_t  RESERVED3[30];
+  __I  uint32_t  RESERVED4[30];
   __IO uint32_t  SPI;                               /*!< (@ 0x4801C0F0) SPI Interrupt Support Register                         */
-  __I  uint32_t  RESERVED4[2];
+  __I  uint32_t  RESERVED5[2];
   __I  uint16_t  SLOT_INT_STATUS;                   /*!< (@ 0x4801C0FC) Slot Interrupt Status Register                         */
 } SDMMC_GLOBAL_TypeDef;
 
@@ -6710,6 +6714,64 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define SDMMC_ACMD_ERR_STATUS_ACMD_IND_ERR_Msk (0x10UL)                 /*!< SDMMC ACMD_ERR_STATUS: ACMD_IND_ERR (Bitfield-Mask: 0x01)   */
 #define SDMMC_ACMD_ERR_STATUS_CMD_NOT_ISSUED_BY_ACMD12_ERR_Pos (7UL)    /*!< SDMMC ACMD_ERR_STATUS: CMD_NOT_ISSUED_BY_ACMD12_ERR (Bit 7) */
 #define SDMMC_ACMD_ERR_STATUS_CMD_NOT_ISSUED_BY_ACMD12_ERR_Msk (0x80UL) /*!< SDMMC ACMD_ERR_STATUS: CMD_NOT_ISSUED_BY_ACMD12_ERR (Bitfield-Mask: 0x01) */
+
+/* -----------------------------  SDMMC_CAPABILITIES  ----------------------------- */
+#define SDMMC_CAPABILITIES_TIMEOUT_CLOCK_FREQ_Pos (0UL)                 /*!< SDMMC CAPABILITIES: TIMEOUT_CLOCK_FREQ (Bit 0)              */
+#define SDMMC_CAPABILITIES_TIMEOUT_CLOCK_FREQ_Msk (0x3fUL)              /*!< SDMMC CAPABILITIES: TIMEOUT_CLOCK_FREQ (Bitfield-Mask: 0x3f) */
+#define SDMMC_CAPABILITIES_TIMEOUT_CLOCK_UNIT_Pos (7UL)                 /*!< SDMMC CAPABILITIES: TIMEOUT_CLOCK_UNIT (Bit 7)              */
+#define SDMMC_CAPABILITIES_TIMEOUT_CLOCK_UNIT_Msk (0x80UL)              /*!< SDMMC CAPABILITIES: TIMEOUT_CLOCK_UNIT (Bitfield-Mask: 0x01) */
+#define SDMMC_CAPABILITIES_BASE_SD_CLOCK_FREQ_Pos (8UL)                 /*!< SDMMC CAPABILITIES: BASE_SD_CLOCK_FREQ (Bit 8)              */
+#define SDMMC_CAPABILITIES_BASE_SD_CLOCK_FREQ_Msk (0xff00UL)            /*!< SDMMC CAPABILITIES: BASE_SD_CLOCK_FREQ (Bitfield-Mask: 0xff) */
+#define SDMMC_CAPABILITIES_MAX_BLOCK_LENGTH_Pos (16UL)                  /*!< SDMMC CAPABILITIES: MAX_BLOCK_LENGTH (Bit 16)               */
+#define SDMMC_CAPABILITIES_MAX_BLOCK_LENGTH_Msk (0x30000UL)             /*!< SDMMC CAPABILITIES: MAX_BLOCK_LENGTH (Bitfield-Mask: 0x03)  */
+#define SDMMC_CAPABILITIES_EXT_MEDIA_BUS_SUPPORT_Pos (18UL)             /*!< SDMMC CAPABILITIES: EXT_MEDIA_BUS_SUPPORT (Bit 18)          */
+#define SDMMC_CAPABILITIES_EXT_MEDIA_BUS_SUPPORT_Msk (0x40000UL)        /*!< SDMMC CAPABILITIES: EXT_MEDIA_BUS_SUPPORT (Bitfield-Mask: 0x01) */
+#define SDMMC_CAPABILITIES_ADMA2_SUPPORT_Pos  (19UL)                    /*!< SDMMC CAPABILITIES: ADMA2_SUPPORT (Bit 19)                  */
+#define SDMMC_CAPABILITIES_ADMA2_SUPPORT_Msk  (0x80000UL)               /*!< SDMMC CAPABILITIES: ADMA2_SUPPORT (Bitfield-Mask: 0x01)     */
+#define SDMMC_CAPABILITIES_HIGH_SPEED_SUPPORT_Pos (21UL)                /*!< SDMMC CAPABILITIES: HIGH_SPEED_SUPPORT (Bit 21)             */
+#define SDMMC_CAPABILITIES_HIGH_SPEED_SUPPORT_Msk (0x200000UL)          /*!< SDMMC CAPABILITIES: HIGH_SPEED_SUPPORT (Bitfield-Mask: 0x01) */
+#define SDMMC_CAPABILITIES_SDMA_SUPPORT_Pos   (22UL)                    /*!< SDMMC CAPABILITIES: SDMA_SUPPORT (Bit 22)                   */
+#define SDMMC_CAPABILITIES_SDMA_SUPPORT_Msk   (0x400000UL)              /*!< SDMMC CAPABILITIES: SDMA_SUPPORT (Bitfield-Mask: 0x01)      */
+#define SDMMC_CAPABILITIES_SUSPEND_RESUME_SUPPORT_Pos (23UL)            /*!< SDMMC CAPABILITIES: SUSPEND_RESUME_SUPPORT (Bit 23)         */
+#define SDMMC_CAPABILITIES_SUSPEND_RESUME_SUPPORT_Msk (0x800000UL)      /*!< SDMMC CAPABILITIES: SUSPEND_RESUME_SUPPORT (Bitfield-Mask: 0x01) */
+#define SDMMC_CAPABILITIES_VOLTAGE_SUPPORT_3_3V_Pos (24UL)              /*!< SDMMC CAPABILITIES: VOLTAGE_SUPPORT_3_3V (Bit 24)           */
+#define SDMMC_CAPABILITIES_VOLTAGE_SUPPORT_3_3V_Msk (0x1000000UL)       /*!< SDMMC CAPABILITIES: VOLTAGE_SUPPORT_3_3V (Bitfield-Mask: 0x01) */
+#define SDMMC_CAPABILITIES_VOLTAGE_SUPPORT_3V_Pos (25UL)                /*!< SDMMC CAPABILITIES: VOLTAGE_SUPPORT_3V (Bit 25)             */
+#define SDMMC_CAPABILITIES_VOLTAGE_SUPPORT_3V_Msk (0x2000000UL)         /*!< SDMMC CAPABILITIES: VOLTAGE_SUPPORT_3V (Bitfield-Mask: 0x01) */
+#define SDMMC_CAPABILITIES_VOLTAGE_SUPPORT_1_8V_Pos (26UL)              /*!< SDMMC CAPABILITIES: VOLTAGE_SUPPORT_1_8V (Bit 26)           */
+#define SDMMC_CAPABILITIES_VOLTAGE_SUPPORT_1_8V_Msk (0x4000000UL)       /*!< SDMMC CAPABILITIES: VOLTAGE_SUPPORT_1_8V (Bitfield-Mask: 0x01) */
+#define SDMMC_CAPABILITIES_SYSBUS_64_SUPPORT_Pos (28UL)                 /*!< SDMMC CAPABILITIES: SYSBUS_64_SUPPORT (Bit 28)              */
+#define SDMMC_CAPABILITIES_SYSBUS_64_SUPPORT_Msk (0x10000000UL)         /*!< SDMMC CAPABILITIES: SYSBUS_64_SUPPORT (Bitfield-Mask: 0x01) */
+#define SDMMC_CAPABILITIES_ASYNC_INT_SUPPORT_Pos (29UL)                 /*!< SDMMC CAPABILITIES: ASYNC_INT_SUPPORT (Bit 29)              */
+#define SDMMC_CAPABILITIES_ASYNC_INT_SUPPORT_Msk (0x20000000UL)         /*!< SDMMC CAPABILITIES: ASYNC_INT_SUPPORT (Bitfield-Mask: 0x01) */
+#define SDMMC_CAPABILITIES_SLOT_TYPE_Pos      (30UL)                    /*!< SDMMC CAPABILITIES: SLOT_TYPE (Bit 30)                      */
+#define SDMMC_CAPABILITIES_SLOT_TYPE_Msk      (0xc0000000UL)            /*!< SDMMC CAPABILITIES: SLOT_TYPE (Bitfield-Mask: 0x03)         */
+
+/* ----------------------------  SDMMC_CAPABILITIES_HI  --------------------------- */
+#define SDMMC_CAPABILITIES_HI_SDR50_SUPPORT_Pos (0UL)                   /*!< SDMMC CAPABILITIES_HI: SDR50_SUPPORT (Bit 0)                */
+#define SDMMC_CAPABILITIES_HI_SDR50_SUPPORT_Msk (0x1UL)                 /*!< SDMMC CAPABILITIES_HI: SDR50_SUPPORT (Bitfield-Mask: 0x01)  */
+#define SDMMC_CAPABILITIES_HI_SDR104_SUPPORT_Pos (1UL)                  /*!< SDMMC CAPABILITIES_HI: SDR104_SUPPORT (Bit 1)               */
+#define SDMMC_CAPABILITIES_HI_SDR104_SUPPORT_Msk (0x2UL)                /*!< SDMMC CAPABILITIES_HI: SDR104_SUPPORT (Bitfield-Mask: 0x01) */
+#define SDMMC_CAPABILITIES_HI_DDR50_SUPPORT_Pos (2UL)                   /*!< SDMMC CAPABILITIES_HI: DDR50_SUPPORT (Bit 2)                */
+#define SDMMC_CAPABILITIES_HI_DDR50_SUPPORT_Msk (0x4UL)                 /*!< SDMMC CAPABILITIES_HI: DDR50_SUPPORT (Bitfield-Mask: 0x01)  */
+#define SDMMC_CAPABILITIES_HI_DRV_A_SUPPORT_Pos (4UL)                   /*!< SDMMC CAPABILITIES_HI: DRV_A_SUPPORT (Bit 4)                */
+#define SDMMC_CAPABILITIES_HI_DRV_A_SUPPORT_Msk (0x10UL)                /*!< SDMMC CAPABILITIES_HI: DRV_A_SUPPORT (Bitfield-Mask: 0x01)  */
+#define SDMMC_CAPABILITIES_HI_DRV_C_SUPPORT_Pos (5UL)                   /*!< SDMMC CAPABILITIES_HI: DRV_C_SUPPORT (Bit 5)                */
+#define SDMMC_CAPABILITIES_HI_DRV_C_SUPPORT_Msk (0x20UL)                /*!< SDMMC CAPABILITIES_HI: DRV_C_SUPPORT (Bitfield-Mask: 0x01)  */
+#define SDMMC_CAPABILITIES_HI_DRV_D_SUPPORT_Pos (6UL)                   /*!< SDMMC CAPABILITIES_HI: DRV_D_SUPPORT (Bit 6)                */
+#define SDMMC_CAPABILITIES_HI_DRV_D_SUPPORT_Msk (0x40UL)                /*!< SDMMC CAPABILITIES_HI: DRV_D_SUPPORT (Bitfield-Mask: 0x01)  */
+#define SDMMC_CAPABILITIES_HI_TIM_CNT_RETUNE_Pos (8UL)                  /*!< SDMMC CAPABILITIES_HI: TIM_CNT_RETUNE (Bit 8)               */
+#define SDMMC_CAPABILITIES_HI_TIM_CNT_RETUNE_Msk (0xf00UL)              /*!< SDMMC CAPABILITIES_HI: TIM_CNT_RETUNE (Bitfield-Mask: 0x0f) */
+#define SDMMC_CAPABILITIES_HI_USE_TUNING_SDR50_Pos (13UL)               /*!< SDMMC CAPABILITIES_HI: USE_TUNING_SDR50 (Bit 13)            */
+#define SDMMC_CAPABILITIES_HI_USE_TUNING_SDR50_Msk (0x2000UL)           /*!< SDMMC CAPABILITIES_HI: USE_TUNING_SDR50 (Bitfield-Mask: 0x01) */
+#define SDMMC_CAPABILITIES_HI_RE_TUNING_MODES_Pos (14UL)                /*!< SDMMC CAPABILITIES_HI: RE_TUNING_MODES (Bit 14)             */
+#define SDMMC_CAPABILITIES_HI_RE_TUNING_MODES_Msk (0xc000UL)            /*!< SDMMC CAPABILITIES_HI: RE_TUNING_MODES (Bitfield-Mask: 0x03) */
+#define SDMMC_CAPABILITIES_HI_CLK_MULT_Pos    (16UL)                    /*!< SDMMC CAPABILITIES_HI: CLK_MULT (Bit 16)                    */
+#define SDMMC_CAPABILITIES_HI_CLK_MULT_Msk    (0xff0000UL)              /*!< SDMMC CAPABILITIES_HI: CLK_MULT (Bitfield-Mask: 0xff)       */
+
+/* ----------------------------  SDMMC_MAX_CURRENT_CAP  --------------------------- */
+#define SDMMC_MAX_CURRENT_CAP_MAX_CURRENT_FOR_3_3V_Pos (0UL)            /*!< SDMMC MAX_CURRENT_CAP: MAX_CURRENT_FOR_3_3V (Bit 0)         */
+#define SDMMC_MAX_CURRENT_CAP_MAX_CURRENT_FOR_3_3V_Msk (0xffUL)         /*!< SDMMC MAX_CURRENT_CAP: MAX_CURRENT_FOR_3_3V (Bitfield-Mask: 0xff) */
 
 /* ----------------------  SDMMC_FORCE_EVENT_ACMD_ERR_STATUS  --------------------- */
 #define SDMMC_FORCE_EVENT_ACMD_ERR_STATUS_FE_ACMD_NOT_EXEC_Pos (0UL)    /*!< SDMMC FORCE_EVENT_ACMD_ERR_STATUS: FE_ACMD_NOT_EXEC (Bit 0) */
@@ -16431,6 +16493,7 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define PORT6                           ((PORT6_Type              *) PORT6_BASE)
 #define PORT14                          ((PORT14_Type             *) PORT14_BASE)
 #define PORT15                          ((PORT15_Type             *) PORT15_BASE)
+
 
 /** @} */ /* End of group Device_Peripheral_Registers */
 /** @} */ /* End of group XMC4500 */

@@ -1,12 +1,12 @@
 /**
  * @file xmc_i2s.c
- * @date 2015-10-27
+ * @date 2016-01-12
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.4 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the
@@ -48,6 +48,9 @@
  *
  * 2015-09-28:
  *     - Fixed bugs in the XMC_I2S_CH_Init() and in the ASSERTs <br>
+ *
+ * 2015-11-04: 
+ *     - Modified the check of XMC_USIC_CH_GetTransmitBufferStatus() in the XMC_I2S_CH_Transmit() API <br>
  *
  * @endcond
  *
@@ -192,7 +195,7 @@ void XMC_I2S_CH_Transmit(XMC_USIC_CH_t *const channel, const uint16_t data, cons
   /* Check FIFO size */
   if ((channel->TBCTR & USIC_CH_TBCTR_SIZE_Msk) == 0U)
   {
-    while((uint32_t)XMC_USIC_CH_GetTransmitBufferStatus(channel) & (uint32_t)XMC_USIC_CH_TBUF_STATUS_BUSY)
+    while((uint32_t)XMC_USIC_CH_GetTransmitBufferStatus(channel) == (uint32_t)XMC_USIC_CH_TBUF_STATUS_BUSY)
     {
     }
 

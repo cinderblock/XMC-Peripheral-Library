@@ -1,13 +1,13 @@
 
 /**
  * @file xmc_eth_mac.c
- * @date 2015-10-27
+ * @date 2016-01-12
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.4 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -37,12 +37,15 @@
  * Change History
  * --------------
  *
+ * 2015-06-20:
+ *     - Initial
+ *
  * 2015-09-01:
  *     - Add clock gating control in enable/disable APIs
  *     - Add transmit polling if run out of buffers
  *
- * 2015-06-20:
- *     - Initial
+ * 2015-11-30:
+ *     - Fix XMC_ETH_MAC_GetRxFrameSize return value in case of errors
  *
  * @endcond
  */
@@ -445,16 +448,18 @@ uint32_t XMC_ETH_MAC_GetRxFrameSize(XMC_ETH_MAC_t *const eth_mac)
     /* Owned by DMA */
     len = 0U;
   }
-
-  if (((status & ETH_MAC_DMA_RDES0_ES) != 0U) ||
-      ((status & ETH_MAC_DMA_RDES0_FS) == 0U) ||
-      ((status & ETH_MAC_DMA_RDES0_LS) == 0U)) {
+  else if (((status & ETH_MAC_DMA_RDES0_ES) != 0U) ||
+           ((status & ETH_MAC_DMA_RDES0_FS) == 0U) ||
+           ((status & ETH_MAC_DMA_RDES0_LS) == 0U)) 
+  {
     /* Error, this block is invalid */
     len = 0xFFFFFFFFU;
   }
-
-  /* Subtract CRC */
-  len = ((status & ETH_MAC_DMA_RDES0_FL) >> 16U) - 4U;
+  else 
+  {
+    /* Subtract CRC */
+    len = ((status & ETH_MAC_DMA_RDES0_FL) >> 16U) - 4U;
+  }
 
   return len;
 }

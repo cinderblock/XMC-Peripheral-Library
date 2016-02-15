@@ -1,28 +1,39 @@
-/******************************************************************************
- * @file     startup_XMC4500.s
- * @brief    CMSIS Cortex-M4 Core Device Startup File for
- *           Infineon XMC4500 Device Series
- * @version  V1.17
- * @date     June 2015
+/*********************************************************************************************************************
+ * @file     startup_XMC4504.S
+ * @brief    CMSIS Core Device Startup File for Infineon XMC4504 Device Series
+ * @version  V1.19
+ * @date     05 Jan 2016
  *
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
+ * @cond
+ *********************************************************************************************************************
+ * Copyright (c) 2016, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************
  *
- *
- * @par
- * Infineon Technologies AG (Infineon) is supplying this software for use with 
- * Infineon's microcontrollers.  This file can be freely distributed
- * within development tools that are supporting such microcontrollers.
- *
- * @par
- * THIS SOFTWARE IS PROVIDED AS IS.  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
- * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- *
- ******************************************************************************/
-
-/********************** Version History ***************************************
+ **************************** Change history ********************************
  * V1.0,July 2011, First version for XIP profile
  * V1.1,Oct  2011, Program loading code included (GH: b to main changed)
  * V1.2,Nov, 01, 2011 GH :Removed second definition of section .Xmc4500.reset
@@ -44,7 +55,11 @@
  * V1.16,Nov, 25, 2014 JFT:CPU workaround disabled. Single default handler.
  *                         Removed DAVE3 dependency
  * V1.17,June 11, 2015 JFT:Remove SystemCoreClockUpdate call, done in SystemCoreClockSetup
- ******************************************************************************/
+ * V1.18,Nov  24, 2015 JFT:Remove peripherals not included in device
+ * V1.19,Jan, 05, 2016 JFT:Fix .reset section attributes
+ *
+ * @endcond 
+ */
 
 /* ===========START : MACRO DEFINITION MACRO DEFINITION ================== */
  
@@ -77,7 +92,7 @@
 /* Vector Table - This gets programed into VTOR register by onchip BootROM */
     .syntax unified
 
-    .section .reset
+    .section .reset, "a", %progbits
     
 	.align 2
     .globl  __Vectors
@@ -178,14 +193,14 @@ __Vectors:
     .long   0                           /* Not Available                 */
     .long   0                           /* Not Available                 */
     .long   0                           /* Not Available                 */
-    Entry   CAN0_0_IRQHandler           /* Handler name for SR CAN0_0    */
-    Entry   CAN0_1_IRQHandler           /* Handler name for SR CAN0_1    */
-    Entry   CAN0_2_IRQHandler           /* Handler name for SR CAN0_2    */
-    Entry   CAN0_3_IRQHandler           /* Handler name for SR CAN0_3    */
-    Entry   CAN0_4_IRQHandler           /* Handler name for SR CAN0_4    */
-    Entry   CAN0_5_IRQHandler           /* Handler name for SR CAN0_5    */
-    Entry   CAN0_6_IRQHandler           /* Handler name for SR CAN0_6    */
-    Entry   CAN0_7_IRQHandler           /* Handler name for SR CAN0_7    */
+    .long   0                           /* Not Available                 */
+    .long   0                           /* Not Available                 */
+    .long   0                           /* Not Available                 */
+    .long   0                           /* Not Available                 */
+    .long   0                           /* Not Available                 */
+    .long   0                           /* Not Available                 */
+    .long   0                           /* Not Available                 */
+    .long   0                           /* Not Available                 */
     Entry   USIC0_0_IRQHandler          /* Handler name for SR USIC0_0   */
     Entry   USIC0_1_IRQHandler          /* Handler name for SR USIC0_1   */
     Entry   USIC0_2_IRQHandler          /* Handler name for SR USIC0_2   */
@@ -209,8 +224,8 @@ __Vectors:
     Entry   FCE0_0_IRQHandler           /* Handler name for SR FCE0_0    */
     Entry   GPDMA0_0_IRQHandler         /* Handler name for SR GPDMA0_0  */
     Entry   SDMMC0_0_IRQHandler         /* Handler name for SR SDMMC0_0  */
-    Entry   USB0_0_IRQHandler           /* Handler name for SR USB0_0    */
-    Entry   ETH0_0_IRQHandler           /* Handler name for SR ETH0_0    */
+    .long   0                           /* Not Available                 */
+    .long   0                           /* Not Available                 */
     .long   0                           /* Not Available                 */
     Entry   GPDMA1_0_IRQHandler         /* Handler name for SR GPDMA1_0  */
     .long   0                           /* Not Available                 */
@@ -412,14 +427,6 @@ Default_Handler:
      Insert_ExceptionHandler POSIF0_1_IRQHandler
      Insert_ExceptionHandler POSIF1_0_IRQHandler
      Insert_ExceptionHandler POSIF1_1_IRQHandler
-     Insert_ExceptionHandler CAN0_0_IRQHandler
-     Insert_ExceptionHandler CAN0_1_IRQHandler
-     Insert_ExceptionHandler CAN0_2_IRQHandler
-     Insert_ExceptionHandler CAN0_3_IRQHandler
-     Insert_ExceptionHandler CAN0_4_IRQHandler
-     Insert_ExceptionHandler CAN0_5_IRQHandler
-     Insert_ExceptionHandler CAN0_6_IRQHandler
-     Insert_ExceptionHandler CAN0_7_IRQHandler
      Insert_ExceptionHandler USIC0_0_IRQHandler
      Insert_ExceptionHandler USIC0_1_IRQHandler
      Insert_ExceptionHandler USIC0_2_IRQHandler
@@ -442,8 +449,6 @@ Default_Handler:
      Insert_ExceptionHandler FCE0_0_IRQHandler
      Insert_ExceptionHandler GPDMA0_0_IRQHandler
      Insert_ExceptionHandler SDMMC0_0_IRQHandler
-     Insert_ExceptionHandler USB0_0_IRQHandler
-     Insert_ExceptionHandler ETH0_0_IRQHandler
      Insert_ExceptionHandler GPDMA1_0_IRQHandler
      
 /* ============= END OF INTERRUPT HANDLER DEFINITION ====================== */

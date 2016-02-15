@@ -1,8 +1,8 @@
 /*********************************************************************************************************************
  * @file     system_XMC1400.c
  * @brief    Device specific initialization for the XMC1400-Series according to CMSIS
- * @version  V1.0
- * @date     03 Sep 2015
+ * @version  V1.1
+ * @date     09 Dec 2015
  *
  * @cond
  *********************************************************************************************************************
@@ -36,6 +36,7 @@
  * *************************** Change history ********************************
  * V1.0, 03 Sep 2015, JFT : Initial version
  *                          MCLK = 48MHz, PCLK = 96MHz
+ * V1.1, 09 Dec 2015, JFT : Enable prefetch unit
  *
  * @endcond
  */
@@ -168,6 +169,8 @@ __WEAK void SystemInit(void)
 
 __WEAK void SystemCoreSetup(void)
 {
+  /* Enable Prefetch unit */
+  SCU_GENERAL->PFUCR &= ~SCU_GENERAL_PFUCR_PFUBYP_Msk;
 }
 
 __WEAK void SystemCoreClockSetup(void)

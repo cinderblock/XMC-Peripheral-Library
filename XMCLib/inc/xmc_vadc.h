@@ -1,12 +1,12 @@
 /**
  * @file xmc_vadc.h
- * @date 2015-10-27
+ * @date 2016-01-12
  *
  * @cond
 *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.4 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -66,6 +66,23 @@
  *           - XMC_VADC_GROUP_ChannelGetResultAlignment
  *           - XMC_VADC_GROUP_ChannelGetInputClass
  *           - XMC_VADC_GROUP_SetResultSubtractionValue
+ *
+ * 2015-12-01:
+ *     - Added:
+ *     - XMC4300 device supported
+ *
+ *     - Fixed:
+ *     - XMC_VADC_GLOBAL_TriggerEvent API updated. OR operation removed. 
+ *     - XMC_VADC_GLOBAL_ClearEvent API updated. Multiple events triggering on clearing the event is fixed.   
+ *     - Wrong MACRO name defined in xmc_vadc_map.h file corrected for XMC4200/4100 devices.
+ *       XMC_VADC_G3_SAMPLE renamed to XMC_VADC_G1_SAMPLE
+ *
+ * 2015-12-01:
+ *     - New APIs Created.
+ *           - XMC_VADC_GROUP_ScanIsArbitrationSlotEnabled
+ *           - XMC_VADC_GROUP_QueueIsArbitrationSlotEnabled
+ *     - Fixed the analog calibration voltage for XMC1100 to external reference upper supply range.
+ *     - Fixed the XMC_VADC_GLOBAL_StartupCalibration() for XMC1100.
  * @endcond 
  *
  */
@@ -145,7 +162,7 @@
  * MACROS
  ********************************************************************************************************************/
 
-#if ((UC_SERIES == XMC42)||(UC_SERIES == XMC41))
+#if ((UC_SERIES == XMC42)||(UC_SERIES == XMC41) || (UC_SERIES == XMC43))
 #define XMC_VADC_GROUP_AVAILABLE         (1U) /*  Defines the availability of group resource in a device*/
 #define XMC_VADC_GSCAN_AVAILABLE         (1U) /*  Defines the availability of scan request resource in a device*/
 #define XMC_VADC_QUEUE_AVAILABLE         (1U) /*  Defines the availability of queue request resource in a device*/
@@ -1736,7 +1753,7 @@ __STATIC_INLINE void XMC_VADC_GLOBAL_TriggerEvent(XMC_VADC_GLOBAL_t *const globa
   XMC_ASSERT("XMC_VADC_GLOBAL_TriggerEvent:Wrong Global Event", 
             ((XMC_VADC_GLOBAL_EVENT_BKGNDSOURCE == event_type) || (XMC_VADC_GLOBAL_EVENT_RESULT == event_type)))
 
-  global_ptr->GLOBEFLAG |= event_type;
+  global_ptr->GLOBEFLAG = event_type;
 }
 
 /**
@@ -1760,7 +1777,7 @@ __STATIC_INLINE void XMC_VADC_GLOBAL_ClearEvent(XMC_VADC_GLOBAL_t *const global_
   XMC_ASSERT("XMC_VADC_GLOBAL_ClearEvent:Wrong Global Event", 
             ((XMC_VADC_GLOBAL_EVENT_BKGNDSOURCE == event_type) || (XMC_VADC_GLOBAL_EVENT_RESULT == event_type)))
 
-  global_ptr->GLOBEFLAG |= ((uint32_t)(event_type << (uint32_t)16));
+  global_ptr->GLOBEFLAG = ((uint32_t)(event_type << (uint32_t)16));
 }
 
 /**
@@ -2551,6 +2568,28 @@ __STATIC_INLINE void XMC_VADC_GROUP_ScanDisableArbitrationSlot(XMC_VADC_GROUP_t 
 {
   XMC_ASSERT("XMC_VADC_GROUP_ScanDisableArbitrationSlot:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
   group_ptr->ARBPR &= ~((uint32_t)VADC_G_ARBPR_ASEN1_Msk);
+}
+
+/**
+ * @param group_ptr     Constant pointer to the VADC group
+ * @return
+ *    bool  returns true if the arbitration is enabled else returns false.
+ *
+ * \par<b>Description:</b><br>
+ * Returns the arbitration status of the scan request source.<BR>\n
+ * If the scan request source must have its conversion request considered by the arbiter, it must participate in
+ * the arbitration rounds. Even if a load event occurs the scan channel can only be converted when the arbiter comes
+ * to the scan slot. A call to this API would return the status of the arbitration slot of scan.
+ * A call to this API would read the register bit field GxARBPR.ASEN1.
+ *
+ * \par<b>Related APIs:</b><br>
+ *  XMC_VADC_GROUP_ScanEnableArbitrationSlot(),<BR>  XMC_VADC_GROUP_ScanDisableArbitrationSlot()<BR>
+ */
+__STATIC_INLINE bool XMC_VADC_GROUP_ScanIsArbitrationSlotEnabled(XMC_VADC_GROUP_t *const group_ptr)
+{
+  XMC_ASSERT("XMC_VADC_GROUP_ScanIsArbitrationSlotEnabled:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
+
+  return ((group_ptr->ARBPR & (uint32_t)VADC_G_ARBPR_ASEN1_Msk) >> VADC_G_ARBPR_ASEN1_Pos);
 }
 
 /**
@@ -3456,6 +3495,29 @@ __STATIC_INLINE void XMC_VADC_GROUP_QueueDisableArbitrationSlot(XMC_VADC_GROUP_t
 {
   XMC_ASSERT("XMC_VADC_GROUP_QueueDisableArbitrationSlot:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr));
   group_ptr->ARBPR &= ~((uint32_t)VADC_G_ARBPR_ASEN0_Msk);
+}
+
+
+/**
+ * @param group_ptr     Constant pointer to the VADC group
+ * @return
+ *    bool  returns true if the arbitration is enabled else returns false.
+ *
+ * \par<b>Description:</b><br>
+ * Returns the arbitration status of the queue request source.<BR>\n
+ * If the queue request source must have its conversion request considered by the arbiter, it must participate in
+ * the arbitration rounds. Even if a load event occurs the queue channel can only be converted when the arbiter comes
+ * to the queue slot. A call to this API would return the status of the arbitration slot of queue.
+ * A call to this API would read the register bit field GxARBPR.ASEN1.
+ *
+ * \par<b>Related APIs:</b><br>
+ *  XMC_VADC_GROUP_QueueEnableArbitrationSlot(),<BR>  XMC_VADC_GROUP_QueueDisableArbitrationSlot()<BR>
+ */
+__STATIC_INLINE bool XMC_VADC_GROUP_QueueIsArbitrationSlotEnabled(XMC_VADC_GROUP_t *const group_ptr)
+{
+  XMC_ASSERT("XMC_VADC_GROUP_QueueIsArbitrationSlotEnabled:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
+
+  return ((group_ptr->ARBPR & (uint32_t)VADC_G_ARBPR_ASEN0_Msk) >> VADC_G_ARBPR_ASEN0_Pos);
 }
 
 /**

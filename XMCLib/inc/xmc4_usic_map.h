@@ -1,12 +1,12 @@
 /**
  * @file xmc4_usic_map.h
- * @date 2015-10-27
+ * @date 2016-01-12
  *
  * @cond
 *********************************************************************************************************************
- * XMClib v2.1.2 - XMC Peripheral Driver Library 
+ * XMClib v2.1.4 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -42,6 +42,9 @@
  * 2015-08-25:
  *     - Added XMC4800
  *      
+ * 2015-12-07:
+ *     - Add XMC4300 support
+ *
  * @endcond 
  *
  */
@@ -478,6 +481,65 @@
 #define USIC1_C1_DX5_DOUT3  	6
 #endif
 
+#if (UC_DEVICE == XMC4300) && (UC_PACKAGE == LQFP100)
+#define USIC0_C0_DX0_DOUT0  	6
+#define USIC0_C0_DX0_P1_4   	1
+#define USIC0_C0_DX0_P1_5   	0
+#define USIC0_C0_DX0_P5_0   	3
+#define USIC0_C0_DX1_DX0INS 	5
+#define USIC0_C0_DX1_P0_8   	1
+#define USIC0_C0_DX1_P1_1   	0
+#define USIC0_C0_DX1_SCLKOUT	6
+#define USIC0_C0_DX2_CCU40_SR1	4
+#define USIC0_C0_DX2_CCU80_SR1	5
+#define USIC0_C0_DX2_P0_7   	1
+#define USIC0_C0_DX2_P1_0   	0
+#define USIC0_C0_DX2_SELO0  	6
+#define USIC0_C0_DX3_DOUT1  	6
+#define USIC0_C0_DX4_DOUT2  	6
+#define USIC0_C0_DX5_DOUT3  	6
+#define USIC0_C1_DX0_DOUT0  	6
+#define USIC0_C1_DX0_P2_2   	0
+#define USIC0_C1_DX0_P2_5   	1
+#define USIC0_C1_DX0_P4_0   	4
+#define USIC0_C1_DX1_DX0INS 	5
+#define USIC0_C1_DX1_P2_4   	0
+#define USIC0_C1_DX1_P3_0   	1
+#define USIC0_C1_DX1_SCLKOUT	6
+#define USIC0_C1_DX2_CCU80_SR1	5
+#define USIC0_C1_DX2_P2_3   	0
+#define USIC0_C1_DX2_P3_1   	1
+#define USIC0_C1_DX2_SELO0  	6
+#define USIC0_C1_DX3_DOUT1  	6
+#define USIC0_C1_DX4_DOUT2  	6
+#define USIC0_C1_DX5_DOUT3  	6
+#define USIC1_C0_DX0_DOUT0  	6
+#define USIC1_C0_DX0_P0_4   	0
+#define USIC1_C0_DX0_P0_5   	1
+#define USIC1_C0_DX0_P2_14  	3
+#define USIC1_C0_DX0_P2_15  	2
+#define USIC1_C0_DX1_DX0INS 	5
+#define USIC1_C0_DX1_P0_11  	0
+#define USIC1_C0_DX1_SCLKOUT	6
+#define USIC1_C0_DX2_CCU41_SR1	4
+#define USIC1_C0_DX2_P0_6   	0
+#define USIC1_C0_DX2_SELO0  	6
+#define USIC1_C0_DX3_DOUT1  	6
+#define USIC1_C0_DX4_DOUT2  	6
+#define USIC1_C0_DX5_DOUT3  	6
+#define USIC1_C1_DX0_DOUT0  	6
+#define USIC1_C1_DX0_P0_0   	3
+#define USIC1_C1_DX1_DX0INS 	5
+#define USIC1_C1_DX1_P0_10  	0
+#define USIC1_C1_DX1_P4_0   	2
+#define USIC1_C1_DX1_SCLKOUT	6
+#define USIC1_C1_DX2_P0_12  	1
+#define USIC1_C1_DX2_P0_9   	0
+#define USIC1_C1_DX2_SELO0  	6
+#define USIC1_C1_DX3_DOUT1  	6
+#define USIC1_C1_DX4_DOUT2  	6
+#define USIC1_C1_DX5_DOUT3  	6
+#endif
 
 #if (UC_DEVICE == XMC4400) && (UC_PACKAGE == LQFP100)
 #define USIC0_C0_DX0_DOUT0  	6

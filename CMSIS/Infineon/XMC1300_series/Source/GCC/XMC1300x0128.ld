@@ -1,10 +1,10 @@
 /**
  * @file XMC1300x0128.ld
- * @date 2015-07-07
+ * @date 2015-11-24
  *
  * @cond
  *********************************************************************************************************************
- * Linker file for the GNU C Compiler v1.7
+ * Linker file for the GNU C Compiler v1.8
  * Supported devices: XMC1302-T038X0128
  *                    XMC1302-Q040X0128
  *
@@ -42,6 +42,9 @@
  *     - Product splitting
  *     - Copyright notice update
  *      
+ * 2015-11-24:
+ *     - Compatibility with GCC 4.9 2015q2
+ *      
  * @endcond 
  *
  */
@@ -64,64 +67,57 @@ SECTIONS
 
     .text : 
     {
-        sText = .;
-        KEEP(*(.reset));
-        *(.text .text.* .gnu.linkonce.t.*);
+      sText = .;
+      KEEP(*(.reset));
+      *(.text .text.* .gnu.linkonce.t.*);
 
-        /* ARM <->THUMB interworking */
-        *(.glue*)
-        *(.v4*)
-        *(.vfp11_veneer)
+      /* C++ Support */
+      KEEP(*(.init))
+      KEEP(*(.fini))
 
-        /* C++ Support */
-        KEEP(*(.init))
-        __preinit_array_start = .;
-        KEEP (*(.preinit_array))
-        __preinit_array_end = .;
-        __init_array_start = .;
-        KEEP (*(SORT(.init_array.*)))
-        KEEP (*(.init_array))
-        __init_array_end = .;
-        KEEP (*crtbegin.o(.ctors))
-        KEEP (*(EXCLUDE_FILE (*crtend.o) .ctors))
-        KEEP (*(SORT(.ctors.*)))
-        KEEP (*crtend.o(.ctors))
-        KEEP(*(.fini))
-        __fini_array_start = .;
-        KEEP (*(.fini_array))
-        KEEP (*(SORT(.fini_array.*)))
-        __fini_array_end = .;
+      /* .ctors */
+      *crtbegin.o(.ctors)
+      *crtbegin?.o(.ctors)
+      *(EXCLUDE_FILE(*crtend?.o *crtend.o) .ctors)
+      *(SORT(.ctors.*))
+      *(.ctors)
 
-        KEEP (*crtbegin.o(.dtors))
-        KEEP (*(EXCLUDE_FILE (*crtend.o) .dtors))
-        KEEP (*(SORT(.dtors.*)))
-        KEEP (*crtend.o(.dtors))
+      /* .dtors */
+      *crtbegin.o(.dtors)
+      *crtbegin?.o(.dtors)
+      *(EXCLUDE_FILE(*crtend?.o *crtend.o) .dtors)
+      *(SORT(.dtors.*))
+      *(.dtors)
 
-        /* Exception handling support */
-        __extab_start = .;
-        *(.ARM.extab* .gnu.linkonce.armextab.*)
-        . = ALIGN(4);
-        __extab_end = ABSOLUTE(.);
+      *(.rodata .rodata.*)
+      *(.gnu.linkonce.r*)
+    } > FLASH
+
+    .eh_frame_hdr : ALIGN (4)
+    {
+      KEEP (*(.eh_frame_hdr))
+    } > FLASH
+
+    .eh_frame : ALIGN (4)
+    {
+      KEEP (*(.eh_frame))
     } > FLASH
 
     /* Exception handling, exidx needs a dedicated section */
-    .ARM.exidx : 
+    .ARM.extab : ALIGN(4)
     {
-        __exidx_start = .;
-        *(.ARM.exidx* .gnu.linkonce.armexidx.*)
-        . = ALIGN(4);
-        __exidx_end = ABSOLUTE(.);
+      *(.ARM.extab* .gnu.linkonce.armextab.*)
     } > FLASH
 
-    /* CONST data section */
-    .rodata : 
+    . = ALIGN(4);
+    __exidx_start = .;
+    .ARM.exidx : ALIGN(4)
     {
-        *(.rodata .rodata.*)
-        *(.gnu.linkonce.r*)
+      *(.ARM.exidx* .gnu.linkonce.armexidx.*)
     } > FLASH
-    
-    . = ALIGN(16);
-		
+    __exidx_end = .;
+    . = ALIGN(4);
+
     /* End of RO-DATA and start of LOAD region for the veneers */
     eROData = . ;
 
@@ -150,15 +146,39 @@ SECTIONS
     DataLoadAddr = eROData + VeneerSize;
     .data : AT(DataLoadAddr)
     {
-        __data_start = .;
-        * (.data);
-        * (.data*);
-        *(*.data);
-        *(.gnu.linkonce.d*)
-        . = ALIGN(4);
-        __data_end = .;
+      . = ALIGN(4);        
+      __data_start = .;
+      *(vtable)        
+      * (.data);
+      * (.data*);
+      *(*.data);
+      *(.gnu.linkonce.d*)
+      
+      . = ALIGN(4);
+      /* preinit data */
+      PROVIDE_HIDDEN (__preinit_array_start = .);
+      KEEP(*(.preinit_array))
+      PROVIDE_HIDDEN (__preinit_array_end = .);
+
+      . = ALIGN(4);
+      /* init data */
+      PROVIDE_HIDDEN (__init_array_start = .);
+      KEEP(*(SORT(.init_array.*)))
+      KEEP(*(.init_array))
+      PROVIDE_HIDDEN (__init_array_end = .);
+
+
+      . = ALIGN(4);
+      /* finit data */
+      PROVIDE_HIDDEN (__fini_array_start = .);
+      KEEP(*(SORT(.fini_array.*)))
+      KEEP(*(.fini_array))
+      PROVIDE_HIDDEN (__fini_array_end = .);
+
+      . = ALIGN(4);
+      __data_end = .;
     } > SRAM
-	__data_size = __data_end - __data_start;
+    __data_size = __data_end - __data_start;
 
     .ram_code : AT(DataLoadAddr + __data_size)
     {
@@ -192,7 +212,7 @@ SECTIONS
         Heap_Bank1_End = .;
         * (.no_init);
     } > SRAM
-
+    
     /* Heap - Bank1*/
     Heap_Bank1_Size  = Heap_Bank1_End - Heap_Bank1_Start;
 

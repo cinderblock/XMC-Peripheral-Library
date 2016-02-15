@@ -96,7 +96,7 @@ __vector_table
         ExcpVector     PendSV_Handler
         ExcpVector     SysTick_Handler
 
-    ; Interrupt Handlers for Service Requests (SR) from XMC4500 Peripherals
+    ; Interrupt Handlers for Service Requests (SR) from XMC4800 Peripherals
 	ExcpVector   SCU_0_IRQHandler            ; Handler name for SR SCU_0
 	ExcpVector   ERU0_0_IRQHandler           ; Handler name for SR ERU0_0
 	ExcpVector   ERU0_1_IRQHandler           ; Handler name for SR ERU0_1

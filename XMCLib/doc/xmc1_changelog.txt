@@ -2,6 +2,15 @@
  * @page Changelog
  *
  * @tableofcontents
+ * @section v214 Version 2.1.4
+ * @subsection SCU SCU
+ * - Added:
+ *    - XMC_SCU_EnablePrefetchUnit and XMC_SCU_DisablePrefetchUnit for XMC1400 series
+ *
+ * @subsection SPI SPI
+ * - Added:
+ *    - XMC_SPI_CH_EnableSlaveSelectCodedMode() and XMC_SPI_CH_DisableSlaveSelectCodedMode()
+ *
  * @section v212 Version 2.1.2
  * @subsection GENERAL GENERAL
  * - Added:
