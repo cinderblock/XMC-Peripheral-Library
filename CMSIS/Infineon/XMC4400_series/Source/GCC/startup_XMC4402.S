@@ -1,12 +1,12 @@
 /*********************************************************************************************************************
  * @file     startup_XMC4402.S
  * @brief    CMSIS Core Device Startup File for Infineon XMC4402 Device Series
- * @version  V0.9
- * @date     05 Jan 2016
+ * @version  V1.0
+ * @date     04 March 2016
  *
  * @cond
  *********************************************************************************************************************
- * Copyright (c) 2016, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -44,7 +44,8 @@
  *                         Removed DAVE3 dependency
  * V0.8,Nov, 29, 2015 JFT: Remove peripherals not included in device.
  * V0.9,Jan, 05, 2016 JFT: Fix .reset section attributes
- *
+ * V1.0,March,04,2016 JFT: Fix weak definition of Veneers. 
+ *                         Only relevant for AA, which needs ENABLE_CPU_CM_001_WORKAROUND 
  * @endcond 
  */
 
@@ -63,6 +64,7 @@
     .thumb_set \Handler_Func, Default_Handler
 
 #if defined(ENABLE_CPU_CM_001_WORKAROUND)  
+    .weak \Handler_Func\()_Veneer
     .type \Handler_Func\()_Veneer, %function
 \Handler_Func\()_Veneer:
     push {r0, lr}

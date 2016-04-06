@@ -2,10 +2,10 @@
 ;* @file     startup_XMC4400.s
 ;* @brief    CMSIS Core Device Startup File for
 ;*           Infineon XMC4400 Device Series
-;* @version  V1.2
-;* @date     November 2014
+;* @version  V1.4
+;* @date     March 2016
 ;*
-;* Copyright (C) 2014 Infineon Technologies AG. All rights reserved.
+;* Copyright (C) 2015-2016 Infineon Technologies AG. All rights reserved.
 ;*
 ;*
 ;* @par
@@ -28,6 +28,9 @@
 ; V1.1, August 2013, Fix the bug of stack pointer alignment to a 8 byte boundary
 ; V1.2, November 2014, Disable CPU workaround. Increased stack size.
 ;                       Removed DAVE3 dependency
+; V1.3, November 2015, Remove peripherals not included in device.
+; V1.4, March    2016, Fix weak definition of Veneers.
+;                       Only relevant for AA, which needs ENABLE_CPU_CM_001_WORKAROUND 
 ;*******************************************************************************
 
 ; ------------------ <<< Use Configuration Wizard in Context Menu >>> ------------------
@@ -453,7 +456,7 @@ ETH0_0_IRQHandler
                 Insert_ExceptionHandlerVeneer $Handler_Func                    
 $Handler_Func._Veneer\
                     PROC
-                    EXPORT  $Handler_Func._Veneer
+                    EXPORT  $Handler_Func._Veneer [WEAK]
                     LDR     R0, =$Handler_Func
                     PUSH    {LR}  ;/* Breaks AAPCS */
                     SUB     SP,#4     ;/* Restores AAPCS */

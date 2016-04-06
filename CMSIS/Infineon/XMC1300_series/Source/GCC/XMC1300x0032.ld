@@ -1,10 +1,10 @@
 /**
  * @file XMC1300x0032.ld
- * @date 2015-11-24
+ * @date 2016-03-15
  *
  * @cond
  *********************************************************************************************************************
- * Linker file for the GNU C Compiler v1.8
+ * Linker file for the GNU C Compiler v1.9
  * Supported devices: XMC1302-T016X0032
  *                    XMC1301-T038F0032
  *                    XMC1302-T038X0032
@@ -13,7 +13,7 @@
  *                    XMC1301-Q040F0032
  *                    XMC1302-Q040X0032
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -49,7 +49,10 @@
  *      
  * 2015-11-24:
  *     - Compatibility with GCC 4.9 2015q2
- *      
+ *
+ * 2016-03-15:
+ *     - Add assertion to check that region SRAM_combined does not overflowed no_init section 
+ *                                                                                 
  * @endcond 
  *
  */
@@ -64,7 +67,8 @@ MEMORY
     SRAM(!RX) : ORIGIN = 0x20000000, LENGTH = 0x4000
 }
 
-stack_size = 1024;
+stack_size = DEFINED(stack_size) ? stack_size : 1024;
+no_init_size = 4;
 
 SECTIONS
 {
@@ -131,9 +135,10 @@ SECTIONS
 
     .VENEER_Code ABSOLUTE(0x2000000C): AT(eROData)
     {
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         VeneerStart = .;
         KEEP(*(.XmcVeneerCode));
-        . = ALIGN(4);
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         VeneerEnd = .;
     } > SRAM
 
@@ -151,7 +156,7 @@ SECTIONS
     DataLoadAddr = eROData + VeneerSize;
     .data : AT(DataLoadAddr)
     {
-      . = ALIGN(4);        
+      . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
       __data_start = .;
       *(vtable)        
       * (.data);
@@ -180,17 +185,18 @@ SECTIONS
       KEEP(*(.fini_array))
       PROVIDE_HIDDEN (__fini_array_end = .);
 
-      . = ALIGN(4);
+      . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
       __data_end = .;
     } > SRAM
     __data_size = __data_end - __data_start;
 
     .ram_code : AT(DataLoadAddr + __data_size)
     {
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __ram_code_start = .;
         /* functions with __attribute__ ((section (".ram_code")))*/
         *(.ram_code)   
-        . = ALIGN(4);        
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __ram_code_end = .;
     } > SRAM
     __ram_code_load = LOADADDR (.ram_code);
@@ -199,20 +205,21 @@ SECTIONS
     /* BSS section */
     .bss (NOLOAD) :
     {
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __bss_start = .;
         * (.bss);
         * (.bss*);
         * (COMMON);
         *(.gnu.linkonce.b*)
-        . = ALIGN(4);
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __bss_end = .;
         . = ALIGN(8);
         Heap_Bank1_Start = .;
     } > SRAM
     __bss_size = __bss_end - __bss_start;
     
-    /* .no_init section */
-    .no_init 0x20003FFC (NOLOAD) : 
+    /* .no_init section contains SystemCoreClock. See system.c file */
+    .no_init ORIGIN(SRAM) + LENGTH(SRAM) - no_init_size (NOLOAD) : 
     {
         Heap_Bank1_End = .;
         * (.no_init);
@@ -220,6 +227,8 @@ SECTIONS
     
     /* Heap - Bank1*/
     Heap_Bank1_Size  = Heap_Bank1_End - Heap_Bank1_Start;
+
+    ASSERT(Heap_Bank1_Start <= Heap_Bank1_End, "region SRAM overflowed no_init section")
 
     /DISCARD/ :
     {

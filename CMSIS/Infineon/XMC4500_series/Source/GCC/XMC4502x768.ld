@@ -1,13 +1,13 @@
 /**
  * @file XMC4502x768.ld
- * @date 2015-11-24
+ * @date 2016-03-08
  *
  * @cond
  *********************************************************************************************************************
- * Linker file for the GNU C Compiler v1.6
+ * Linker file for the GNU C Compiler v1.7
  * Supported devices: XMC4502-F100x768
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -43,6 +43,10 @@
  *
  * 2015-11-24:
  *     - Compatibility with GCC 4.9 2015q2
+ *
+ * 2016-03-08:
+ *     - Fix size of BSS and DATA sections to be multiple of 4
+ *     - Add assertion to check that region DSRAM_1_system does not overflowed no_init section 
  *      
  * @endcond 
  *
@@ -61,7 +65,8 @@ MEMORY
     DSRAM_2_comm(!RX) : ORIGIN = 0x30000000, LENGTH = 0x8000
 }
 
-stack_size = 2048;
+stack_size = DEFINED(stack_size) ? stack_size : 2048;
+no_init_size = 64;
 
 SECTIONS
 {
@@ -123,9 +128,10 @@ SECTIONS
     /* functions with __attribute__((section(".ram_code"))) */
     .ram_code :
     {
-        . = ALIGN(4);        
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __ram_code_start = .;
-        *(.ram_code)    
+        *(.ram_code)
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __ram_code_end = .;
     } > PSRAM_1 AT > FLASH_1_uncached
     __ram_code_load = LOADADDR (.ram_code);
@@ -133,9 +139,10 @@ SECTIONS
 
     PSRAM_DATA :
     {
-        . = ALIGN(4);
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __data3_start = .;
-        *(PSRAM_DATA)   
+        *(PSRAM_DATA)
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __data3_end = .;
     } > PSRAM_1 AT > FLASH_1_uncached
     __data3_load = LOADADDR (PSRAM_DATA);
@@ -143,9 +150,10 @@ SECTIONS
 
     PSRAM_BSS (NOLOAD) :
     {
-        . = ALIGN(4);
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __bss3_start = .;
-        *(PSRAM_BSS)    
+        *(PSRAM_BSS)
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __bss3_end = .;
         . = ALIGN(8);        
         Heap_Bank3_Start = .;
@@ -155,7 +163,7 @@ SECTIONS
     /* Standard DATA and user defined DATA/BSS/CONST sections */
     .data :
     {
-        . = ALIGN(4);        
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __data_start = .;
         * (.data);
         * (.data*);
@@ -175,7 +183,6 @@ SECTIONS
         KEEP(*(.init_array))
         PROVIDE_HIDDEN (__init_array_end = .);
 
-
         . = ALIGN(4);
         /* finit data */
         PROVIDE_HIDDEN (__fini_array_start = .);
@@ -183,6 +190,7 @@ SECTIONS
         KEEP(*(.fini_array))
         PROVIDE_HIDDEN (__fini_array_end = .);
 
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __data_end = .;
     } > DSRAM_1_system AT > FLASH_1_uncached
     __data_load = LOADADDR (.data);
@@ -191,20 +199,21 @@ SECTIONS
     /* BSS section */
     .bss (NOLOAD) : 
     {
-        . = ALIGN(4);
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __bss_start = .;
         * (.bss);
         * (.bss*);
         * (COMMON);
         *(.gnu.linkonce.b*)
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __bss_end = .;
         . = ALIGN(8);
         Heap_Bank1_Start = .;
     } > DSRAM_1_system
     __bss_size = __bss_end - __bss_start;
     
-    /* .no_init section */
-    .no_init 0x2000FFC0 (NOLOAD) : 
+    /* .no_init section contains chipid, SystemCoreClock and trimming data. See system.c file*/
+    .no_init ORIGIN(DSRAM_1_system) + LENGTH(DSRAM_1_system) - no_init_size (NOLOAD) : 
     {
         Heap_Bank1_End = .;
         * (.no_init);
@@ -212,9 +221,10 @@ SECTIONS
 
     DSRAM2_DATA :
     {
-        . = ALIGN(4);
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __data2_start = .;
-        *(DSRAM2_DATA)      
+        *(DSRAM2_DATA)
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __data2_end = .;
     } > DSRAM_2_comm AT > FLASH_1_uncached
     __data2_load = LOADADDR(DSRAM2_DATA);
@@ -222,10 +232,11 @@ SECTIONS
 
     DSRAM2_BSS (NOLOAD) :
     {
-        . = ALIGN(4);
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __bss2_start = .;
         *(USB_RAM)
-        *(DSRAM2_BSS)   
+        *(DSRAM2_BSS)
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __bss2_end = .;
         . = ALIGN(8);
         Heap_Bank2_Start = .;
@@ -235,6 +246,8 @@ SECTIONS
     Heap_Bank1_Size = Heap_Bank1_End - Heap_Bank1_Start;
     Heap_Bank2_Size = LENGTH(DSRAM_2_comm) - (Heap_Bank2_Start - ORIGIN(DSRAM_2_comm));
     Heap_Bank3_Size = LENGTH(PSRAM_1) - (Heap_Bank3_Start - ORIGIN(PSRAM_1));
+
+    ASSERT(Heap_Bank1_Start <= Heap_Bank1_End, "region SRAM_combined overflowed no_init section")
 
     /DISCARD/ :
     {

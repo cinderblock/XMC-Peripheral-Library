@@ -1,14 +1,14 @@
 /**
  * @file XMC4402x256.ld
- * @date 2015-11-24
+ * @date 2016-03-08
  *
  * @cond
  *********************************************************************************************************************
- * Linker file for the GNU C Compiler v1.6
+ * Linker file for the GNU C Compiler v1.7
  * Supported devices: XMC4402-F100x256
  *                    XMC4402-F64x256
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -44,6 +44,10 @@
  *      
  * 2015-11-24:
  *     - Compatibility with GCC 4.9 2015q2
+ *
+ * 2016-03-08:
+ *     - Fix size of BSS and DATA sections to be multiple of 4
+ *     - Add assertion to check that region SRAM_combined does not overflowed no_init section 
  *      
  * @endcond 
  *
@@ -63,7 +67,8 @@ MEMORY
     SRAM_combined(!RX) : ORIGIN = 0x1FFFC000, LENGTH = 0x14000
 }
 
-stack_size = 2048;
+stack_size = DEFINED(stack_size) ? stack_size : 2048;
+no_init_size = 64;
 
 SECTIONS
 {
@@ -124,9 +129,10 @@ SECTIONS
     /* functions with __attribute__((section(".ram_code"))) */
     .ram_code :
     {
-        . = ALIGN(4);        
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __ram_code_start = .;
-        *(.ram_code)    
+        *(.ram_code)
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __ram_code_end = .;
     } > SRAM_combined AT > FLASH_1_uncached
     __ram_code_load = LOADADDR (.ram_code);
@@ -135,7 +141,7 @@ SECTIONS
     /* Standard DATA and user defined DATA/BSS/CONST sections */
     .data :
     {
-        . = ALIGN(4);        
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __data_start = .;
         * (.data);
         * (.data*);
@@ -155,7 +161,6 @@ SECTIONS
         KEEP(*(.init_array))
         PROVIDE_HIDDEN (__init_array_end = .);
 
-
         . = ALIGN(4);
         /* finit data */
         PROVIDE_HIDDEN (__fini_array_start = .);
@@ -163,6 +168,7 @@ SECTIONS
         KEEP(*(.fini_array))
         PROVIDE_HIDDEN (__fini_array_end = .);
 
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __data_end = .;
     } > SRAM_combined AT > FLASH_1_uncached
     __data_load = LOADADDR (.data);
@@ -171,12 +177,13 @@ SECTIONS
     /* BSS section */
     .bss (NOLOAD) : 
     {
-        . = ALIGN(4);        
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __bss_start = .;
         * (.bss);
         * (.bss*);
         * (COMMON);
         *(.gnu.linkonce.b*)
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         __bss_end = .;
     } > SRAM_combined
     __bss_size = __bss_end - __bss_start;
@@ -186,17 +193,18 @@ SECTIONS
 
     USB_RAM  (__bss_end + __shift_loc) (NOLOAD) :
     {
-        . = ALIGN(4);        
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         USB_RAM_start = .;
         *(USB_RAM)
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
         USB_RAM_end = .;
         . = ALIGN(8);
         Heap_Bank1_Start = .;
     } > SRAM_combined
     USB_RAM_size = USB_RAM_end - USB_RAM_start;
 
-    /* .no_init section */
-    .no_init ORIGIN(SRAM_combined) + LENGTH(SRAM_combined) - 0x40 (NOLOAD) : 
+    /* .no_init section contains chipid, SystemCoreClock and trimming data. See system.c file */
+    .no_init ORIGIN(SRAM_combined) + LENGTH(SRAM_combined) - no_init_size (NOLOAD) : 
     {
         Heap_Bank1_End = .;
         * (.no_init);
@@ -204,6 +212,8 @@ SECTIONS
 
     /* Heap - Bank1*/
     Heap_Bank1_Size  = Heap_Bank1_End - Heap_Bank1_Start;
+
+    ASSERT(Heap_Bank1_Start <= Heap_Bank1_End, "region SRAM_combined overflowed no_init section")
 
     /DISCARD/ :
     {

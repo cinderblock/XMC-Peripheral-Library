@@ -2,10 +2,10 @@
 ;* @file     startup_XMC4500.s
 ;* @brief    CMSIS Core Device Startup File for
 ;*           Infineon XMC4500 Device Series
-;* @version  V1.5
-;* @date     December 2014
+;* @version  V1.6
+;* @date     March 2016
 ;*
-;* Copyright (C) 2014 Infineon Technologies AG. All rights reserved.
+;* Copyright (C) 2015-2016 Infineon Technologies AG. All rights reserved.
 ;*
 ;*
 ;* @par
@@ -33,6 +33,8 @@
 ;                       Increased stack size. 
 ;                       Removed DAVE3 dependency
 ; V1.50, December 2014, Fix not available entries in vector table
+; V1.6 , March    2016, Fix weak definition of Veneers.
+;                       Only relevant for AA and AB step, which needs ENABLE_CPU_CM_001_WORKAROUND 
 ;*******************************************************************************
 
 ; ------------------ <<< Use Configuration Wizard in Context Menu >>> ------------------
@@ -466,7 +468,7 @@ GPDMA1_0_IRQHandler
                 Insert_ExceptionHandlerVeneer $Handler_Func                    
 $Handler_Func._Veneer\
                     PROC
-                    EXPORT  $Handler_Func._Veneer
+                    EXPORT  $Handler_Func._Veneer [WEAK]
                     LDR     R0, =$Handler_Func
                     PUSH    {LR}  ;/* Breaks AAPCS */
                     SUB     SP,#4     ;/* Restores AAPCS */

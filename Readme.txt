@@ -1,4 +1,6 @@
+==================
 == INTRODUCTION ==
+==================
 
 The XMC Peripheral Library (XMC Lib) consists of low-level drivers for the XMC product family peripherals.
 It addition the Cortex Microcontroller Software Interface Standard (CMSIS) is included. 
@@ -24,7 +26,9 @@ The following 32-Bit Industrial Microcontrollers based on ARM Cortex are support
 - XMC1200 series
 - XMC1100 series
 
+==============
 == CONTENTS ==
+==============
 
   Readme.txt
   License.txt
@@ -63,7 +67,9 @@ Now let's explain the purpose of each directory:
                    system files and startup files defined by CMSIS
  - CMSIS/Lib: Precompiled CMSIS DSP libraries for XMC4 (ARM Cortex M4F) and XMC1 (ARM Cortex M0) families.
       
+===========
 == USAGE ==
+===========
 
 Several examples for the supported tool chains are provided that can serve as starting point.
 
@@ -77,4 +83,10 @@ To start a project from scratch follow the steps:
 5. Include into your source the header files of the peripherals you want to use, i.e. #include <xmc_vadc.h>
 6. Configure the peripheral and make use of the APIs described in the documentation.
 
+======================
+== REVISION HISTORY ==
+======================
 
+XMC Peripheral Library v2.1.4p1 (06-04-2015)
+--------------------------------------------
+  - Updated CMSIS component to v4.5.0p1. See release notes in CMSIS/Readme.txt
