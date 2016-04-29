@@ -1,10 +1,10 @@
 /**
  * @file xmc4_scu.h
- * @date 2016-01-12
+ * @date 2016-04-15
  *
  * @cond
   *********************************************************************************************************************
- * XMClib v2.1.4 - XMC Peripheral Driver Library 
+ * XMClib v2.1.6 - XMC Peripheral Driver Library 
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
@@ -41,8 +41,21 @@
  *     - Documentation improved
  *
  * 2015-11-30:
- *     - Documentation improved <br>
+ *     - Documentation improved
  *      
+ * 2016-03-09:
+ *     - Added XMC_SCU_POWER_EnableMonitor/XMC_SCU_POWER_DisableMonitor
+ *             XMC_SCU_POWER_GetEVRStatus, XMC_SCU_POWER_GetEVR13Voltage, XMC_SCU_POWER_GetEVR33Voltage
+ *     - Added XMC_SCU_HIB_GetHibernateControlStatus,
+ *             XMC_SCU_HIB_GetEventStatus, XMC_SCU_HIB_ClearEventStatus, XMC_SCU_HIB_TriggerEvent, 
+ *             XMC_SCU_HIB_EnableEvent, XMC_SCU_HIB_DisableEvent
+ *     - Added XMC_SCU_HIB_SetWakeupTriggerInput, XMC_SCU_HIB_SetPinMode, XMC_SCU_HIB_SetOutputPinLevel, 
+ *             XMC_SCU_HIB_SetInput0, XMC_SCU_HIB_EnterHibernateState
+ *
+ * 2016-04-15:
+ *     - Fixed naming of XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG peripheral clock.
+ *       Added enable and disable for peripheral clocks       
+ * 
  * @endcond 
  *
  */
@@ -616,55 +629,159 @@ typedef enum XMC_SCU_CLOCK_SYSPLL_MODE
   XMC_SCU_CLOCK_SYSPLL_MODE_PRESCALAR /**< fPLL derived from fOSC and PLL operating in prescalar mode(i.e.VCO bypassed). */
 } XMC_SCU_CLOCK_SYSPLL_MODE_t;
 
-/**
+/** 
+ *  Defines the source of the system clock and peripherals clock gating in SLEEP state.
+ *  Use this enum as parameter of XMC_SCU_CLOCK_SetSleepConfig before going to SLEEP state.
  *
+ *  The SLEEP state of the system corresponds to the SLEEP state of the CPU. The state is
+ *  entered via WFI or WFE instruction of the CPU. In this state the clock to the CPU is
+ *  stopped. Peripherals are only clocked when configured to stay enabled. 
+ *
+ *  Peripherals can continue to operate unaffected and eventually generate an event to
+ *  wake-up the CPU. Any interrupt to the NVIC will bring the CPU back to operation. The
+ *  clock tree upon exit from SLEEP state is restored to what it was before entry into SLEEP
+ *  state.
+ *  
  */
 typedef enum XMC_SCU_CLOCK_SLEEP_MODE_CONFIG
 {
-  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_SYSCLK_FOFI = 0,  //!< XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_SYSCLK_FOFI
-  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_SYSCLK_FPLL = SCU_CLK_SLEEPCR_SYSSEL_Msk,  //!< XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_SYSCLK_FPLL
+  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_SYSCLK_FOFI = 0,  /**< fOFI used as system clock source in SLEEP state */
+  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_SYSCLK_FPLL = SCU_CLK_SLEEPCR_SYSSEL_Msk,  /**< fPLL used as system clock source in SLEEP state */
 #if defined(USB0)
-  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_USB = SCU_CLK_SLEEPCR_USBCR_Msk,  //!< XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_USB
+  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_USB = 0,  /**< USB clock disabled in SLEEP state */
+  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_ENABLE_USB = SCU_CLK_SLEEPCR_USBCR_Msk,  /**< USB clock enabled in SLEEP state */
 #endif  
 #if defined(SDMMC)
-  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_SDMMC = SCU_CLK_SLEEPCR_MMCCR_Msk,//!< XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_SDMMC
+  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_SDMMC = 0,/**< SDMMC clock disabled in SLEEP state */
+  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_ENABLE_SDMMC = SCU_CLK_SLEEPCR_MMCCR_Msk,/**< SDMMC clock enabled in SLEEP state */
 #endif  
 #if defined(ETH0)
-  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_ETH = SCU_CLK_SLEEPCR_ETH0CR_Msk,  //!< XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_ETH
+  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_ETH = 0,  /**< ETH clock disabled in SLEEP state */
+  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_ENABLE_ETH = SCU_CLK_SLEEPCR_ETH0CR_Msk,  /**< ETH clock enabled in SLEEP state */
 #endif  
 #if defined(EBU)
-  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_EBU = SCU_CLK_SLEEPCR_EBUCR_Msk,  //!< XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_EBU
+  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_EBU = 0,  /**< EBU clock disabled in SLEEP state */
+  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_ENABLE_EBU = SCU_CLK_SLEEPCR_EBUCR_Msk,  /**< EBU clock enabled in SLEEP state */
 #endif  
-  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_CCU = SCU_CLK_SLEEPCR_CCUCR_Msk,  //!< XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_CCU
-  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_WDT = SCU_CLK_SLEEPCR_WDTCR_Msk,  //!< XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_WDT
+  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLED_CCU = 0,  /**< CCU clock disabled in SLEEP state */
+  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_ENABLE_CCU = SCU_CLK_SLEEPCR_CCUCR_Msk,  /**< CCU clock enabled in SLEEP state */
+  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLED_WDT = 0,  /**< WDT clock disabled in SLEEP state */
+  XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_ENABLE_WDT = SCU_CLK_SLEEPCR_WDTCR_Msk,  /**< WDT clock enabled in SLEEP state */
 } XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_t;
 
-/**
+/** 
+ *  Defines the source of the system clock and peripherals clock gating in DEEPSLEEP state.
+ *  In addition the state of FLASH, PLL and PLLVCO during DEEPSLEEP state.
+ *  Use this enum as parameter of XMC_SCU_CLOCK_SetDeepSleepConfig before going to DEEPSLEEP state.
  *
+ *  The DEEPSLEEP state of the system corresponds to the DEEPSLEEP state of the CPU. The state is
+ *  entered via WFI or WFE instruction of the CPU. In this state the clock to the CPU is
+ *  stopped. 
+ *
+ *  In Deep Sleep state the OSC_HP and the PLL may be switched off. The wake-up logic in the NVIC is still clocked
+ *  by a free-running clock. Peripherals are only clocked when configured to stay enabled. 
+ *  Configuration of peripherals and any SRAM content is preserved.
+ *  The Flash module can be put into low-power mode to achieve a further power reduction.
+ *  On wake-up Flash module will be restarted again before instructions or data access is possible.
+ *  Any interrupt will bring the system back to operation via the NVIC.The clock setup before
+ *  entering Deep Sleep state is restored upon wake-up.
  */
 typedef enum XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG
 {
-  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_SYSCLK_FOFI = 0,  //!< XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_SYSCLK_FOFI
-  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_SYSCLK_FPLL = SCU_CLK_SLEEPCR_SYSSEL_Msk,  //!< XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_SYSCLK_FPLL
-  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_FLASH_POWERDOWN = SCU_CLK_DSLEEPCR_FPDN_Msk,//!< XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_FLASH_POWERDOWN
-  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_PLL_POWERDOWN = SCU_CLK_DSLEEPCR_PLLPDN_Msk,  //!< XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_PLL_POWERDOWN
-  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_VCO_POWERDOWN = SCU_CLK_DSLEEPCR_VCOPDN_Msk,  //!< XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_VCO_POWERDOWN
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_SYSCLK_FOFI = 0,  /**< fOFI used as system clock source in DEEPSLEEP state */
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_SYSCLK_FPLL = SCU_CLK_DSLEEPCR_SYSSEL_Msk,  /**< fPLL used as system clock source in DEEPSLEEP state */
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_FLASH_POWERDOWN = SCU_CLK_DSLEEPCR_FPDN_Msk,/**< Flash power down in DEEPSLEEP state */
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_PLL_POWERDOWN = SCU_CLK_DSLEEPCR_PLLPDN_Msk,  /**<  Switch off main PLL in DEEPSLEEP state */
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_VCO_POWERDOWN = SCU_CLK_DSLEEPCR_VCOPDN_Msk,  /**<  Switch off VCO of main PLL in DEEPSLEEP state */
 #if defined(USB0)
-  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_DISABLE_USB = SCU_CLK_SLEEPCR_USBCR_Msk,  //!< XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_USB
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_DISABLE_USB = 0,  /**< USB clock disabled in DEEPSLEEP state */
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_ENABLE_USB = SCU_CLK_DSLEEPCR_USBCR_Msk,  /**< USB clock enabled in DEEPSLEEP state */
 #endif  
 #if defined(SDMMC)
-  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_DISABLE_SDMMC = SCU_CLK_SLEEPCR_MMCCR_Msk,//!< XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_SDMMC
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_DISABLE_SDMMC = 0,/**< SDMMC clock disabled in DEEPSLEEP state */
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_ENABLE_SDMMC = SCU_CLK_DSLEEPCR_MMCCR_Msk,/**< SDMMC clock enabled in DEEPSLEEP state */
 #endif  
 #if defined(ETH0)
-  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_DISABLE_ETH = SCU_CLK_SLEEPCR_ETH0CR_Msk,  //!< XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_ETH
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_DISABLE_ETH = 0,  /**< ETH clock disabled in DEEPSLEEP state */
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_ENABLE_ETH = SCU_CLK_DSLEEPCR_ETH0CR_Msk,  /**< ETH clock enabled in DEEPSLEEP state */
 #endif  
 #if defined(EBU)
-  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_DISABLE_EBU = SCU_CLK_SLEEPCR_EBUCR_Msk,  //!< XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_EBU
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_DISABLE_EBU = 0,  /**< EBU clock disabled in DEEPSLEEP state */
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_ENABLE_EBU = SCU_CLK_DSLEEPCR_EBUCR_Msk,  /**< EBU clock enabled in DEEPSLEEP state */
 #endif  
-  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_DISABLE_CCU = SCU_CLK_SLEEPCR_CCUCR_Msk,  //!< XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_CCU
-  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_DISABLE_WDT = SCU_CLK_SLEEPCR_WDTCR_Msk,  //!< XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_DISABLE_WDT
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_DISABLE_CCU = 0,  /**< CCU clock disabled in DEEPSLEEP state */
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_ENABLE_CCU = SCU_CLK_DSLEEPCR_CCUCR_Msk,  /**< CCU clock enabled in DEEPSLEEP state */
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_DISABLE_WDT = 0,  /**< WDT clock disabled in DEEPSLEEP state */
+  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_ENABLE_WDT = SCU_CLK_DSLEEPCR_WDTCR_Msk,  /**< WDT clock enabled in DEEPSLEEP state */
 } XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_t;
 
+/** 
+ * Defines status of EVR13 regulator
+ */
+typedef enum XMC_SCU_POWER_EVR_STATUS
+{
+  XMC_SCU_POWER_EVR_STATUS_OK = 0, /**< EVR13 regulator No overvoltage condition */
+  XMC_SCU_POWER_EVR_STATUS_EVR13_OVERVOLTAGE = SCU_POWER_EVRSTAT_OV13_Msk /**< EVR13 regulator is in overvoltage */
+} XMC_SCU_POWER_EVR_STATUS_t;
+
+/**
+ * Define status of external hibernate control  
+ */
+typedef enum XMC_SCU_HIB_CTRL_STATUS
+{
+  XMC_SCU_HIB_CTRL_STATUS_NO_ACTIVE = 0, /**< Hibernate not driven active to pads */
+  XMC_SCU_HIB_CTRL_STATUS_ACTIVE = SCU_HIBERNATE_HDSTAT_HIBNOUT_Msk, /**< Hibernate driven active to pads */
+} XMC_SCU_HIB_CTRL_STATUS_t;
+
+/** 
+ *  Hibernate domain event status
+ */
+typedef enum XMC_SCU_HIB_EVENT
+{
+  XMC_SCU_HIB_EVENT_WAKEUP_ON_POS_EDGE = SCU_HIBERNATE_HDCR_WKPEP_Msk, /**< Wake-up on positive edge pin event */
+  XMC_SCU_HIB_EVENT_WAKEUP_ON_NEG_EDGE = SCU_HIBERNATE_HDCR_WKPEN_Msk, /**< Wake-up on negative edge pin event */
+  XMC_SCU_HIB_EVENT_WAKEUP_ON_RTC = SCU_HIBERNATE_HDCR_RTCE_Msk, /**< Wake-up on RTC event */
+  XMC_SCU_HIB_EVENT_ULPWDG = SCU_HIBERNATE_HDCR_ULPWDGEN_Msk, /**< ULP watchdog alarm status */
+} XMC_SCU_HIB_EVENT_t;
+
+/** 
+  * Hibernate domain dedicated pins
+  */
+typedef enum XMC_SCU_HIB_IO
+{
+  XMC_SCU_HIB_IO_0 = 0, /**< HIB_IO_0 pin. 
+                             At the first power-up and with every reset of the hibernate domain this pin is configured as opendrain output and drives "0". As output the medium driver mode is active. */
+#if (defined(DOXYGEN) || (UC_PACKAGE == BGA196) || (UC_PACKAGE == BGA144) || (UC_PACKAGE == LQFP144) || (UC_PACKAGE == LQFP100))
+  XMC_SCU_HIB_IO_1 = 1 /**< HIB_IO_1 pin. 
+                            At the first power-up and with every reset of the hibernate domain this pin is configured as input with no pull device active. As output the medium driver mode is active. 
+                            @note : Only available on BGA196, BGA144, LQFP144 and LQFP100 packages*/
+#endif  
+} XMC_SCU_HIB_IO_t;
+
+/**
+ * HIB_IOx pin I/O control
+ */
+typedef enum XMC_SCU_HIB_PIN_MODE
+{
+  XMC_SCU_HIB_PIN_MODE_INPUT_PULL_NONE = 0 << SCU_HIBERNATE_HDCR_HIBIO0SEL_Pos, /**< Direct input, no input pull device connected */
+  XMC_SCU_HIB_PIN_MODE_INPUT_PULL_DOWN = 1 << SCU_HIBERNATE_HDCR_HIBIO0SEL_Pos, /**< Direct input, input pull down device connected */
+  XMC_SCU_HIB_PIN_MODE_INPUT_PULL_UP = 2 << SCU_HIBERNATE_HDCR_HIBIO0SEL_Pos, /**< Direct input, input pull up device connected */
+  XMC_SCU_HIB_PIN_MODE_OUTPUT_PUSH_PULL_HIBCTRL = 8 << SCU_HIBERNATE_HDCR_HIBIO0SEL_Pos, /**< Push-pull HIB control output */
+  XMC_SCU_HIB_PIN_MODE_OUTPUT_PUSH_PULL_WDTSRV = 9 << SCU_HIBERNATE_HDCR_HIBIO0SEL_Pos, /**< Push-pull WDT service output */
+  XMC_SCU_HIB_PIN_MODE_OUTPUT_PUSH_PULL_GPIO = 10 << SCU_HIBERNATE_HDCR_HIBIO0SEL_Pos, /**< Push-pull GPIO output */
+  XMC_SCU_HIB_PIN_MODE_OUTPUT_OPEN_DRAIN_HIBCTRL = 12 << SCU_HIBERNATE_HDCR_HIBIO0SEL_Pos, /**< Open drain HIB control output */
+  XMC_SCU_HIB_PIN_MODE_OUTPUT_OPEN_DRAIN_WDTSRV = 13 << SCU_HIBERNATE_HDCR_HIBIO0SEL_Pos, /**< Open drain WDT service output */
+  XMC_SCU_HIB_PIN_MODE_OUTPUT_OPEN_DRAIN_GPIO = 14 << SCU_HIBERNATE_HDCR_HIBIO0SEL_Pos, /**< Open drain GPIO output */  
+} XMC_SCU_HIB_PIN_MODE_t;
+
+/**
+ * Selects the output polarity of the HIB_IOx
+ */
+typedef enum XMC_SCU_HIB_IO_OUTPUT_LEVEL
+{
+  XMC_SCU_HIB_IO_OUTPUT_LEVEL_LOW = 0 << SCU_HIBERNATE_HDCR_HIBIO0POL_Pos, /**< Direct value */
+  XMC_SCU_HIB_IO_OUTPUT_LEVEL_HIGH = 1 << SCU_HIBERNATE_HDCR_HIBIO0POL_Pos /**< Inverted value */
+} XMC_SCU_HIB_IO_OUTPUT_LEVEL_t;
 
 /*********************************************************************************************************************
  * DATA STRUCTURES
@@ -803,7 +920,7 @@ bool XMC_SCU_IsTemperatureSensorEnabled(void);
  * Allows to improve the accuracy of the temperature measurement with the adjustment of \a OFFSET and \a GAIN bit fields
  * in the \a DTSCON register.
  * Offset adjustment is defined as a shift of the conversion result. The range of the offset adjustment is 7 bits with a 
- * resolution that corresponds to +/- 12.5°C. The offset value gets added to the measure result. 
+ * resolution that corresponds to +/- 12.5ï¿½C. The offset value gets added to the measure result. 
  * Offset is considered as a signed value.
  * Gain adjustment helps in minimizing gain error. When the \a gain value is 0, result is generated with maximum gain.
  * When the \a gain value is 63, result is generated with least gain, i.e, \a RESULT - 63 at the highest measured temperature.\n
@@ -855,7 +972,7 @@ XMC_SCU_STATUS_t XMC_SCU_StartTemperatureMeasurement(void);
  * \par<b>Description</b><br>
  * Reads the measured value of die temperature.\n\n
  * Temperature measurement result is read from \a RESULT bit field of \a DTSSTAT register.
- * The temperature measured in °C is given by (RESULT - 605) / 2.05 [°C]
+ * The temperature measured in ï¿½C is given by (RESULT - 605) / 2.05 [ï¿½C]
  * \par<b>Related APIs:</b><BR>
  * XMC_SCU_IsTemperatureSensorBusy() \n\n\n
  */
@@ -2465,6 +2582,65 @@ bool XMC_SCU_CLOCK_IsUsbPllLocked(void);
  */
 void XMC_SCU_CLOCK_SetBackupClockCalibrationMode(XMC_SCU_CLOCK_FOFI_CALIBRATION_MODE_t mode);
 
+/**
+ * @param threshold Threshold value for comparison to VDDP for brownout detection. LSB33V is 22.5mV
+ * @param interval Interval value for comparison to VDDP expressed in cycles of system clock
+ * @return None
+ *
+ * Enable power monitoring control register for brown-out detection.
+ * Brown Out Trap need to be enabled using XMC_SCU_TRAP_Enable() and event handling done in NMI_Handler.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_TRAP_Enable() \n\n\n
+ *
+ */
+__STATIC_INLINE void XMC_SCU_POWER_EnableMonitor(uint8_t threshold, uint8_t interval)
+{
+  SCU_POWER->PWRMON = SCU_POWER_PWRMON_ENB_Msk | 
+                      ((uint32_t)threshold << SCU_POWER_PWRMON_THRS_Pos) | 
+                      ((uint32_t)interval << SCU_POWER_PWRMON_INTV_Pos);
+}
+
+/**
+ * @return None
+ *
+ * Disable power monitoring control register for brown-out detection.
+ *
+ */
+__STATIC_INLINE void XMC_SCU_POWER_DisableMonitor(void)
+{
+  SCU_POWER->PWRMON &= ~SCU_POWER_PWRMON_ENB_Msk; 
+}
+
+/**
+ * @return ::XMC_SCU_POWER_EVR_STATUS_t
+ * 
+ * \par<b>Description</b><br>
+ * Returns status of the EVR13.
+ *
+ */
+__STATIC_INLINE int32_t XMC_SCU_POWER_GetEVRStatus(void)
+{
+  return SCU_POWER->EVRSTAT;
+}
+
+/**
+ * @return EVR13 voltage in volts
+ *
+ * \par<b>Description</b><br>
+ * Returns EVR13 voltage in volts.
+ *
+ */
+float XMC_SCU_POWER_GetEVR13Voltage(void);
+
+/**
+ * @return EVR33 voltage in volts
+ *
+ * \par<b>Description</b><br>
+ * Returns EVR33 voltage in volts
+ *
+ */
+float XMC_SCU_POWER_GetEVR33Voltage(void);
 
 /**
  * @return None
@@ -2549,6 +2725,124 @@ void XMC_SCU_HIB_DisableHibernateDomain(void);
 bool XMC_SCU_HIB_IsHibernateDomainEnabled(void);
 
 /**
+ * @return ::XMC_SCU_HIB_CTRL_STATUS_t
+ * 
+ * \par<b>Description</b><br>
+ * Returns status of the external hibernate control.
+ *
+ */
+__STATIC_INLINE int32_t XMC_SCU_HIB_GetHibernateControlStatus(void) 
+{
+  return (SCU_HIBERNATE->HDSTAT & SCU_HIBERNATE_HDSTAT_HIBNOUT_Msk); 
+}
+
+/** 
+ * @return ::XMC_SCU_HIB_EVENT_t
+ * 
+ * \par<b>Description</b><br>
+ * Returns status of hibernate wakeup events.
+ *
+ */
+__STATIC_INLINE int32_t XMC_SCU_HIB_GetEventStatus(void)
+{
+  return SCU_HIBERNATE->HDSTAT & (SCU_HIBERNATE_HDSTAT_EPEV_Msk | 
+                                  SCU_HIBERNATE_HDSTAT_ENEV_Msk | 
+                                  SCU_HIBERNATE_HDSTAT_RTCEV_Msk | 
+                                  SCU_HIBERNATE_HDSTAT_ULPWDG_Msk);
+}
+
+/**
+ * @param event Hibernate wakeup event ::XMC_SCU_HIB_EVENT_t
+ * @return None
+ * 
+ * \par<b>Description</b><br>
+ * Clear hibernate wakeup event status 
+ *
+ */
+void XMC_SCU_HIB_ClearEventStatus(int32_t event);
+
+/**
+ * @param event Hibernate wakeup event ::XMC_SCU_HIB_EVENT_t
+ * @return None
+ * 
+ * \par<b>Description</b><br>
+ * Trigger hibernate wakeup event
+ *
+ */
+void XMC_SCU_HIB_TriggerEvent(int32_t event);
+
+/**
+ * @param event Hibernate wakeup event ::XMC_SCU_HIB_EVENT_t
+ * @return None
+ * 
+ * \par<b>Description</b><br>
+ * Enable hibernate wakeup event source 
+ *
+ */
+void XMC_SCU_HIB_EnableEvent(int32_t event);
+
+/**
+ * @param event Hibernate wakeup event ::XMC_SCU_HIB_EVENT_t
+ * @return None
+ * 
+ * \par<b>Description</b><br>
+ * Disable hibernate wakeup event source 
+ *
+ */
+void XMC_SCU_HIB_DisableEvent(int32_t event);
+
+/**
+ * @return None
+ * 
+ * \par<b>Description</b><br>
+ * Enter hibernate state
+ *
+ */
+void XMC_SCU_HIB_EnterHibernateState(void);
+
+/**
+ * @param pin Hibernate domain dedicated pin ::XMC_SCU_HIB_IO_t
+ * @return None
+ * 
+ * \par<b>Description</b><br>
+ * Selects input for Wake-Up from Hibernate
+ *
+ */
+void XMC_SCU_HIB_SetWakeupTriggerInput(XMC_SCU_HIB_IO_t pin);
+
+/**
+ * @param pin Hibernate domain dedicated pin ::XMC_SCU_HIB_IO_t
+ * @param mode Hibernate domain dedicated pin mode ::XMC_SCU_HIB_PIN_MODE_t
+ * @return None
+ * 
+ * \par<b>Description</b><br>
+ * Selects mode of hibernate domain dedicated pins HIB_IOx
+ *
+ */
+void XMC_SCU_HIB_SetPinMode(XMC_SCU_HIB_IO_t pin, XMC_SCU_HIB_PIN_MODE_t mode);
+
+/**
+ * @param pin Hibernate domain dedicated pin ::XMC_SCU_HIB_IO_t
+ * @param level Output polarity of the hibernate domain dedicated pins HIB_IOx ::XMC_SCU_HIB_IO_OUTPUT_LEVEL_t
+ * @return None
+ * 
+ * \par<b>Description</b><br>
+ * Selects the output polarity of the hibernate domain dedicated pins HIB_IOx
+ *
+ */
+void XMC_SCU_HIB_SetPinOutputLevel(XMC_SCU_HIB_IO_t pin, XMC_SCU_HIB_IO_OUTPUT_LEVEL_t level);
+
+/**
+ * @param pin Hibernate domain dedicated pin ::XMC_SCU_HIB_IO_t
+ * @return None
+ * 
+ * \par<b>Description</b><br>
+ * Selects input to ERU0 module that optionally can be used with software as a general purpose input.
+ *
+ */
+void XMC_SCU_HIB_SetInput0(XMC_SCU_HIB_IO_t pin);
+
+/**
  *
  * @return None
  *
@@ -2587,50 +2881,93 @@ void XMC_SCU_HIB_EnableInternalSlowClock(void);
 void XMC_SCU_HIB_DisableInternalSlowClock(void);
 
 /**
- * @param config  Register configuration value that defines some system behavior aspects while in Deep Sleep mode.\n
- * Note: Refer user manual for valid register value before configuring the register. \n
- *
+ * @param config Defines the source of the system clock and peripherals clock gating in DEEPSLEEP state. ::XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_t
  * @return None
  *
  * \par<b>Description</b><br>
- * Configuration register that defines some system behavior aspects while in Deep Sleep mode.
- * The PLL re-initialization is required after wake-up from Deep Sleep mode if was enabled
- * before entering Deep Sleep mode and configured to go into power down while in Deep Sleep mode. \n
- * Note: Swiching off a module clock during operation may result in unexpected effects like
- * e.g. clock spikes or protocol violations. Before entering Deep Sleep mode the affected
- * modules should be in reset state. After restoration of the clocks the modules need
- * to be re-initialized in order to ensure proper function. \n
+ * Defines the source of the system clock and peripherals clock gating in DEEPSLEEP state.
+ * In addition the state of FLASH, PLL and PLLVCO during DEEPSLEEP state.
+ * Use this enum as parameter of XMC_SCU_CLOCK_SetDeepSleepConfig before going to DEEPSLEEP state.
+ *
+ * The DEEPSLEEP state of the system corresponds to the DEEPSLEEP state of the CPU. The state is
+ * entered via WFI or WFE instruction of the CPU. In this state the clock to the CPU is
+ * stopped. 
+ *
+ * In Deep Sleep state the OSC_HP and the PLL may be switched off. The wake-up logic in the NVIC is still clocked
+ * by a free-running clock. Peripherals are only clocked when configured to stay enabled. 
+ * Configuration of peripherals and any SRAM content is preserved.
+ * The Flash module can be put into low-power mode to achieve a further power reduction.
+ * On wake-up Flash module will be restarted again before instructions or data access is possible.
+ * Any interrupt will bring the system back to operation via the NVIC.The clock setup before
+ * entering Deep Sleep state is restored upon wake-up.
+ *
+ * @usage
+ * @code
+ * // Configure system during SLEEP state
+ * XMC_SCU_CLOCK_SetDeepSleepConfig(XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_SYSCLK_FOFI |
+ *                                  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_FLASH_POWERDOWN |
+ *                                  XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG_PLL_POWERDOWN); 
+ * 
+ * // Make sure that SLEEPDEEP bit is set
+ * SCB->SCR |= SCB_SCR_DEEPSLEEP_Msk;
+ *
+ * // Return to SLEEP mode after handling the wakeup event
+ * SCB->SCR |= SCB_SCR_SLEEPONEXIT_Msk; 
+ * 
+ * // Put system in DEEPSLEEP state
+ * __WFI();
+ *
+ * @endcode
+ *
  *\par<b>Related APIs:</b><BR>
  * XMC_SCU_CLOCK_Init() \n\n\n
  *
  */
-__STATIC_INLINE void XMC_SCU_CLOCK_SetDeepSleepConfig(uint32_t config)
+__STATIC_INLINE void XMC_SCU_CLOCK_SetDeepSleepConfig(int32_t config)
 {
   SCU_CLK->DSLEEPCR = config;
 }
 
 /**
- * @param config  Register configuration value that defines some system behavior aspects while in Sleep mode.\n
- * Note: Refer user manual for valid register value before configuring the register. \n
- *
+ * @param config Defines the source of the system clock and peripherals clock gating in SLEEP state. ::XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_t
  * @return None
  *
  * \par<b>Description</b><br>
- * Configuration register that defines some system behavior aspects while in Deep Sleep mode.
- * The original clock configuration gets restored upon wake-up from sleep mode. \n
- * Note: Swiching off a module clock during operation may result in unexpected effects like
- * e.g. clock spikes or protocol violations. Before entering Sleep mode the affected
- * modules should be in reset state. After restoration of the clocks the modules need
- * to be re-initialized in order to ensure proper function. \n
+ * Defines the source of the system clock and peripherals clock gating in SLEEP state.
+ *
+ * The SLEEP state of the system corresponds to the SLEEP state of the CPU. The state is
+ * entered via WFI or WFE instruction of the CPU. In this state the clock to the CPU is
+ * stopped. Peripherals are only clocked when configured to stay enabled. 
+ *
+ * Peripherals can continue to operate unaffected and eventually generate an event to
+ * wake-up the CPU. Any interrupt to the NVIC will bring the CPU back to operation. The
+ * clock tree upon exit from SLEEP state is restored to what it was before entry into SLEEP
+ * state.
+ * 
+ * @usage
+ * @code
+ * // Configure system during SLEEP state
+ * XMC_SCU_CLOCK_SetSleepConfig(XMC_SCU_CLOCK_SLEEP_MODE_CONFIG_SYSCLK_FOFI);
+ * 
+ * // Make sure that SLEEPDEEP bit is cleared
+ * SCB->SCR &= ~ SCB_SCR_DEEPSLEEP_Msk;
+ *
+ * // Return to SLEEP mode after handling the wakeup event
+ * SCB->SCR |= SCB_SCR_SLEEPONEXIT_Msk; 
+ * 
+ * // Put system in SLEEP state
+ * __WFI();
+ *
+ * @endcode
+ *
  *\par<b>Related APIs:</b><BR>
  * XMC_SCU_CLOCK_Init() \n\n\n
  *
  */
-__STATIC_INLINE void XMC_SCU_CLOCK_SetSleepConfig(uint32_t config)
+__STATIC_INLINE void XMC_SCU_CLOCK_SetSleepConfig(int32_t config)
 {
   SCU_CLK->SLEEPCR = config;
 }
-
 
 /**
  * @}

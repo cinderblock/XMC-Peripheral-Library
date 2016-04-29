@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- edited with XMLSpy v2013 sp1 (http://www.altova.com) by XMLSpy 2014 Professional Ed. Release 2, Installed for 180 users (with SMP from 2014-10-06 to 2016-10-06) (Infineon Technologies AG) -->
 <!--/*****************************************************************************
  *
- * Copyright (C) 2012 Infineon Technologies AG. All rights reserved.
+ * Copyright (C) 2016 Infineon Technologies AG. All rights reserved.
  *
  * Infineon Technologies AG (Infineon) is supplying this software for use with
  * Infineon's microcontrollers.  This file can be freely distributed within 
@@ -14,52 +15,36 @@
  * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  *
  ******************************************************************************-->
-<!-- edited with XMLSpy v2014 sp1 (http://www.altova.com) by Infineon Technologies AG (Infineon Technologies AG) -->
+<!--edited with XMLSpy v2014 sp1 (http://www.altova.com) by Infineon Technologies AG (Infineon Technologies AG) -->
 <!--Version of used XSLT processor: 1 Altova GmbH http://www.altova.com-->
 <!--Version of used XSLT: ISFR2SVD.xslt  V0.8-->
 <!--Configuration of XSLT: with bit extraction =Yes;  with bit coding =Yes; decodeThe3knownBitAccessTypes = Yes; 0,r and 1,r bit extraction = No-->
 <!--Version of used XSLT for fixing SVD issues: SVD_fixes.xslt  V1.2-->
-<device xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.1" xs:noNamespaceSchemaLocation="c:\fm8_xml\XSLT\RD2ISFR\CMSIS-SVD_Schema_1_1.xsd">
+<device xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.2" xs:noNamespaceSchemaLocation="c:\fm8_xml\XSLT\RD2ISFR\CMSIS-SVD_Schema_1_2.xsd">
 	<vendor>Infineon</vendor>
 	<name>XMC1300</name>
-	<version>1.2.2 (Reference Manual v1.2)</version>
+	<version>1.2.3 (Reference Manual v1.2)</version>
 	<description>SVD file</description>
+	<!--Compliance
+- CMSIS-SVD V1.2
+- Tested with ARM CMSIS-SVD SVD Consistency Checker / Header File Generator V2.87g
+-->
 	<!--Release Notes
-V1.0.1 - first working version, VADC/SHS register is missing
+-->
+	<!--V1.2.3 (22Feb2016)
+- Switch to SVD scheme V1.2
+- Corrected size attribute of addressBlock element of SCU_INTERRUPT block
+- Added service request information to "interrupt" elements
 -->
 	<!--Release History
 -->
-	<!--Changes in V1.0.2 (16102012)
--  Added the VADC0 and SHS0 registers
+	<!--V1.2.2 (22Jan2015)
+- PCR.SLPHSEL [SSC mode] is added
 -->
-	<!--Changes in V1.0.3 (30112012)
-- Update SVD to 3 series and update MATH to 1 group instead of 3 groups
+	<!--V1.2.1 (12Jan2015)
+- Replaced binary number identifiers (0b) by (#)
 -->
-	<!--Changes in V1.0.4 (30012013)
-- Update SVD based on latest XMC1300 RM version
-- Grouping for SCU is updated (SCU_CLK, SCU_INTERRUPT)
-- Added the COMPARATOR group which consist of ORC and ACMP registers
-- Update the VADC grouping to align with the XMC4000 VADC
-- HIde some bits in PAU, SCU registers that are related to modules that are not available in this variants  -->
-	<!--Changes in V1.0.5 (04Feb2013)
-- rename VADC0 to VADC under the "name" and "derivedFrom" column-->
-	<!--Changes in V1.0.6 (19Mar2013)
-- ACMP registers offset address are updated
-- ADC register bit definition of CHCTRx.BWDCH, SHSCFG.AREF, GLOBEVNP.REV0NP and SRACT.ASSR2/3 are updated-->
-	<!--Changes in V1.0.7 (21Jan2014)
-- BCCU0_CHCONFIGx.DBP bitname has been updated to Dimming Input Bypass
-- Bit MATH_DIVCON.DIVMODE is removed in the RM V1.0
-- Added 3 new bits (read-only) in PAU_AVAIL0 register 
-- PORT1 registers have been updated to support P1.6 in VQFN40 pin package, pending to be updated in RM V1.1 -->
-	<!--Changes in V1.1 (23Apr2014)
-- SCU_ANAOFFSET.ADJL_OFFSET bit field description is updated
-- The reset value for USIC0_CH0_CCFG is updated
-- USIC0_DXyCR.SFSEL bit description is updated
-- VADC_GLOBCFG.DIVA bit description is updated
-- VADC_CHCTR.REFSEL bit description is updated
-- SHS0_CALOC0 and  SHS0_CALOC1 are added
-- Port2_PDISC.PDIS bit description is updated-->
-	<!--Changes in V1.2 (03Dec2014)
+	<!--V1.2 (03Dec2014)
 - MATH_DIVCON.DIVMODE bit field description is added
 - The reset value for SCU_DBGROMID is updated
 - The description for PRNG bit fields are updated
@@ -71,11 +56,46 @@ V1.0.1 - first working version, VADC/SHS register is missing
   => VADC registers GLOBRES, RES (debugger use GLOBRESD, RESD)
   => CCU4 registers C0V, C1V, C2V, C3V, ECRD0, ECRD1
   => CCU8 registers C0V, C1V, C2V, C3V, ECRD0, ECRD1
-- Removed "Reserved" enumeration values-->
-	<!--Changes in V1.2.1 (12Jan2015)
-- Replaced binary number identifiers (0b) by (#)-->
-	<!--Changes in V1.2.2 (22Jan2015)
-- PCR.SLPHSEL [SSC mode] is added-->
+- Removed "Reserved" enumeration values
+-->
+	<!--V1.1 (23Apr2014)
+- SCU_ANAOFFSET.ADJL_OFFSET bit field description is updated
+- The reset value for USIC0_CH0_CCFG is updated
+- USIC0_DXyCR.SFSEL bit description is updated
+- VADC_GLOBCFG.DIVA bit description is updated
+- VADC_CHCTR.REFSEL bit description is updated
+- SHS0_CALOC0 and  SHS0_CALOC1 are added
+- Port2_PDISC.PDIS bit description is updated
+-->
+	<!--V1.0.7 (21Jan2014)
+- BCCU0_CHCONFIGx.DBP bitname has been updated to Dimming Input Bypass
+- Bit MATH_DIVCON.DIVMODE is removed in the RM V1.0
+- Added 3 new bits (read-only) in PAU_AVAIL0 register 
+- PORT1 registers have been updated to support P1.6 in VQFN40 pin package, pending to be updated in RM V1.1
+-->
+	<!--V1.0.6 (19Mar2013)
+- ACMP registers offset address are updated
+- ADC register bit definition of CHCTRx.BWDCH, SHSCFG.AREF, GLOBEVNP.REV0NP and SRACT.ASSR2/3 are updated
+-->
+	<!--V1.0.5 (04Feb2013)
+- rename VADC0 to VADC under the "name" and "derivedFrom" column
+-->
+	<!--V1.0.4 (30012013)
+- Update SVD based on latest XMC1300 RM version
+- Grouping for SCU is updated (SCU_CLK, SCU_INTERRUPT)
+- Added the COMPARATOR group which consist of ORC and ACMP registers
+- Update the VADC grouping to align with the XMC4000 VADC
+- HIde some bits in PAU, SCU registers that are related to modules that are not available in this variants
+-->
+	<!--V1.0.3 (30112012)
+- Update SVD to 3 series and update MATH to 1 group instead of 3 groups
+-->
+	<!--V1.0.2 (16102012)
+-  Added the VADC0 and SHS0 registers
+-->
+	<!--V1.0.1 
+- first working version, VADC/SHS register is missing
+-->
 	<cpu>
 		<name>CM0</name>
 		<revision>r0p0</revision>
@@ -1086,6 +1106,26 @@ V1.0.1 - first working version, VADC/SHS register is missing
 		<peripheral>
 			<name>ERU0</name>
 			<description>Event Request Unit 0</description>
+			<interrupt>
+				<name>ERU0_0</name>
+				<description>External Request Unit 0</description>
+				<value>3</value>
+			</interrupt>
+			<interrupt>
+				<name>ERU0_1</name>
+				<description>External Request Unit 0</description>
+				<value>4</value>
+			</interrupt>
+			<interrupt>
+				<name>ERU0_2</name>
+				<description>External Request Unit 0</description>
+				<value>5</value>
+			</interrupt>
+			<interrupt>
+				<name>ERU0_3</name>
+				<description>External Request Unit 0</description>
+				<value>6</value>
+			</interrupt>
 			<headerStructName>ERU</headerStructName>
 			<baseAddress>0x40010600</baseAddress>
 			<addressBlock>
@@ -1728,6 +1768,11 @@ V1.0.1 - first working version, VADC/SHS register is missing
 		<peripheral>
 			<name>MATH</name>
 			<description>MATH Unit</description>
+			<interrupt>
+				<name>MATH0_0</name>
+				<description>MATH Unit 0</description>
+				<value>7</value>
+			</interrupt>
 			<baseAddress>0x40030000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
@@ -4948,6 +4993,36 @@ V1.0.1 - first working version, VADC/SHS register is missing
 		<peripheral>
 			<name>USIC0</name>
 			<description>Universal Serial Interface Controller 0</description>
+			<interrupt>
+				<name>USIC0_0</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>9</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC0_1</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>10</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC0_2</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>11</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC0_3</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>12</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC0_4</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>13</value>
+			</interrupt>
+			<interrupt>
+				<name>USIC0_5</name>
+				<description>Universal Serial Interface Channel (Module 0)</description>
+				<value>14</value>
+			</interrupt>
 			<groupName>USIC</groupName>
 			<headerStructName>USIC</headerStructName>
 			<baseAddress>0x48000008</baseAddress>
@@ -12578,10 +12653,25 @@ V1.0.1 - first working version, VADC/SHS register is missing
 		<peripheral>
 			<name>SCU_INTERRUPT</name>
 			<description>System Control Unit</description>
+			<interrupt>
+				<name>SCU_0</name>
+				<description>System Control</description>
+				<value>0</value>
+			</interrupt>
+			<interrupt>
+				<name>SCU_1</name>
+				<description>System Control</description>
+				<value>1</value>
+			</interrupt>
+			<interrupt>
+				<name>SCU_2</name>
+				<description>System Control</description>
+				<value>2</value>
+			</interrupt>
 			<baseAddress>0x40010038</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
-				<size>0x00F</size>
+				<size>0x010</size>
 				<usage>registers</usage>
 			</addressBlock>
 			<registers>
@@ -15573,6 +15663,26 @@ V1.0.1 - first working version, VADC/SHS register is missing
 		<peripheral>
 			<name>CCU40</name>
 			<description>Capture Compare Unit 4 - Unit 0</description>
+			<interrupt>
+				<name>CCU40_0</name>
+				<description>Capture Compare Unit 4 (Module 0)</description>
+				<value>21</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU40_1</name>
+				<description>Capture Compare Unit 4 (Module 0)</description>
+				<value>22</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU40_2</name>
+				<description>Capture Compare Unit 4 (Module 0)</description>
+				<value>23</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU40_3</name>
+				<description>Capture Compare Unit 4 (Module 0)</description>
+				<value>24</value>
+			</interrupt>
 			<groupName>CCU4</groupName>
 			<headerStructName>CCU4</headerStructName>
 			<baseAddress>0x48040000</baseAddress>
@@ -19062,6 +19172,16 @@ V1.0.1 - first working version, VADC/SHS register is missing
 		<peripheral>
 			<name>CCU80</name>
 			<description>Capture Compare Unit 8 - Unit 0</description>
+			<interrupt>
+				<name>CCU80_0</name>
+				<description>Capture Compare Unit 8 (Module 0)</description>
+				<value>25</value>
+			</interrupt>
+			<interrupt>
+				<name>CCU80_1</name>
+				<description>Capture Compare Unit 8 (Module 0)</description>
+				<value>26</value>
+			</interrupt>
 			<groupName>CCU8</groupName>
 			<headerStructName>CCU8</headerStructName>
 			<baseAddress>0x50000000</baseAddress>
@@ -23578,6 +23698,16 @@ V1.0.1 - first working version, VADC/SHS register is missing
 		<peripheral>
 			<name>POSIF0</name>
 			<description>Position Interface 0</description>
+			<interrupt>
+				<name>POSIF0_0</name>
+				<description>Position Interface (Module 0)</description>
+				<value>27</value>
+			</interrupt>
+			<interrupt>
+				<name>POSIF0_1</name>
+				<description>Position Interface (Module 0)</description>
+				<value>28</value>
+			</interrupt>
 			<headerStructName>POSIF</headerStructName>
 			<baseAddress>0x50010000</baseAddress>
 			<addressBlock>
@@ -25196,6 +25326,16 @@ V1.0.1 - first working version, VADC/SHS register is missing
 		<peripheral>
 			<name>VADC</name>
 			<description>Analog to Digital Converter</description>
+			<interrupt>
+				<name>VADC0_C0_0</name>
+				<description>Analog to Digital Converter Common Block 0</description>
+				<value>15</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_C0_1</name>
+				<description>Analog to Digital Converter Common Block 0</description>
+				<value>16</value>
+			</interrupt>
 			<groupName>VADC</groupName>
 			<headerStructName>VADC</headerStructName>
 			<baseAddress>0x48030000</baseAddress>
@@ -26953,6 +27093,16 @@ V1.0.1 - first working version, VADC/SHS register is missing
 		<peripheral>
 			<name>VADC_G0</name>
 			<description>Analog to Digital Converter</description>
+			<interrupt>
+				<name>VADC0_G0_0</name>
+				<description>Analog to Digital Converter Group 0</description>
+				<value>17</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G0_1</name>
+				<description>Analog to Digital Converter Group 0</description>
+				<value>18</value>
+			</interrupt>
 			<groupName>VADC</groupName>
 			<headerStructName>VADC_G</headerStructName>
 			<baseAddress>0x48030400</baseAddress>
@@ -33035,6 +33185,16 @@ V1.0.1 - first working version, VADC/SHS register is missing
 		<peripheral derivedFrom="VADC_G0">
 			<name>VADC_G1</name>
 			<description>Analog to Digital Converter</description>
+			<interrupt>
+				<name>VADC0_G1_0</name>
+				<description>Analog to Digital Converter Group 1</description>
+				<value>19</value>
+			</interrupt>
+			<interrupt>
+				<name>VADC0_G1_1</name>
+				<description>Analog to Digital Converter Group 1</description>
+				<value>20</value>
+			</interrupt>
 			<groupName>VADC</groupName>
 			<baseAddress>0x48030800</baseAddress>
 			<addressBlock>
@@ -33545,12 +33705,12 @@ V1.0.1 - first working version, VADC/SHS register is missing
 							<enumeratedValues>
 								<enumeratedValue>
 									<name>value1</name>
-									<description>Result after tADCI × 2</description>
+									<description>Result after tADCI * 2</description>
 									<value>0x0</value>
 								</enumeratedValue>
 								<enumeratedValue>
 									<name>value2</name>
-									<description>Result after tADCI × 32</description>
+									<description>Result after tADCI * 32</description>
 									<value>0xF</value>
 								</enumeratedValue>
 							</enumeratedValues>
@@ -33569,12 +33729,12 @@ V1.0.1 - first working version, VADC/SHS register is missing
 								</enumeratedValue>
 								<enumeratedValue>
 									<name>value2</name>
-									<description>Sample time is tADC × 1</description>
+									<description>Sample time is tADC * 1</description>
 									<value>0x01</value>
 								</enumeratedValue>
 								<enumeratedValue>
 									<name>value3</name>
-									<description>Sample time is tADC × 63</description>
+									<description>Sample time is tADC * 63</description>
 									<value>0x3F</value>
 								</enumeratedValue>
 							</enumeratedValues>
@@ -33624,12 +33784,12 @@ V1.0.1 - first working version, VADC/SHS register is missing
 							<enumeratedValues>
 								<enumeratedValue>
 									<name>value1</name>
-									<description>Result after tADCI × 2</description>
+									<description>Result after tADCI * 2</description>
 									<value>0x0</value>
 								</enumeratedValue>
 								<enumeratedValue>
 									<name>value2</name>
-									<description>Result after tADCI × 32</description>
+									<description>Result after tADCI * 32</description>
 									<value>0xF</value>
 								</enumeratedValue>
 							</enumeratedValues>
@@ -33648,12 +33808,12 @@ V1.0.1 - first working version, VADC/SHS register is missing
 								</enumeratedValue>
 								<enumeratedValue>
 									<name>value2</name>
-									<description>Sample time is tADC × 1</description>
+									<description>Sample time is tADC * 1</description>
 									<value>0x01</value>
 								</enumeratedValue>
 								<enumeratedValue>
 									<name>value3</name>
-									<description>Sample time is tADC × 63</description>
+									<description>Sample time is tADC * 63</description>
 									<value>0x3F</value>
 								</enumeratedValue>
 							</enumeratedValues>
@@ -34577,6 +34737,11 @@ V1.0.1 - first working version, VADC/SHS register is missing
 		<peripheral>
 			<name>BCCU0</name>
 			<description>BCCU Unit 0</description>
+			<interrupt>
+				<name>BCCU0_0</name>
+				<description>Brightness and Color Control Unit 0</description>
+				<value>31</value>
+			</interrupt>
 			<groupName>BCCU</groupName>
 			<headerStructName>BCCU</headerStructName>
 			<baseAddress>0x50030000</baseAddress>

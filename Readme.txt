@@ -53,6 +53,7 @@ The following 32-Bit Industrial Microcontrollers based on ARM Cortex are support
       XMC4700_series/
       XMC4800_series/
     Lib/
+  Newlib
 
 Now let's explain the purpose of each directory:
  - XMClib: The XMC Peripheral Library   
@@ -66,6 +67,7 @@ Now let's explain the purpose of each directory:
  - CMSIS/Infineon: Includes System View Description files (SVD) for use with debuggers, device header files with the register description, 
                    system files and startup files defined by CMSIS
  - CMSIS/Lib: Precompiled CMSIS DSP libraries for XMC4 (ARM Cortex M4F) and XMC1 (ARM Cortex M0) families.
+ - Newlib: stubs for system calls. Only relevant for GNU GCC for ARM
       
 ===========
 == USAGE ==
@@ -87,6 +89,28 @@ To start a project from scratch follow the steps:
 == REVISION HISTORY ==
 ======================
 
-XMC Peripheral Library v2.1.4p1 (06-04-2015)
+XMC Peripheral Library v2.1.4p1 (06-04-2016)
 --------------------------------------------
   - Updated CMSIS component to v4.5.0p1. See release notes in CMSIS/Readme.txt
+
+XMC Peripheral Library v2.1.6   (29-04-2016)
+--------------------------------------------
+  - Updated CMSIS component to v4.5.0p2. See release notes in CMSIS/Readme.txt
+  - See changelog section in the documentation files for individual peripheral driver changes
+  - Added Newlib folder
+  - Following examples has been updated:
+    - XMC4500/EBU/EBU_SDRAM
+       - Fix CAS latency corrected to 3
+       - Change writing/reading of variables from 16bit to 32bit
+
+    - XMC4500/ETH/HTTPSERVER_RAW
+       - Stability and speed improvements
+
+    - XMC4500/ETH/HTTPSERVER_NETCONN
+       - Stability and speed improvements
+
+    - XMC4800/ETH/HTTPSERVER_RAW
+       - Stability and speed improvements
+
+    - XMC4800/ETH/HTTPSERVER_NETCONN
+       - Stability and speed improvements

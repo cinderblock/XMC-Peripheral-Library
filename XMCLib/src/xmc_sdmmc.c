@@ -1,11 +1,11 @@
 
 /**
  * @file xmc_sdmmc.c
- * @date 2016-01-12
+ * @date 2016-03-14
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.4 - XMC Peripheral Driver Library 
+ * XMClib v2.1.6 - XMC Peripheral Driver Library 
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
@@ -43,6 +43,9 @@
  *
  * 2015-06-20:
  *     - Removed definition of GetDriverVersion API <br>
+ *
+ * 2016-03-14:
+ *     - Values are directly assigned to the int status registers <br>
  *
  * @endcond
  */
@@ -257,8 +260,8 @@ void XMC_SDMMC_ClearEvent(XMC_SDMMC_t *const sdmmc, uint32_t event)
   XMC_ASSERT("XMC_SDMMC_ClearEvent: Invalid module pointer", XMC_SDMMC_CHECK_MODULE_PTR(sdmmc));
   XMC_ASSERT("XMC_SDMMC_ClearEvent: Invalid bit-field", !(event & XMC_SDMMC_TARGET_RESP_ERR));
 
-  sdmmc->INT_STATUS_NORM |= (uint16_t)event;
-  sdmmc->INT_STATUS_ERR |= (uint16_t)(event >> 16U);
+  sdmmc->INT_STATUS_NORM = (uint16_t)event;
+  sdmmc->INT_STATUS_ERR = (uint16_t)(event >> 16U);
 }
 
 /* Get the status of an SDMMC event */

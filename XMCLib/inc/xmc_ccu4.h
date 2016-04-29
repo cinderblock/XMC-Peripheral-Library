@@ -1,10 +1,10 @@
 /**
  * @file xmc_ccu4.h
- * @date 2016-01-12
+ * @date 2016-03-09
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.4 - XMC Peripheral Driver Library 
+ * XMClib v2.1.6 - XMC Peripheral Driver Library 
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
@@ -60,7 +60,9 @@
  *     - XMC_CCU4_SLICE_MULTI_IRQ_ID_t is added to support the XMC_CCU4_SLICE_EnableMultipleEvents() and 
  *       XMC_CCU4_SLICE_DisableMultipleEvents() APIs.
  *     - DOC updates for the newly added APIs.
- * 
+ *
+ * 2016-03-09:
+ *     - Optimization of write only registers 
  * @endcond
  */
 
@@ -1682,7 +1684,7 @@ __STATIC_INLINE uint16_t XMC_CCU4_SLICE_GetTimerCompareMatch(const XMC_CCU4_SLIC
 __STATIC_INLINE void XMC_CCU4_EnableShadowTransfer(XMC_CCU4_MODULE_t *const module, const uint32_t shadow_transfer_msk)
 {
   XMC_ASSERT("XMC_CCU4_EnableShadowTransfer:Invalid Slice Pointer", XMC_CCU4_IsValidModule(module));
-  module->GCSS |= (uint32_t)shadow_transfer_msk;  
+  module->GCSS = (uint32_t)shadow_transfer_msk;  
 }
 
 /**

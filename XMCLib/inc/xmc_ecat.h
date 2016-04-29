@@ -1,11 +1,11 @@
 
 /**
  * @file xmc_ecat.h
- * @date 2016-01-12
+ * @date 2015-12-27
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.4 - XMC Peripheral Driver Library 
+ * XMClib v2.1.6 - XMC Peripheral Driver Library 
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        

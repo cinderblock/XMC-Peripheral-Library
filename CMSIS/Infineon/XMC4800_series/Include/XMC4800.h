@@ -24,11 +24,11 @@ Copyright (C) 2011-2015 Infineon Technologies AG. All rights reserved.
  * @brief    CMSIS Cortex-M4 Peripheral Access Layer Header File for
  *           XMC4800 from Infineon.
  *
- * @version  V1.1.3 (Reference Manual v1.0)
- * @date     3. February 2016
+ * @version  V1.1.5 (Reference Manual v1.0)
+ * @date     11. April 2016
  *
- * @note     Generated with SVDConv V2.87g 
- *           from CMSIS SVD File 'XMC4800_Processed_SVD.xml' Version 1.1.3 (Reference Manual v1.0),
+ * @note     Generated with SVDConv V2.87l 
+ *           from CMSIS SVD File 'XMC4800_Processed_SVD.xml' Version 1.1.5 (Reference Manual v1.0),
  *******************************************************************************************************/
 
 
@@ -1220,9 +1220,7 @@ typedef struct {                                    /*!< (@ 0x4801C000) SDMMC St
   __O  uint16_t  FORCE_EVENT_ERR_STATUS;            /*!< (@ 0x4801C052) Force Event Register for Error Interrupt Status        */
   __I  uint32_t  RESERVED3[8];
   __O  uint32_t  DEBUG_SEL;                         /*!< (@ 0x4801C074) Debug Selection Register                               */
-  __I  uint32_t  RESERVED4[30];
-  __IO uint32_t  SPI;                               /*!< (@ 0x4801C0F0) SPI Interrupt Support Register                         */
-  __I  uint32_t  RESERVED5[2];
+  __I  uint32_t  RESERVED4[33];
   __I  uint16_t  SLOT_INT_STATUS;                   /*!< (@ 0x4801C0FC) Slot Interrupt Status Register                         */
 } SDMMC_GLOBAL_TypeDef;
 
@@ -2293,9 +2291,7 @@ typedef struct {                                    /*!< (@ 0x40020000) CCU8 Str
   __O  uint32_t  GCSC;                              /*!< (@ 0x40020014) Global Channel Clear                                   */
   __I  uint32_t  GCST;                              /*!< (@ 0x40020018) Global Channel status                                  */
   __IO uint32_t  GPCHK;                             /*!< (@ 0x4002001C) Parity Checker Configuration                           */
-  __I  uint32_t  RESERVED[12];
-  __I  uint32_t  ECRD;                              /*!< (@ 0x40020050) Extended Capture Mode Read                             */
-  __I  uint32_t  RESERVED1[11];
+  __I  uint32_t  RESERVED[24];
   __I  uint32_t  MIDR;                              /*!< (@ 0x40020080) Module Identification                                  */
 } CCU8_GLOBAL_TypeDef;
 
@@ -7136,8 +7132,6 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define SDMMC_BLOCK_GAP_CTRL_READ_WAIT_CTRL_Msk (0x4UL)                 /*!< SDMMC BLOCK_GAP_CTRL: READ_WAIT_CTRL (Bitfield-Mask: 0x01)  */
 #define SDMMC_BLOCK_GAP_CTRL_INT_AT_BLOCK_GAP_Pos (3UL)                 /*!< SDMMC BLOCK_GAP_CTRL: INT_AT_BLOCK_GAP (Bit 3)              */
 #define SDMMC_BLOCK_GAP_CTRL_INT_AT_BLOCK_GAP_Msk (0x8UL)               /*!< SDMMC BLOCK_GAP_CTRL: INT_AT_BLOCK_GAP (Bitfield-Mask: 0x01) */
-#define SDMMC_BLOCK_GAP_CTRL_SPI_MODE_Pos     (4UL)                     /*!< SDMMC BLOCK_GAP_CTRL: SPI_MODE (Bit 4)                      */
-#define SDMMC_BLOCK_GAP_CTRL_SPI_MODE_Msk     (0x10UL)                  /*!< SDMMC BLOCK_GAP_CTRL: SPI_MODE (Bitfield-Mask: 0x01)        */
 
 /* ------------------------------  SDMMC_WAKEUP_CTRL  ----------------------------- */
 #define SDMMC_WAKEUP_CTRL_WAKEUP_EVENT_EN_INT_Pos (0UL)                 /*!< SDMMC WAKEUP_CTRL: WAKEUP_EVENT_EN_INT (Bit 0)              */
@@ -7412,10 +7406,6 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 /* -------------------------------  SDMMC_DEBUG_SEL  ------------------------------ */
 #define SDMMC_DEBUG_SEL_DEBUG_SEL_Pos         (0UL)                     /*!< SDMMC DEBUG_SEL: DEBUG_SEL (Bit 0)                          */
 #define SDMMC_DEBUG_SEL_DEBUG_SEL_Msk         (0x1UL)                   /*!< SDMMC DEBUG_SEL: DEBUG_SEL (Bitfield-Mask: 0x01)            */
-
-/* ----------------------------------  SDMMC_SPI  --------------------------------- */
-#define SDMMC_SPI_SPI_INT_SUPPORT_Pos         (0UL)                     /*!< SDMMC SPI: SPI_INT_SUPPORT (Bit 0)                          */
-#define SDMMC_SPI_SPI_INT_SUPPORT_Msk         (0xffUL)                  /*!< SDMMC SPI: SPI_INT_SUPPORT (Bitfield-Mask: 0xff)            */
 
 /* ----------------------------  SDMMC_SLOT_INT_STATUS  --------------------------- */
 #define SDMMC_SLOT_INT_STATUS_SLOT_INT_STATUS_Pos (0UL)                 /*!< SDMMC SLOT_INT_STATUS: SLOT_INT_STATUS (Bit 0)              */
@@ -9418,8 +9408,6 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 /* -----------------------------  ECAT_WR_REG_ENABLE  ----------------------------- */
 #define ECAT_WR_REG_ENABLE_WR_REG_EN_Pos      (0UL)                     /*!< ECAT WR_REG_ENABLE: WR_REG_EN (Bit 0)                       */
 #define ECAT_WR_REG_ENABLE_WR_REG_EN_Msk      (0x1UL)                   /*!< ECAT WR_REG_ENABLE: WR_REG_EN (Bitfield-Mask: 0x01)         */
-#define ECAT_WR_REG_ENABLE_Res_Pos            (1UL)                     /*!< ECAT WR_REG_ENABLE: Res (Bit 1)                             */
-#define ECAT_WR_REG_ENABLE_Res_Msk            (0xfeUL)                  /*!< ECAT WR_REG_ENABLE: Res (Bitfield-Mask: 0x7f)               */
 
 /* -----------------------------  ECAT_WR_REG_PROTECT  ---------------------------- */
 #define ECAT_WR_REG_PROTECT_WR_REG_P_Pos      (0UL)                     /*!< ECAT WR_REG_PROTECT: WR_REG_P (Bit 0)                       */
@@ -9428,14 +9416,10 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 /* -----------------------------  ECAT_ESC_WR_ENABLE  ----------------------------- */
 #define ECAT_ESC_WR_ENABLE_ESC_WR_PROT_Pos    (0UL)                     /*!< ECAT ESC_WR_ENABLE: ESC_WR_PROT (Bit 0)                     */
 #define ECAT_ESC_WR_ENABLE_ESC_WR_PROT_Msk    (0x1UL)                   /*!< ECAT ESC_WR_ENABLE: ESC_WR_PROT (Bitfield-Mask: 0x01)       */
-#define ECAT_ESC_WR_ENABLE_Res_Pos            (1UL)                     /*!< ECAT ESC_WR_ENABLE: Res (Bit 1)                             */
-#define ECAT_ESC_WR_ENABLE_Res_Msk            (0xfeUL)                  /*!< ECAT ESC_WR_ENABLE: Res (Bitfield-Mask: 0x7f)               */
 
 /* -----------------------------  ECAT_ESC_WR_PROTECT  ---------------------------- */
 #define ECAT_ESC_WR_PROTECT_ESC_WR_PROT_Pos   (0UL)                     /*!< ECAT ESC_WR_PROTECT: ESC_WR_PROT (Bit 0)                    */
 #define ECAT_ESC_WR_PROTECT_ESC_WR_PROT_Msk   (0x1UL)                   /*!< ECAT ESC_WR_PROTECT: ESC_WR_PROT (Bitfield-Mask: 0x01)      */
-#define ECAT_ESC_WR_PROTECT_Res_Pos           (1UL)                     /*!< ECAT ESC_WR_PROTECT: Res (Bit 1)                            */
-#define ECAT_ESC_WR_PROTECT_Res_Msk           (0xfeUL)                  /*!< ECAT ESC_WR_PROTECT: Res (Bitfield-Mask: 0x7f)              */
 
 /* -----------------------------  ECAT_ESC_RESET_ECAT  ---------------------------- */
 #define ECAT_ESC_RESET_ECAT_RESET_CMD_WRITEMode_Pos (0UL)               /*!< ECAT ESC_RESET_ECAT: RESET_CMD_WRITEMode (Bit 0)            */
@@ -9444,8 +9428,6 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 /* -----------------------------  ECAT_ESC_RESET_ECAT  ---------------------------- */
 #define ECAT_ESC_RESET_ECAT_RESET_CMD_STATE_READMode_Pos (0UL)          /*!< ECAT ESC_RESET_ECAT: RESET_CMD_STATE_READMode (Bit 0)       */
 #define ECAT_ESC_RESET_ECAT_RESET_CMD_STATE_READMode_Msk (0x3UL)        /*!< ECAT ESC_RESET_ECAT: RESET_CMD_STATE_READMode (Bitfield-Mask: 0x03) */
-#define ECAT_ESC_RESET_ECAT_Res_READMode_Pos  (2UL)                     /*!< ECAT ESC_RESET_ECAT: Res_READMode (Bit 2)                   */
-#define ECAT_ESC_RESET_ECAT_Res_READMode_Msk  (0xfcUL)                  /*!< ECAT ESC_RESET_ECAT: Res_READMode (Bitfield-Mask: 0x3f)     */
 
 /* -----------------------------  ECAT_ESC_RESET_PDI  ----------------------------- */
 #define ECAT_ESC_RESET_PDI_RESET_CMD_WRITEMode_Pos (0UL)                /*!< ECAT ESC_RESET_PDI: RESET_CMD_WRITEMode (Bit 0)             */
@@ -9454,8 +9436,6 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 /* -----------------------------  ECAT_ESC_RESET_PDI  ----------------------------- */
 #define ECAT_ESC_RESET_PDI_RESET_CMD_STATE_READMode_Pos (0UL)           /*!< ECAT ESC_RESET_PDI: RESET_CMD_STATE_READMode (Bit 0)        */
 #define ECAT_ESC_RESET_PDI_RESET_CMD_STATE_READMode_Msk (0x3UL)         /*!< ECAT ESC_RESET_PDI: RESET_CMD_STATE_READMode (Bitfield-Mask: 0x03) */
-#define ECAT_ESC_RESET_PDI_Res_READMode_Pos   (2UL)                     /*!< ECAT ESC_RESET_PDI: Res_READMode (Bit 2)                    */
-#define ECAT_ESC_RESET_PDI_Res_READMode_Msk   (0xfcUL)                  /*!< ECAT ESC_RESET_PDI: Res_READMode (Bitfield-Mask: 0x3f)      */
 
 /* -----------------------------  ECAT_ESC_DL_CONTROL  ---------------------------- */
 #define ECAT_ESC_DL_CONTROL_FR_Pos            (0UL)                     /*!< ECAT ESC_DL_CONTROL: FR (Bit 0)                             */
@@ -10048,8 +10028,6 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 /* ---------------------------------  ECAT_STATUS  -------------------------------- */
 #define ECAT_STATUS_PARERR_Pos                (0UL)                     /*!< ECAT STATUS: PARERR (Bit 0)                                 */
 #define ECAT_STATUS_PARERR_Msk                (0x1UL)                   /*!< ECAT STATUS: PARERR (Bitfield-Mask: 0x01)                   */
-#define ECAT_STATUS_Res_Pos                   (1UL)                     /*!< ECAT STATUS: Res (Bit 1)                                    */
-#define ECAT_STATUS_Res_Msk                   (0xfffffffeUL)            /*!< ECAT STATUS: Res (Bitfield-Mask: 0x7fffffff)                */
 
 
 /* ================================================================================ */
@@ -14198,18 +14176,6 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define CCU8_GPCHK_PCSEL2_Msk                 (0xf000000UL)             /*!< CCU8 GPCHK: PCSEL2 (Bitfield-Mask: 0x0f)                    */
 #define CCU8_GPCHK_PCSEL3_Pos                 (28UL)                    /*!< CCU8 GPCHK: PCSEL3 (Bit 28)                                 */
 #define CCU8_GPCHK_PCSEL3_Msk                 (0xf0000000UL)            /*!< CCU8 GPCHK: PCSEL3 (Bitfield-Mask: 0x0f)                    */
-
-/* ----------------------------------  CCU8_ECRD  --------------------------------- */
-#define CCU8_ECRD_CAPV_Pos                    (0UL)                     /*!< CCU8 ECRD: CAPV (Bit 0)                                     */
-#define CCU8_ECRD_CAPV_Msk                    (0xffffUL)                /*!< CCU8 ECRD: CAPV (Bitfield-Mask: 0xffff)                     */
-#define CCU8_ECRD_FPCV_Pos                    (16UL)                    /*!< CCU8 ECRD: FPCV (Bit 16)                                    */
-#define CCU8_ECRD_FPCV_Msk                    (0xf0000UL)               /*!< CCU8 ECRD: FPCV (Bitfield-Mask: 0x0f)                       */
-#define CCU8_ECRD_SPTR_Pos                    (20UL)                    /*!< CCU8 ECRD: SPTR (Bit 20)                                    */
-#define CCU8_ECRD_SPTR_Msk                    (0x300000UL)              /*!< CCU8 ECRD: SPTR (Bitfield-Mask: 0x03)                       */
-#define CCU8_ECRD_VPTR_Pos                    (22UL)                    /*!< CCU8 ECRD: VPTR (Bit 22)                                    */
-#define CCU8_ECRD_VPTR_Msk                    (0xc00000UL)              /*!< CCU8 ECRD: VPTR (Bitfield-Mask: 0x03)                       */
-#define CCU8_ECRD_FFL_Pos                     (24UL)                    /*!< CCU8 ECRD: FFL (Bit 24)                                     */
-#define CCU8_ECRD_FFL_Msk                     (0x1000000UL)             /*!< CCU8 ECRD: FFL (Bitfield-Mask: 0x01)                        */
 
 /* ----------------------------------  CCU8_MIDR  --------------------------------- */
 #define CCU8_MIDR_MODR_Pos                    (0UL)                     /*!< CCU8 MIDR: MODR (Bit 0)                                     */

@@ -1,10 +1,10 @@
 /**
  * @file xmc_spi.h
- * @date 2016-01-12
+ * @date 2016-04-10
  *
  * @cond
   *********************************************************************************************************************
- * XMClib v2.1.4 - XMC Peripheral Driver Library 
+ * XMClib v2.1.6 - XMC Peripheral Driver Library 
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
@@ -62,6 +62,10 @@
  *
  * 2015-09-08:
  *     - Adding API for configuring the receiving clock phase in the slave:XMC_SPI_CH_DataLatchedInTrailingEdge() and XMC_SPI_CH_DataLatchedInLeadingEdge() <br>
+ *
+ * 2016-04-10:
+ *     - Added an API for configuring the transmit mode:XMC_SPI_CH_SetTransmitMode() <br>
+ *
  * @endcond 
  *
  */
@@ -437,6 +441,27 @@ void XMC_SPI_CH_EnableSlaveSelect(XMC_USIC_CH_t *const channel, const XMC_SPI_CH
  * XMC_SPI_CH_EnableSlaveSelect()
  */
 void XMC_SPI_CH_DisableSlaveSelect(XMC_USIC_CH_t *const channel);
+
+/**
+ * @param channel A constant pointer to XMC_USIC_CH_t, pointing to the USIC channel base address.
+ * @param mode Communication mode of the SPI, based on this mode TCI(Transmit control information)is updated.\n
+ *             Refer @ref XMC_SPI_CH_MODE_t for valid values.
+ *
+ * @return None
+ *
+ * \par<b>Description:</b><br>
+ * In Dual and Quad modes,  hardware port control(CCR.HPCEN) mode is enabled. \n\n
+ * By enabling this the direction of the data pin is updated by hardware itself. Before transmitting the data set the 
+ * mode to ensure the proper communication.
+ * 
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SPI_CH_Transmit()
+ */
+__STATIC_INLINE void XMC_SPI_CH_SetTransmitMode(XMC_USIC_CH_t *const channel, const XMC_SPI_CH_MODE_t mode)
+{
+  channel->CCR = (channel->CCR & (uint32_t)(~USIC_CH_CCR_HPCEN_Msk)) |
+                  (((uint32_t) mode << USIC_CH_CCR_HPCEN_Pos) & (uint32_t)USIC_CH_CCR_HPCEN_Msk);
+}
 
 /**
  * @param channel A constant pointer to XMC_USIC_CH_t, pointing to the USIC channel base address.

@@ -23,25 +23,17 @@
  *
  * History
  *
- * Version 1.0.0 Initial
+ * Version 1.0.0 
+ * - Initial
+ *
+ * Version 1.0.2
+ * - Update to latest XMClib
  */
 
 #include "xmc_gpio.h"
 #include "xmc_eth_mac.h"
 #include "xmc_eth_phy.h"
 #include "xmc_ecat.h"
-
-#define LED1 P1_14
-#define LED2 P0_14
-#define LED3 P3_14
-#define LED4 P0_15
-#define LED5 P1_2
-#define LED6 P3_13
-#define LED7 P5_3
-#define LED8 P3_11
-
-#define TICKS_PER_SECOND 1000
-#define TICKS_WAIT 500
 
 #define ETH_PHY_ADDR 0
 #define ECAT_P0_PHY_ADDR 0
@@ -65,14 +57,14 @@
 #define ECAT_LED_RUN		  P0_8
 #define ECAT_LED_ERR		  P0_7
 
-#define ECAT_LED_8			  P3_11
-#define ECAT_LED_7			  P5_3
-#define ECAT_LED_6			  P3_13
-#define ECAT_LED_5			  P1_12
-#define ECAT_LED_4			  P0_15
-#define ECAT_LED_3			  P3_14
-#define ECAT_LED_2			  P0_14
-#define ECAT_LED_1			  P1_14
+#define ECAT_LED8			  P3_11
+#define ECAT_LED7			  P5_3
+#define ECAT_LED6			  P3_13
+#define ECAT_LED5			  P1_12
+#define ECAT_LED4			  P0_15
+#define ECAT_LED3			  P3_14
+#define ECAT_LED2			  P0_14
+#define ECAT_LED1			  P1_14
 
 #define ECAT_P0_LINK_STATUS   P1_15
 #define ECAT_P0_LED_LINK_ACT  P6_3
@@ -174,14 +166,14 @@ int main(void)
   config.output_level = XMC_GPIO_OUTPUT_LEVEL_HIGH;
   config.output_strength = XMC_GPIO_OUTPUT_STRENGTH_STRONG_SOFT_EDGE;
 
-  XMC_GPIO_Init(LED1, &config);
-  XMC_GPIO_Init(LED2, &config);
-  XMC_GPIO_Init(LED3, &config);
-  XMC_GPIO_Init(LED4, &config);
-  XMC_GPIO_Init(LED5, &config);
-  XMC_GPIO_Init(LED6, &config);
-  XMC_GPIO_Init(LED7, &config);
-  XMC_GPIO_Init(LED8, &config);
+  XMC_GPIO_Init(ECAT_LED1, &config);
+  XMC_GPIO_Init(ECAT_LED2, &config);
+  XMC_GPIO_Init(ECAT_LED3, &config);
+  XMC_GPIO_Init(ECAT_LED4, &config);
+  XMC_GPIO_Init(ECAT_LED5, &config);
+  XMC_GPIO_Init(ECAT_LED6, &config);
+  XMC_GPIO_Init(ECAT_LED7, &config);
+  XMC_GPIO_Init(ECAT_LED8, &config);
 
   ECAT_Init();
   ETH_MAC_Init();
@@ -192,14 +184,14 @@ int main(void)
   {
 	if (g_received_frame == true)
 	{
-	  (buffer[29] & 0x01) == 0 ? XMC_GPIO_SetOutputHigh(LED1) : XMC_GPIO_SetOutputLow(LED1);
-	  (buffer[29] & 0x02) == 0 ? XMC_GPIO_SetOutputHigh(LED2) : XMC_GPIO_SetOutputLow(LED2);
-	  (buffer[29] & 0x04) == 0 ? XMC_GPIO_SetOutputHigh(LED3) : XMC_GPIO_SetOutputLow(LED3);
-	  (buffer[29] & 0x08) == 0 ? XMC_GPIO_SetOutputHigh(LED4) : XMC_GPIO_SetOutputLow(LED4);
-	  (buffer[29] & 0x10) == 0 ? XMC_GPIO_SetOutputHigh(LED5) : XMC_GPIO_SetOutputLow(LED5);
-	  (buffer[29] & 0x20) == 0 ? XMC_GPIO_SetOutputHigh(LED6) : XMC_GPIO_SetOutputLow(LED6);
-	  (buffer[29] & 0x40) == 0 ? XMC_GPIO_SetOutputHigh(LED7) : XMC_GPIO_SetOutputLow(LED7);
-	  (buffer[29] & 0x80) == 0 ? XMC_GPIO_SetOutputHigh(LED8) : XMC_GPIO_SetOutputLow(LED8);
+	  (buffer[29] & 0x01) == 0 ? XMC_GPIO_SetOutputHigh(ECAT_LED1) : XMC_GPIO_SetOutputLow(ECAT_LED1);
+	  (buffer[29] & 0x02) == 0 ? XMC_GPIO_SetOutputHigh(ECAT_LED2) : XMC_GPIO_SetOutputLow(ECAT_LED2);
+	  (buffer[29] & 0x04) == 0 ? XMC_GPIO_SetOutputHigh(ECAT_LED3) : XMC_GPIO_SetOutputLow(ECAT_LED3);
+	  (buffer[29] & 0x08) == 0 ? XMC_GPIO_SetOutputHigh(ECAT_LED4) : XMC_GPIO_SetOutputLow(ECAT_LED4);
+	  (buffer[29] & 0x10) == 0 ? XMC_GPIO_SetOutputHigh(ECAT_LED5) : XMC_GPIO_SetOutputLow(ECAT_LED5);
+	  (buffer[29] & 0x20) == 0 ? XMC_GPIO_SetOutputHigh(ECAT_LED6) : XMC_GPIO_SetOutputLow(ECAT_LED6);
+	  (buffer[29] & 0x40) == 0 ? XMC_GPIO_SetOutputHigh(ECAT_LED7) : XMC_GPIO_SetOutputLow(ECAT_LED7);
+	  (buffer[29] & 0x80) == 0 ? XMC_GPIO_SetOutputHigh(ECAT_LED8) : XMC_GPIO_SetOutputLow(ECAT_LED8);
 
 	  g_received_frame = false;
       XMC_ETH_MAC_SendFrame(&eth_mac, &buffer[0], 60, 0);
@@ -273,6 +265,7 @@ void ETH_MAC_Init(void)
 void ECAT_Init(void)
 {
   XMC_ECAT_PORT_CTRL_t port_control;
+  XMC_ECAT_CONFIG_t ecat_config;
   XMC_GPIO_CONFIG_t gpio_config;
 
   gpio_config.mode = XMC_GPIO_MODE_INPUT_TRISTATE;
@@ -319,7 +312,15 @@ void ECAT_Init(void)
   port_control.port1.tx_clk = XMC_ECAT_PORT1_CTRL_TX_CLK_P0_10;
   XMC_ECAT_SetPortControl(port_control);
 
-  XMC_ECAT_Init();
+  ecat_config.enable_dc_sync_out = false;
+  ecat_config.enable_dc_latch_in = false;
+  ecat_config.enable_enhanced_link_p0 = true;
+  ecat_config.enable_enhanced_link_p1 = true;
+  ecat_config.sync_pulse_length = 1000;
+  ecat_config.station_alias = 0;
+  ecat_config.checksum = 0x88A4;
+
+  XMC_ECAT_Init(&ecat_config);
 
   gpio_config.output_level = XMC_GPIO_OUTPUT_LEVEL_LOW;
   gpio_config.output_strength = XMC_GPIO_OUTPUT_STRENGTH_STRONG_SHARP_EDGE;

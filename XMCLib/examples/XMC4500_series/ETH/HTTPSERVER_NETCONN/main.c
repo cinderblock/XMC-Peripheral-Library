@@ -1,8 +1,33 @@
 /*
- * main.c
+ * Copyright (C) 2015-2016 Infineon Technologies AG. All rights reserved.
  *
- *  Created on: 2015 Jul 22 14:00:44
- *  Author: ferreije
+ * Infineon Technologies AG (Infineon) is supplying this software for use with
+ * Infineon's microcontrollers.
+ * This file can be freely distributed within development tools that are
+ * supporting such microcontrollers.
+ *
+ * THIS SOFTWARE IS PROVIDED "AS IS". NO WARRANTIES, WHETHER EXPRESS, IMPLIED
+ * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
+ * INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
+ * OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+ *
+ */
+
+/**
+ * @file
+ * @date 20 April,2016
+ * @version 1.0.2
+ *
+ * @brief ETH HTTP server demo example using the netconn interface
+ *
+ * History <br>
+ *
+ * Version 1.0.0 
+ * - Initial
+ *
+ * Version 1.0.2
+ * - Stability and speed improvements
  */
 
 #include "xmc_gpio.h"
@@ -10,7 +35,7 @@
 #include "lwip/tcpip.h"
 #include "lwip/netif.h"
 #include "ethernetif.h"
-#include "httpserver/httpserver-netconn.h"
+#include "httpserver_netconn/httpserver-netconn.h"
 
 #define LED1 P1_1
 

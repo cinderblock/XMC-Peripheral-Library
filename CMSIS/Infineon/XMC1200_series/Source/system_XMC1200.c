@@ -1,12 +1,12 @@
 /*********************************************************************************************************************
  * @file     system_XMC1200.c
  * @brief    Device specific initialization for the XMC1200-Series according to CMSIS
- * @version  V1.8
- * @date     03 Sep 2015
+ * @version  V1.9
+ * @date     31 Mar 2016
  *
  * @cond
  *********************************************************************************************************************
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -42,6 +42,7 @@
  * V1.7, 11 Dec 2014, JFT : SystemCoreClockSetup, SystemCoreSetup as weak functions
  * V1.8, 03 Sep 2015, JFT : Override values of CLOCK_VAL1 and CLOCK_VAL2 defined in vector table (startup.s)
  *                          MCLK = 32MHz, PCLK = 64MHz
+ * V1.9, 31 Mar 2016, JFT : Fix flash wait states to 1 cycle
  *
  * @endcond 
  */
@@ -72,6 +73,11 @@
 
 #define DCO1_FREQUENCY (64000000U)
 
+/* Macros to apply fixed wait states to flash read access (see DS Addendum) */
+#define NVM_NVMCONF_WS_Msk    (0x1000UL)
+#define NVM_CONFIG1           ((uint32_t *)0x40050048)
+#define NVM_CONFIG1_FIXWS_Msk (0x800UL)
+
 /*******************************************************************************
  * GLOBAL VARIABLES
  *******************************************************************************/
@@ -98,6 +104,9 @@ __WEAK void SystemInit(void)
 
 __WEAK void SystemCoreSetup(void)
 {
+  /* Fix flash wait states to 1 cycle */
+  NVM->NVMCONF |= NVM_NVMCONF_WS_Msk;
+  *NVM_CONFIG1 |= NVM_CONFIG1_FIXWS_Msk; 
 }
 
 __WEAK void SystemCoreClockSetup(void)

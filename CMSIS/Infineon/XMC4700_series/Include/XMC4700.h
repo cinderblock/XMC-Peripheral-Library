@@ -24,11 +24,11 @@ Copyright (C) 2011-2015 Infineon Technologies AG. All rights reserved.
  * @brief    CMSIS Cortex-M4 Peripheral Access Layer Header File for
  *           XMC4700 from Infineon.
  *
- * @version  V1.0.2 (Reference Manual v1.0)
- * @date     3. February 2016
+ * @version  V1.0.3 (Reference Manual v1.0)
+ * @date     22. February 2016
  *
- * @note     Generated with SVDConv V2.87g 
- *           from CMSIS SVD File 'XMC4700_Processed_SVD.xml' Version 1.0.2 (Reference Manual v1.0),
+ * @note     Generated with SVDConv V2.87l 
+ *           from CMSIS SVD File 'XMC4700_Processed_SVD.xml' Version 1.0.3 (Reference Manual v1.0),
  *******************************************************************************************************/
 
 
@@ -1217,9 +1217,7 @@ typedef struct {                                    /*!< (@ 0x4801C000) SDMMC St
   __O  uint16_t  FORCE_EVENT_ERR_STATUS;            /*!< (@ 0x4801C052) Force Event Register for Error Interrupt Status        */
   __I  uint32_t  RESERVED3[8];
   __O  uint32_t  DEBUG_SEL;                         /*!< (@ 0x4801C074) Debug Selection Register                               */
-  __I  uint32_t  RESERVED4[30];
-  __IO uint32_t  SPI;                               /*!< (@ 0x4801C0F0) SPI Interrupt Support Register                         */
-  __I  uint32_t  RESERVED5[2];
+  __I  uint32_t  RESERVED4[33];
   __I  uint16_t  SLOT_INT_STATUS;                   /*!< (@ 0x4801C0FC) Slot Interrupt Status Register                         */
 } SDMMC_GLOBAL_TypeDef;
 
@@ -2078,9 +2076,7 @@ typedef struct {                                    /*!< (@ 0x40020000) CCU8 Str
   __O  uint32_t  GCSC;                              /*!< (@ 0x40020014) Global Channel Clear                                   */
   __I  uint32_t  GCST;                              /*!< (@ 0x40020018) Global Channel status                                  */
   __IO uint32_t  GPCHK;                             /*!< (@ 0x4002001C) Parity Checker Configuration                           */
-  __I  uint32_t  RESERVED[12];
-  __I  uint32_t  ECRD;                              /*!< (@ 0x40020050) Extended Capture Mode Read                             */
-  __I  uint32_t  RESERVED1[11];
+  __I  uint32_t  RESERVED[24];
   __I  uint32_t  MIDR;                              /*!< (@ 0x40020080) Module Identification                                  */
 } CCU8_GLOBAL_TypeDef;
 
@@ -6877,8 +6873,6 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define SDMMC_BLOCK_GAP_CTRL_READ_WAIT_CTRL_Msk (0x4UL)                 /*!< SDMMC BLOCK_GAP_CTRL: READ_WAIT_CTRL (Bitfield-Mask: 0x01)  */
 #define SDMMC_BLOCK_GAP_CTRL_INT_AT_BLOCK_GAP_Pos (3UL)                 /*!< SDMMC BLOCK_GAP_CTRL: INT_AT_BLOCK_GAP (Bit 3)              */
 #define SDMMC_BLOCK_GAP_CTRL_INT_AT_BLOCK_GAP_Msk (0x8UL)               /*!< SDMMC BLOCK_GAP_CTRL: INT_AT_BLOCK_GAP (Bitfield-Mask: 0x01) */
-#define SDMMC_BLOCK_GAP_CTRL_SPI_MODE_Pos     (4UL)                     /*!< SDMMC BLOCK_GAP_CTRL: SPI_MODE (Bit 4)                      */
-#define SDMMC_BLOCK_GAP_CTRL_SPI_MODE_Msk     (0x10UL)                  /*!< SDMMC BLOCK_GAP_CTRL: SPI_MODE (Bitfield-Mask: 0x01)        */
 
 /* ------------------------------  SDMMC_WAKEUP_CTRL  ----------------------------- */
 #define SDMMC_WAKEUP_CTRL_WAKEUP_EVENT_EN_INT_Pos (0UL)                 /*!< SDMMC WAKEUP_CTRL: WAKEUP_EVENT_EN_INT (Bit 0)              */
@@ -7153,10 +7147,6 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 /* -------------------------------  SDMMC_DEBUG_SEL  ------------------------------ */
 #define SDMMC_DEBUG_SEL_DEBUG_SEL_Pos         (0UL)                     /*!< SDMMC DEBUG_SEL: DEBUG_SEL (Bit 0)                          */
 #define SDMMC_DEBUG_SEL_DEBUG_SEL_Msk         (0x1UL)                   /*!< SDMMC DEBUG_SEL: DEBUG_SEL (Bitfield-Mask: 0x01)            */
-
-/* ----------------------------------  SDMMC_SPI  --------------------------------- */
-#define SDMMC_SPI_SPI_INT_SUPPORT_Pos         (0UL)                     /*!< SDMMC SPI: SPI_INT_SUPPORT (Bit 0)                          */
-#define SDMMC_SPI_SPI_INT_SUPPORT_Msk         (0xffUL)                  /*!< SDMMC SPI: SPI_INT_SUPPORT (Bitfield-Mask: 0xff)            */
 
 /* ----------------------------  SDMMC_SLOT_INT_STATUS  --------------------------- */
 #define SDMMC_SLOT_INT_STATUS_SLOT_INT_STATUS_Pos (0UL)                 /*!< SDMMC SLOT_INT_STATUS: SLOT_INT_STATUS (Bit 0)              */
@@ -13165,18 +13155,6 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define CCU8_GPCHK_PCSEL2_Msk                 (0xf000000UL)             /*!< CCU8 GPCHK: PCSEL2 (Bitfield-Mask: 0x0f)                    */
 #define CCU8_GPCHK_PCSEL3_Pos                 (28UL)                    /*!< CCU8 GPCHK: PCSEL3 (Bit 28)                                 */
 #define CCU8_GPCHK_PCSEL3_Msk                 (0xf0000000UL)            /*!< CCU8 GPCHK: PCSEL3 (Bitfield-Mask: 0x0f)                    */
-
-/* ----------------------------------  CCU8_ECRD  --------------------------------- */
-#define CCU8_ECRD_CAPV_Pos                    (0UL)                     /*!< CCU8 ECRD: CAPV (Bit 0)                                     */
-#define CCU8_ECRD_CAPV_Msk                    (0xffffUL)                /*!< CCU8 ECRD: CAPV (Bitfield-Mask: 0xffff)                     */
-#define CCU8_ECRD_FPCV_Pos                    (16UL)                    /*!< CCU8 ECRD: FPCV (Bit 16)                                    */
-#define CCU8_ECRD_FPCV_Msk                    (0xf0000UL)               /*!< CCU8 ECRD: FPCV (Bitfield-Mask: 0x0f)                       */
-#define CCU8_ECRD_SPTR_Pos                    (20UL)                    /*!< CCU8 ECRD: SPTR (Bit 20)                                    */
-#define CCU8_ECRD_SPTR_Msk                    (0x300000UL)              /*!< CCU8 ECRD: SPTR (Bitfield-Mask: 0x03)                       */
-#define CCU8_ECRD_VPTR_Pos                    (22UL)                    /*!< CCU8 ECRD: VPTR (Bit 22)                                    */
-#define CCU8_ECRD_VPTR_Msk                    (0xc00000UL)              /*!< CCU8 ECRD: VPTR (Bitfield-Mask: 0x03)                       */
-#define CCU8_ECRD_FFL_Pos                     (24UL)                    /*!< CCU8 ECRD: FFL (Bit 24)                                     */
-#define CCU8_ECRD_FFL_Msk                     (0x1000000UL)             /*!< CCU8 ECRD: FFL (Bitfield-Mask: 0x01)                        */
 
 /* ----------------------------------  CCU8_MIDR  --------------------------------- */
 #define CCU8_MIDR_MODR_Pos                    (0UL)                     /*!< CCU8 MIDR: MODR (Bit 0)                                     */

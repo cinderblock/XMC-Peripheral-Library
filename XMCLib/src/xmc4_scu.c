@@ -1,10 +1,10 @@
 /**
  * @file xmc4_scu.c
- * @date 2016-01-12
+ * @date 2016-04-06
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.4 - XMC Peripheral Driver Library 
+ * XMClib v2.1.6 - XMC Peripheral Driver Library 
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
@@ -54,9 +54,21 @@
  *     - Following API functionalities are improved
  *       XMC_SCU_CLOCK_GatePeripheralClock, XMC_SCU_CLOCK_UngatePeripheralClock, XMC_SCU_CLOCK_IsPeripheralClockGated
  *       XMC_SCU_RESET_AssertPeripheralReset, XMC_SCU_RESET_DeassertPeripheralReset, XMC_SCU_RESET_IsPeripheralResetAsserted
+ *
  * 2015-12-08:
  *     - XMC_SCU_GetTemperature renamed to XMC_SCU_GetTemperatureMeasurement
- <br>
+ *
+ * 2016-03-09:
+ *     - Optimize write only registers
+ *     - Added XMC_SCU_HIB_SetPinMode
+ *     - Added XMC_SCU_HIB_GetHibernateControlStatus,
+ *             XMC_SCU_HIB_GetEventStatus, XMC_SCU_HIB_ClearEventStatus, XMC_SCU_HIB_TriggerEvent, 
+ *             XMC_SCU_HIB_EnableEvent, XMC_SCU_HIB_DisableEvent
+ *     - Added XMC_SCU_HIB_SetWakeupTriggerInput, XMC_SCU_HIB_SetPinMode, XMC_SCU_HIB_SetOutputPinLevel, 
+ *             XMC_SCU_HIB_SetInput0, XMC_SCU_HIB_EnterHibernateState
+ *
+ * 2016-04-06:
+ *     - Fixed XMC_SCU_ReadFromRetentionMemory functionality
  *
  * @endcond 
  *
@@ -146,6 +158,11 @@
 
 #define XMC_SCU_INTERRUPT_EVENT_MAX            (32U)      /**< Maximum supported SCU events. */
 
+#define SCU_HIBERNATE_HDCR_HIBIOSEL_Size (4U)
+
+#define XMC_SCU_POWER_LSB13V (0.0058F)
+#define XMC_SCU_POWER_LSB33V (0.0225F)
+
 /*********************************************************************************************************************
  * LOCAL DATA
  ********************************************************************************************************************/
@@ -211,7 +228,7 @@ XMC_SCU_INTERRUPT_EVENT_t XMC_SCU_INTERUPT_GetEventStatus(void)
 /* API to clear the SCU event status */
 void XMC_SCU_INTERRUPT_ClearEventStatus(const XMC_SCU_INTERRUPT_EVENT_t event)
 {
-  SCU_INTERRUPT->SRCLR |= (uint32_t)event;
+  SCU_INTERRUPT->SRCLR = (uint32_t)event;
 }
 
 
@@ -448,7 +465,7 @@ uint32_t XMC_SCU_ReadFromRetentionMemory(uint32_t address)
   rmacr = ((uint32_t)(address << SCU_GENERAL_RMACR_ADDR_Pos) & (uint32_t)SCU_GENERAL_RMACR_ADDR_Msk);
   
   /* Transfer from RMDATA to Retention memory */
-  rmacr |= (uint32_t)(SCU_GENERAL_RMACR_RDWR_Msk);
+  rmacr &= ~((uint32_t)(SCU_GENERAL_RMACR_RDWR_Msk));
   
   /* Writing an adress & direction of transfer into RMACR register */  
   SCU_GENERAL->RMACR = rmacr;
@@ -551,13 +568,13 @@ uint32_t XMC_SCU_TRAP_GetStatus(void)
 /* API to manually trigger a trap event */
 void XMC_SCU_TRAP_Trigger(const uint32_t trap)
 {
-  SCU_TRAP->TRAPSET |= (uint32_t)trap;
+  SCU_TRAP->TRAPSET = (uint32_t)trap;
 }
 
 /* API to clear a trap event */
 void XMC_SCU_TRAP_ClearStatus(const uint32_t trap)
 {
-  SCU_TRAP->TRAPCLR |= (uint32_t)trap;
+  SCU_TRAP->TRAPCLR = (uint32_t)trap;
 }
 
 /* API to clear parity error event */
@@ -614,7 +631,7 @@ void XMC_SCU_RESET_AssertPeripheralReset(const XMC_SCU_PERIPHERAL_RESET_t periph
   uint32_t index = (uint32_t)((((uint32_t)peripheral) & 0xf0000000UL) >> 28UL);
   uint32_t mask = (((uint32_t)peripheral) & ((uint32_t)~0xf0000000UL));
 
-  *(uint32_t *)(&(SCU_RESET->PRSET0) + (index * 3U)) |= (uint32_t)mask;
+  *(uint32_t *)(&(SCU_RESET->PRSET0) + (index * 3U)) = (uint32_t)mask;
 }
 
 /* API to manually de-assert a reset request */
@@ -623,7 +640,7 @@ void XMC_SCU_RESET_DeassertPeripheralReset(const XMC_SCU_PERIPHERAL_RESET_t peri
   uint32_t index = (uint32_t)((((uint32_t)peripheral) & 0xf0000000UL) >> 28UL);
   uint32_t mask = (((uint32_t)peripheral) & ((uint32_t)~0xf0000000UL));
 
-  *(uint32_t *)(&(SCU_RESET->PRCLR0) + (index * 3U)) |= (uint32_t)mask;
+  *(uint32_t *)(&(SCU_RESET->PRCLR0) + (index * 3U)) = (uint32_t)mask;
 }
 
 /* Find out if the peripheral reset is asserted */
@@ -1031,7 +1048,7 @@ void XMC_SCU_CLOCK_GatePeripheralClock(const XMC_SCU_PERIPHERAL_CLOCK_t peripher
   uint32_t index = (peripheral & 0xf0000000UL) >> 28UL;
   uint32_t mask = (peripheral & (uint32_t)~0xf0000000UL);
 
-  *(uint32_t *)((&(SCU_CLK->CGATSET0)) + (index * 3U)) |= (uint32_t)mask;
+  *(uint32_t *)((&(SCU_CLK->CGATSET0)) + (index * 3U)) = (uint32_t)mask;
 }
 
 /* API to ungate a given module clock */
@@ -1040,7 +1057,7 @@ void XMC_SCU_CLOCK_UngatePeripheralClock(const XMC_SCU_PERIPHERAL_CLOCK_t periph
   uint32_t index = (uint32_t)((peripheral & 0xf0000000UL) >> 28UL);
   uint32_t mask = (peripheral & (uint32_t)~0xf0000000UL);
 
-  *(uint32_t *)(&(SCU_CLK->CGATCLR0) + (index * 3U)) |= (uint32_t)mask;
+  *(uint32_t *)(&(SCU_CLK->CGATCLR0) + (index * 3U)) = (uint32_t)mask;
 }
 
 /* API to ungate a given module clock */
@@ -1052,6 +1069,16 @@ bool XMC_SCU_CLOCK_IsPeripheralClockGated(const XMC_SCU_PERIPHERAL_CLOCK_t perip
   return ((*(uint32_t *)(&(SCU_CLK->CGATSTAT0) + (index * 3U)) & mask) != 0U);
 }
 #endif
+
+float XMC_SCU_POWER_GetEVR13Voltage(void)
+{
+  return (SCU_POWER->EVRVADCSTAT & SCU_POWER_EVRVADCSTAT_VADC13V_Msk) * XMC_SCU_POWER_LSB13V;
+}
+
+float XMC_SCU_POWER_GetEVR33Voltage(void)
+{
+  return ((SCU_POWER->EVRVADCSTAT & SCU_POWER_EVRVADCSTAT_VADC33V_Msk) >> SCU_POWER_EVRVADCSTAT_VADC33V_Pos) * XMC_SCU_POWER_LSB33V;
+}
 
 /* API to enable USB PLL for USB clock */
 void XMC_SCU_CLOCK_EnableUsbPll(void)
@@ -1120,13 +1147,15 @@ void XMC_SCU_CLOCK_SetBackupClockCalibrationMode(XMC_SCU_CLOCK_FOFI_CALIBRATION_
   XMC_SCU_lDelay(100UL);
 }
 
+
+
 /* API to enable USB Phy and comparator */
 void XMC_SCU_POWER_EnableUsb(void)
 {
 #if defined(USB_OTG_SUPPORTED)
-  SCU_POWER->PWRSET |= (uint32_t)(SCU_POWER_PWRSET_USBOTGEN_Msk | SCU_POWER_PWRSET_USBPHYPDQ_Msk);
+  SCU_POWER->PWRSET = (uint32_t)(SCU_POWER_PWRSET_USBOTGEN_Msk | SCU_POWER_PWRSET_USBPHYPDQ_Msk);
 #else
-  SCU_POWER->PWRSET |= (uint32_t)SCU_POWER_PWRSET_USBPHYPDQ_Msk;
+  SCU_POWER->PWRSET = (uint32_t)SCU_POWER_PWRSET_USBPHYPDQ_Msk;
 #endif
 }
 
@@ -1134,9 +1163,9 @@ void XMC_SCU_POWER_EnableUsb(void)
 void XMC_SCU_POWER_DisableUsb(void)
 {
 #if defined(USB_OTG_SUPPORTED)
-  SCU_POWER->PWRCLR |= (uint32_t)(SCU_POWER_PWRCLR_USBOTGEN_Msk | SCU_POWER_PWRSET_USBPHYPDQ_Msk);
+  SCU_POWER->PWRCLR = (uint32_t)(SCU_POWER_PWRCLR_USBOTGEN_Msk | SCU_POWER_PWRSET_USBPHYPDQ_Msk);
 #else
-  SCU_POWER->PWRCLR |= (uint32_t)SCU_POWER_PWRCLR_USBPHYPDQ_Msk;
+  SCU_POWER->PWRCLR = (uint32_t)SCU_POWER_PWRCLR_USBPHYPDQ_Msk;
 #endif    
 }
 
@@ -1152,7 +1181,7 @@ void XMC_SCU_HIB_EnableHibernateDomain(void)
   /* Power up HIB domain if and only if it is currently powered down */
   if((SCU_POWER->PWRSTAT & SCU_POWER_PWRSTAT_HIBEN_Msk) == 0UL)
   {
-    SCU_POWER->PWRSET |= (uint32_t)SCU_POWER_PWRSET_HIB_Msk;
+    SCU_POWER->PWRSET = (uint32_t)SCU_POWER_PWRSET_HIB_Msk;
     
     while((SCU_POWER->PWRSTAT & SCU_POWER_PWRSTAT_HIBEN_Msk) == 0UL)
     {
@@ -1163,8 +1192,11 @@ void XMC_SCU_HIB_EnableHibernateDomain(void)
   /* Remove the reset only if HIB domain were in a state of reset */
   if((SCU_RESET->RSTSTAT) & SCU_RESET_RSTSTAT_HIBRS_Msk)
   {
-    SCU_RESET->RSTCLR |= (uint32_t)SCU_RESET_RSTCLR_HIBRS_Msk;
-    XMC_SCU_lDelay(150U);
+    SCU_RESET->RSTCLR = (uint32_t)SCU_RESET_RSTCLR_HIBRS_Msk;
+    while((SCU_RESET->RSTSTAT & SCU_RESET_RSTSTAT_HIBRS_Msk) != 0UL)
+    {
+      /* wait until HIB domain is enabled */
+    }
   }
 }
 
@@ -1172,9 +1204,9 @@ void XMC_SCU_HIB_EnableHibernateDomain(void)
 void XMC_SCU_HIB_DisableHibernateDomain(void)
 {
   /* Disable hibernate domain */   
-  SCU_POWER->PWRCLR |= (uint32_t)SCU_POWER_PWRCLR_HIB_Msk;
+  SCU_POWER->PWRCLR = (uint32_t)SCU_POWER_PWRCLR_HIB_Msk;
   /* Reset of hibernate domain reset */  
-  SCU_RESET->RSTSET |= (uint32_t)SCU_RESET_RSTSET_HIBRS_Msk;
+  SCU_RESET->RSTSET = (uint32_t)SCU_RESET_RSTSET_HIBRS_Msk;
 }
 
 /* API to check the hibernation domain is enabled or not */
@@ -1187,20 +1219,131 @@ bool XMC_SCU_HIB_IsHibernateDomainEnabled(void)
 /* API to enable internal slow clock - fOSI (32.768kHz) in hibernate domain */
 void XMC_SCU_HIB_EnableInternalSlowClock(void)
 {
-  SCU_HIBERNATE->OSCSICTRL &= (uint32_t)~(SCU_HIBERNATE_OSCSICTRL_PWD_Msk);
-  /* Wait until the update of OSCSICTRL register in hibernate domain is completed */
   while((SCU_GENERAL->MIRRSTS) & SCU_GENERAL_MIRRSTS_OSCSICTRL_Msk)
   {
+    /* Wait until OSCSICTRL register in hibernate domain is ready to accept a write */  
   }
+  SCU_HIBERNATE->OSCSICTRL &= (uint32_t)~(SCU_HIBERNATE_OSCSICTRL_PWD_Msk);
 }
 
 /* API to disable internal slow clock - fOSI (32.768kHz) in hibernate domain */
 void XMC_SCU_HIB_DisableInternalSlowClock(void)
 {
-  SCU_HIBERNATE->OSCSICTRL |= (uint32_t)SCU_HIBERNATE_OSCSICTRL_PWD_Msk;
-  /* Wait until the update of OSCSICTRL register in hibernate domain is completed */
   while((SCU_GENERAL->MIRRSTS) & SCU_GENERAL_MIRRSTS_OSCSICTRL_Msk)
   {
+    /* Wait until OSCSICTRL register in hibernate domain is ready to accept a write */  
+  }
+  SCU_HIBERNATE->OSCSICTRL |= (uint32_t)SCU_HIBERNATE_OSCSICTRL_PWD_Msk;
+}
+
+/** TODO
+ *
+ */
+void XMC_SCU_HIB_ClearEventStatus(int32_t event)
+{
+  while((SCU_GENERAL->MIRRSTS) & SCU_GENERAL_MIRRSTS_HDCLR_Msk)
+  {
+    /* Wait until HDCLR register in hibernate domain is ready to accept a write */  
+  }
+  SCU_HIBERNATE->HDCLR = event;
+}
+
+/** TODO
+ *
+ */
+void XMC_SCU_HIB_TriggerEvent(int32_t event)
+{
+  while((SCU_GENERAL->MIRRSTS) & SCU_GENERAL_MIRRSTS_HDSET_Msk)
+  {
+    /* Wait until HDSET register in hibernate domain is ready to accept a write */    
+  }
+  SCU_HIBERNATE->HDSET = event;
+}
+
+/** TODO
+ *
+ */
+void XMC_SCU_HIB_EnableEvent(int32_t event)
+{
+  while((SCU_GENERAL->MIRRSTS) & SCU_GENERAL_MIRRSTS_HDCR_Msk)
+  {
+    /* Wait until HDCR register in hibernate domain is ready to accept a write */    
+  }
+  SCU_HIBERNATE->HDCR |= event;
+}
+
+/** TODO
+ *
+ */
+void XMC_SCU_HIB_DisableEvent(int32_t event)
+{
+  while((SCU_GENERAL->MIRRSTS) & SCU_GENERAL_MIRRSTS_HDCR_Msk)
+  {
+    /* Wait until HDCR register in hibernate domain is ready to accept a write */    
+  }
+  SCU_HIBERNATE->HDCR &= ~event;
+}
+
+void XMC_SCU_HIB_EnterHibernateState(void) 
+{
+  while((SCU_GENERAL->MIRRSTS) & SCU_GENERAL_MIRRSTS_HDCR_Msk)
+  {
+    /* Wait until HDCR register in hibernate domain is ready to accept a write */    
+  }
+  SCU_HIBERNATE->HDCR |= SCU_HIBERNATE_HDCR_HIB_Msk;
+}
+
+void XMC_SCU_HIB_SetWakeupTriggerInput(XMC_SCU_HIB_IO_t pin)
+{
+  while((SCU_GENERAL->MIRRSTS) & SCU_GENERAL_MIRRSTS_HDCR_Msk)
+  {
+    /* Wait until HDCR register in hibernate domain is ready to accept a write */    
+  }
+
+  if (pin == XMC_SCU_HIB_IO_0)
+  {
+    SCU_HIBERNATE->HDCR |= SCU_HIBERNATE_HDCR_WKUPSEL_Msk;
+  }
+  else
+  {
+    SCU_HIBERNATE->HDCR &= ~SCU_HIBERNATE_HDCR_WKUPSEL_Msk; 
+  }
+}
+
+void XMC_SCU_HIB_SetPinMode(XMC_SCU_HIB_IO_t pin, XMC_SCU_HIB_PIN_MODE_t mode)
+{
+  while((SCU_GENERAL->MIRRSTS) & SCU_GENERAL_MIRRSTS_HDCR_Msk)
+  {
+    /* Wait until HDCR register in hibernate domain is ready to accept a write */    
+  }
+  SCU_HIBERNATE->HDCR = (SCU_HIBERNATE->HDCR & ~(SCU_HIBERNATE_HDCR_HIBIO0SEL_Msk << (SCU_HIBERNATE_HDCR_HIBIOSEL_Size * pin))) |
+                        (mode << (SCU_HIBERNATE_HDCR_HIBIOSEL_Size * pin));
+}
+
+void XMC_SCU_HIB_SetPinOutputLevel(XMC_SCU_HIB_IO_t pin, XMC_SCU_HIB_IO_OUTPUT_LEVEL_t level)
+{
+  while((SCU_GENERAL->MIRRSTS) & SCU_GENERAL_MIRRSTS_HDCR_Msk)
+  {
+    /* Wait until HDCR register in hibernate domain is ready to accept a write */    
+  }
+  SCU_HIBERNATE->HDCR = (SCU_HIBERNATE->HDCR & ~(SCU_HIBERNATE_HDCR_HIBIO0POL_Msk << pin)) |
+                        (level << pin);
+}
+
+void XMC_SCU_HIB_SetInput0(XMC_SCU_HIB_IO_t pin)
+{
+  while((SCU_GENERAL->MIRRSTS) & SCU_GENERAL_MIRRSTS_HDCR_Msk)
+  {
+    /* Wait until HDCR register in hibernate domain is ready to accept a write */    
+  }
+
+  if (pin == XMC_SCU_HIB_IO_0)
+  {
+    SCU_HIBERNATE->HDCR |= SCU_HIBERNATE_HDCR_GPI0SEL_Msk;
+  }
+  else
+  {
+    SCU_HIBERNATE->HDCR &= ~SCU_HIBERNATE_HDCR_GPI0SEL_Msk; 
   }
 }
 
@@ -1238,12 +1381,11 @@ void XMC_SCU_CLOCK_EnableLowPowerOscillator(void)
 /* API to configure the 32khz Ultra Low Power oscillator */
 void XMC_SCU_CLOCK_DisableLowPowerOscillator(void)
 {
-  SCU_HIBERNATE->OSCULCTRL |= (uint32_t)SCU_HIBERNATE_OSCULCTRL_MODE_Msk;
-
   while((SCU_GENERAL->MIRRSTS) & SCU_GENERAL_MIRRSTS_OSCULCTRL_Msk)
   {
-    /* Wait until the update of OSCULCTRL register in hibernate domain is completed */
+    /* Wait until OSCULCTRL register in hibernate domain is ready to accept a write */    
   }
+  SCU_HIBERNATE->OSCULCTRL |= (uint32_t)SCU_HIBERNATE_OSCULCTRL_MODE_Msk;
 }
 
 /* API to enable High Precision High Speed oscillator */

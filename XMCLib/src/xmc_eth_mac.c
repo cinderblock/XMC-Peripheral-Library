@@ -1,11 +1,11 @@
 
 /**
  * @file xmc_eth_mac.c
- * @date 2016-01-12
+ * @date 2016-03-16
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.4 - XMC Peripheral Driver Library 
+ * XMClib v2.1.6 - XMC Peripheral Driver Library 
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
@@ -46,6 +46,9 @@
  *
  * 2015-11-30:
  *     - Fix XMC_ETH_MAC_GetRxFrameSize return value in case of errors
+ *
+ * 2016-03-16:
+ *     - Fix XMC_ETH_MAC_DisableEvent
  *
  * @endcond
  */
@@ -328,7 +331,7 @@ XMC_ETH_MAC_STATUS_t XMC_ETH_MAC_SendFrame(XMC_ETH_MAC_t *const eth_mac, const u
   uint32_t ctrl;
 
   XMC_ASSERT("XMC_ETH_MAC_SendFrame:", eth_mac != NULL);
-  XMC_ASSERT("XMC_ETH_MAC_SendFrame:", eth_mac->regs != ETH0);
+  XMC_ASSERT("XMC_ETH_MAC_SendFrame:", eth_mac->regs == ETH0);
   XMC_ASSERT("XMC_ETH_MAC_SendFrame:", (frame != NULL) && (len > 0));
 
   dst = eth_mac->frame_end;
@@ -408,7 +411,7 @@ uint32_t XMC_ETH_MAC_ReadFrame(XMC_ETH_MAC_t *const eth_mac, uint8_t *frame, uin
   uint8_t const *src;
 
   XMC_ASSERT("XMC_ETH_MAC_ReadFrame:", eth_mac != NULL);
-  XMC_ASSERT("XMC_ETH_MAC_ReadFrame:", eth_mac->regs != ETH0);
+  XMC_ASSERT("XMC_ETH_MAC_ReadFrame:", eth_mac->regs == ETH0);
   XMC_ASSERT("XMC_ETH_MAC_ReadFrame:", (frame != NULL) && (len > 0));
 
   /* Fast-copy data to packet buffer */
@@ -638,7 +641,7 @@ void XMC_ETH_MAC_DisableEvent(XMC_ETH_MAC_t *const eth_mac, uint32_t event)
 
   eth_mac->regs->INTERRUPT_MASK |= event >> 16U;
 
-  event &= (uint16_t)~0xffffU;
+  event &= 0x7fffU;
   eth_mac->regs->INTERRUPT_ENABLE &= ~event;
 }
 

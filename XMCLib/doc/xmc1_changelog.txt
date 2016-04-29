@@ -2,6 +2,81 @@
  * @page Changelog
  *
  * @tableofcontents
+ * @section v216 Version 2.1.6
+ * @subsection SCU SCU
+ * - Added:
+ *    - XMC_SCU_POWER_EnableMonitor(), XMC_SCU_POWER_DisableMonitor()
+ * - Fixed:  
+ *    - XMC_SCU_CLOCK_ScaleMCLKFrequency()
+ *      It solves issues with down clock frequency scaling *
+ *    - XMC_SCU_CLOCK_Init() for XMC1400
+ *      It solves issues when trying to disable the OSCHP and use the XTAL pins as GPIO
+ * - Changed:
+ *    - XMC_SCU_RESET_ClearDeviceResetReason
+ *      Optimization of write only registers
+ *
+ * @subsection RTC RTC
+ * - Changed:
+ *    - XMC_RTC_ClearEvent()
+ *      Optimization of write only registers
+ *
+ * @subsection GPIO GPIO
+ * - Fixed:
+ *    - Map file
+ *      VADC_EMUX signals
+ * - Added:
+ *    - Map file
+ *      P1_6_AF_BCCU0_OUT2 for (UC_DEVICE == XMC1202) && (UC_PACKAGE == VQFN40)
+ *      HWCTRL_U1C0_DOUTx for XMC14xx
+ *
+ * @subsection ERU ERU
+ * - Added:
+ *    - XMC_ERU_ETL_GetEdgeDetection()
+ *
+ * @subsection CCU4 CCU4
+ * -Changed:
+ *    - XMC_CCU4_EnableShadowTransfer()
+ *      Optimization of write only registers
+ *
+ * @subsection CCU8 CCU8
+ * -Changed:
+ *    - XMC_CCU8_EnableShadowTransfer()
+ *      Optimization of write only registers
+ *
+ * @subsection POSIF POSIF
+ * - Changed:
+ *    - XMC_POSIF_Start(), XMC_POSIF_Stop()
+ *      Optimization of write only registers
+ *    - XMC_POSIF_HSC_UpdateHallPattern():
+ *      Optimization of write only registers
+ *    - XMC_POSIF_SetEvent(), XMC_POSIF_ClearEvent()
+ *      Optimization of write only registers
+ *
+ * @subsection USIC USIC
+ * - Added:
+ *    - XMC_USIC_CH_TXFIFO_PutDataHPCMode()
+ * - Changed:
+ *    - XMC_USIC_CH_TriggerServiceRequest()
+ *      Optimization of write only registers
+ *    - XMC_USIC_CH_TXFIFO_Flush(), XMC_USIC_CH_RXFIFO_Flush()
+ *      Optimization of write only registers
+ *    - XMC_USIC_CH_TXFIFO_ClearEvent(), XMC_USIC_CH_RXFIFO_ClearEvent()
+ *      Optimization of write only registers
+ *
+ * @subsection SPI SPI
+ * - Added:
+ *    - XMC_SPI_CH_SetTransmitMode()
+ *
+ * @subsection VADC VADC
+ * - Fixed:
+ *    - XMC_VADC_GLOBAL_SHS_IsConverterReady()
+ *      Fixed functionality, check SHSCFG instead of STEPCFG
+ * - Changed:
+ *    - XMC_VADC_GROUP_QueueClearReqSrcEvent()
+ *      Optimization of write only registers
+ *    - XMC_VADC_GROUP_ChannelClearEvent()
+ *      Optimization of write only registers
+ *
  * @section v214 Version 2.1.4
  * @subsection SCU SCU
  * - Added:

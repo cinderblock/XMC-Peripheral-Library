@@ -30,7 +30,6 @@ a. Copy the files to a new project
    "${workspace_loc:/${ProjName}/lwip/include/ipv4}"
    "${workspace_loc:/${ProjName}/lwip/port/nosys/include}"
    "${workspace_loc:/${ProjName}/lwip/port/nosys/netif}"
-   "${workspace_loc:/${ProjName}/httpserver_raw}"
 b. Compile and flash the application onto the device
 c. Run the application. 
 

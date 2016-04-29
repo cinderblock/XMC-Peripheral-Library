@@ -1,10 +1,10 @@
 /**
  * @file xmc_device.h
- * @date 2016-01-12
+ * @date 2016-02-26
  *
  * @cond
   *********************************************************************************************************************
- * XMClib v2.1.4 - XMC Peripheral Driver Library
+ * XMClib v2.1.6 - XMC Peripheral Driver Library
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
@@ -44,6 +44,9 @@
  *
  * 2015-11-19:
  *     - Added XMC43
+ *
+ * 2016-02-26:
+ *     - Fixed CCU8 version for XMC43/47/48
  *
  * @endcond 
  *
@@ -118,7 +121,7 @@
 #define UC_FLASH     (2048UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4800_F144x2048)
 #define UC_FAMILY    XMC4
@@ -128,7 +131,7 @@
 #define UC_FLASH     (2048UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4800_F100x2048)
 #define UC_FAMILY    XMC4
@@ -138,7 +141,7 @@
 #define UC_FLASH     (2048UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4800_E196x1536)
 #define UC_FAMILY    XMC4
@@ -148,7 +151,7 @@
 #define UC_FLASH     (1536UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4800_F144x1536)
 #define UC_FAMILY    XMC4
@@ -158,7 +161,7 @@
 #define UC_FLASH     (1536UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4800_F100x1536)
 #define UC_FAMILY    XMC4
@@ -168,7 +171,7 @@
 #define UC_FLASH     (1536UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4800_E196x1024)
 #define UC_FAMILY    XMC4
@@ -178,7 +181,7 @@
 #define UC_FLASH     (1024UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4800_F144x1024)
 #define UC_FAMILY    XMC4
@@ -188,7 +191,7 @@
 #define UC_FLASH     (1024UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4800_F100x1024)
 #define UC_FAMILY    XMC4
@@ -198,7 +201,7 @@
 #define UC_FLASH     (1024UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4700_E196x2048)
 #define UC_FAMILY    XMC4
@@ -208,7 +211,7 @@
 #define UC_FLASH     (2048UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4700_F144x2048)
 #define UC_FAMILY    XMC4
@@ -218,7 +221,7 @@
 #define UC_FLASH     (2048UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4700_F100x2048)
 #define UC_FAMILY    XMC4
@@ -228,7 +231,7 @@
 #define UC_FLASH     (2048UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4700_E196x1536)
 #define UC_FAMILY    XMC4
@@ -238,7 +241,7 @@
 #define UC_FLASH     (1536UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4700_F144x1536)
 #define UC_FAMILY    XMC4
@@ -248,7 +251,7 @@
 #define UC_FLASH     (1536UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4700_F100x1536)
 #define UC_FAMILY    XMC4
@@ -258,7 +261,7 @@
 #define UC_FLASH     (1536UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4500_E144x1024)
 #define UC_FAMILY    XMC4
@@ -394,7 +397,7 @@
 #define UC_FLASH     (256UL)
 #define MULTICAN_PLUS
 #define CCU4V2
-#define CCU8V1
+#define CCU8V2
 
 #elif defined(XMC4200_E64x256) 	
 #define UC_FAMILY    XMC4

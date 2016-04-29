@@ -1,11 +1,11 @@
 
 /**
  * @file xmc_eth_mac.h
- * @date 2016-01-12
+ * @date 2016-04-25
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.4 - XMC Peripheral Driver Library 
+ * XMClib v2.1.6 - XMC Peripheral Driver Library 
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
@@ -38,7 +38,10 @@
  * --------------
  *
  * 2015-06-20:
- *     - Initial <br>
+ *     - Initial
+ *
+ * 2016-04-25:
+ *     - Change XMC_ETH_MAC_BUF_SIZE to 1524 to allow for Tagged MAC frame format
  *
  * @endcond
  */
@@ -80,7 +83,7 @@
  * MACROS
  *********************************************************************************************************************/
 
-#define XMC_ETH_MAC_BUF_SIZE           (1518)     /**< ETH MAC buffer size */
+#define XMC_ETH_MAC_BUF_SIZE           (1524)     /**< ETH MAC buffer size */
 #define XMC_ETH_MAC_PHY_MAX_RETRIES    (0xffffUL) /**< Maximum retries */
 #define XMC_ETH_WAKEUP_REGISTER_LENGTH (8U)       /**< Remote wakeup frame reg length */
 

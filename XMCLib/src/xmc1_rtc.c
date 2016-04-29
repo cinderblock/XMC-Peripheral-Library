@@ -1,10 +1,10 @@
 /**
  * @file xmc1_rtc.c
- * @date 2016-01-12
+ * @date 2016-03-09
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.4 - XMC Peripheral Driver Library 
+ * XMClib v2.1.6 - XMC Peripheral Driver Library 
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
@@ -42,6 +42,10 @@
  * 2015-05-20:
  *     - XMC_RTC_Init() function is modified
  *       by adding RTC running condition check
+ *
+ * 2016-03-09:
+ *     - Optimize write only registers
+ *
  * @endcond 
  *
  */
@@ -142,7 +146,7 @@ void XMC_RTC_DisableEvent(const uint32_t event)
  */
 void XMC_RTC_ClearEvent(const uint32_t event)
 {
-  RTC->CLRSR |= event;
+  RTC->CLRSR = event;
 }
 
 /*

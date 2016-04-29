@@ -1,6 +1,151 @@
 /**
  * @page Changelog
  * @tableofcontents
+ * @section v216 Version 2.1.6
+ * @subsection SCU SCU
+ * - Added:
+ *    - XMC_SCU_POWER_EnableMonitor(), XMC_SCU_POWER_DisableMonitor()
+ *    - XMC_SCU_POWER_GetEVRStatus(), XMC_SCU_POWER_GetEVR13Voltage(), XMC_SCU_POWER_GetEVR33Voltage()
+ *    - XMC_SCU_HIB_SetPinMode()
+ *    - XMC_SCU_HIB_GetHibernateControlStatus()
+ *    - XMC_SCU_HIB_GetEventStatus(), XMC_SCU_HIB_ClearEventStatus()
+ *    - XMC_SCU_HIB_TriggerEvent(), XMC_SCU_HIB_EnableEvent(), XMC_SCU_HIB_DisableEvent()
+ *    - XMC_SCU_HIB_SetWakeupTriggerInput()
+ *    - XMC_SCU_HIB_SetPinMode()
+ *    - XMC_SCU_HIB_SetOutputPinLevel() 
+ *    - XMC_SCU_HIB_SetInput0()
+ *    - XMC_SCU_HIB_EnterHibernateState()
+ *
+ * - Fixed:
+ *    - XMC_SCU_ReadFromRetentionMemory()
+ *      Fix functionality
+ *    - XMC_SCU_CLOCK_ScaleMCLKFrequency()
+ *      It solves issues with down clock frequency scaling *
+ *    - XMC_SCU_CLOCK_Init() for XMC1400
+ *      It solves issues when trying to disable the OSCHP and use the XTAL pins as GPIO
+ *
+ * - Changed:
+ *    - XMC_SCU_INTERRUPT_ClearEventStatus()
+ *      Optimization of write only registers
+ *    - XMC_SCU_TRAP_Trigger(), XMC_SCU_TRAP_ClearStatus()
+ *      Optimization of write only registers
+ *    - XMC_SCU_RESET_AssertPeripheralReset(), XMC_SCU_RESET_DeassertPeripheralReset()
+ *      Optimization of write only registers
+ *    - XMC_SCU_CLOCK_GatePeripheralClock(), XMC_SCU_CLOCK_UngatePeripheralClock()
+ *      Optimization of write only registers
+ *    - XMC_SCU_POWER_EnableUsb(), XMC_SCU_POWER_DisableUsb()
+ *      Optimization of write only registers
+ *    - XMC_SCU_HIB_EnableHibernateDomain(), XMC_SCU_HIB_DisableHibernateDomain()
+ *      Optimization of write only registers
+ *    - XMC_SCU_RESET_ClearDeviceResetReason()
+ *      Optimization of write only registers
+ *
+ * @subsection RTC RTC
+ * - Changed:
+ *    - XMC_RTC_ClearEvent()
+ *      Optimization of write only registers
+ *
+ * @subsection SDMMC SDMMC
+ * - Changed:
+ *    - XMC_SDMMC_ClearEvent()
+ *      Optimization of write only registers
+ * - Added:
+ *    - XMC_SDMMC_COMMAND_RESPONSE_t
+ *
+ * @subsection ETH_MAC ETH_MAC
+ * - Changed:
+ *    - XMC_ETH_MAC_BUF_SIZE
+ *      Change XMC_ETH_MAC_BUF_SIZE to 1524 to allow for Tagged MAC frame format
+ * - Fixed:
+ *    - XMC_ETH_MAC_DisableEvent()
+ *      Fixed functionality
+ *
+ * @subsection ERU ERU
+ * - Added:
+ *    - XMC_ERU_ETL_GetEdgeDetection()
+ *
+ * @subsection DMA DMA
+ * - Fixed:
+ *    - XMC_DMA_IRQHandler()
+ *      Clear channel event status before processing the event handler.
+ *      It corrects event losses if the DMA triggered in the event handler finished before returning from handler.
+ *
+ * -Changed:
+ *    - XMC_DMA_CH_EnableEvent(), XMC_DMA_CH_DisableEvent()
+ *      Optimization of write only registers
+ *    - XMC_DMA_ClearOverrunStatus()
+ *      Optimization of write only registers
+ *
+ * @subsection CCU4 CCU4
+ * -Changed:
+ *    - XMC_CCU4_EnableShadowTransfer()
+ *      Optimization of write only registers
+ *
+ * @subsection CCU8 CCU8
+ * - Fixed:
+ *    - Use correct API implementation for XMC43, XMC47/48 devices
+ * -Changed:
+ *    - XMC_CCU8_EnableShadowTransfer()
+ *      Optimization of write only registers
+ *
+ * @subsection EBU EBU
+ * - Fixed:
+ *    - XMC_EBU_BUS_READ_CONFIG_t:
+ *      Added missing ebu_data_hold_cycles_for_read_accesses 
+ *    - XMC_EBU_BUS_WRITE_CONFIG_t
+ *      Added missing ebu_device_addressing_mode and ebu_data_hold_cycles_for_write_accesses 
+ *
+ * @subsection POSIF POSIF
+ * - Changed:
+ *    - XMC_POSIF_Start(), XMC_POSIF_Stop()
+ *      Optimization of write only registers
+ *    - XMC_POSIF_HSC_UpdateHallPattern():
+ *      Optimization of write only registers
+ *    - XMC_POSIF_SetEvent(), XMC_POSIF_ClearEvent()
+ *      Optimization of write only registers
+ *
+ * @subsection USIC USIC
+ * - Added:
+ *    - XMC_USIC_CH_TXFIFO_PutDataHPCMode()
+ * - Changed:
+ *    - XMC_USIC_CH_TriggerServiceRequest()
+ *      Optimization of write only registers
+ *    - XMC_USIC_CH_TXFIFO_Flush(), XMC_USIC_CH_RXFIFO_Flush()
+ *      Optimization of write only registers
+ *    - XMC_USIC_CH_TXFIFO_ClearEvent(), XMC_USIC_CH_RXFIFO_ClearEvent()
+ *      Optimization of write only registers
+ *
+ * @subsection SPI SPI
+ * - Added:
+ *    - XMC_SPI_CH_SetTransmitMode()
+ *
+ * @subsection VADC VADC
+ * - Fixed:
+ *    - XMC_VADC_GLOBAL_SHS_IsConverterReady()
+ *      Fixed functionality, check SHSCFG instead of STEPCFG
+ * - Changed:
+ *    - XMC_VADC_GROUP_QueueClearReqSrcEvent()
+ *      Optimization of write only registers
+ *    - XMC_VADC_GROUP_ChannelClearEvent()
+ *      Optimization of write only registers
+ *
+ * @subsection FLASH FLASH
+ * - Fixed:
+ *    - XMC_PREFETCH_EnableInstructionBuffer(), XMC_PREFETCH_DisableInstructionBuffer
+ *      Fixed functionality
+ *    - XMC_PREFETCH_InvalidateInstructionBuffer()
+ *      Fixed functionality
+ *
+ * @subsection GPIO GPIO
+ * - Fixed:
+ *    - Map file
+ *      SDMMC signals names
+ *      EBU CS signal names
+ * - Added:
+ *    - Map file
+ *      P2_0_AF_CAN_N0_TXD for XMC44xx
+ *      P1_9_AF_U0C0_SCLKOUT, P4_7_AF_U2C1_DOUT0, P6_6_AF_U2C0_DOUT0 for XMC47/48 BGA196
+ *
  * @section v214 Version 2.1.4
  * @subsection GENERAL GENERAL
  * - Added:

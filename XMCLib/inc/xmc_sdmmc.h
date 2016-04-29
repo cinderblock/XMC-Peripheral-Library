@@ -1,11 +1,11 @@
 
 /**
  * @file xmc_sdmmc.h
- * @date 2016-01-12
+ * @date 2016-04-07
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.4 - XMC Peripheral Driver Library 
+ * XMClib v2.1.6 - XMC Peripheral Driver Library 
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
@@ -51,6 +51,9 @@
  *         3) XMC_SDMMC_SetDelay <br>
  *         4) XMC_SDMMC_EnableHighSpeed <br>
  *         5) XMC_SDMMC_DisableHighSpeed <br>
+ *
+ * 2016-04-07:
+ *     - Added XMC_SDMMC_COMMAND_RESPONSE_t
  *
  * @endcond
  */
@@ -308,6 +311,17 @@ typedef enum
 } XMC_SDMMC_RESPONSE_TYPE_t;
 
 /**
+* Command response selection
+*/
+typedef enum XMC_SDMMC_COMMAND_RESPONSE
+{
+  XMC_SDMMC_COMMAND_RESPONSE_NONE = 0, /**< No Response */
+  XMC_SDMMC_COMMAND_RESPONSE_LONG = 1, /**< Response length 136 */
+  XMC_SDMMC_COMMAND_RESPONSE_SHORT = 2, /**< Response length 48 */
+  XMC_SDMMC_COMMAND_RESPONSE_SHORT_BUSY = 3, /**< Response length 48 check Busy after response */
+} XMC_SDMMC_COMMAND_RESPONSE_t;
+
+/**
  * Types of SDMMC commands
  */
 typedef enum
@@ -490,14 +504,14 @@ typedef union
 {
   struct
   {
-    uint16_t response_type_sel : 2; /**< Response type select */
-    uint16_t                   : 1; /**< Reserved bit */
+    uint16_t response_type_sel : 2; /**< Response type select ::XMC_SDMMC_COMMAND_RESPONSE_t */
+    uint16_t                   : 1;
     uint16_t crc_check_en      : 1; /**< Command CRC check enable */
     uint16_t index_check_en    : 1; /**< Command index check enable */
     uint16_t dat_present_sel   : 1; /**< Data present select */
-    uint16_t cmd_type          : 2; /**< Command type */
+    uint16_t cmd_type          : 2; /**< Command type ::XMC_SDMMC_COMMAND_TYPE_t */
     uint16_t cmd_index         : 6; /**< Command index */
-    uint16_t                   : 2; /**< Reserved bits */
+    uint16_t                   : 2;
   };
   uint16_t cmd;
 } XMC_SDMMC_COMMAND_t;

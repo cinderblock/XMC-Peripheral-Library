@@ -1,10 +1,10 @@
 /**
  * @file xmc1_scu.h
- * @date 2016-01-12
+ * @date 2016-03-09
  *
  * @cond
 *********************************************************************************************************************
- * XMClib v2.1.4 - XMC Peripheral Driver Library 
+ * XMClib v2.1.6 - XMC Peripheral Driver Library 
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.
@@ -53,6 +53,10 @@
  *
  * 2015-12-09:
  *     - Added XMC_SCU_EnablePrefetchUnit and XMC_SCU_DisablePrefetchUnit
+ * 
+ * 2016-03-09:
+ *     - Added XMC_SCU_POWER_EnableMonitor/XMC_SCU_POWER_DisableMonitor
+ *
  * @endcond
  *
  */
@@ -627,6 +631,27 @@ typedef enum XMC_SCU_IRQCTRL
 #endif
 } XMC_SCU_IRQCTRL_t;
 #endif /* XMC_SERIES = XMC14 */
+
+/** TODO
+ *
+ */
+typedef enum XMC_SCU_POWER_MONITOR_RANGE
+{
+  XMC_SCU_POWER_MONITOR_RANGE_2_25V = 0U << SCU_ANALOG_ANAVDEL_VDEL_SELECT_Pos, /**< */
+  XMC_SCU_POWER_MONITOR_RANGE_3_00V = 1U << SCU_ANALOG_ANAVDEL_VDEL_SELECT_Pos, /**< */
+  XMC_SCU_POWER_MONITOR_RANGE_4_40V = 2U << SCU_ANALOG_ANAVDEL_VDEL_SELECT_Pos  /**< */
+} XMC_SCU_POWER_MONITOR_RANGE_t;
+
+/** TODO
+ *
+ */
+typedef enum XMC_SCU_POWER_MONITOR_DELAY
+{
+  XMC_SCU_POWER_MONITOR_DELAY_1US = 0U << SCU_ANALOG_ANAVDEL_VDEL_TIM_ADJ_Pos,   /**< */
+  XMC_SCU_POWER_MONITOR_DELAY_500NS = 1U << SCU_ANALOG_ANAVDEL_VDEL_TIM_ADJ_Pos, /**< */
+  XMC_SCU_POWER_MONITOR_DELAY_250NS = 2U << SCU_ANALOG_ANAVDEL_VDEL_TIM_ADJ_Pos, /**< */
+  XMC_SCU_POWER_MONITOR_DELAY_NONE = 3U << SCU_ANALOG_ANAVDEL_VDEL_TIM_ADJ_Pos   /**< */
+} XMC_SCU_POWER_MONITOR_DELAY_t;
 
 
 /*********************************************************************************************************************
@@ -1208,6 +1233,24 @@ __STATIC_INLINE void XMC_SCU_DisablePrefetchUnit(void)
 }
 
 #endif
+
+/** TODO
+ * Note: Brown Out Trap need to be enabled
+ */
+__STATIC_INLINE void XMC_SCU_POWER_EnableMonitor(XMC_SCU_POWER_MONITOR_RANGE_t range, XMC_SCU_POWER_MONITOR_DELAY_t delay)
+{
+  SCU_ANALOG->ANAVDEL = SCU_ANALOG_ANAVDEL_VDEL_EN_Msk | 
+                        (uint32_t)range | 
+                        (uint32_t)delay;
+}
+
+/** TODO
+ *
+ */
+__STATIC_INLINE void XMC_SCU_POWER_DisableMonitor(void)
+{
+  SCU_ANALOG->ANAVDEL &= ~SCU_ANALOG_ANAVDEL_VDEL_EN_Msk; 
+}
 
 #ifdef __cplusplus
 }

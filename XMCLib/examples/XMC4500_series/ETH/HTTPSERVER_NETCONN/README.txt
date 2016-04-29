@@ -22,15 +22,15 @@ a. Copy the files to a new project
    "${workspace_loc:/${ProjName}/lwip/include/ipv4}"
    "${workspace_loc:/${ProjName}/lwip/port/cmsis-rtos/include}"
    "${workspace_loc:/${ProjName}/lwip/port/cmsis-rtos/netif}"
-   "${workspace_loc:/${ProjName}/httpserver_raw}"      
      
    The following macors need to be defined in the compiler settings:
      __CORTEX_M4F
      __FPU_PRESENT
      __CMSIS_RTOS
 
-b. Compile and flash the application onto the device
-c. Run the application. 
+b. In the folder cmsis_rtos_rtx keep only the targer compiler folder, i.e. GCC  
+c. Compile and flash the application onto the device
+d. Run the application. 
 
 The IP address of the board is manual configured using 192.168.0.10.
 Reconfigure PC network address to something like 192.168.0.11. 

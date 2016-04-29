@@ -32,10 +32,19 @@
 <!--Version of used XSLT processor: 1 Altova GmbH http://www.altova.com-->
 <!--Version of used XSLT: ISFR2SVD.xslt  V0.8-->
 <!--Configuration of XSLT: with bit extraction =Yes;  with bit coding =Yes; decodeThe3knownBitAccessTypes = Yes; 0,r and 1,r bit extraction = No-->
+<!--Release Notes
+-->
+<!--V1.0.3
+- Removed SPI register and related bits of SDMMC
+- Removed ECRD register of CCU8
+- Removed "Reserved" bit fields and enumeration values from CAN
+-->
 <!--Release History
-V1.0.2
+-->
+<!--V1.0.2
 - Added service request information to "interrupt" elements
-V1.0.1
+-->
+<!--V1.0.1
 - Switch to SVD scheme V1.2 to enable register clustering
 - Changed CAN_MO registers from instance to cluster scheme
 - Corrected CAN block size to 0x200
@@ -49,7 +58,8 @@ V1.0.1
 - Removed enumeration type from BLOCK_COUNT bit field of SDMMC BLOCK_COUNT register
 - Corrected enumeration value "value4" of STOS bit field of CCU8 register TC
 - Removed enumeration value "Reserved" from WDTSEL bit field of SCU register MLINKCLKCR
-V1.0.0 
+-->
+<!--V1.0.0 
 - First Version based on XMC4800 SVD Version V1.1.1 
 -->
 <!--Compliance
@@ -59,7 +69,7 @@ V1.0.0
 <device xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.2" xs:noNamespaceSchemaLocation="c:\fm8_xml\XSLT\RD2ISFR\CMSIS-SVD_Schema_1_2.xsd">
 	<vendor>Infineon</vendor>
 	<name>XMC4700</name>
-	<version>1.0.2 (Reference Manual v1.0)</version>
+	<version>1.0.3 (Reference Manual v1.0)</version>
 	<description>SVD file</description>
 	<cpu>
 		<name>CM4</name>
@@ -30389,25 +30399,6 @@ V1.0.0
 					<resetMask>0xFF</resetMask>
 					<fields>
 						<field>
-							<name>SPI_MODE</name>
-							<description>SPI_MODE</description>
-							<lsb>4</lsb>
-							<msb>4</msb>
-							<access>read-write</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>SD mode</description>
-									<value>#0</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>SPI mode</description>
-									<value>#1</value>
-								</enumeratedValue>
-							</enumeratedValues>
-						</field>
-						<field>
 							<name>INT_AT_BLOCK_GAP</name>
 							<description>Interrupt At Block Gap</description>
 							<lsb>3</lsb>
@@ -32787,23 +32778,6 @@ V1.0.0
 									<value>#1</value>
 								</enumeratedValue>
 							</enumeratedValues>
-						</field>
-					</fields>
-				</register>
-				<register>
-					<name>SPI</name>
-					<description>SPI Interrupt Support Register</description>
-					<addressOffset>0x00F0</addressOffset>
-					<size>32</size>
-					<resetValue>0x00000000</resetValue>
-					<resetMask>0xFFFFFFFF</resetMask>
-					<fields>
-						<field>
-							<name>SPI_INT_SUPPORT</name>
-							<description>SPI INT SUPPORT</description>
-							<lsb>0</lsb>
-							<msb>7</msb>
-							<access>read-write</access>
 						</field>
 					</fields>
 				</register>
@@ -57780,11 +57754,6 @@ V1.0.0
 								<access>read-write</access>
 								<enumeratedValues>
 									<enumeratedValue>
-										<name>value1</name>
-										<description>Reserved.</description>
-										<value>#00</value>
-									</enumeratedValue>
-									<enumeratedValue>
 										<name>value2</name>
 										<description>Transmit acceptance filtering is based on the list order. This means that message object n is considered for transmission only if there is no other message object with valid transmit request (MSGVAL &amp; TXEN0 &amp; TXEN1 = 1) somewhere before this object in the list.</description>
 										<value>#01</value>
@@ -73557,108 +73526,6 @@ V1.0.0
 							<lsb>28</lsb>
 							<msb>31</msb>
 							<access>read-write</access>
-						</field>
-					</fields>
-				</register>
-				<register>
-					<name>ECRD</name>
-					<description>Extended Capture Mode Read</description>
-					<addressOffset>0x0050</addressOffset>
-					<size>32</size>
-					<resetValue>0x00000000</resetValue>
-					<resetMask>0xFFFFFFFF</resetMask>
-					<readAction>modifyExternal</readAction>
-					<fields>
-						<field>
-							<name>CAPV</name>
-							<description>Timer Capture Value</description>
-							<lsb>0</lsb>
-							<msb>15</msb>
-							<access>read-only</access>
-						</field>
-						<field>
-							<name>FPCV</name>
-							<description>Prescaler Capture value</description>
-							<lsb>16</lsb>
-							<msb>19</msb>
-							<access>read-only</access>
-						</field>
-						<field>
-							<name>SPTR</name>
-							<description>Slice pointer</description>
-							<lsb>20</lsb>
-							<msb>21</msb>
-							<access>read-only</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>CC80</description>
-									<value>#00</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>CC81</description>
-									<value>#01</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value3</name>
-									<description>CC82</description>
-									<value>#10</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value4</name>
-									<description>CC83</description>
-									<value>#11</value>
-								</enumeratedValue>
-							</enumeratedValues>
-						</field>
-						<field>
-							<name>VPTR</name>
-							<description>Capture register pointer</description>
-							<lsb>22</lsb>
-							<msb>23</msb>
-							<access>read-only</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>Capture register 0</description>
-									<value>#00</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>Capture register 1</description>
-									<value>#01</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value3</name>
-									<description>Capture register 2</description>
-									<value>#10</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value4</name>
-									<description>Capture register 3</description>
-									<value>#11</value>
-								</enumeratedValue>
-							</enumeratedValues>
-						</field>
-						<field>
-							<name>FFL</name>
-							<description>Full Flag</description>
-							<lsb>24</lsb>
-							<msb>24</msb>
-							<access>read-only</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>No new value was captured into this register</description>
-									<value>#0</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>A new value has been captured into this register</description>
-									<value>#1</value>
-								</enumeratedValue>
-							</enumeratedValues>
 						</field>
 					</fields>
 				</register>

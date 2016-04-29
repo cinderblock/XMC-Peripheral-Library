@@ -124,9 +124,11 @@ sys_sem_t eth_rx_semaphore;
 
 #if defined(__ICCARM__)
 #pragma data_alignment=4
-static uint8_t buffer[XMC_ETH_MAC_BUF_SIZE];
+static uint8_t tx_buffer[XMC_ETH_MAC_BUF_SIZE];
+static uint8_t rx_buffer[XMC_ETH_MAC_BUF_SIZE];
 #else
-static __attribute__((aligned(4))) uint8_t buffer[XMC_ETH_MAC_BUF_SIZE];
+static __attribute__((aligned(4))) uint8_t tx_buffer[XMC_ETH_MAC_BUF_SIZE];
+static __attribute__((aligned(4))) uint8_t rx_buffer[XMC_ETH_MAC_BUF_SIZE];
 #endif
 
 /**
@@ -253,7 +255,7 @@ low_level_output(struct netif *netif, struct pbuf *p)
     /* Send the data from the pbuf to the interface, one pbuf at a
        time. The size of the data in each pbuf is kept in the ->len
        variable. */
-    memcpy(&buffer[framelen], q->payload, q->len);
+    MEMCPY(&tx_buffer[framelen], q->payload, q->len);
     framelen += q->len;
   }
 
@@ -261,7 +263,7 @@ low_level_output(struct netif *netif, struct pbuf *p)
   pbuf_header(p, ETH_PAD_SIZE);    /* Reclaim the padding word */
 #endif
 
-  status = XMC_ETH_MAC_SendFrame(&eth_mac, buffer, framelen, 0);
+  status = XMC_ETH_MAC_SendFrame(&eth_mac, tx_buffer, framelen, 0);
   if (status != XMC_ETH_MAC_STATUS_OK)
   {
     return ERR_BUF;
@@ -288,7 +290,7 @@ low_level_input(void)
 
   len = XMC_ETH_MAC_GetRxFrameSize(&eth_mac);
 
-  if (len < XMC_ETH_MAC_BUF_SIZE)
+  if ((len > 0) && (len < XMC_ETH_MAC_BUF_SIZE))
   {
 #if ETH_PAD_SIZE
   len += ETH_PAD_SIZE;    /* allow room for Ethernet padding */
@@ -303,7 +305,7 @@ low_level_input(void)
       pbuf_header(p, -ETH_PAD_SIZE);  /* drop the padding word */
 #endif
 
-      XMC_ETH_MAC_ReadFrame(&eth_mac, buffer, len);
+      XMC_ETH_MAC_ReadFrame(&eth_mac, rx_buffer, len);
 
       len = 0;
       /* We iterate over the pbuf chain until we have read the entire
@@ -318,7 +320,7 @@ low_level_input(void)
          * actually received size. In this case, ensure the tot_len member of the
          * pbuf is the sum of the chained pbuf len members.
          */
-         memcpy(q->payload, &buffer[len], q->len);
+         MEMCPY(q->payload, &rx_buffer[len], q->len);
          len += q->len;
       }
 
@@ -327,6 +329,10 @@ low_level_input(void)
 #endif
 
     }
+  }
+  else
+  {
+	XMC_ETH_MAC_ReadFrame(&eth_mac, NULL, 0);
   }
 
   return p;  
@@ -354,7 +360,7 @@ ethernetif_input(void *arg)
 
     p = low_level_input();
 
-    while (p != NULL)
+    if (p != NULL)
     {
    	  ethhdr = p->payload;
    	  switch (htons(ethhdr->type))
@@ -374,7 +380,6 @@ ethernetif_input(void *arg)
    	      break;
    	  }
       
-      p = low_level_input();
     }
   }
 
@@ -419,17 +424,6 @@ ethernetif_init(struct netif *netif)
 
 void ETH0_0_IRQHandler(void)
 {
-  uint32_t status;
-
-  status = XMC_ETH_MAC_GetEventStatus(&eth_mac);
-
-  if (status & XMC_ETH_MAC_EVENT_RECEIVE)
-  {
-    XMC_ETH_MAC_DisableEvent(&eth_mac, XMC_ETH_MAC_EVENT_RECEIVE);
-    sys_sem_signal(&eth_rx_semaphore);
-    XMC_ETH_MAC_EnableEvent(&eth_mac, XMC_ETH_MAC_EVENT_RECEIVE);
-  }
-
-  XMC_ETH_MAC_ClearEventStatus(&eth_mac, status);
-
+  XMC_ETH_MAC_ClearEventStatus(&eth_mac, XMC_ETH_MAC_EVENT_RECEIVE);
+  sys_sem_signal(&eth_rx_semaphore);
 }

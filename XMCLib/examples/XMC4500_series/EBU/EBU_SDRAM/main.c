@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
+ * Copyright (C) 2015-2016 Infineon Technologies AG. All rights reserved.
  *
  * Infineon Technologies AG (Infineon) is supplying this software for use with
  * Infineon's microcontrollers.
@@ -16,8 +16,8 @@
 
 /**
  * @file
- * @date 10 February,2015
- * @version 1.0.0
+ * @date 20 April,2016
+ * @version 1.0.2
  *
  * @brief EBU demo example
  *
@@ -25,9 +25,12 @@
  *
  * History <br>
  *
- * Version 1.0.0 Initial <br>
+ * Version 1.0.0 
+ * - Initial
  *
- *
+ * Version 1.0.2
+ * - CAS latency corrected to 3
+ * - example code is now writing/reading 32bit values instead of 16 bit
  */
 
 #include <xmc_gpio.h>
@@ -81,86 +84,88 @@
 
 XMC_EBU_t *const ebumodule = (XMC_EBU_t *)EBU;
 
-XMC_EBU_CONFIG_t ebuobj = {
-		.ebu_clk_config.ebu_clock_divide_ratio = XMC_EBU_CLOCK_DIVIDED_BY_2,
-		.ebu_clk_config.ebu_div2_clk_mode = XMC_EBU_DIV2_CLK_MODE_ON,
-		.ebu_clk_config.ebu_clk_mode = XMC_EBU_CLK_MODE_SYNCHRONOUS_TO_CPU,
-		.ebu_mode_config.ebu_sdram_tristate = false,
-		.ebu_mode_config.ebu_extlock = false,
-		.ebu_mode_config.ebu_arbsync = true,
-		.ebu_mode_config.ebu_arbitration_mode = XMC_EBU_ARB_MODE_SOLE_MASTER_MODE,
-		.ebu_mode_config.bus_timeout_control = 0xFFU,
-		.ebu_mode_config.ebu_ale_mode = XMC_EBU_ALE_OUTPUT_IS_INV_ADV,
-		.ebu_free_pins_to_gpio.address_pins_gpio = 0x1ff,
-		.ebu_free_pins_to_gpio.adv_pin_gpio = false
+XMC_EBU_CONFIG_t ebuobj = 
+{
+  .ebu_clk_config.ebu_clock_divide_ratio = XMC_EBU_CLOCK_DIVIDED_BY_2,
+  .ebu_clk_config.ebu_div2_clk_mode = XMC_EBU_DIV2_CLK_MODE_ON,
+  .ebu_clk_config.ebu_clk_mode = XMC_EBU_CLK_MODE_SYNCHRONOUS_TO_CPU,
+  .ebu_mode_config.ebu_sdram_tristate = false,
+  .ebu_mode_config.ebu_extlock = false,
+  .ebu_mode_config.ebu_arbsync = true,
+  .ebu_mode_config.ebu_arbitration_mode = XMC_EBU_ARB_MODE_SOLE_MASTER_MODE,
+  .ebu_mode_config.bus_timeout_control = 0xFFU,
+  .ebu_mode_config.ebu_ale_mode = XMC_EBU_ALE_OUTPUT_IS_INV_ADV,
+  .ebu_free_pins_to_gpio.address_pins_gpio = 0x1ff,
+  .ebu_free_pins_to_gpio.adv_pin_gpio = false
 };
 
-XMC_EBU_REGION_t ebureadwriteconfig = {
+XMC_EBU_REGION_t ebureadwriteconfig = 
+{
 
-		.read_config.ebu_region_no = 0x0U,
-		.read_config.ebu_bus_read_config.ebu_burst_length_sync = 0x4U,
-		.read_config.ebu_bus_read_config.ebu_byte_control =  XMC_EBU_BYTE_CONTROL_FOLLOWS_CONTROL_SIGNAL_TIMMING,
-		.read_config.ebu_bus_read_config.ebu_burst_flash_clock_feedback = XMC_EBU_BURST_FLASH_CLOCK_FEEDBACK_ENABLE,
-		.read_config.ebu_bus_read_config.ebu_device_addressing_mode = XMC_EBU_DEVICE_ADDRESSING_MODE_16_BITS,
-		.read_config.ebu_bus_read_config.ebu_device_type = XMC_EBU_DEVICE_TYPE_SDRAM,
-		.read_config.ebu_bus_read_config.address_cycles = 0xFU,
-		.read_config.ebu_bus_read_config.address_hold_cycles = 0xFU,
-		.read_config.ebu_bus_read_config.address_hold_cycles = 0xFU,
-		.read_config.ebu_bus_read_config.command_delay_lines = 0xFU,
-		.read_config.ebu_bus_read_config.ebu_ext_data = 0x0U,
-		.read_config.ebu_bus_read_config.ebu_freq_ext_clk_pin = 0x0U,
-		.read_config.ebu_bus_read_config.ebu_recovery_cycles_between_different_regions  = 0xFU,
-		.read_config.ebu_bus_read_config.ebu_recovery_cycles_after_read_accesses  = 0x7U,
-		.read_config.ebu_bus_read_config.ebu_programmed_wait_states_for_read_accesses = 0x4U,
-		.write_config.ebu_region_no = 0x0U,
-		.write_config.ebu_bus_write_config.ebu_burst_length_sync = 0x04U,
-		.write_config.ebu_bus_write_config.ebu_byte_control =  XMC_EBU_BYTE_CONTROL_FOLLOWS_CONTROL_SIGNAL_TIMMING,
-		.write_config.ebu_bus_write_config.ebu_device_type = XMC_EBU_DEVICE_TYPE_SDRAM,
-		.write_config.ebu_bus_write_config.address_cycles = 0xFU,
-		.write_config.ebu_bus_write_config.address_hold_cycles = 0xFU,
-		.write_config.ebu_bus_write_config.command_delay_lines = 0xFU,
-		.write_config.ebu_bus_write_config.ebu_ext_data = 0x0U,
-		.write_config.ebu_bus_write_config.ebu_freq_ext_clk_pin = 0x0U,
-		.write_config.ebu_bus_write_config.ebu_recovery_cycles_between_different_regions  = 0xFU,
-		.write_config.ebu_bus_write_config.ebu_recovery_cycles_after_write_accesses  = 0x7U,
-		.write_config.ebu_bus_write_config.ebu_programmed_wait_states_for_write_accesses = 0x4U,
+  .read_config.ebu_region_no = 0x0U,
+  .read_config.ebu_bus_read_config.ebu_burst_length_sync = 0x4U,
+  .read_config.ebu_bus_read_config.ebu_byte_control =  XMC_EBU_BYTE_CONTROL_FOLLOWS_CONTROL_SIGNAL_TIMMING,
+  .read_config.ebu_bus_read_config.ebu_burst_flash_clock_feedback = XMC_EBU_BURST_FLASH_CLOCK_FEEDBACK_ENABLE,
+  .read_config.ebu_bus_read_config.ebu_device_addressing_mode = XMC_EBU_DEVICE_ADDRESSING_MODE_16_BITS,
+  .read_config.ebu_bus_read_config.ebu_device_type = XMC_EBU_DEVICE_TYPE_SDRAM,
+  .read_config.ebu_bus_read_config.address_cycles = 0xFU,
+  .read_config.ebu_bus_read_config.address_hold_cycles = 0xFU,
+  .read_config.ebu_bus_read_config.address_hold_cycles = 0xFU,
+  .read_config.ebu_bus_read_config.command_delay_lines = 0xFU,
+  .read_config.ebu_bus_read_config.ebu_ext_data = 0x0U,
+  .read_config.ebu_bus_read_config.ebu_freq_ext_clk_pin = 0x0U,
+  .read_config.ebu_bus_read_config.ebu_recovery_cycles_between_different_regions  = 0xFU,
+  .read_config.ebu_bus_read_config.ebu_recovery_cycles_after_read_accesses  = 0x7U,
+  .read_config.ebu_bus_read_config.ebu_programmed_wait_states_for_read_accesses = 0x4U,
+  .write_config.ebu_region_no = 0x0U,
+  .write_config.ebu_bus_write_config.ebu_burst_length_sync = 0x04U,
+  .write_config.ebu_bus_write_config.ebu_byte_control =  XMC_EBU_BYTE_CONTROL_FOLLOWS_CONTROL_SIGNAL_TIMMING,
+  .write_config.ebu_bus_write_config.ebu_device_type = XMC_EBU_DEVICE_TYPE_SDRAM,
+  .write_config.ebu_bus_write_config.address_cycles = 0xFU,
+  .write_config.ebu_bus_write_config.address_hold_cycles = 0xFU,
+  .write_config.ebu_bus_write_config.command_delay_lines = 0xFU,
+  .write_config.ebu_bus_write_config.ebu_ext_data = 0x0U,
+  .write_config.ebu_bus_write_config.ebu_freq_ext_clk_pin = 0x0U,
+  .write_config.ebu_bus_write_config.ebu_recovery_cycles_between_different_regions  = 0xFU,
+  .write_config.ebu_bus_write_config.ebu_recovery_cycles_after_write_accesses  = 0x7U,
+  .write_config.ebu_bus_write_config.ebu_programmed_wait_states_for_write_accesses = 0x4U,
 };
 
-XMC_EBU_SDRAM_CONFIG_t ebusdramcontrol =  {
-	  .ebu_sdram_clk_mode= XMC_EBU_SDRAM_CLK_MODE_CONTINUOUSLY_RUNS,                    /**< SDRAM clock mode select */
-	  .ebu_sdram_mask_for_bank_tag = XMC_EBU_SDRAM_MASK_FOR_BANK_TAG_ADDRESS_22_to_21,  /**< Mask for Bank Tag */
-	  .ebu_sdram_mask_for_row_tag = XMC_EBU_SDRAM_WIDTH_OF_COLUMN_ADDRESS_8_to_0,       /**< Mask for Row Tag */
-	  /**< Row cycle time counter: Insert (CRCE * 8) + CRC + 1 NOP cycles */
-	  .ebu_sdram_row_cycle_time_counter = 0x5UL,
-	  /**< (CRCD) Number of NOP cycles between a row address and a column address: Insert CRCD + 1 NOP cycles */
-	  .ebu_sdram_row_to_column_delay_counter = 0x01U,
-	  /**< Number of address bits from bit 0 to be used for column address */
-	 .ebu_sdram_width_of_column_address = XMC_EBU_SDRAM_WIDTH_OF_COLUMN_ADDRESS_8_to_0,
-	  /**< (CRP) Number of NOP cycles inserted after a precharge command: Insert CRP + 1 NOP cycles */
-	  .ebu_row_precharge_time_counter= 0x1U,
-	  /**< (CRSC) Number of NOP cycles after a mode register set command: Insert CRSC + 1 NOP cycles */
-	  .ebu_mode_register_set_up_time = 0x0U,
-	  /**< (CRFSH) Number of refresh commands issued during powerup init sequence: Perform CRFSH + 1 refresh cycles */
-	 .ebu_init_refresh_commands_counter = 0x0AU,
-	  /**< Number of clock cycles between row activate command and a precharge command */
-	 .ebu_row_precharge_delay_counter = 0x03U,
-	 .ebu_sdram_burst_length = XMC_EBU_SDRAM_BURST_LENGTH_1_LOCATION,
-	 .ebu_sdram_cold_start = 0x1U,
-	 .ebu_sdram_self_refresh_exit = true,
-	 .ebu_sdram_num_refresh_counter_period = 0x2U,
-	 .ebu_sdram_num_refresh_cmnds = 0x1U,
-	 .ebu_sdram_auto_refresh = 0x1U,
-	 .ebu_sdram_self_refresh_exit_delay = 0xFFU,
-	 .ebu_sdram_auto_self_refresh = 0x01U,
-	 .ebu_sdram_delay_on_power_down_exit = 0x07U
+XMC_EBU_SDRAM_CONFIG_t ebusdramcontrol =  
+{
+  .ebu_sdram_clk_mode= XMC_EBU_SDRAM_CLK_MODE_CONTINUOUSLY_RUNS,                    /**< SDRAM clock mode select */
+  .ebu_sdram_mask_for_bank_tag = XMC_EBU_SDRAM_MASK_FOR_BANK_TAG_ADDRESS_22_to_21,  /**< Mask for Bank Tag */
+  .ebu_sdram_mask_for_row_tag = XMC_EBU_SDRAM_WIDTH_OF_COLUMN_ADDRESS_8_to_0,       /**< Mask for Row Tag */
+  /**< Row cycle time counter: Insert (CRCE * 8) + CRC + 1 NOP cycles */
+  .ebu_sdram_row_cycle_time_counter = 0x5UL,
+  /**< (CRCD) Number of NOP cycles between a row address and a column address: Insert CRCD + 1 NOP cycles */
+  .ebu_sdram_row_to_column_delay_counter = 0x01U,
+  /**< Number of address bits from bit 0 to be used for column address */
+  .ebu_sdram_width_of_column_address = XMC_EBU_SDRAM_WIDTH_OF_COLUMN_ADDRESS_8_to_0,
+  /**< (CRP) Number of NOP cycles inserted after a precharge command: Insert CRP + 1 NOP cycles */
+  .ebu_row_precharge_time_counter= 0x1U,
+  /**< (CRSC) Number of NOP cycles after a mode register set command: Insert CRSC + 1 NOP cycles */
+  .ebu_mode_register_set_up_time = 0x0U,
+  /**< (CRFSH) Number of refresh commands issued during powerup init sequence: Perform CRFSH + 1 refresh cycles */
+  .ebu_init_refresh_commands_counter = 0x0AU,
+  /**< Number of clock cycles between row activate command and a precharge command */
+  .ebu_row_precharge_delay_counter = 0x03U,
+  .ebu_sdram_burst_length = XMC_EBU_SDRAM_BURST_LENGTH_1_LOCATION,
+  .ebu_sdram_casclk_mode = 0x3U,
+  .ebu_sdram_cold_start = 0x1U,
+  .ebu_sdram_self_refresh_exit = true,
+  .ebu_sdram_num_refresh_counter_period = 0x2U,
+  .ebu_sdram_num_refresh_cmnds = 0x1U,
+  .ebu_sdram_auto_refresh = 0x1U,
+  .ebu_sdram_self_refresh_exit_delay = 0xFFU,
+  .ebu_sdram_auto_self_refresh = 0x01U,
+  .ebu_sdram_delay_on_power_down_exit = 0x07U
 };
 
-#define TEST_SIZE 10000000
+#define TEST_SIZE 2097152  //67108864 bits total size (2^26)/32 = 0x0020 0000
 
 /*Base Address of external RAM memory region */
-#define EBU_EXT_RAM_REGION_BASE	  0x60000000UL
-/*Base Address of external device memory region */
-#define EBU_EXT_DEVICE_REGION_BASE	  0xA0000000UL
+#define EBU_EXT_RAM_REGION_BASE   0x60000000UL
 
 /*SDRAM base address assignment */
 #define SDRAM_BASE EBU_EXT_RAM_REGION_BASE
@@ -168,9 +173,9 @@ XMC_EBU_SDRAM_CONFIG_t ebusdramcontrol =  {
 //*****************************************************************************
 // Name: DELAY
 //
-//	Function: To provide delay
+//  Function: To provide delay
 //
-//	Return : None
+//  Return : None
 //*****************************************************************************
 void DELAY(int n)
 {
@@ -181,16 +186,14 @@ void DELAY(int n)
   }
 }
 
-
-
 //*****************************************************************************
 //  Name: SDRAM_Test
 //
-//	Function: Initialize and test the SDRAM on CPU board CPU_45B
+//  Function: Initialize and test the SDRAM on CPU board CPU_45B
 //  The SDRAM Clock is equal to the system clock. Can be changed by SCU CLK LLD APIs.
-//	Test time at 120MHz SDRAM clock and TEST_SIZE = 10000000 is about 7 sec
+//  Test time at 120MHz SDRAM clock and TEST_SIZE = 10000000 is about 7 sec
 //
-//	Return Value 0: Test was ok
+//  Return Value 0: Test was ok
 //  Return Value 1: Test failed
 //*****************************************************************************
 int32_t SDRAM_Test(void)
@@ -200,59 +203,57 @@ int32_t SDRAM_Test(void)
   uint32_t i = 0x0;
   uint32_t value = 0x0;
 
-
   /* Writing to SD RAM*/
-  *(volatile uint16_t *)(SDRAM_BASE) = 0x0000;
-  *(volatile uint16_t *)(SDRAM_BASE + 0x4) = 0xFFFF;
-  *(volatile uint16_t *)(SDRAM_BASE + 0x8) = 0x55AA;
-  *(volatile uint16_t *)(SDRAM_BASE + 0xC) = 0xAA55;
-  *(volatile uint16_t *)(SDRAM_BASE + 0x10) = 0xFF00;
+  *(volatile uint32_t *)(SDRAM_BASE) = 0x0;
+  *(volatile uint32_t *)(SDRAM_BASE + 0x4) = 0x12345678;
+  *(volatile uint32_t *)(SDRAM_BASE + 0x8) = 0x87654321;
+  *(volatile uint32_t *)(SDRAM_BASE + 0xC) = 0xAAAA5555;
+  *(volatile uint32_t *)(SDRAM_BASE + 0x10) = 0xFF0000FF;
 
-  DELAY(10000);
-  
   /* Reading from SD RAM*/
-  if (*(volatile uint16_t *)(SDRAM_BASE) != 0x0000) 
+  value = *(volatile uint32_t *)(SDRAM_BASE + 0x0);
+  if (value != 0x0)
   {
     status = 1;
   }
-  
-  if (*(volatile uint16_t *)(SDRAM_BASE + 0x4) != 0xFFFF) 
+  value = *(volatile uint32_t *)(SDRAM_BASE + 0x4);
+  if (value != 0x12345678)
   {
     status = 1;
   }
-  
-  if (*(volatile uint16_t *)(SDRAM_BASE + 0x8) != 0x55AA) 
+  value = *(volatile uint32_t *)(SDRAM_BASE + 0x8);
+  if (value != 0x87654321)
   {
     status = 1;
   }
-  
-  if (*(volatile uint16_t *)(SDRAM_BASE + 0xC) != 0xAA55) 
+  value = *(volatile uint32_t *)(SDRAM_BASE + 0xC);
+  if (value != 0xAAAA5555)
   {
     status = 1;
   }
-  
-  if (*(volatile uint16_t *)(SDRAM_BASE + 0x10) != 0xFF00) 
+  value = *(volatile uint32_t *)(SDRAM_BASE + 0x10);
+  if (value != 0xFF0000FF)
   {
     status = 1;
   }
 
-	for (i = 0; i < TEST_SIZE; i++)             //33554432 total size 2^26/2
-	{
-		mem_add = 0x60000000 + (2 * i);
-		*(volatile uint16_t *)mem_add = (i & 0xFFFF);
-	}
-  
-	for (i = 0; i < TEST_SIZE ; i++)
-	{
-		mem_add = 0x60000000 + (2 * i);
-		value = *(volatile uint16_t *)(mem_add);
-		if (!(value == (i & 0xFFFF)))
-		{
-			status = 1;
-		}
-	}
+  for (i = 0; i < TEST_SIZE; i++)             //16777216 total size (2^26)/4
+  {
+    mem_add = SDRAM_BASE + (i*4);
+    *(volatile uint32_t *)mem_add = (i);
+  }
 
-	return status;
+  for (i = 0; i < TEST_SIZE ; i++)
+  {
+    mem_add = SDRAM_BASE + (4 * i);
+    value = *(volatile uint32_t *)(mem_add);
+    if ((value != (i)))
+    {
+      status = 1;
+    }
+  }
+
+  return status;
 }
 
 /*
@@ -260,7 +261,7 @@ int32_t SDRAM_Test(void)
  */
 void EBU_Init(void)
 {
-	XMC_EBU_Init(ebumodule, &ebuobj);
+  XMC_EBU_Init(ebumodule, &ebuobj);
   XMC_EBU_ConfigureRegion(ebumodule, &ebureadwriteconfig );
   XMC_EBU_AddressSelectEnable(ebumodule,XMC_EBU_ADDRESS_SELECT_MEMORY_REGION_ENABLE,0U);
   XMC_EBU_AddressSelectEnable(ebumodule,XMC_EBU_ADDRESS_SELECT_ALTERNATE_REGION_ENABLE,0U);
@@ -275,54 +276,54 @@ void EBU_MUX_Init(void)
   config.output_level = XMC_GPIO_OUTPUT_LEVEL_LOW;
   config.output_strength = XMC_GPIO_OUTPUT_STRENGTH_STRONG_SHARP_EDGE;
 
-	XMC_GPIO_Init(SDRAM_DQ0, &config);
-	XMC_GPIO_SetHardwareControl(SDRAM_DQ0, XMC_GPIO_HWCTRL_PERIPHERAL2);
-	
-	XMC_GPIO_Init(SDRAM_DQ1, &config);
-	XMC_GPIO_SetHardwareControl(SDRAM_DQ1, XMC_GPIO_HWCTRL_PERIPHERAL2);
+  XMC_GPIO_Init(SDRAM_DQ0, &config);
+  XMC_GPIO_SetHardwareControl(SDRAM_DQ0, XMC_GPIO_HWCTRL_PERIPHERAL2);
 
-	XMC_GPIO_Init(SDRAM_DQ2, &config);
-	XMC_GPIO_SetHardwareControl(SDRAM_DQ2, XMC_GPIO_HWCTRL_PERIPHERAL2);
+  XMC_GPIO_Init(SDRAM_DQ1, &config);
+  XMC_GPIO_SetHardwareControl(SDRAM_DQ1, XMC_GPIO_HWCTRL_PERIPHERAL2);
 
-	XMC_GPIO_Init(SDRAM_DQ3, &config);
-	XMC_GPIO_SetHardwareControl(SDRAM_DQ3, XMC_GPIO_HWCTRL_PERIPHERAL2);
+  XMC_GPIO_Init(SDRAM_DQ2, &config);
+  XMC_GPIO_SetHardwareControl(SDRAM_DQ2, XMC_GPIO_HWCTRL_PERIPHERAL2);
 
-	XMC_GPIO_Init(SDRAM_DQ4, &config);
-	XMC_GPIO_SetHardwareControl(SDRAM_DQ4, XMC_GPIO_HWCTRL_PERIPHERAL2);
+  XMC_GPIO_Init(SDRAM_DQ3, &config);
+  XMC_GPIO_SetHardwareControl(SDRAM_DQ3, XMC_GPIO_HWCTRL_PERIPHERAL2);
 
-	XMC_GPIO_Init(SDRAM_DQ5, &config);
-	XMC_GPIO_SetHardwareControl(SDRAM_DQ5, XMC_GPIO_HWCTRL_PERIPHERAL2);
+  XMC_GPIO_Init(SDRAM_DQ4, &config);
+  XMC_GPIO_SetHardwareControl(SDRAM_DQ4, XMC_GPIO_HWCTRL_PERIPHERAL2);
 
-	XMC_GPIO_Init(SDRAM_DQ6, &config);
-	XMC_GPIO_SetHardwareControl(SDRAM_DQ6, XMC_GPIO_HWCTRL_PERIPHERAL2);
+  XMC_GPIO_Init(SDRAM_DQ5, &config);
+  XMC_GPIO_SetHardwareControl(SDRAM_DQ5, XMC_GPIO_HWCTRL_PERIPHERAL2);
 
-	XMC_GPIO_Init(SDRAM_DQ7, &config);
-	XMC_GPIO_SetHardwareControl(SDRAM_DQ7, XMC_GPIO_HWCTRL_PERIPHERAL2);
+  XMC_GPIO_Init(SDRAM_DQ6, &config);
+  XMC_GPIO_SetHardwareControl(SDRAM_DQ6, XMC_GPIO_HWCTRL_PERIPHERAL2);
 
-	XMC_GPIO_Init(SDRAM_DQ8, &config);
-	XMC_GPIO_SetHardwareControl(SDRAM_DQ8, XMC_GPIO_HWCTRL_PERIPHERAL2);
+  XMC_GPIO_Init(SDRAM_DQ7, &config);
+  XMC_GPIO_SetHardwareControl(SDRAM_DQ7, XMC_GPIO_HWCTRL_PERIPHERAL2);
 
-	XMC_GPIO_Init(SDRAM_DQ9, &config);
-	XMC_GPIO_SetHardwareControl(SDRAM_DQ9, XMC_GPIO_HWCTRL_PERIPHERAL2);
+  XMC_GPIO_Init(SDRAM_DQ8, &config);
+  XMC_GPIO_SetHardwareControl(SDRAM_DQ8, XMC_GPIO_HWCTRL_PERIPHERAL2);
 
-	XMC_GPIO_Init(SDRAM_DQ10, &config);
-	XMC_GPIO_SetHardwareControl(SDRAM_DQ10, XMC_GPIO_HWCTRL_PERIPHERAL2);
+  XMC_GPIO_Init(SDRAM_DQ9, &config);
+  XMC_GPIO_SetHardwareControl(SDRAM_DQ9, XMC_GPIO_HWCTRL_PERIPHERAL2);
 
-	XMC_GPIO_Init(SDRAM_DQ11, &config);
-	XMC_GPIO_SetHardwareControl(SDRAM_DQ11, XMC_GPIO_HWCTRL_PERIPHERAL2);
+  XMC_GPIO_Init(SDRAM_DQ10, &config);
+  XMC_GPIO_SetHardwareControl(SDRAM_DQ10, XMC_GPIO_HWCTRL_PERIPHERAL2);
 
-	XMC_GPIO_Init(SDRAM_DQ12, &config);
-	XMC_GPIO_SetHardwareControl(SDRAM_DQ12, XMC_GPIO_HWCTRL_PERIPHERAL2);
+  XMC_GPIO_Init(SDRAM_DQ11, &config);
+  XMC_GPIO_SetHardwareControl(SDRAM_DQ11, XMC_GPIO_HWCTRL_PERIPHERAL2);
 
-	XMC_GPIO_Init(SDRAM_DQ13, &config);
-	XMC_GPIO_SetHardwareControl(SDRAM_DQ13, XMC_GPIO_HWCTRL_PERIPHERAL2);
+  XMC_GPIO_Init(SDRAM_DQ12, &config);
+  XMC_GPIO_SetHardwareControl(SDRAM_DQ12, XMC_GPIO_HWCTRL_PERIPHERAL2);
 
-	XMC_GPIO_Init(SDRAM_DQ14, &config);
-	XMC_GPIO_SetHardwareControl(SDRAM_DQ14, XMC_GPIO_HWCTRL_PERIPHERAL2);
+  XMC_GPIO_Init(SDRAM_DQ13, &config);
+  XMC_GPIO_SetHardwareControl(SDRAM_DQ13, XMC_GPIO_HWCTRL_PERIPHERAL2);
 
-	XMC_GPIO_Init(SDRAM_DQ15, &config);
-	XMC_GPIO_SetHardwareControl(SDRAM_DQ15, XMC_GPIO_HWCTRL_PERIPHERAL2);
-  
+  XMC_GPIO_Init(SDRAM_DQ14, &config);
+  XMC_GPIO_SetHardwareControl(SDRAM_DQ14, XMC_GPIO_HWCTRL_PERIPHERAL2);
+
+  XMC_GPIO_Init(SDRAM_DQ15, &config);
+  XMC_GPIO_SetHardwareControl(SDRAM_DQ15, XMC_GPIO_HWCTRL_PERIPHERAL2);
+
   XMC_GPIO_Init(SDRAM_A0, &config);
   XMC_GPIO_SetHardwareControl(SDRAM_A0, XMC_GPIO_HWCTRL_PERIPHERAL2);
 
@@ -379,7 +380,7 @@ void EBU_MUX_Init(void)
 
   XMC_GPIO_Init(SDRAM_CKE, &config);
   XMC_GPIO_SetHardwareControl(SDRAM_CKE, XMC_GPIO_HWCTRL_PERIPHERAL1);
-  
+
   XMC_GPIO_Init(SDRAM_bRAS, &config);
   XMC_GPIO_SetHardwareControl(SDRAM_bRAS, XMC_GPIO_HWCTRL_PERIPHERAL1);
 
@@ -412,19 +413,19 @@ int main(void)
   EBU_Init();
 
   XMC_GPIO_SetMode(LED1, XMC_GPIO_MODE_OUTPUT_PUSH_PULL);
-    
- 	if (SDRAM_Test())
+
+  if (SDRAM_Test())
   {
- 		while (count)
+    while (count)
     {
- 			XMC_GPIO_ToggleOutput((XMC_GPIO_PORT_t *)PORT5_BASE, (uint8_t) 2); /* test fail */
- 			DELAY(1000000);
- 			--count;
- 		}
- 	}
+      XMC_GPIO_ToggleOutput(LED1); /* test fail */
+      DELAY(1000000);
+      --count;
+    }
+  }
   else
   {
-  	XMC_GPIO_SetOutputHigh((XMC_GPIO_PORT_t *)PORT5_BASE, (uint8_t) 2); /* test ok (Turn off Pin 5.2) */
+    XMC_GPIO_SetOutputHigh(LED1); /* test ok (Turn off Pin 5.2) */
   }
 
   while(1U)

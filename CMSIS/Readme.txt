@@ -24,7 +24,7 @@ XMC Device SVD files
 == REVISION HISTORY ==
 ======================
 
-CMSIS v4.5.0p1 (06-04-2015)
+CMSIS v4.5.0p1 (06-04-2016)
 --------------------------------------------
 - Linker files: 
   1. Add assertion to prevent that region SRAM_combined overflows no_init section.
@@ -37,3 +37,12 @@ CMSIS v4.5.0p1 (06-04-2015)
 - startup_XMC410x.s, startup_XMC4200.s, startup_XMC440x.s, startup_XMC450x.s:
   1. Fix weak definition of Veneers when using ENABLE_CPU_CM_001_WORKAROUND.
      It corrects compilation problems.
+
+CMSIS v4.5.0p2 (29-04-2016)
+--------------------------------------------
+- Changed:
+  - system_XMC1100.c, system_XMC1200.c, system_XMC1300.c: 
+    - Set flash wait states to 1 cycle
+- Updated
+  - XMC1300.svd, XMC1400.svd, XMC4300.svd/.h, XMC4700.svd/.h, XMC4800.svd/.h
+  

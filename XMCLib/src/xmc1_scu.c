@@ -1,10 +1,10 @@
 /**
  * @file xmc1_scu.c
- * @date 2016-01-12
+ * @date 2016-04-15
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.4 - XMC Peripheral Driver Library 
+ * XMClib v2.1.6 - XMC Peripheral Driver Library 
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.
@@ -52,7 +52,16 @@
  *     - XMC1400 support added
  *
  * 2015-11-30:
- *     - Documentation improved <br>
+ *     - Documentation improved
+ *
+ * 2016-02-29:
+ *     - Fixed XMC_SCU_CLOCK_ScaleMCLKFrequency
+ *       It solves issues with down clock frequency scaling
+ *
+ * 2016-04-15:
+ *     - Fixed XMC_SCU_CLOCK_Init for XMC1400
+ *       It solves issues when trying to disable the OSCHP and use the XTAL pins as GPIO
+ *
  *
  * @endcond
  *
@@ -531,9 +540,9 @@ void XMC_SCU_CLOCK_Init(const XMC_SCU_CLOCK_CONFIG_t *const config)
     }
     while(SCU_INTERRUPT->SRRAW1 & SCU_INTERRUPT_SRRAW1_LOECI_Msk);
   }
-  else
+  else /* (config->oschp_mode == XMC_SCU_CLOCK_OSCHP_MODE_DISABLED) */
   {
-    SCU_ANALOG->ANAOSCHPCTRL &= (uint16_t)~SCU_ANALOG_ANAOSCHPCTRL_MODE_Msk;
+    SCU_ANALOG->ANAOSCHPCTRL |= SCU_ANALOG_ANAOSCHPCTRL_MODE_Msk;
   }
 
   SCU_ANALOG->ANAOSCLPCTRL = (uint16_t)config->osclp_mode;
@@ -662,11 +671,11 @@ void XMC_SCU_CLOCK_ScaleMCLKFrequency(uint32_t idiv, uint32_t fdiv)
   SCU_CLK->CLKCR1 = (SCU_CLK->CLKCR1 & (uint32_t)~(SCU_CLK_CLKCR1_FDIV_Msk)) |
                    (uint32_t)((fdiv >> 8U) << SCU_CLK_CLKCR1_FDIV_Pos);
 
-  SCU_CLK->CLKCR = (SCU_CLK->CLKCR & (uint32_t)~(SCU_CLK_CLKCR_FDIV_Msk | SCU_CLK_CLKCR_CNTADJ_Pos)) |
+  SCU_CLK->CLKCR = (SCU_CLK->CLKCR & (uint32_t)~(SCU_CLK_CLKCR_FDIV_Msk | SCU_CLK_CLKCR_CNTADJ_Msk)) |
                    (uint32_t)((fdiv & 0xffU) << SCU_CLK_CLKCR_FDIV_Pos) |
                    (uint32_t)(1023UL << SCU_CLK_CLKCR_CNTADJ_Pos);
 #else
-  SCU_CLK->CLKCR = (SCU_CLK->CLKCR & (uint32_t)~(SCU_CLK_CLKCR_FDIV_Msk | SCU_CLK_CLKCR_CNTADJ_Pos)) |
+  SCU_CLK->CLKCR = (SCU_CLK->CLKCR & (uint32_t)~(SCU_CLK_CLKCR_FDIV_Msk | SCU_CLK_CLKCR_CNTADJ_Msk)) |
                    (uint32_t)(fdiv << SCU_CLK_CLKCR_FDIV_Pos) |
                    (uint32_t)(1023UL << SCU_CLK_CLKCR_CNTADJ_Pos);
 #endif
@@ -709,7 +718,8 @@ static void XMC_SCU_CLOCK_lFrequencyUpScaling(uint32_t curr_idiv, uint32_t targe
     curr_idiv = (uint32_t)(curr_idiv >> 2UL);   /* Divide by 4. */
 
     SCU_CLK->CLKCR = (SCU_CLK->CLKCR & (uint32_t)~(SCU_CLK_CLKCR_IDIV_Msk | SCU_CLK_CLKCR_CNTADJ_Msk)) |
-                     (uint32_t)(curr_idiv << SCU_CLK_CLKCR_IDIV_Pos) | (uint32_t)(1023UL << SCU_CLK_CLKCR_CNTADJ_Pos);
+                     (uint32_t)(curr_idiv << SCU_CLK_CLKCR_IDIV_Pos) | 
+                     (uint32_t)(1023UL << SCU_CLK_CLKCR_CNTADJ_Pos);
 
     while (SCU_CLK->CLKCR & SCU_CLK_CLKCR_VDDC2LOW_Msk)
     {
@@ -729,7 +739,7 @@ static void XMC_SCU_CLOCK_lFrequencyDownScaling(uint32_t curr_idiv, uint32_t tar
       curr_idiv = 1U;
     }
     curr_idiv  = (uint32_t)(curr_idiv << 2UL);   /* Multiply by 4. */
-    SCU_CLK->CLKCR = (SCU_CLK->CLKCR & (uint32_t)~(SCU_CLK_CLKCR_IDIV_Msk|SCU_CLK_CLKCR_CNTADJ_Pos)) |
+    SCU_CLK->CLKCR = (SCU_CLK->CLKCR & (uint32_t)~(SCU_CLK_CLKCR_IDIV_Msk | SCU_CLK_CLKCR_CNTADJ_Msk)) |
                      (uint32_t)(curr_idiv << SCU_CLK_CLKCR_IDIV_Pos) |
                      (uint32_t)(1023UL << SCU_CLK_CLKCR_CNTADJ_Pos);
 

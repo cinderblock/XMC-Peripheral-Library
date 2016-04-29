@@ -1,10 +1,10 @@
 /**
  * @file xmc_vadc.h
- * @date 2016-01-12
+ * @date 2016-03-09
  *
  * @cond
 *********************************************************************************************************************
- * XMClib v2.1.4 - XMC Peripheral Driver Library 
+ * XMClib v2.1.6 - XMC Peripheral Driver Library 
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
@@ -83,6 +83,14 @@
  *           - XMC_VADC_GROUP_QueueIsArbitrationSlotEnabled
  *     - Fixed the analog calibration voltage for XMC1100 to external reference upper supply range.
  *     - Fixed the XMC_VADC_GLOBAL_StartupCalibration() for XMC1100.
+ *
+ * 2016-03-09:
+ *     - Optimization of write only registers
+ *
+ * 2016-03-18:
+ *     - Fixed XMC_VADC_GLOBAL_SHS_IsConverterReady(): API checks the STEPCFG register for the ready bit instead of 
+ *       SHSCFG SFR. 
+ *
  * @endcond 
  *
  */
@@ -1873,7 +1881,7 @@ void XMC_VADC_GLOBAL_BackgroundSetReqSrcEventInterruptNode(XMC_VADC_GLOBAL_t *co
  {
   XMC_ASSERT("XMC_VADC_GLOBAL_SHS_IsConverterReady:Wrong SHS Pointer",(shs_ptr == (XMC_VADC_GLOBAL_SHS_t*)(void*)SHS0))
 
-  return((bool)((shs_ptr->STEPCFG >> (uint32_t)SHS_SHSCFG_ANRDY_Pos) & (uint32_t)0x1));
+  return((bool)((shs_ptr->SHSCFG >> (uint32_t)SHS_SHSCFG_ANRDY_Pos) & (uint32_t)0x1));
  }
 
 
@@ -3818,7 +3826,7 @@ __STATIC_INLINE void XMC_VADC_GROUP_QueueTriggerReqSrcEvent(XMC_VADC_GROUP_t *co
 __STATIC_INLINE void XMC_VADC_GROUP_QueueClearReqSrcEvent(XMC_VADC_GROUP_t *const group_ptr)
 {
   XMC_ASSERT("XMC_VADC_GROUP_QueueClearReqSrcEvent:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
-  group_ptr->SEFCLR |= (uint32_t)VADC_G_SEFCLR_SEV0_Msk;
+  group_ptr->SEFCLR = (uint32_t)VADC_G_SEFCLR_SEV0_Msk;
 }
 
 /**
@@ -4155,7 +4163,7 @@ __STATIC_INLINE void XMC_VADC_GROUP_ChannelClearEvent(XMC_VADC_GROUP_t *const gr
 
   XMC_ASSERT("XMC_VADC_GROUP_ChannelClearEvent:Wrong Group Pointer", XMC_VADC_CHECK_GROUP_PTR(group_ptr))
   XMC_ASSERT("XMC_VADC_GROUP_ChannelClearEvent:Wrong Channel Number", ((ch_num) < XMC_VADC_NUM_CHANNELS_PER_GROUP))
-  group_ptr->CEFCLR |= (uint32_t)((uint32_t)1 << ch_num);
+  group_ptr->CEFCLR = (uint32_t)((uint32_t)1 << ch_num);
 }
 
 /**

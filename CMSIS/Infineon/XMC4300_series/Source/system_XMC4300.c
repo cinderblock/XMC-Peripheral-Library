@@ -2,10 +2,10 @@
  * @file     system_XMC4300.c
  * @brief    CMSIS Cortex-M4 Device Peripheral Access Layer Header File
  *           for the Infineon XMC4300 Device Series
- * @version  V1.0.0
- * @date     19. November 2014
+ * @version  V1.0.1
+ * @date     26. February 2016
  *
- * Copyright (C) 2015 Infineon Technologies AG. All rights reserved.
+ * Copyright (C) 2015-2016 Infineon Technologies AG. All rights reserved.
  *
  *
  * @par
@@ -24,6 +24,7 @@
 
 /********************** Version History ***************************************
  * V1.0.0, 19. November 2015, Initial version
+ * V1.0.1, 26. February 2016, EBU clock removed
  ******************************************************************************/
 
 /*******************************************************************************
@@ -243,36 +244,32 @@
 //             <o5.0..7> WDT clock divider <1-256><#-1>
 //                      <i> Default: 1
 //        </e>
-//        <e.3> Enable EBU clock
-//             <o6.0..5>  EBU clock divider  <1-64><#-1>
-//             <i> Default: 4
-//        </e>
 //        <e.2> Enable ETH clock
 //        </e>
 //        <e.1> Enable MMC clock
 //        </e>
 //        <e.0> Enable USB clock
-//             <o7.16> USB clock source <0=> fUSBPLL
+//             <o6.16> USB clock source <0=> fUSBPLL
 //                                      <1=> fPLL
 //             <i> Default: fPLL
-//             <o7.0..2> USB clock source divider <1-8><#-1>
+//             <o6.0..2> USB clock source divider <1-8><#-1>
 //             <i> Default: 6
 //        </e>
-//        <o8.16..17> ECAT clock source <0=> fUSBPLL
+//        <o7.16..17> ECAT clock source <0=> fUSBPLL
 //                                      <1=> fPLL
 //             <i> Default: fUSBPLL
-//        <o8.0..1> ECAT clock divider <1-4><#-1>
+//        <o7.0..1> ECAT clock divider <1-4><#-1>
 //             <i> Default: 2
 //        <e9> Enable external clock
-//             <o9.0..1> External Clock Source Selection
+//             <o8.0..1> External Clock Source Selection
 //                  <0=> fSYS
 //                  <2=> fUSB
 //                  <3=> fPLL
 //                  <i> Default: fPLL
-//             <o9.16..24> External Clock divider <1-512><#-1>
+//             <o8.16..24> External Clock divider <1-512><#-1>
 //                  <i> Default: 288
 //                  <i> Only valid for USB PLL and PLL clocks
-//             <o10.0> External Clock Pin Selection
+//             <o9.0> External Clock Pin Selection
 //                  <0=> Disabled
 //                  <1=> P0.8
 //                  <2=> P1.15
@@ -286,7 +283,6 @@
 #define __PBCLKCR   (0x00000000UL)
 #define __CCUCLKCR  (0x00000000UL)
 #define __WDTCLKCR  (0x00000000UL)
-#define __EBUCLKCR  (0x00000003UL)
 #define __USBCLKCR  (0x00010005UL)
 #define __ECATCLKCR (0x00000001UL)
 
@@ -304,7 +300,6 @@
 #define ENABLE_PLL \
     (((__SYSCLKCR & SCU_CLK_SYSCLKCR_SYSSEL_Msk) == SCU_CLK_SYSCLKCR_SYSSEL_PLL) || \
      ((__ECATCLKCR & SCU_CLK_ECATCLKCR_ECATSEL_Msk) == SCU_CLK_ECATCLKCR_ECATSEL_PLL) || \
-     ((__CLKSET & SCU_CLK_CLKSET_EBUCEN_Msk) != 0) || \
      (((__CLKSET & SCU_CLK_CLKSET_USBCEN_Msk) != 0) && ((__USBCLKCR & SCU_CLK_USBCLKCR_USBSEL_Msk) == SCU_CLK_USBCLKCR_USBSEL_PLL)) || \
      (((__CLKSET & SCU_CLK_CLKSET_WDTCEN_Msk) != 0) && ((__WDTCLKCR & SCU_CLK_WDTCLKCR_WDTSEL_Msk) == SCU_CLK_WDTCLKCR_WDTSEL_PLL)))
 
@@ -525,7 +520,6 @@ __WEAK void SystemCoreClockSetup(void)
   SCU_CLK->CPUCLKCR = __CPUCLKCR;
   SCU_CLK->CCUCLKCR = __CCUCLKCR;
   SCU_CLK->WDTCLKCR = __WDTCLKCR;
-  SCU_CLK->EBUCLKCR = __EBUCLKCR;
   SCU_CLK->USBCLKCR = __USBCLKCR;
   SCU_CLK->ECATCLKCR = __ECATCLKCR;
   SCU_CLK->EXTCLKCR = __EXTCLKCR;
