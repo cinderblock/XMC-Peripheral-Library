@@ -30,6 +30,11 @@
 -->
 <!-- edited with XMLSpy v2015 sp2 (http://www.altova.com) by Infineon Technologies AG (Infineon Technologies AG) -->
 <!--Release Notes-->
+<!--V1.0.4
+- Add missing bit field DBYP to PCON register of PREF unit
+- Removed SCU register CANCLKCR-->
+<!--V1.0.3
+- Corrected address offset of SCU registers CCUCLKCR, WDTCLKCR, EXTCLKCR, MLINKCLKCR, SLEEPCR, DSLEEPCR, ECATCLKCR, CANCLKCR-->
 <!--V1.0.2
 - Added missing SDMMCDEL register-->
 <!--Release History-->
@@ -62,7 +67,7 @@
 <device xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.2" xs:noNamespaceSchemaLocation="c:\fm8_xml\XSLT\RD2ISFR\CMSIS-SVD.xsd">
 	<vendor>Infineon</vendor>
 	<name>XMC4300</name>
-	<version>1.0.2 (Reference Manual v1.0)</version>
+	<version>1.0.4 (Reference Manual v1.0)</version>
 	<description>SVD file</description>
 	<cpu>
 		<name>CM4</name>
@@ -12962,6 +12967,25 @@
 								</enumeratedValue>
 							</enumeratedValues>
 						</field>
+						<field>
+							<name>DBYP</name>
+							<description>Data Buffer Bypass</description>
+							<lsb>4</lsb>
+							<msb>4</msb>
+							<access>read-write</access>
+							<enumeratedValues>
+								<enumeratedValue>
+									<name>value1</name>
+									<description>Prefetch Data buffer not bypassed.</description>
+									<value>#0</value>
+								</enumeratedValue>
+								<enumeratedValue>
+									<name>value2</name>
+									<description>Prefetch Data buffer bypassed.</description>
+									<value>#1</value>
+								</enumeratedValue>
+							</enumeratedValues>
+						</field>
 					</fields>
 				</register>
 			</registers>
@@ -14140,7 +14164,7 @@
 				<register>
 					<name>CCUCLKCR</name>
 					<description>CCU Clock Control Register</description>
-					<addressOffset>0x1C</addressOffset>
+					<addressOffset>0x20</addressOffset>
 					<size>32</size>
 					<resetValue>0x00000000</resetValue>
 					<resetMask>0xFFFFFFFF</resetMask>
@@ -14169,7 +14193,7 @@
 				<register>
 					<name>WDTCLKCR</name>
 					<description>WDT Clock Control Register</description>
-					<addressOffset>0x20</addressOffset>
+					<addressOffset>0x24</addressOffset>
 					<size>32</size>
 					<resetValue>0x00000000</resetValue>
 					<resetMask>0xFFFFFFFF</resetMask>
@@ -14210,7 +14234,7 @@
 				<register>
 					<name>EXTCLKCR</name>
 					<description>External Clock Control</description>
-					<addressOffset>0x24</addressOffset>
+					<addressOffset>0x28</addressOffset>
 					<size>32</size>
 					<resetValue>0x00000000</resetValue>
 					<resetMask>0xFFFFFFFF</resetMask>
@@ -14251,7 +14275,7 @@
 				<register>
 					<name>MLINKCLKCR</name>
 					<description>Multi-Link Clock Control</description>
-					<addressOffset>0x28</addressOffset>
+					<addressOffset>0x2C</addressOffset>
 					<size>32</size>
 					<resetValue>0x00000000</resetValue>
 					<resetMask>0xFFFFFFFF</resetMask>
@@ -14375,7 +14399,7 @@
 				<register>
 					<name>SLEEPCR</name>
 					<description>Sleep Control Register</description>
-					<addressOffset>0x2C</addressOffset>
+					<addressOffset>0x30</addressOffset>
 					<size>32</size>
 					<resetValue>0x00000000</resetValue>
 					<resetMask>0xFFFFFFFF</resetMask>
@@ -14499,7 +14523,7 @@
 				<register>
 					<name>DSLEEPCR</name>
 					<description>Deep Sleep Control Register</description>
-					<addressOffset>0x30</addressOffset>
+					<addressOffset>0x34</addressOffset>
 					<size>32</size>
 					<resetValue>0x00000000</resetValue>
 					<resetMask>0xFFFFFFFF</resetMask>
@@ -14680,7 +14704,7 @@
 				<register>
 					<name>ECATCLKCR</name>
 					<description>EtherCAT Clock Control Register</description>
-					<addressOffset>0x34</addressOffset>
+					<addressOffset>0x38</addressOffset>
 					<size>32</size>
 					<resetValue>0x00000000</resetValue>
 					<resetMask>0xFFFFFFFF</resetMask>
@@ -14710,23 +14734,6 @@
 									<value>#1</value>
 								</enumeratedValue>
 							</enumeratedValues>
-						</field>
-					</fields>
-				</register>
-				<register>
-					<name>CANCLKCR</name>
-					<description>MultiCAN Clock Control Register</description>
-					<addressOffset>0x38</addressOffset>
-					<size>32</size>
-					<resetValue>0x00000000</resetValue>
-					<resetMask>0xFFFFFFFF</resetMask>
-					<fields>
-						<field>
-							<name>CANDIV</name>
-							<description>CANDIV Baudrate Clock Divider Value</description>
-							<lsb>0</lsb>
-							<msb>2</msb>
-							<access>read-write</access>
 						</field>
 					</fields>
 				</register>

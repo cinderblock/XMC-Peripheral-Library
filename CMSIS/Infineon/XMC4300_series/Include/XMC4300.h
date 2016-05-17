@@ -24,11 +24,11 @@ Copyright (C) 2011-2015 Infineon Technologies AG. All rights reserved.
  * @brief    CMSIS Cortex-M4 Peripheral Access Layer Header File for
  *           XMC4300 from Infineon.
  *
- * @version  V1.0.2 (Reference Manual v1.0)
- * @date     17. March 2016
+ * @version  V1.0.4 (Reference Manual v1.0)
+ * @date     6. May 2016
  *
  * @note     Generated with SVDConv V2.87l 
- *           from CMSIS SVD File 'XMC4300_Processed_SVD.xml' Version 1.0.2 (Reference Manual v1.0),
+ *           from CMSIS SVD File 'XMC4300_Processed_SVD.xml' Version 1.0.4 (Reference Manual v1.0),
  *******************************************************************************************************/
 
 
@@ -740,15 +740,15 @@ typedef struct {                                    /*!< (@ 0x50004600) SCU_CLK 
   __IO uint32_t  CPUCLKCR;                          /*!< (@ 0x50004610) CPU Clock Control Register                             */
   __IO uint32_t  PBCLKCR;                           /*!< (@ 0x50004614) Peripheral Bus Clock Control Register                  */
   __IO uint32_t  USBCLKCR;                          /*!< (@ 0x50004618) USB Clock Control Register                             */
-  __IO uint32_t  CCUCLKCR;                          /*!< (@ 0x5000461C) CCU Clock Control Register                             */
-  __IO uint32_t  WDTCLKCR;                          /*!< (@ 0x50004620) WDT Clock Control Register                             */
-  __IO uint32_t  EXTCLKCR;                          /*!< (@ 0x50004624) External Clock Control                                 */
-  __IO uint32_t  MLINKCLKCR;                        /*!< (@ 0x50004628) Multi-Link Clock Control                               */
-  __IO uint32_t  SLEEPCR;                           /*!< (@ 0x5000462C) Sleep Control Register                                 */
-  __IO uint32_t  DSLEEPCR;                          /*!< (@ 0x50004630) Deep Sleep Control Register                            */
-  __IO uint32_t  ECATCLKCR;                         /*!< (@ 0x50004634) EtherCAT Clock Control Register                        */
-  __IO uint32_t  CANCLKCR;                          /*!< (@ 0x50004638) MultiCAN Clock Control Register                        */
   __I  uint32_t  RESERVED;
+  __IO uint32_t  CCUCLKCR;                          /*!< (@ 0x50004620) CCU Clock Control Register                             */
+  __IO uint32_t  WDTCLKCR;                          /*!< (@ 0x50004624) WDT Clock Control Register                             */
+  __IO uint32_t  EXTCLKCR;                          /*!< (@ 0x50004628) External Clock Control                                 */
+  __IO uint32_t  MLINKCLKCR;                        /*!< (@ 0x5000462C) Multi-Link Clock Control                               */
+  __IO uint32_t  SLEEPCR;                           /*!< (@ 0x50004630) Sleep Control Register                                 */
+  __IO uint32_t  DSLEEPCR;                          /*!< (@ 0x50004634) Deep Sleep Control Register                            */
+  __IO uint32_t  ECATCLKCR;                         /*!< (@ 0x50004638) EtherCAT Clock Control Register                        */
+  __I  uint32_t  RESERVED1;
   __I  uint32_t  CGATSTAT0;                         /*!< (@ 0x50004640) Peripheral 0 Clock Gating Status                       */
   __O  uint32_t  CGATSET0;                          /*!< (@ 0x50004644) Peripheral 0 Clock Gating Set                          */
   __O  uint32_t  CGATCLR0;                          /*!< (@ 0x50004648) Peripheral 0 Clock Gating Clear                        */
@@ -4270,6 +4270,8 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define PREF_PCON_IBYP_Msk                    (0x1UL)                   /*!< PREF PCON: IBYP (Bitfield-Mask: 0x01)                       */
 #define PREF_PCON_IINV_Pos                    (1UL)                     /*!< PREF PCON: IINV (Bit 1)                                     */
 #define PREF_PCON_IINV_Msk                    (0x2UL)                   /*!< PREF PCON: IINV (Bitfield-Mask: 0x01)                       */
+#define PREF_PCON_DBYP_Pos                    (4UL)                     /*!< PREF PCON: DBYP (Bit 4)                                     */
+#define PREF_PCON_DBYP_Msk                    (0x10UL)                  /*!< PREF PCON: DBYP (Bitfield-Mask: 0x01)                       */
 
 
 /* ================================================================================ */
@@ -4598,10 +4600,6 @@ typedef struct {                                    /*!< (@ 0x48028F00) PORT15 S
 #define SCU_CLK_ECATCLKCR_ECADIV_Msk          (0x3UL)                   /*!< SCU_CLK ECATCLKCR: ECADIV (Bitfield-Mask: 0x03)             */
 #define SCU_CLK_ECATCLKCR_ECATSEL_Pos         (16UL)                    /*!< SCU_CLK ECATCLKCR: ECATSEL (Bit 16)                         */
 #define SCU_CLK_ECATCLKCR_ECATSEL_Msk         (0x10000UL)               /*!< SCU_CLK ECATCLKCR: ECATSEL (Bitfield-Mask: 0x01)            */
-
-/* ------------------------------  SCU_CLK_CANCLKCR  ------------------------------ */
-#define SCU_CLK_CANCLKCR_CANDIV_Pos           (0UL)                     /*!< SCU_CLK CANCLKCR: CANDIV (Bit 0)                            */
-#define SCU_CLK_CANCLKCR_CANDIV_Msk           (0x7UL)                   /*!< SCU_CLK CANCLKCR: CANDIV (Bitfield-Mask: 0x07)              */
 
 /* ------------------------------  SCU_CLK_CGATSTAT0  ----------------------------- */
 #define SCU_CLK_CGATSTAT0_VADC_Pos            (0UL)                     /*!< SCU_CLK CGATSTAT0: VADC (Bit 0)                             */

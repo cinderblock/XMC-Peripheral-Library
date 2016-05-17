@@ -93,6 +93,7 @@ XMC Peripheral Library v2.1.4p1 (06-04-2016)
 --------------------------------------------
   - Updated CMSIS component to v4.5.0p1. See release notes in CMSIS/Readme.txt
 
+
 XMC Peripheral Library v2.1.6   (29-04-2016)
 --------------------------------------------
   - Updated CMSIS component to v4.5.0p2. See release notes in CMSIS/Readme.txt
@@ -114,3 +115,9 @@ XMC Peripheral Library v2.1.6   (29-04-2016)
 
     - XMC4800/ETH/HTTPSERVER_NETCONN
        - Stability and speed improvements
+
+
+XMC Peripheral Library v2.1.6p1   (17-05-2016)
+--------------------------------------------
+
+  - Updated of XMC4300 header file (v1.0.4) in CMSIS folder to solve issues with wrong base address of some peripheral modules.
