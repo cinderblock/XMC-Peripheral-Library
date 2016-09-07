@@ -38,7 +38,7 @@ PROJECT_NAME           = "XMC Peripheral Library for XMC4000 Family"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 2.1.6
+PROJECT_NUMBER         = 2.1.8
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -51,7 +51,7 @@ PROJECT_BRIEF          =
 # pixels and the maximum width should not exceed 200 pixels. Doxygen will copy
 # the logo to the output directory.
 
-PROJECT_LOGO           = C:/Work/xmc_peripheral_library/trunk/XMClib/doc/images/IFX_LOGO_4C_medium.bmp
+PROJECT_LOGO           = ./images/IFX_LOGO_4C_medium.bmp
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is
@@ -797,6 +797,7 @@ INPUT                  = ../ \
                          ../inc/xmc_spi.h \
                          ../inc/xmc_uart.h \
                          ../inc/xmc_usbd.h \
+                         ../inc/xmc_usbh.h \
                          ../inc/xmc_usic.h \
                          ../inc/xmc_vadc.h \
                          ../inc/xmc_wdt.h \

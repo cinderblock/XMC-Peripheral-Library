@@ -4,9 +4,9 @@
  *
  * @cond
   *********************************************************************************************************************
- * XMClib v2.0.0 - DMA_UART XMC Peripheral Driver Library Example
+ * XMClib v2.1.8 - DMA_UART XMC Peripheral Driver Library Example
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 

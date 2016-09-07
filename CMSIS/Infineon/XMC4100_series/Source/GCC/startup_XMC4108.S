@@ -1,12 +1,12 @@
 /*********************************************************************************************************************
  * @file     startup_XMC4108.S
  * @brief    CMSIS Core Device Startup File for Infineon XMC4108 Device Series
- * @version  V1.0
- * @date     04 March 2016
+ * @version  V1.1
+ * @date     01 June 2016
  *
  * @cond
  *********************************************************************************************************************
- * Copyright (c) 2015-2016, Infineon Technologies AG
+ * Copyright (c) 2012-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -45,14 +45,16 @@
  * V0.8,Nov, 29, 2015 JFT: Remove peripherals not included in device.
  * V0.9,Jan, 05, 2016 JFT: Fix .reset section attributes
  * V1.0,March,04,2016 JFT: Fix weak definition of Veneers. 
- *                         Only relevant for AA, which needs ENABLE_CPU_CM_001_WORKAROUND 
+ *                         Only relevant for AA, which needs ENABLE_PMU_CM_001_WORKAROUND 
+ * V1.1,June ,01,2016 JFT: Rename ENABLE_CPU_CM_001_WORKAROUND to ENABLE_PMU_CM_001_WORKAROUND
+ *                         Action required: If using AA step, use ENABLE_PMU_CM_001_WORKAROUND instead of ENABLE_CPU_CM_001_WORKAROUND
  * @endcond 
  */
 
 /* ===========START : MACRO DEFINITION MACRO DEFINITION ================== */
  
 .macro Entry Handler
-#if defined(ENABLE_CPU_CM_001_WORKAROUND)
+#if defined(ENABLE_PMU_CM_001_WORKAROUND)
     .long \Handler\()_Veneer
 #else
     .long \Handler
@@ -63,7 +65,7 @@
     .weak \Handler_Func
     .thumb_set \Handler_Func, Default_Handler
 
-#if defined(ENABLE_CPU_CM_001_WORKAROUND)  
+#if defined(ENABLE_PMU_CM_001_WORKAROUND)  
     .weak \Handler_Func\()_Veneer
     .type \Handler_Func\()_Veneer, %function
 \Handler_Func\()_Veneer:

@@ -4,7 +4,7 @@
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.0.0 - XMC Peripheral Driver Library
+ * XMClib v2.1.8 - XMC Peripheral Driver Library
  *
  * Copyright (c) 2015, Infineon Technologies AG
  * All rights reserved.                        

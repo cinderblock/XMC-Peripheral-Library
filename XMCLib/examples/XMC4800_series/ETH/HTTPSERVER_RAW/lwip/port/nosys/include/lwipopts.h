@@ -9,22 +9,26 @@ extern "C" {
 #define LWIP_SOCKET             0
 #define LWIP_NETCONN            0
 
+#define LWIP_NETIF_STATUS_CALLBACK  0
+#define LWIP_NETIF_LINK_CALLBACK    1
+
 #define ETH_PAD_SIZE            2
 
 #define MEM_ALIGNMENT           4
 
-#define MEM_SIZE                8 * 1024
+#define MEM_SIZE                16 * 1024
 
-#define PBUF_POOL_SIZE          8
+#define PBUF_POOL_SIZE          16
 #define PBUF_POOL_BUFSIZE       1536
-#define MEMP_NUM_PBUF           8
+#define MEMP_NUM_PBUF           16
+#define MEMP_NUM_TCP_SEG        16
 
 #define LWIP_UDP                1
 #define LWIP_TCP                1
 #define TCP_MSS                 1460
-#define TCP_WND                 (4 * TCP_MSS)
-#define TCP_SND_BUF             (4 * TCP_MSS)
-#define TCP_SND_QUEUELEN        8
+#define TCP_WND                 (8 * TCP_MSS)
+#define TCP_SND_BUF             (8 * TCP_MSS)
+#define TCP_SND_QUEUELEN        16
 
 #define LWIP_STATS 0
 
@@ -37,6 +41,14 @@ extern "C" {
 #define CHECKSUM_CHECK_TCP      0
 
 #define MEMP_NUM_SYS_TIMEOUT    (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_SUPPORT + 5)
+
+#if defined(__GNUC__)
+#define MEMCPY(dst,src,len)     thumb2_memcpy(dst,src,len)
+#define SMEMCPY(dst,src,len)    thumb2_memcpy(dst,src,len)
+#else
+#define MEMCPY(dst,src,len)     memcpy(dst,src,len)
+#define SMEMCPY(dst,src,len)    memcpy(dst,src,len)
+#endif
 
 #ifdef __cplusplus
 }

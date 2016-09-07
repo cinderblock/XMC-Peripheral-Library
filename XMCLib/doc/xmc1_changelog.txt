@@ -2,6 +2,93 @@
  * @page Changelog
  *
  * @tableofcontents
+ * @section v218 Version 2.1.8
+ * @subsection GENERAL GENERAL
+ * - Added:
+ *    - Support for XMC1201_T028x0016, XMC1202_T016x0064, XMC1301_T016x0032, XMC1302_Q040x0200, 
+ *      XMC1302_T028x0016, XMC1402_T038x0032, XMC1402_T038x0064, XMC1402_T038x0128, 
+ *      XMC1403_Q040x0064, XMC1403_Q040x0128, XMC1403_Q040x0200, XMC1402_T038x0200
+ *      XMC1402_Q040x0200, XMC1402_Q048x0200, XMC1201_T028x0032
+ *
+ * @subsection CAN CAN
+ * - Added:
+ *    - XMC_CAN_IsPanelControlReady()
+ * - Changed:
+ *    - XMC_CAN_AllocateMOtoNodeList()
+ *      Wait for ready status of list controller
+ * - Fixed:
+ *    - XMC_CAN_MO_Config()
+ *      Solve issue with TX and RX interrupt node pointers being cleared.
+ *
+ * @subsection CCU4 CCU4
+ * - Added:
+ *    - XMC_CCU4_SLICE_StopClearTimer()
+ * - Changed:
+ *    - XMC_CCU4_SLICE_StopTimer(), XMC_CCU4_SLICE_ClearTimer()
+ *      Avoid read write modify access
+ *
+ * @subsection CCU8 CCU8
+ * - Added:
+ *    - XMC_CCU8_SLICE_StopClearTimer()
+ * - Changed:
+ *    - XMC_CCU8_SLICE_StopTimer(), XMC_CCU4_SLICE_ClearTimer()
+ *      Avoid read write modify access
+ *
+ * @subsection GPIO GPIO
+ * - Added:
+ *    - Add missing P1_5_AF_U0C0_DOUT0 for XMC14xx
+ *    - Add missing P4_5_AF_BCCU0_OUT8 for XMC1402/04 64/48 pins package
+ *
+ * @subsection I2C I2C
+ * - Added:
+ *    - XMC_I2C_CH_EnableDataTransmission(), XMC_I2C_CH_DisableDataTransmission()
+ *
+ * @subsection I2S I2S
+ * - Added:
+ *    - XMC_I2S_CH_EnableDataTransmission(), XMC_I2S_CH_DisableDataTransmission()
+ * - Changed:
+ *    - XMC_I2S_CH_Init()
+ *      Change default passive level to 0
+ *      Call XMC_I2S_CH_SetSystemWordLength() to set the system frame length equal to the frame length.
+ *    - XMC_I2S_CH_SetBaudrate()
+ *      Optional Master clock output signal generated with a fixed phase relation to SCLK
+ *
+ * @subsection RTC RTC
+ * - Added:
+ *    - XMC_RTC_SetTimeStdFormat(), XMC_RTC_SetAlarmStdFormat()
+ *
+ * @subsection SPI SPI
+ * - Added:
+ *    - XMC_SPI_CH_EnableDataTransmission(), XMC_SPI_CH_DisableDataTransmission()
+ *
+ * @subsection UART UART
+ * - Added:
+ *    - XMC_UART_CH_EnableDataTransmission(), XMC_UART_CH_DisableDataTransmission()
+ * - Changed:
+ *    - XMC_UART_CH_Init()
+ *      Enable transfer status BUSY
+ *    - XMC_UART_CH_Stop()
+ *      Check for transfer status
+ *
+ * @subsection USIC USIC
+ * - Added: 
+ *    - Add missing USIC1_C0_DX1_P3_4 for XMC14xx 64 pins package
+ *
+ * @subsection VADC VADC
+ * - Added:
+ *    - XMC_VADC_SHS_FULL_SET_REG, XMC_VADC_RESULT_PRIORITY_AVAILABLE, XMC_VADC_SYNCTR_START_LOCATION
+ *    - XMC_VADC_SHS_GAIN_LEVEL_t and XMC_VADC_SYNCTR_EVAL_t
+ *    - XMC_VADC_GROUP_SetSyncSlaveReadySignal()
+ *    - XMC_VADC_GROUP_ChannelGetAssertedEvents()
+ *    - XMC_VADC_GROUP_GetAssertedResultEvents()
+ *    - XMC_VADC_GROUP_SetResultRegPriority()
+ *    - XMC_VADC_GROUP_SetSyncReadySignal()
+ *    - XMC_VADC_GROUP_GetSyncReadySignal()
+ *    - XMC_VADC_GROUP_GetResultRegPriority()
+ * - Fixed:
+ *    - XMC_VADC_GROUP_CheckSlaveReadiness(), XMC_VADC_GROUP_IgnoreSlaveReadiness()
+ *      Fixed the EVAL configuration
+ *
  * @section v216 Version 2.1.6
  * @subsection SCU SCU
  * - Added:

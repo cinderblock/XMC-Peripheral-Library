@@ -19,16 +19,19 @@
 <!--Version of used XSLT: ISFR2SVD.xslt  V0.8-->
 <!--Configuration of XSLT: with bit extraction =Yes;  with bit coding =Yes; decodeThe3knownBitAccessTypes = Yes; 0,r and 1,r bit extraction = No-->
 <!--Version of used XSLT for fixing SVD issues: SVD_fixes.xslt  V1.2-->
-<device xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.2" xs:noNamespaceSchemaLocation="c:\fm8_xml\XSLT\RD2ISFR\CMSIS-SVD_Schema_1_2.xsd">
+<device xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.2" xs:noNamespaceSchemaLocation="c:\fm8_xml\XSLT\RD2ISFR\CMSIS-SVD.xsd">
 	<vendor>Infineon</vendor>
 	<name>XMC1400</name>
-	<version>1.0.6 (Reference Manual v1.0)</version>
+	<version>1.1.0 (Reference Manual v1.1)</version>
 	<description>SVD file</description>
 	<!--Release Notes
-V1.0.6
-	- Added service request information to "interrupt" elements
+V1.1.0
+	- Formal update to match latest reference manual version number
+	- No register changes occured
 -->
 	<!--Release History
+V1.0.6
+	- Added service request information to "interrupt" elements
 V1.0.5
 	- Switch to SVD scheme V1.2 to enable register clustering
 	- Changed CAN_MO registers from instance to cluster scheme
@@ -1078,6 +1081,14 @@ V1.0.0
 		<peripheral>
 			<name>ERU0</name>
 			<description>Event Request Unit 0</description>
+			<groupName>ERU</groupName>
+			<headerStructName>ERU</headerStructName>
+			<baseAddress>0x40010600</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x30</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>IRQ3</name>
 				<description>External Request Unit 0</description>
@@ -1098,14 +1109,6 @@ V1.0.0
 				<description>External Request Unit 0</description>
 				<value>6</value>
 			</interrupt>
-			<groupName>ERU</groupName>
-			<headerStructName>ERU</headerStructName>
-			<baseAddress>0x40010600</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x30</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>EXISEL</name>
@@ -1752,17 +1755,17 @@ V1.0.0
 		<peripheral>
 			<name>MATH</name>
 			<description>MATH Unit</description>
-			<interrupt>
-				<name>IRQ7</name>
-				<description>MATH Unit 0</description>
-				<value>7</value>
-			</interrupt>
 			<baseAddress>0x40030000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
 				<size>0x60</size>
 				<usage>registers</usage>
 			</addressBlock>
+			<interrupt>
+				<name>IRQ7</name>
+				<description>MATH Unit 0</description>
+				<value>7</value>
+			</interrupt>
 			<registers>
 				<register>
 					<name>GLBCON</name>
@@ -5671,11 +5674,6 @@ V1.0.0
 		<peripheral>
 			<name>LEDTS0</name>
 			<description>LED and Touch Sense Unit 0</description>
-			<interrupt>
-				<name>IRQ29</name>
-				<description>LED and Touch Sense Control Unit (Module 0)</description>
-				<value>29</value>
-			</interrupt>
 			<groupName>LEDTS</groupName>
 			<headerStructName>LEDTS</headerStructName>
 			<baseAddress>0x50020000</baseAddress>
@@ -5684,6 +5682,11 @@ V1.0.0
 				<size>0x2C</size>
 				<usage>registers</usage>
 			</addressBlock>
+			<interrupt>
+				<name>IRQ29</name>
+				<description>LED and Touch Sense Control Unit (Module 0)</description>
+				<value>29</value>
+			</interrupt>
 			<registers>
 				<register>
 					<name>ID</name>
@@ -6539,11 +6542,6 @@ V1.0.0
 		<peripheral derivedFrom="LEDTS0">
 			<name>LEDTS1</name>
 			<description>LED and Touch Sense Unit 1</description>
-			<interrupt>
-				<name>IRQ30</name>
-				<description>LED and Touch Sense Control Unit (Module 1)</description>
-				<value>30</value>
-			</interrupt>
 			<groupName>LEDTS</groupName>
 			<baseAddress>0x50020400</baseAddress>
 			<addressBlock>
@@ -6551,15 +6549,15 @@ V1.0.0
 				<size>0x2C</size>
 				<usage>registers</usage>
 			</addressBlock>
+			<interrupt>
+				<name>IRQ30</name>
+				<description>LED and Touch Sense Control Unit (Module 1)</description>
+				<value>30</value>
+			</interrupt>
 		</peripheral>
 		<peripheral derivedFrom="LEDTS0">
 			<name>LEDTS2</name>
 			<description>LED and Touch Sense Unit 2</description>
-			<interrupt>
-				<name>IRQ8</name>
-				<description>LED and Touch Sense Control Unit (Module 2)</description>
-				<value>8</value>
-			</interrupt>
 			<groupName>LEDTS</groupName>
 			<baseAddress>0x50020800</baseAddress>
 			<addressBlock>
@@ -6567,10 +6565,23 @@ V1.0.0
 				<size>0x2C</size>
 				<usage>registers</usage>
 			</addressBlock>
+			<interrupt>
+				<name>IRQ8</name>
+				<description>LED and Touch Sense Control Unit (Module 2)</description>
+				<value>8</value>
+			</interrupt>
 		</peripheral>
 		<peripheral>
 			<name>USIC0</name>
 			<description>Universal Serial Interface Controller 0</description>
+			<groupName>USIC</groupName>
+			<headerStructName>USIC</headerStructName>
+			<baseAddress>0x48000008</baseAddress>
+			<addressBlock>
+				<offset>0</offset>
+				<size>4</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>IRQ9</name>
 				<description>Universal Serial Interface Channel (Module 0)</description>
@@ -6601,14 +6612,6 @@ V1.0.0
 				<description>Universal Serial Interface Channel (Module 0)</description>
 				<value>14</value>
 			</interrupt>
-			<groupName>USIC</groupName>
-			<headerStructName>USIC</headerStructName>
-			<baseAddress>0x48000008</baseAddress>
-			<addressBlock>
-				<offset>0</offset>
-				<size>4</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>ID</name>
@@ -17324,6 +17327,12 @@ V1.0.0
 		<peripheral>
 			<name>SCU_INTERRUPT</name>
 			<description>System Control Unit</description>
+			<baseAddress>0x40010038</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x030</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>IRQ0</name>
 				<description>System Control</description>
@@ -17339,12 +17348,6 @@ V1.0.0
 				<description>System Control</description>
 				<value>2</value>
 			</interrupt>
-			<baseAddress>0x40010038</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x030</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>SRRAW</name>
@@ -21538,6 +21541,14 @@ V1.0.0
 		<peripheral>
 			<name>CCU40</name>
 			<description>Capture Compare Unit 4 - Unit 0</description>
+			<groupName>CCU4</groupName>
+			<headerStructName>CCU4</headerStructName>
+			<baseAddress>0x48040000</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x0100</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>IRQ21</name>
 				<description>Capture Compare Unit 4 (Module 0)</description>
@@ -21558,14 +21569,6 @@ V1.0.0
 				<description>Capture Compare Unit 4 (Module 0)</description>
 				<value>24</value>
 			</interrupt>
-			<groupName>CCU4</groupName>
-			<headerStructName>CCU4</headerStructName>
-			<baseAddress>0x48040000</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x0100</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>GCTRL</name>
@@ -25235,6 +25238,14 @@ V1.0.0
 		<peripheral>
 			<name>CCU80</name>
 			<description>Capture Compare Unit 8 - Unit 0</description>
+			<groupName>CCU8</groupName>
+			<headerStructName>CCU8</headerStructName>
+			<baseAddress>0x50000000</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x100</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>IRQ25</name>
 				<description>Capture Compare Unit 8 (Module 0)</description>
@@ -25245,14 +25256,6 @@ V1.0.0
 				<description>Capture Compare Unit 8 (Module 0)</description>
 				<value>26</value>
 			</interrupt>
-			<groupName>CCU8</groupName>
-			<headerStructName>CCU8</headerStructName>
-			<baseAddress>0x50000000</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x100</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>GCTRL</name>
@@ -29974,6 +29977,14 @@ V1.0.0
 		<peripheral>
 			<name>POSIF0</name>
 			<description>Position Interface 0</description>
+			<groupName>POSIF</groupName>
+			<headerStructName>POSIF</headerStructName>
+			<baseAddress>0x50010000</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x4000</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>IRQ27</name>
 				<description>Position Interface (Module 0)</description>
@@ -29984,14 +29995,6 @@ V1.0.0
 				<description>Position Interface (Module 0)</description>
 				<value>28</value>
 			</interrupt>
-			<groupName>POSIF</groupName>
-			<headerStructName>POSIF</headerStructName>
-			<baseAddress>0x50010000</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x4000</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>PCONF</name>
@@ -31614,6 +31617,14 @@ V1.0.0
 		<peripheral>
 			<name>VADC</name>
 			<description>Analog to Digital Converter</description>
+			<groupName>VADC</groupName>
+			<headerStructName>VADC</headerStructName>
+			<baseAddress>0x48030000</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x0400</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>IRQ15</name>
 				<description>Analog to Digital Converter Common Block 0</description>
@@ -31624,14 +31635,6 @@ V1.0.0
 				<description>Analog to Digital Converter Common Block 0</description>
 				<value>16</value>
 			</interrupt>
-			<groupName>VADC</groupName>
-			<headerStructName>VADC</headerStructName>
-			<baseAddress>0x48030000</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x0400</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>CLC</name>
@@ -33381,6 +33384,14 @@ V1.0.0
 		<peripheral>
 			<name>VADC_G0</name>
 			<description>Analog to Digital Converter</description>
+			<groupName>VADC</groupName>
+			<headerStructName>VADC_G</headerStructName>
+			<baseAddress>0x48030400</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x0400</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>IRQ17</name>
 				<description>Analog to Digital Converter Group 0</description>
@@ -33391,14 +33402,6 @@ V1.0.0
 				<description>Analog to Digital Converter Group 0</description>
 				<value>18</value>
 			</interrupt>
-			<groupName>VADC</groupName>
-			<headerStructName>VADC_G</headerStructName>
-			<baseAddress>0x48030400</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x0400</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>ARBCFG</name>
@@ -39473,6 +39476,13 @@ V1.0.0
 		<peripheral derivedFrom="VADC_G0">
 			<name>VADC_G1</name>
 			<description>Analog to Digital Converter</description>
+			<groupName>VADC</groupName>
+			<baseAddress>0x48030800</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x0400</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>IRQ19</name>
 				<description>Analog to Digital Converter Group 1</description>
@@ -39483,13 +39493,6 @@ V1.0.0
 				<description>Analog to Digital Converter Group 1</description>
 				<value>20</value>
 			</interrupt>
-			<groupName>VADC</groupName>
-			<baseAddress>0x48030800</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x0400</size>
-				<usage>registers</usage>
-			</addressBlock>
 		</peripheral>
 		<peripheral>
 			<name>SHS0</name>
@@ -41025,11 +41028,6 @@ V1.0.0
 		<peripheral>
 			<name>BCCU0</name>
 			<description>BCCU Unit 0</description>
-			<interrupt>
-				<name>IRQ31</name>
-				<description>Brightness and Color Control Unit 0</description>
-				<value>31</value>
-			</interrupt>
 			<groupName>BCCU</groupName>
 			<headerStructName>BCCU</headerStructName>
 			<baseAddress>0x50030000</baseAddress>
@@ -41038,6 +41036,11 @@ V1.0.0
 				<size>0x3C</size>
 				<usage>registers</usage>
 			</addressBlock>
+			<interrupt>
+				<name>IRQ31</name>
+				<description>Brightness and Color Control Unit 0</description>
+				<value>31</value>
+			</interrupt>
 			<registers>
 				<register>
 					<name>GLOBCON</name>

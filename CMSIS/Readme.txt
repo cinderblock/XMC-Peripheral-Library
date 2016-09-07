@@ -45,4 +45,16 @@ CMSIS v4.5.0p2 (29-04-2016)
     - Set flash wait states to 1 cycle
 - Updated
   - XMC1300.svd, XMC1400.svd, XMC4300.svd/.h, XMC4700.svd/.h, XMC4800.svd/.h
-  
+
+CMSIS v4.5.0p3 (14-07-2016)
+--------------------------------------------
+- Changed:
+  - Update of copyright notice (BSD like) for device header files and system files. 
+- Fixed:
+  - Masking of OSCHPCTRL value in system_*.c files for XMC4
+
+CMSIS v4.5.0p4 (30-08-2016)
+--------------------------------------------
+- Changed:
+  - Added support for new XMC1400 packages
+  - Fixed waning linker messages when compiling for TLE devices

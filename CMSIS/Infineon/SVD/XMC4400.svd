@@ -7,6 +7,16 @@
 <!--Version of used XSLT for fixing SVD issues: SVD_fixes.xslt  V1.2-->
 <!--Release Notes
 -->
+<!--V1.6.0
+- Formal update to match latest reference manual version number
+- No register changes occured
+-->
+<!--Release History
+-->
+<!--V1.5.4
+- Removed bit field OSCULSTAT from SCU register MIRRSTS
+- Removed bit fields OSCULSTAT and HDSTAT from SCU registers SRSTAT, SRRAW, SRMSK, SRCLR, SRSET
+-->
 <!--V1.5.3
 
 Changes versus V1.5.2
@@ -19,8 +29,6 @@ Changes versus V1.5.2
 - Corrected CCU8x block sizes to 0x100
 - Removed enumeration type from CLK_PS bit field of LEDTS GLOBCTL register
 - Added service request information to "interrupt" elements
--->
-<!--Release History
 -->
 <!--V1.5.2
 
@@ -70,13 +78,13 @@ Changes versus V1.3.0
 <!--Compliance
 
 - CMSIS-SVD V1.2
-- Tested with ARM CMSIS-SVD SVD Consistency Checker / Header File Generator V2.87g
+- Tested with ARM CMSIS-SVD SVD Consistency Checker / Header File Generator V2.87l (lowercase L)
 -->
 <!--Version of used XSLT for fixing SVD issues: SVD_fixes.xslt  V1.2-->
-<device xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.2" xs:noNamespaceSchemaLocation="c:\fm8_xml\XSLT\RD2ISFR\CMSIS-SVD_Schema_1_2.xsd">
+<device xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.2" xs:noNamespaceSchemaLocation="c:\fm8_xml\XSLT\RD2ISFR\CMSIS-SVD.xsd">
 	<vendor>Infineon</vendor>
 	<name>XMC4400</name>
-	<version>1.5.3 (Reference Manual v1.5)</version>
+	<version>1.6.0 (Reference Manual v1.6)</version>
 	<description>SVD file</description>
 	<cpu>
 		<name>CM4</name>
@@ -4476,6 +4484,14 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>ERU0</name>
 			<description>Event Request Unit 0</description>
+			<groupName>ERU</groupName>
+			<headerStructName>ERU</headerStructName>
+			<baseAddress>0x50004800</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x0100</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>ERU0_0</name>
 				<description>External Request Unit 0</description>
@@ -4496,14 +4512,6 @@ Changes versus V1.3.0
 				<description>External Request Unit 0</description>
 				<value>4</value>
 			</interrupt>
-			<groupName>ERU</groupName>
-			<headerStructName>ERU</headerStructName>
-			<baseAddress>0x50004800</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x0100</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>EXISEL</name>
@@ -5139,6 +5147,13 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="ERU0">
 			<name>ERU1</name>
 			<description>Event Request Unit 1</description>
+			<groupName>ERU</groupName>
+			<baseAddress>0x40044000</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x4000</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>ERU1_0</name>
 				<description>External Request Unit 1</description>
@@ -5159,22 +5174,10 @@ Changes versus V1.3.0
 				<description>External Request Unit 1</description>
 				<value>8</value>
 			</interrupt>
-			<groupName>ERU</groupName>
-			<baseAddress>0x40044000</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x4000</size>
-				<usage>registers</usage>
-			</addressBlock>
 		</peripheral>
 		<peripheral>
 			<name>GPDMA0</name>
 			<description>General Purpose DMA Unit 0</description>
-			<interrupt>
-				<name>GPDMA0_0</name>
-				<description>General Purpose DMA Unit 0</description>
-				<value>105</value>
-			</interrupt>
 			<groupName>GPDMA</groupName>
 			<baseAddress>0x500142C0</baseAddress>
 			<addressBlock>
@@ -5182,6 +5185,11 @@ Changes versus V1.3.0
 				<size>0x3D40</size>
 				<usage>registers</usage>
 			</addressBlock>
+			<interrupt>
+				<name>GPDMA0_0</name>
+				<description>General Purpose DMA Unit 0</description>
+				<value>105</value>
+			</interrupt>
 			<registers>
 				<register>
 					<name>RAWTFR</name>
@@ -11050,11 +11058,6 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>FCE</name>
 			<description>Flexible CRC Engine</description>
-			<interrupt>
-				<name>FCE0_0</name>
-				<description>Flexible CRC Engine</description>
-				<value>104</value>
-			</interrupt>
 			<groupName>FCE</groupName>
 			<baseAddress>0x50020000</baseAddress>
 			<addressBlock>
@@ -11062,6 +11065,11 @@ Changes versus V1.3.0
 				<size>0x20</size>
 				<usage>registers</usage>
 			</addressBlock>
+			<interrupt>
+				<name>FCE0_0</name>
+				<description>Flexible CRC Engine</description>
+				<value>104</value>
+			</interrupt>
 			<registers>
 				<register>
 					<name>CLC</name>
@@ -13021,11 +13029,6 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>PMU0</name>
 			<description>Program Management Unit</description>
-			<interrupt>
-				<name>PMU0_0</name>
-				<description>Program Management Unit</description>
-				<value>12</value>
-			</interrupt>
 			<headerStructName>PMU</headerStructName>
 			<baseAddress>0x58000508</baseAddress>
 			<addressBlock>
@@ -13033,6 +13036,11 @@ Changes versus V1.3.0
 				<size>4</size>
 				<usage>registers</usage>
 			</addressBlock>
+			<interrupt>
+				<name>PMU0_0</name>
+				<description>Program Management Unit</description>
+				<value>12</value>
+			</interrupt>
 			<registers>
 				<register>
 					<name>ID</name>
@@ -17652,25 +17660,6 @@ Changes versus V1.3.0
 							</enumeratedValues>
 						</field>
 						<field>
-							<name>OSCULSTAT</name>
-							<description>OSCULSTAT Mirror Register Write Status</description>
-							<lsb>6</lsb>
-							<msb>6</msb>
-							<access>read-only</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>Ready</description>
-									<value>#0</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>Busy</description>
-									<value>#1</value>
-								</enumeratedValue>
-							</enumeratedValues>
-						</field>
-						<field>
 							<name>OSCULCTRL</name>
 							<description>OSCULCTRL Mirror Register Write Status</description>
 							<lsb>7</lsb>
@@ -18092,11 +18081,6 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>SCU_INTERRUPT</name>
 			<description>System Control Unit</description>
-			<interrupt>
-				<name>SCU_0</name>
-				<description>System Control</description>
-				<value>0</value>
-			</interrupt>
 			<groupName>SCU</groupName>
 			<baseAddress>0x50004074</baseAddress>
 			<addressBlock>
@@ -18104,6 +18088,11 @@ Changes versus V1.3.0
 				<size>0x18</size>
 				<usage>registers</usage>
 			</addressBlock>
+			<interrupt>
+				<name>SCU_0</name>
+				<description>System Control</description>
+				<value>0</value>
+			</interrupt>
 			<registers>
 				<register>
 					<name>SRSTAT</name>
@@ -18325,25 +18314,6 @@ Changes versus V1.3.0
 							</enumeratedValues>
 						</field>
 						<field>
-							<name>HDSTAT</name>
-							<description>HDSTAT Mirror Register Update Status</description>
-							<lsb>16</lsb>
-							<msb>16</msb>
-							<access>read-only</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>Not updated</description>
-									<value>#0</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>Update completed</description>
-									<value>#1</value>
-								</enumeratedValue>
-							</enumeratedValues>
-						</field>
-						<field>
 							<name>HDCLR</name>
 							<description>HDCLR Mirror Register Update Status</description>
 							<lsb>17</lsb>
@@ -18405,25 +18375,6 @@ Changes versus V1.3.0
 							<description>OSCSICTRL Mirror Register Update Status</description>
 							<lsb>21</lsb>
 							<msb>21</msb>
-							<access>read-only</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>Not updated</description>
-									<value>#0</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>Update completed</description>
-									<value>#1</value>
-								</enumeratedValue>
-							</enumeratedValues>
-						</field>
-						<field>
-							<name>OSCULSTAT</name>
-							<description>OSCULSTAT Mirror Register Update Status</description>
-							<lsb>22</lsb>
-							<msb>22</msb>
 							<access>read-only</access>
 							<enumeratedValues>
 								<enumeratedValue>
@@ -18793,25 +18744,6 @@ Changes versus V1.3.0
 							</enumeratedValues>
 						</field>
 						<field>
-							<name>HDSTAT</name>
-							<description>HDSTAT Mirror Register Update Status Before Masking</description>
-							<lsb>16</lsb>
-							<msb>16</msb>
-							<access>read-only</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>Not updated</description>
-									<value>#0</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>Update completed</description>
-									<value>#1</value>
-								</enumeratedValue>
-							</enumeratedValues>
-						</field>
-						<field>
 							<name>HDCLR</name>
 							<description>HDCLR Mirror Register Update Status Before Masking</description>
 							<lsb>17</lsb>
@@ -18873,25 +18805,6 @@ Changes versus V1.3.0
 							<description>OSCSICTRL Mirror Register Update Status Before Masking</description>
 							<lsb>21</lsb>
 							<msb>21</msb>
-							<access>read-only</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>Not updated</description>
-									<value>#0</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>Update completed</description>
-									<value>#1</value>
-								</enumeratedValue>
-							</enumeratedValues>
-						</field>
-						<field>
-							<name>OSCULSTAT</name>
-							<description>OSCULSTAT Mirror Register Update Status Before Masking</description>
-							<lsb>22</lsb>
-							<msb>22</msb>
 							<access>read-only</access>
 							<enumeratedValues>
 								<enumeratedValue>
@@ -19297,25 +19210,6 @@ Changes versus V1.3.0
 							</enumeratedValues>
 						</field>
 						<field>
-							<name>HDSTAT</name>
-							<description>HDSTAT Mirror Register Update Mask</description>
-							<lsb>16</lsb>
-							<msb>16</msb>
-							<access>read-write</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>Disabled</description>
-									<value>#0</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>Enabled</description>
-									<value>#1</value>
-								</enumeratedValue>
-							</enumeratedValues>
-						</field>
-						<field>
 							<name>HDCLR</name>
 							<description>HDCLR Mirror Register Update Mask</description>
 							<lsb>17</lsb>
@@ -19377,25 +19271,6 @@ Changes versus V1.3.0
 							<description>OSCSICTRL Mirror Register Update Mask</description>
 							<lsb>21</lsb>
 							<msb>21</msb>
-							<access>read-write</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>Disabled</description>
-									<value>#0</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>Enabled</description>
-									<value>#1</value>
-								</enumeratedValue>
-							</enumeratedValues>
-						</field>
-						<field>
-							<name>OSCULSTAT</name>
-							<description>OSCULSTAT Mirror Register Update Mask</description>
-							<lsb>22</lsb>
-							<msb>22</msb>
 							<access>read-write</access>
 							<enumeratedValues>
 								<enumeratedValue>
@@ -19801,25 +19676,6 @@ Changes versus V1.3.0
 							</enumeratedValues>
 						</field>
 						<field>
-							<name>HDSTAT</name>
-							<description>HDCTAT Mirror Register Update Clear</description>
-							<lsb>16</lsb>
-							<msb>16</msb>
-							<access>write-only</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>No effect</description>
-									<value>#0</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>Clear the status bit</description>
-									<value>#1</value>
-								</enumeratedValue>
-							</enumeratedValues>
-						</field>
-						<field>
 							<name>HDCLR</name>
 							<description>HDCLR Mirror Register Update Clear</description>
 							<lsb>17</lsb>
@@ -19881,25 +19737,6 @@ Changes versus V1.3.0
 							<description>OSCSICTRL Mirror Register Update Clear</description>
 							<lsb>21</lsb>
 							<msb>21</msb>
-							<access>write-only</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>No effect</description>
-									<value>#0</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>Clear the status bit</description>
-									<value>#1</value>
-								</enumeratedValue>
-							</enumeratedValues>
-						</field>
-						<field>
-							<name>OSCULSTAT</name>
-							<description>OSCULSTAT Mirror Register Update Clear</description>
-							<lsb>22</lsb>
-							<msb>22</msb>
 							<access>write-only</access>
 							<enumeratedValues>
 								<enumeratedValue>
@@ -20305,25 +20142,6 @@ Changes versus V1.3.0
 							</enumeratedValues>
 						</field>
 						<field>
-							<name>HDSTAT</name>
-							<description>HDSTAT Mirror Register Update Set</description>
-							<lsb>16</lsb>
-							<msb>16</msb>
-							<access>write-only</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>No effect</description>
-									<value>#0</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>set the status bit</description>
-									<value>#1</value>
-								</enumeratedValue>
-							</enumeratedValues>
-						</field>
-						<field>
 							<name>HDCRCLR</name>
 							<description>HDCRCLR Mirror Register Update Set</description>
 							<lsb>17</lsb>
@@ -20385,25 +20203,6 @@ Changes versus V1.3.0
 							<description>OSCSICTRL Mirror Register Update Set</description>
 							<lsb>21</lsb>
 							<msb>21</msb>
-							<access>write-only</access>
-							<enumeratedValues>
-								<enumeratedValue>
-									<name>value1</name>
-									<description>No effect</description>
-									<value>#0</value>
-								</enumeratedValue>
-								<enumeratedValue>
-									<name>value2</name>
-									<description>set the status bit</description>
-									<value>#1</value>
-								</enumeratedValue>
-							</enumeratedValues>
-						</field>
-						<field>
-							<name>OSCULSTAT</name>
-							<description>OSCULSTAT Mirror Register Update Set</description>
-							<lsb>22</lsb>
-							<msb>22</msb>
 							<access>write-only</access>
 							<enumeratedValues>
 								<enumeratedValue>
@@ -26969,11 +26768,6 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>LEDTS0</name>
 			<description>LED and Touch Sense Unit 0</description>
-			<interrupt>
-				<name>LEDTS0_0</name>
-				<description>LED and Touch Sense Control Unit (Module 0)</description>
-				<value>102</value>
-			</interrupt>
 			<headerStructName>LEDTS</headerStructName>
 			<baseAddress>0x48010000</baseAddress>
 			<addressBlock>
@@ -26981,6 +26775,11 @@ Changes versus V1.3.0
 				<size>0x0100</size>
 				<usage>registers</usage>
 			</addressBlock>
+			<interrupt>
+				<name>LEDTS0_0</name>
+				<description>LED and Touch Sense Control Unit (Module 0)</description>
+				<value>102</value>
+			</interrupt>
 			<registers>
 				<register>
 					<name>ID</name>
@@ -28197,11 +27996,6 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>ETH0</name>
 			<description>Ethernet Unit 0</description>
-			<interrupt>
-				<name>ETH0_0</name>
-				<description>Ethernet (Module 0)</description>
-				<value>108</value>
-			</interrupt>
 			<groupName>ETH</groupName>
 			<headerStructName>ETH</headerStructName>
 			<baseAddress>0x5000C000</baseAddress>
@@ -28210,6 +28004,11 @@ Changes versus V1.3.0
 				<size>0x4000</size>
 				<usage>registers</usage>
 			</addressBlock>
+			<interrupt>
+				<name>ETH0_0</name>
+				<description>Ethernet (Module 0)</description>
+				<value>108</value>
+			</interrupt>
 			<registers>
 				<register>
 					<name>MAC_CONFIGURATION</name>
@@ -33079,11 +32878,6 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>USB0</name>
 			<description>Universal Serial Bus</description>
-			<interrupt>
-				<name>USB0_0</name>
-				<description>Universal Serial Bus (Module 0)</description>
-				<value>107</value>
-			</interrupt>
 			<groupName>USB</groupName>
 			<headerStructName>USB</headerStructName>
 			<baseAddress>0x50040000</baseAddress>
@@ -33092,6 +32886,11 @@ Changes versus V1.3.0
 				<size>0x040000</size>
 				<usage>registers</usage>
 			</addressBlock>
+			<interrupt>
+				<name>USB0_0</name>
+				<description>Universal Serial Bus (Module 0)</description>
+				<value>107</value>
+			</interrupt>
 			<registers>
 				<register>
 					<name>GOTGCTL</name>
@@ -38502,6 +38301,14 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>USIC0</name>
 			<description>Universal Serial Interface Controller 0</description>
+			<groupName>USIC</groupName>
+			<headerStructName>USIC</headerStructName>
+			<baseAddress>0x40030008</baseAddress>
+			<addressBlock>
+				<offset>0</offset>
+				<size>4</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>USIC0_0</name>
 				<description>Universal Serial Interface Channel (Module 0)</description>
@@ -38532,14 +38339,6 @@ Changes versus V1.3.0
 				<description>Universal Serial Interface Channel (Module 0)</description>
 				<value>89</value>
 			</interrupt>
-			<groupName>USIC</groupName>
-			<headerStructName>USIC</headerStructName>
-			<baseAddress>0x40030008</baseAddress>
-			<addressBlock>
-				<offset>0</offset>
-				<size>4</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>ID</name>
@@ -38577,6 +38376,13 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="USIC0">
 			<name>USIC1</name>
 			<description>Universal Serial Interface Controller 1</description>
+			<groupName>USIC</groupName>
+			<baseAddress>0x48020008</baseAddress>
+			<addressBlock>
+				<offset>0</offset>
+				<size>4</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>USIC1_0</name>
 				<description>Universal Serial Interface Channel (Module 1)</description>
@@ -38607,13 +38413,6 @@ Changes versus V1.3.0
 				<description>Universal Serial Interface Channel (Module 1)</description>
 				<value>95</value>
 			</interrupt>
-			<groupName>USIC</groupName>
-			<baseAddress>0x48020008</baseAddress>
-			<addressBlock>
-				<offset>0</offset>
-				<size>4</size>
-				<usage>registers</usage>
-			</addressBlock>
 		</peripheral>
 		<peripheral>
 			<name>USIC0_CH0</name>
@@ -45927,6 +45726,13 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>CAN</name>
 			<description>Controller Area Networks</description>
+			<groupName>CAN</groupName>
+			<baseAddress>0x48014000</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x200</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>CAN0_0</name>
 				<description>MultiCAN</description>
@@ -45967,13 +45773,6 @@ Changes versus V1.3.0
 				<description>MultiCAN</description>
 				<value>83</value>
 			</interrupt>
-			<groupName>CAN</groupName>
-			<baseAddress>0x48014000</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x200</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>CLC</name>
@@ -48688,6 +48487,13 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>VADC</name>
 			<description>Analog to Digital Converter</description>
+			<groupName>VADC</groupName>
+			<baseAddress>0x40004000</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x400</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>VADC0_C0_0</name>
 				<description>Analog to Digital Converter Common Block 0</description>
@@ -48708,13 +48514,6 @@ Changes versus V1.3.0
 				<description>Analog to Digital Converter Common Block 0</description>
 				<value>17</value>
 			</interrupt>
-			<groupName>VADC</groupName>
-			<baseAddress>0x40004000</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x400</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>CLC</name>
@@ -50415,6 +50214,14 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>VADC_G0</name>
 			<description>Analog to Digital Converter</description>
+			<groupName>VADC</groupName>
+			<headerStructName>VADC_G</headerStructName>
+			<baseAddress>0x40004400</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x400</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>VADC0_G0_0</name>
 				<description>Analog to Digital Converter Group 0</description>
@@ -50435,14 +50242,6 @@ Changes versus V1.3.0
 				<description>Analog to Digital Converter Group 0</description>
 				<value>21</value>
 			</interrupt>
-			<groupName>VADC</groupName>
-			<headerStructName>VADC_G</headerStructName>
-			<baseAddress>0x40004400</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x400</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>ARBCFG</name>
@@ -56176,6 +55975,13 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="VADC_G0">
 			<name>VADC_G1</name>
 			<description>Analog to Digital Converter</description>
+			<groupName>VADC</groupName>
+			<baseAddress>0x40004800</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x400</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>VADC0_G1_0</name>
 				<description>Analog to Digital Converter Group 1</description>
@@ -56196,17 +56002,17 @@ Changes versus V1.3.0
 				<description>Analog to Digital Converter Group 1</description>
 				<value>25</value>
 			</interrupt>
+		</peripheral>
+		<peripheral derivedFrom="VADC_G0">
+			<name>VADC_G2</name>
+			<description>Analog to Digital Converter</description>
 			<groupName>VADC</groupName>
-			<baseAddress>0x40004800</baseAddress>
+			<baseAddress>0x40004C00</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
 				<size>0x400</size>
 				<usage>registers</usage>
 			</addressBlock>
-		</peripheral>
-		<peripheral derivedFrom="VADC_G0">
-			<name>VADC_G2</name>
-			<description>Analog to Digital Converter</description>
 			<interrupt>
 				<name>VADC0_G2_0</name>
 				<description>Analog to Digital Converter Group 2</description>
@@ -56227,17 +56033,17 @@ Changes versus V1.3.0
 				<description>Analog to Digital Converter Group 2</description>
 				<value>29</value>
 			</interrupt>
+		</peripheral>
+		<peripheral derivedFrom="VADC_G0">
+			<name>VADC_G3</name>
+			<description>Analog to Digital Converter</description>
 			<groupName>VADC</groupName>
-			<baseAddress>0x40004C00</baseAddress>
+			<baseAddress>0x40005000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
 				<size>0x400</size>
 				<usage>registers</usage>
 			</addressBlock>
-		</peripheral>
-		<peripheral derivedFrom="VADC_G0">
-			<name>VADC_G3</name>
-			<description>Analog to Digital Converter</description>
 			<interrupt>
 				<name>VADC0_G3_0</name>
 				<description>Analog to Digital Converter Group 3</description>
@@ -56258,13 +56064,6 @@ Changes versus V1.3.0
 				<description>Analog to Digital Converter Group 3</description>
 				<value>33</value>
 			</interrupt>
-			<groupName>VADC</groupName>
-			<baseAddress>0x40005000</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x400</size>
-				<usage>registers</usage>
-			</addressBlock>
 		</peripheral>
 		<peripheral>
 			<name>DSD</name>
@@ -57199,6 +56998,14 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>DSD_CH0</name>
 			<description>Delta Sigma Demodulator</description>
+			<groupName>DSD</groupName>
+			<headerStructName>DSD_CH</headerStructName>
+			<baseAddress>0x40008100</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x100</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>DSD0_M_0</name>
 				<description>Delta Sigma Demodulator Main</description>
@@ -57209,14 +57016,6 @@ Changes versus V1.3.0
 				<description>Delta Sigma Demodulator Auxiliary</description>
 				<value>38</value>
 			</interrupt>
-			<groupName>DSD</groupName>
-			<headerStructName>DSD_CH</headerStructName>
-			<baseAddress>0x40008100</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x100</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>MODCFG</name>
@@ -58080,6 +57879,13 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="DSD_CH0">
 			<name>DSD_CH1</name>
 			<description>Delta Sigma Demodulator</description>
+			<groupName>DSD</groupName>
+			<baseAddress>0x40008200</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x100</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>DSD0_M_1</name>
 				<description>Delta Sigma Demodulator Main</description>
@@ -58090,17 +57896,17 @@ Changes versus V1.3.0
 				<description>Delta Sigma Demodulator Auxiliary</description>
 				<value>39</value>
 			</interrupt>
+		</peripheral>
+		<peripheral derivedFrom="DSD_CH0">
+			<name>DSD_CH2</name>
+			<description>Delta Sigma Demodulator</description>
 			<groupName>DSD</groupName>
-			<baseAddress>0x40008200</baseAddress>
+			<baseAddress>0x40008300</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
 				<size>0x100</size>
 				<usage>registers</usage>
 			</addressBlock>
-		</peripheral>
-		<peripheral derivedFrom="DSD_CH0">
-			<name>DSD_CH2</name>
-			<description>Delta Sigma Demodulator</description>
 			<interrupt>
 				<name>DSD0_M_2</name>
 				<description>Delta Sigma Demodulator Main</description>
@@ -58111,17 +57917,17 @@ Changes versus V1.3.0
 				<description>Delta Sigma Demodulator Auxiliary</description>
 				<value>40</value>
 			</interrupt>
+		</peripheral>
+		<peripheral derivedFrom="DSD_CH0">
+			<name>DSD_CH3</name>
+			<description>Delta Sigma Demodulator</description>
 			<groupName>DSD</groupName>
-			<baseAddress>0x40008300</baseAddress>
+			<baseAddress>0x40008400</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
 				<size>0x100</size>
 				<usage>registers</usage>
 			</addressBlock>
-		</peripheral>
-		<peripheral derivedFrom="DSD_CH0">
-			<name>DSD_CH3</name>
-			<description>Delta Sigma Demodulator</description>
 			<interrupt>
 				<name>DSD0_M_3</name>
 				<description>Delta Sigma Demodulator Main</description>
@@ -58132,17 +57938,16 @@ Changes versus V1.3.0
 				<description>Delta Sigma Demodulator Auxiliary</description>
 				<value>41</value>
 			</interrupt>
-			<groupName>DSD</groupName>
-			<baseAddress>0x40008400</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x100</size>
-				<usage>registers</usage>
-			</addressBlock>
 		</peripheral>
 		<peripheral>
 			<name>DAC</name>
 			<description>Digital to Analog Converter</description>
+			<baseAddress>0x48018000</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x4000</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>DAC0_0</name>
 				<description>Digital to Analog Converter</description>
@@ -58153,12 +57958,6 @@ Changes versus V1.3.0
 				<description>Digital to Analog Converter</description>
 				<value>43</value>
 			</interrupt>
-			<baseAddress>0x48018000</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x4000</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>ID</name>
@@ -59163,6 +58962,14 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>CCU40</name>
 			<description>Capture Compare Unit 4 - Unit 0</description>
+			<groupName>CCU4</groupName>
+			<headerStructName>CCU4</headerStructName>
+			<baseAddress>0x4000C000</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x100</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>CCU40_0</name>
 				<description>Capture Compare Unit 4 (Module 0)</description>
@@ -59183,14 +58990,6 @@ Changes versus V1.3.0
 				<description>Capture Compare Unit 4 (Module 0)</description>
 				<value>47</value>
 			</interrupt>
-			<groupName>CCU4</groupName>
-			<headerStructName>CCU4</headerStructName>
-			<baseAddress>0x4000C000</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x100</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>GCTRL</name>
@@ -60244,6 +60043,13 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="CCU40">
 			<name>CCU41</name>
 			<description>Capture Compare Unit 4 - Unit 1</description>
+			<groupName>CCU4</groupName>
+			<baseAddress>0x40010000</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x100</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>CCU41_0</name>
 				<description>Capture Compare Unit 4 (Module 1)</description>
@@ -60264,17 +60070,17 @@ Changes versus V1.3.0
 				<description>Capture Compare Unit 4 (Module 1)</description>
 				<value>51</value>
 			</interrupt>
+		</peripheral>
+		<peripheral derivedFrom="CCU40">
+			<name>CCU42</name>
+			<description>Capture Compare Unit 4 - Unit 2</description>
 			<groupName>CCU4</groupName>
-			<baseAddress>0x40010000</baseAddress>
+			<baseAddress>0x40014000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
 				<size>0x100</size>
 				<usage>registers</usage>
 			</addressBlock>
-		</peripheral>
-		<peripheral derivedFrom="CCU40">
-			<name>CCU42</name>
-			<description>Capture Compare Unit 4 - Unit 2</description>
 			<interrupt>
 				<name>CCU42_0</name>
 				<description>Capture Compare Unit 4 (Module 2)</description>
@@ -60295,17 +60101,17 @@ Changes versus V1.3.0
 				<description>Capture Compare Unit 4 (Module 2)</description>
 				<value>55</value>
 			</interrupt>
+		</peripheral>
+		<peripheral derivedFrom="CCU40">
+			<name>CCU43</name>
+			<description>Capture Compare Unit 4 - Unit 3</description>
 			<groupName>CCU4</groupName>
-			<baseAddress>0x40014000</baseAddress>
+			<baseAddress>0x48004000</baseAddress>
 			<addressBlock>
 				<offset>0x0</offset>
 				<size>0x100</size>
 				<usage>registers</usage>
 			</addressBlock>
-		</peripheral>
-		<peripheral derivedFrom="CCU40">
-			<name>CCU43</name>
-			<description>Capture Compare Unit 4 - Unit 3</description>
 			<interrupt>
 				<name>CCU43_0</name>
 				<description>Capture Compare Unit 4 (Module 3)</description>
@@ -60326,13 +60132,6 @@ Changes versus V1.3.0
 				<description>Capture Compare Unit 4 (Module 3)</description>
 				<value>59</value>
 			</interrupt>
-			<groupName>CCU4</groupName>
-			<baseAddress>0x48004000</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x100</size>
-				<usage>registers</usage>
-			</addressBlock>
 		</peripheral>
 		<peripheral>
 			<name>CCU40_CC40</name>
@@ -62757,6 +62556,14 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>CCU80</name>
 			<description>Capture Compare Unit 8 - Unit 0</description>
+			<groupName>CCU8</groupName>
+			<headerStructName>CCU8</headerStructName>
+			<baseAddress>0x40020000</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x100</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>CCU80_0</name>
 				<description>Capture Compare Unit 8 (Module 0)</description>
@@ -62777,14 +62584,6 @@ Changes versus V1.3.0
 				<description>Capture Compare Unit 8 (Module 0)</description>
 				<value>63</value>
 			</interrupt>
-			<groupName>CCU8</groupName>
-			<headerStructName>CCU8</headerStructName>
-			<baseAddress>0x40020000</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x100</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>GCTRL</name>
@@ -64113,6 +63912,13 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="CCU80">
 			<name>CCU81</name>
 			<description>Capture Compare Unit 8 - Unit 1</description>
+			<groupName>CCU8</groupName>
+			<baseAddress>0x40024000</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x100</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>CCU81_0</name>
 				<description>Capture Compare Unit 8 (Module 1)</description>
@@ -64133,13 +63939,6 @@ Changes versus V1.3.0
 				<description>Capture Compare Unit 8 (Module 1)</description>
 				<value>67</value>
 			</interrupt>
-			<groupName>CCU8</groupName>
-			<baseAddress>0x40024000</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x100</size>
-				<usage>registers</usage>
-			</addressBlock>
 		</peripheral>
 		<peripheral>
 			<name>CCU80_CC80</name>
@@ -67223,6 +67022,13 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>HRPWM0</name>
 			<description>High Resolution PWM Unit</description>
+			<groupName>HRPWM</groupName>
+			<baseAddress>0x40020900</baseAddress>
+			<addressBlock>
+				<offset>0x0000</offset>
+				<size>0x0100</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>HRPWM_0</name>
 				<description>High Resolution Pulse Width Modulation (Module 0)</description>
@@ -67243,13 +67049,6 @@ Changes versus V1.3.0
 				<description>High Resolution Pulse Width Modulation (Module 0)</description>
 				<value>75</value>
 			</interrupt>
-			<groupName>HRPWM</groupName>
-			<baseAddress>0x40020900</baseAddress>
-			<addressBlock>
-				<offset>0x0000</offset>
-				<size>0x0100</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>HRBSC</name>
@@ -71622,6 +71421,14 @@ Changes versus V1.3.0
 		<peripheral>
 			<name>POSIF0</name>
 			<description>Position Interface 0</description>
+			<groupName>POSIF</groupName>
+			<headerStructName>POSIF</headerStructName>
+			<baseAddress>0x40028000</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x4000</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>POSIF0_0</name>
 				<description>Position Interface (Module 0)</description>
@@ -71632,14 +71439,6 @@ Changes versus V1.3.0
 				<description>Position Interface (Module 0)</description>
 				<value>69</value>
 			</interrupt>
-			<groupName>POSIF</groupName>
-			<headerStructName>POSIF</headerStructName>
-			<baseAddress>0x40028000</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x4000</size>
-				<usage>registers</usage>
-			</addressBlock>
 			<registers>
 				<register>
 					<name>PCONF</name>
@@ -73251,6 +73050,13 @@ Changes versus V1.3.0
 		<peripheral derivedFrom="POSIF0">
 			<name>POSIF1</name>
 			<description>Position Interface 1</description>
+			<groupName>POSIF</groupName>
+			<baseAddress>0x4002C000</baseAddress>
+			<addressBlock>
+				<offset>0x0</offset>
+				<size>0x4000</size>
+				<usage>registers</usage>
+			</addressBlock>
 			<interrupt>
 				<name>POSIF1_0</name>
 				<description>Position Interface (Module 1)</description>
@@ -73261,13 +73067,6 @@ Changes versus V1.3.0
 				<description>Position Interface (Module 1)</description>
 				<value>71</value>
 			</interrupt>
-			<groupName>POSIF</groupName>
-			<baseAddress>0x4002C000</baseAddress>
-			<addressBlock>
-				<offset>0x0</offset>
-				<size>0x4000</size>
-				<usage>registers</usage>
-			</addressBlock>
 		</peripheral>
 		<peripheral>
 			<name>PORT0</name>

@@ -1,10 +1,10 @@
 /**
  * @file xmc4_scu.h
- * @date 2016-04-15
+ * @date 2016-06-15
  *
  * @cond
   *********************************************************************************************************************
- * XMClib v2.1.6 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
@@ -56,6 +56,25 @@
  *     - Fixed naming of XMC_SCU_CLOCK_DEEPSLEEP_MODE_CONFIG peripheral clock.
  *       Added enable and disable for peripheral clocks       
  * 
+ * 2016-05-19:
+ *     - Added XMC_SCU_CLOCK_IsLowPowerOscillatorStable() and XMC_SCU_CLOCK_IsHighPerformanceOscillatorStable()
+ *     - Added XMC_SCU_POWER_WaitForInterrupt() and XMC_SCU_POWER_WaitForEvent()
+ *     - Added XMC_SCU_CLOCK_EnableLowPowerOscillatorGeneralPurposeInput(), 
+ *             XMC_SCU_CLOCK_DisableLowPowerOscillatorGeneralPurposeInput(),
+ *             XMC_SCU_CLOCK_GetLowPowerOscillatorGeneralPurposeInputStatus()
+ *     - Added XMC_SCU_CLOCK_EnableHighPerformanceOscillatorGeneralPurposeInput(), 
+ *             XMC_SCU_CLOCK_DisableHighPerformanceOscillatorGeneralPurposeInput(),
+ *             XMC_SCU_CLOCK_GetHighPerformanceOscillatorGeneralPurposeInputStatus()
+ *     - Removed XMC_SCU_INTERRUPT_EVENT_OSCULSTAT_UPDATED, XMC_SCU_INTERRUPT_EVENT_HDSTAT_UPDATED
+ *
+ * 2016-06-14:
+ *     - Added XMC_SCU_HIB_IsWakeupEventDetected() and XMC_SCU_HIB_ClearWakeupEventDetectionStatus()
+ *
+ * 2016-06-15:
+ *     - Added XMC_SCU_HIB_EnterHibernateStateEx() which allows to select between external or internal hibernate mode. This last mode only available in XMC44, XMC42 and XMC41 series.
+ *     - Extended wakeup hibernate events using LPAC wakeup on events. Only available in XMC44, XMC42 and XMC41 series.
+ *     - Added LPAC APIs. Only available in XMC44, XMC42 and XMC41 series.
+ *
  * @endcond 
  *
  */
@@ -127,12 +146,10 @@
 #if defined(SCU_INTERRUPT_SRSTAT_HINTSET_Msk)
 #define XMC_SCU_INTERRUPT_EVENT_HINTSET_UPDATED    SCU_INTERRUPT_SRSTAT_HINTSET_Msk /**< HIB HINTSET register update event. */
 #endif
-#define XMC_SCU_INTERRUPT_EVENT_HDSTAT_UPDATED     SCU_INTERRUPT_SRSTAT_HDSTAT_Msk /**< HIB HDSTAT register update event. */
 #define XMC_SCU_INTERRUPT_EVENT_HDCLR_UPDATED      SCU_INTERRUPT_SRSTAT_HDCLR_Msk /**< HIB HDCLR register update event. */
 #define XMC_SCU_INTERRUPT_EVENT_HDSET_UPDATED      SCU_INTERRUPT_SRSTAT_HDSET_Msk /**< HIB HDSET register update event. */
 #define XMC_SCU_INTERRUPT_EVENT_HDCR_UPDATED       SCU_INTERRUPT_SRSTAT_HDCR_Msk /**< HIB HDCR register update event. */
 #define XMC_SCU_INTERRUPT_EVENT_OSCSICTRL_UPDATED  SCU_INTERRUPT_SRSTAT_OSCSICTRL_Msk /**< HIB OSCSICTRL register update event. */
-#define XMC_SCU_INTERRUPT_EVENT_OSCULSTAT_UPDATED  SCU_INTERRUPT_SRSTAT_OSCULSTAT_Msk /**< HIB OSCULSTAT register update event. */
 #define XMC_SCU_INTERRUPT_EVENT_OSCULCTRL_UPDATED  SCU_INTERRUPT_SRSTAT_OSCULCTRL_Msk /**< HIB OSCULCTRL register update event. */
 #define XMC_SCU_INTERRUPT_EVENT_RTCCTR_UPDATED     SCU_INTERRUPT_SRSTAT_RTC_CTR_Msk /**< HIB RTCCTR register update event. */
 #define XMC_SCU_INTERRUPT_EVENT_RTCATIM0_UPDATED   SCU_INTERRUPT_SRSTAT_RTC_ATIM0_Msk /**< HIB RTCATIM0 register update event. */
@@ -172,7 +189,7 @@ typedef enum XMC_SCU_CCU_TRIGGER
 #endif
 #if defined(CCU81)
   XMC_SCU_CCU_TRIGGER_CCU81 = SCU_GENERAL_CCUCON_GSC81_Msk /**< Trigger mask used for Global Start Control of
-                                                                 CCU41 peripheral. */
+                                                                 CCU81 peripheral. */
 #endif
 } XMC_SCU_CCU_TRIGGER_t;
 
@@ -250,7 +267,7 @@ typedef enum XMC_SCU_PARITY
 typedef enum XMC_SCU_RESET_REASON
 {
   XMC_SCU_RESET_REASON_PORST        = (1UL << SCU_RESET_RSTSTAT_RSTSTAT_Pos), /**< Reset due to Power on reset. */
-  XMC_SCU_RESET_REASON_SWD          = (2UL << SCU_RESET_RSTSTAT_RSTSTAT_Pos), /**< Reset due to Serial wire debugger reset. */
+  XMC_SCU_RESET_REASON_SWD          = (2UL << SCU_RESET_RSTSTAT_RSTSTAT_Pos), /**< Reset due to Supply Watchdog reset. */
   XMC_SCU_RESET_REASON_PV           = (4UL << SCU_RESET_RSTSTAT_RSTSTAT_Pos), /**< Reset due to Power Validation reset. */
   XMC_SCU_RESET_REASON_SW           = (8UL << SCU_RESET_RSTSTAT_RSTSTAT_Pos), /**< Reset due to Software reset. */
   XMC_SCU_RESET_REASON_LOCKUP       = (16UL << SCU_RESET_RSTSTAT_RSTSTAT_Pos), /**< Reset due to reset due to CPU lockup. */
@@ -742,6 +759,16 @@ typedef enum XMC_SCU_HIB_EVENT
   XMC_SCU_HIB_EVENT_WAKEUP_ON_NEG_EDGE = SCU_HIBERNATE_HDCR_WKPEN_Msk, /**< Wake-up on negative edge pin event */
   XMC_SCU_HIB_EVENT_WAKEUP_ON_RTC = SCU_HIBERNATE_HDCR_RTCE_Msk, /**< Wake-up on RTC event */
   XMC_SCU_HIB_EVENT_ULPWDG = SCU_HIBERNATE_HDCR_ULPWDGEN_Msk, /**< ULP watchdog alarm status */
+#if (defined(DOXYGEN) || (UC_SERIES == XMC44) || (UC_SERIES == XMC42) || (UC_SERIES == XMC41))
+  XMC_SCU_HIB_EVENT_LPAC_VBAT_POSEDGE = SCU_HIBERNATE_HDSTAT_VBATPEV_Msk, /**< Wake-up on LPAC positive edge of VBAT threshold crossing. @note Only available in XMC44, XMC42 and XMC41 series */
+  XMC_SCU_HIB_EVENT_LPAC_VBAT_NEGEDGE = SCU_HIBERNATE_HDSTAT_VBATNEV_Msk, /**< Wake-up on LPAC negative edge of VBAT threshold crossing. @note Only available in XMC44, XMC42 and XMC41 series */
+  XMC_SCU_HIB_EVENT_LPAC_HIB_IO_0_POSEDGE = SCU_HIBERNATE_HDSTAT_AHIBIO0PEV_Msk, /**< Wake-up on LPAC positive edge of HIB_IO_0 threshold crossing. @note Only available in XMC44, XMC42 and XMC41 series */
+  XMC_SCU_HIB_EVENT_LPAC_HIB_IO_0_NEGEDGE = SCU_HIBERNATE_HDSTAT_AHIBIO0NEV_Msk, /**< Wake-up on LPAC negative edge of HIB_IO_0 threshold crossing. @note Only available in XMC44, XMC42 and XMC41 series */
+#if (defined(DOXYGEN) || ((UC_SERIES == XMC44) && (UC_PACKAGE == LQFP100)))
+  XMC_SCU_HIB_EVENT_LPAC_HIB_IO_1_POSEDGE = SCU_HIBERNATE_HDSTAT_AHIBIO1PEV_Msk, /**< Wake-up on LPAC positive edge of HIB_IO_1 threshold crossing. @note Only available in XMC44 series and LQFP100. */
+  XMC_SCU_HIB_EVENT_LPAC_HIB_IO_1_NEGEDGE = SCU_HIBERNATE_HDSTAT_AHIBIO1NEV_Msk, /**< Wake-up on LPAC negative edge of HIB_IO_1 threshold crossing. @note Only available in XMC44 series and LQFP100. */
+#endif
+#endif  
 } XMC_SCU_HIB_EVENT_t;
 
 /** 
@@ -754,7 +781,7 @@ typedef enum XMC_SCU_HIB_IO
 #if (defined(DOXYGEN) || (UC_PACKAGE == BGA196) || (UC_PACKAGE == BGA144) || (UC_PACKAGE == LQFP144) || (UC_PACKAGE == LQFP100))
   XMC_SCU_HIB_IO_1 = 1 /**< HIB_IO_1 pin. 
                             At the first power-up and with every reset of the hibernate domain this pin is configured as input with no pull device active. As output the medium driver mode is active. 
-                            @note : Only available on BGA196, BGA144, LQFP144 and LQFP100 packages*/
+                            @note : Only available in certain packages*/
 #endif  
 } XMC_SCU_HIB_IO_t;
 
@@ -782,6 +809,92 @@ typedef enum XMC_SCU_HIB_IO_OUTPUT_LEVEL
   XMC_SCU_HIB_IO_OUTPUT_LEVEL_LOW = 0 << SCU_HIBERNATE_HDCR_HIBIO0POL_Pos, /**< Direct value */
   XMC_SCU_HIB_IO_OUTPUT_LEVEL_HIGH = 1 << SCU_HIBERNATE_HDCR_HIBIO0POL_Pos /**< Inverted value */
 } XMC_SCU_HIB_IO_OUTPUT_LEVEL_t;
+
+/**
+ * Selects hibernate mode
+ */
+typedef enum XMC_SCU_HIB_HIBERNATE_MODE
+{
+  XMC_SCU_HIB_HIBERNATE_MODE_EXTERNAL = 0, /**< Request external hibernate mode */
+#if (defined(DOXYGEN) || (UC_SERIES == XMC44) || (UC_SERIES == XMC42) || (UC_SERIES == XMC41))
+  XMC_SCU_HIB_HIBERNATE_MODE_INTERNAL = 1, /**< Request internal hibernate mode. @note Only available in XMC44, XMC42 and XMC41 series */
+#endif
+} XMC_SCU_HIB_HIBERNATE_MODE_t;
+
+/**
+ * Selects input signal HIB_SR0 of ERU0
+ */
+typedef enum XMC_SCU_HIB_SR0_INPUT
+{
+  XMC_SCU_HIB_SR0_INPUT_HIB_IO_0 = SCU_HIBERNATE_HDCR_GPI0SEL_Msk, /**< Set HIB_SR0 to HIB_IO_0 digital input */
+#if (defined(DOXYGEN) || (UC_PACKAGE == BGA196) || (UC_PACKAGE == BGA144) || (UC_PACKAGE == LQFP144) || (UC_PACKAGE == LQFP100))  
+  XMC_SCU_HIB_SR0_INPUT_HIB_IO_1 = 0, /**< Set HIB_SR0 to HIB_IO_1 digital input. @note Only available in certain packages. */
+#endif  
+#if (defined(DOXYGEN) || (UC_SERIES == XMC44) || (UC_SERIES == XMC42) || (UC_SERIES == XMC41))
+  XMC_SCU_HIB_SR0_INPUT_ACMP0 = SCU_HIBERNATE_HDCR_ADIG0SEL_Msk,  /**< Set HIB_SR0 to LPAC CMP0. @note Only available in XMC44, XMC42 and XMC41 series. */
+#endif
+} XMC_SCU_HIB_SR0_INPUT_t;
+
+#if (defined(DOXYGEN) || (UC_SERIES == XMC44) || (UC_SERIES == XMC42) || (UC_SERIES == XMC41))
+
+#if ((UC_SERIES == XMC44) && (UC_PACKAGE == LQFP100))
+/**
+ * Selects input signal HIB_SR1 of ERU0. @note Only available in XMC44 in certain packages.
+ */
+typedef enum XMC_SCU_HIB_SR1_INPUT
+{
+  XMC_SCU_HIB_SR1_INPUT_HIB_IO_0 = SCU_HIBERNATE_HDCR_GPI1SEL_Msk, /**< Set HIB_SR1 to HIB_IO_0 digital input */
+  XMC_SCU_HIB_SR1_INPUT_HIB_IO_1 = 0, /**< Set HIB_SR1 to HIB_IO_1 digital input.  */
+  XMC_SCU_HIB_SR1_INPUT_ACMP1 = SCU_HIBERNATE_HDCR_ADIG1SEL_Msk,  /**< Set HIB_SR0 to LPAC CMP1. */
+  XMC_SCU_HIB_SR1_INPUT_XTAL_GPI = SCU_HIBERNATE_HDCR_XTALGPI1SEL_Msk,  /**< Set HIB_SR0 to RTC_XTAL_1 digital input */
+} XMC_SCU_HIB_SR1_INPUT_t;
+#endif
+
+/**
+ * HIB LPAC input selection
+ */
+typedef enum XMC_SCU_HIB_LPAC_INPUT
+{
+  XMC_SCU_HIB_LPAC_INPUT_DISABLED = 0 << SCU_HIBERNATE_LPACCONF_CMPEN_Pos, /**< Comparator permanently in power down */
+  XMC_SCU_HIB_LPAC_INPUT_VBAT = 0x1 << SCU_HIBERNATE_LPACCONF_CMPEN_Pos, /**< Comparator activated for VBAT input */
+  XMC_SCU_HIB_LPAC_INPUT_HIB_IO_0 = 0x2 << SCU_HIBERNATE_LPACCONF_CMPEN_Pos, /**< Comparator activated for HIB_IO_0 input */
+#if (defined(DOXYGEN) || ((UC_SERIES == XMC44) && (UC_PACKAGE == LQFP100)))      
+  XMC_SCU_HIB_LPAC_INPUT_HIB_IO_1 = 0x4 << SCU_HIBERNATE_LPACCONF_CMPEN_Pos, /**< Comparator activated for HIB_IO_1 input. @note Only available in XMC44 series and LQFP100 package. */
+#endif  
+} XMC_SCU_HIB_LPAC_INPUT_t;
+
+/**
+ * HIB LPAC start trigger selection for selected inputs
+ */
+typedef enum XMC_SCU_HIB_LPAC_TRIGGER
+{
+  XMC_SCU_HIB_LPAC_TRIGGER_SUBSECOND_INTERVAL_COUNTER = 0 << SCU_HIBERNATE_LPACCONF_TRIGSEL_Pos, /**< Sub-second interval counter */
+  XMC_SCU_HIB_LPAC_TRIGGER_RTC_ALARM_EVENT = 0x1 << SCU_HIBERNATE_LPACCONF_TRIGSEL_Pos, /**< RTC alarm event */
+  XMC_SCU_HIB_LPAC_TRIGGER_RTC_PERIODIC_EVENT = 0x2 << SCU_HIBERNATE_LPACCONF_TRIGSEL_Pos, /**< RTC periodic event */
+  XMC_SCU_HIB_LPAC_TRIGGER_ON_WAKEUP_POSITIVE_EDGE_EVENT = 0x3 << SCU_HIBERNATE_LPACCONF_TRIGSEL_Pos, /**< On digital wakeup input positive edge event */
+  XMC_SCU_HIB_LPAC_TRIGGER_ON_WAKEUP_NEGATIVE_EDGE_EVENT = 0x5 << SCU_HIBERNATE_LPACCONF_TRIGSEL_Pos, /**< On digital wakeup input negative edge event */
+  XMC_SCU_HIB_LPAC_TRIGGER_CONTINOUS = 0x6 << SCU_HIBERNATE_LPACCONF_TRIGSEL_Pos, /**< Continuous measurement */
+  XMC_SCU_HIB_LPAC_TRIGGER_SINGLE_SHOT = 0x7 << SCU_HIBERNATE_LPACCONF_TRIGSEL_Pos, /**< Single shot on software request */
+} XMC_SCU_HIB_LPAC_TRIGGER_t;
+
+/**
+ * HIB LPAC status
+ */
+typedef enum XMC_SCU_HIB_LPAC_STATUS
+{
+  XMC_SCU_HIB_LPAC_STATUS_VBAT_COMPARE_DONE = SCU_HIBERNATE_LPACST_VBATSCMP_Msk, /**< VBAT compare operation completed */
+  XMC_SCU_HIB_LPAC_STATUS_HIB_IO_0_COMPARE_DONE = SCU_HIBERNATE_LPACST_AHIBIO0SCMP_Msk, /**< HBI_IO_0 compare operation completed */
+#if (defined(DOXYGEN) || ((UC_SERIES == XMC44) && (UC_PACKAGE == LQFP100)))        
+  XMC_SCU_HIB_LPAC_STATUS_HIB_IO_1_COMPARE_DONE = SCU_HIBERNATE_LPACST_AHIBIO1SCMP_Msk, /**< HBI_IO_1 compare operation completed. @note Only available in XMC44 series and LQFP100 package. */
+#endif  
+  XMC_SCU_HIB_LPAC_STATUS_VBAT_ABOVE_THRESHOLD = SCU_HIBERNATE_LPACST_VBATVAL_Msk, /**< VBAT comparison result above programmed threshold */
+  XMC_SCU_HIB_LPAC_STATUS_HIB_IO_0_ABOVE_THRESHOLD = SCU_HIBERNATE_LPACST_AHIBIO0VAL_Msk, /**< HBI_IO_0 comparison result above programmed threshold */
+#if (defined(DOXYGEN) || ((UC_SERIES == XMC44) && (UC_PACKAGE == LQFP100)))        
+  XMC_SCU_HIB_LPAC_STATUS_HIB_IO_1_ABOVE_THRESHOLD = SCU_HIBERNATE_LPACST_AHIBIO1VAL_Msk, /**< HBI_IO_1 comparison result above programmed threshold. @note Only available in XMC44 series and LQFP100 package. */
+#endif  
+} XMC_SCU_HIB_LPAC_STATUS_t;
+
+#endif /* (defined(DOXYGEN) || (UC_SERIES == XMC44) || (UC_SERIES == XMC42) || (UC_SERIES == XMC41)) */
 
 /*********************************************************************************************************************
  * DATA STRUCTURES
@@ -823,6 +936,14 @@ typedef struct XMC_SCU_CLOCK_CONFIG
   uint8_t                               fperipheral_clkdiv; /**< Ratio of fSYS to fPERI. */
 } const XMC_SCU_CLOCK_CONFIG_t;
 
+/**
+ * Low power modes
+ */
+typedef enum XMC_SCU_POWER_MODE_t
+{
+  XMC_SCU_POWER_MODE_SLEEP = 0, /**< sleep mode stops the processor clock */
+  XMC_SCU_POWER_MODE_DEEPSLEEP = SCB_SCR_SLEEPDEEP_Msk /**< deep sleep mode stops the system clock and switches off the PLL and flash memory. */
+} XMC_SCU_POWER_MODE_t;
 
 /*********************************************************************************************************************
  * API PROTOTYPES
@@ -2140,7 +2261,9 @@ __STATIC_INLINE uint32_t XMC_SCU_CLOCK_GetECATClockDivider(void)
  * \par<b>Description</b><br>
  * Enables the high precision oscillator by configuring external crystal mode.\n\n
  * The API configures \a MODE bits of \a OSCHPCTRL register to 0, there by configuring the 
- * external clock input. 
+ * external clock input.
+ * The System Oscillator Watchdog is enabled. The user should check the status 
+ * of the oscillator using XMC_SCU_CLOCK_IsHighPerformanceOscillatorStable()
  * \par<b>Related APIs:</b><BR>
  * XMC_SCU_CLOCK_DisableHighPerformanceOscillator() \n\n\n
  */
@@ -2160,6 +2283,52 @@ void XMC_SCU_CLOCK_DisableHighPerformanceOscillator(void);
 
 /**
  *
+ * @return Status of high performance oscillator
+ *
+ * \par<b>Description</b><br>
+ * Checks if the OSC_HP oscillator is stable and usable
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_EnableHighPerformanceOscillator() \n\n\n
+ */
+bool XMC_SCU_CLOCK_IsHighPerformanceOscillatorStable(void);
+
+/**
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Enables XTAL1 input of OSC_ULP as general purpose input.
+ * Use XMC_SCU_CLOCK_GetHighPerformanceOscillatorGeneralPurposeInputStatus to monitor the status of OSC_HP XTAL1 pin.
+ * @Note OSC_ULP should be disabled previously using XMC_SCU_CLOCK_DisableHighPerformanceOscillator().
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_DisableHighPerformanceOscillator() \n\n\n
+ */
+void XMC_SCU_CLOCK_EnableHighPerformanceOscillatorGeneralPurposeInput(void);
+
+/**
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Disables XTAL1 input of OSC_ULP as general purpose input.
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_EnableHighPerformanceOscillatorGeneralPurposeInput() \n\n\n
+ */
+void XMC_SCU_CLOCK_DisableHighPerformanceOscillatorGeneralPurposeInput(void);
+
+/**
+ *
+ * @return Status OSC_HP XTAL1 pin
+ *
+ * \par<b>Description</b><br>
+ * Monitor the status of OSC_HP XTAL1 pin.
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_EnableHighPerformanceOscillatorGeneralPurposeInput() \n\n\n
+ */
+uint32_t XMC_SCU_CLOCK_GetHighPerformanceOscillatorGeneralPurposeInputStatus(void);
+
+/**
+ *
  * @return None
  *
  * \par<b>Description</b><br>
@@ -2168,8 +2337,11 @@ void XMC_SCU_CLOCK_DisableHighPerformanceOscillator(void);
  * uisng the \a MODE bits of the \a OSCULCTRL register. The \a Mode bits will be
  * reset to 0 to enable the low power oscillator. Mirror register update delays 
  * are handled internally.
+ * The OSC_ULP Oscillator Watchdog is enabled. The user should check the status 
+ * of the oscillator using XMC_SCU_CLOCK_IsLowPowerOscillatorStable()
  * \par<b>Related APIs:</b><BR>
- * XMC_SCU_CLOCK_DisableLowPowerOscillator() \n\n\n
+ * XMC_SCU_CLOCK_DisableLowPowerOscillator() 
+ * XMC_SCU_CLOCK_IsLowPowerOscillatorStable() \n\n\n
  */
 void XMC_SCU_CLOCK_EnableLowPowerOscillator(void);
 
@@ -2185,6 +2357,52 @@ void XMC_SCU_CLOCK_EnableLowPowerOscillator(void);
  * XMC_SCU_CLOCK_EnableLowPowerOscillator() \n\n\n
  */
 void XMC_SCU_CLOCK_DisableLowPowerOscillator(void);
+
+/**
+ *
+ * @return Status of low power oscillator
+ *
+ * \par<b>Description</b><br>
+ * Checks if the OSC_ULP oscillator is stable and usable
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_EnableLowPowerOscillator() \n\n\n
+ */
+bool XMC_SCU_CLOCK_IsLowPowerOscillatorStable(void);
+
+/**
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Enables XTAL1 input of OSC_ULP as general purpose input.
+ * Use XMC_SCU_CLOCK_GetLowPowerOscillatorGeneralPurposeInputStatus to monitor the status of OSC_ULP XTAL1 pin.
+ * @Note OSC_ULP should be disabled previously using XMC_SCU_CLOCK_DisableLowPowerOscillator().
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_DisableLowPowerOscillator() \n\n\n
+ */
+void XMC_SCU_CLOCK_EnableLowPowerOscillatorGeneralPurposeInput(void);
+
+/**
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Disables XTAL1 input of OSC_ULP as general purpose input.
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_EnableLowPowerOscillatorGeneralPurposeInput() \n\n\n
+ */
+void XMC_SCU_CLOCK_DisableLowPowerOscillatorGeneralPurposeInput(void);
+
+/**
+ *
+ * @return Status OSC_ULP XTAL1 pin 
+ *
+ * \par<b>Description</b><br>
+ * Monitor the status of OSC_ULP XTAL1 pin.
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_EnableLowPowerOscillatorGeneralPurposeInput() \n\n\n
+ */
+uint32_t XMC_SCU_CLOCK_GetLowPowerOscillatorGeneralPurposeInputStatus(void);
 
 /**
  *
@@ -2583,6 +2801,43 @@ bool XMC_SCU_CLOCK_IsUsbPllLocked(void);
 void XMC_SCU_CLOCK_SetBackupClockCalibrationMode(XMC_SCU_CLOCK_FOFI_CALIBRATION_MODE_t mode);
 
 /**
+ * @param mode Low power mode\n
+ * @param sleep_on_exit Enter sleep, or deep sleep, on return from an ISR
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Enter selected low power mode and wait for interrupt
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_SetSleepConfig(), XMC_SCU_CLOCK_SetDeepSleepConfig() \n\n\n
+ */
+__STATIC_INLINE void XMC_SCU_POWER_WaitForInterrupt(XMC_SCU_POWER_MODE_t mode, bool sleep_on_exit)
+{
+  SCB->SCR = mode | (sleep_on_exit ? SCB_SCR_SLEEPONEXIT_Msk : 0); 
+
+  __WFI();
+}
+
+/**
+ * @param mode Low power mode\n
+ *
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Enter selected low power mode and wait for event
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_CLOCK_SetSleepConfig(), XMC_SCU_CLOCK_SetDeepSleepConfig() \n\n\n
+ */
+__STATIC_INLINE void XMC_SCU_POWER_WaitForEvent(XMC_SCU_POWER_MODE_t mode)
+{
+  SCB->SCR = mode | SCB_SCR_SEVONPEND_Msk; 
+
+  __WFE();
+}
+
+/**
  * @param threshold Threshold value for comparison to VDDP for brownout detection. LSB33V is 22.5mV
  * @param interval Interval value for comparison to VDDP expressed in cycles of system clock
  * @return None
@@ -2745,10 +3000,7 @@ __STATIC_INLINE int32_t XMC_SCU_HIB_GetHibernateControlStatus(void)
  */
 __STATIC_INLINE int32_t XMC_SCU_HIB_GetEventStatus(void)
 {
-  return SCU_HIBERNATE->HDSTAT & (SCU_HIBERNATE_HDSTAT_EPEV_Msk | 
-                                  SCU_HIBERNATE_HDSTAT_ENEV_Msk | 
-                                  SCU_HIBERNATE_HDSTAT_RTCEV_Msk | 
-                                  SCU_HIBERNATE_HDSTAT_ULPWDG_Msk);
+  return SCU_HIBERNATE->HDSTAT;
 }
 
 /**
@@ -2795,10 +3047,42 @@ void XMC_SCU_HIB_DisableEvent(int32_t event);
  * @return None
  * 
  * \par<b>Description</b><br>
- * Enter hibernate state
+ * Request enter external hibernate state
  *
  */
 void XMC_SCU_HIB_EnterHibernateState(void);
+
+/**
+ * @param mode hibernate mode ::XMC_SCU_HIB_HIBERNATE_MODE_t
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Request enter external hibernate state
+ *
+ */
+void XMC_SCU_HIB_EnterHibernateStateEx(XMC_SCU_HIB_HIBERNATE_MODE_t mode);
+
+/**
+ *  @return Detection of a wakeup from hibernate mode
+ *
+ * \par<b>Description</b><br>
+ * Detection of a wakeup from hibernate mode
+ */
+__STATIC_INLINE bool XMC_SCU_HIB_IsWakeupEventDetected(void)
+{
+  return ((SCU_RESET->RSTSTAT & SCU_RESET_RSTSTAT_HIBWK_Msk) != 0U);
+}
+
+/**
+ *  @return None
+ *
+ * \par<b>Description</b><br>
+ * Clear detection status of wakeup from hibernate mode
+ */
+__STATIC_INLINE void XMC_SCU_HIB_ClearWakeupEventDetectionStatus(void)
+{
+  SCU_RESET->RSTCLR = SCU_RESET_RSTCLR_HIBWK_Msk;
+}
 
 /**
  * @param pin Hibernate domain dedicated pin ::XMC_SCU_HIB_IO_t
@@ -2837,10 +3121,157 @@ void XMC_SCU_HIB_SetPinOutputLevel(XMC_SCU_HIB_IO_t pin, XMC_SCU_HIB_IO_OUTPUT_L
  * @return None
  * 
  * \par<b>Description</b><br>
- * Selects input to ERU0 module that optionally can be used with software as a general purpose input.
+ * Selects input to ERU0 module (HIB_SR0) that optionally can be used with software as a general purpose input.
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_HIB_SetSR0Input()
  *
  */
 void XMC_SCU_HIB_SetInput0(XMC_SCU_HIB_IO_t pin);
+
+/**
+ * @param input input signal HIB_SR0 of ERU0
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Selects input to ERU0 module (HIB_SR0).
+ *
+ * \par<b>Related APIs:</b><BR>
+ * XMC_SCU_HIB_SetInput0()
+ *
+ */
+void XMC_SCU_HIB_SetSR0Input(XMC_SCU_HIB_SR0_INPUT_t input);
+
+#if (defined(DOXYGEN) || (UC_SERIES == XMC44) || (UC_SERIES == XMC42) || (UC_SERIES == XMC41))
+
+#if ((UC_SERIES == XMC44) && (UC_PACKAGE == LQFP100))
+/**
+ * @param input input signal HIB_SR1 of ERU0
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Configures HIB_SR1 input to ERU0 module.
+ * @note Only available in XMC44 series and LQFP100 package
+ *
+ */
+void XMC_SCU_HIB_SetSR1Input(XMC_SCU_HIB_SR1_INPUT_t input);
+#endif
+
+/**
+ * @param input LPAC compare input. Values from ::XMC_SCU_HIB_LPAC_INPUT_t can be ORed.
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Selects inputs to the LPAC comparator. Several inputs can be selected (time multiplexing).
+ * @note Only available in XMC44, XMC42 and XMC41 series
+ *
+ */
+void XMC_SCU_HIB_LPAC_SetInput(XMC_SCU_HIB_LPAC_INPUT_t input);
+
+/**
+ * @param trigger LPAC compare trigger
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Selects trigger mechanism to start a comparison.
+ * @note Only available in XMC44, XMC42 and XMC41 series
+ *
+ */
+void XMC_SCU_HIB_LPAC_SetTrigger(XMC_SCU_HIB_LPAC_TRIGGER_t trigger);
+
+/**
+ * @param enable_delay Enable conversion delay
+ * @param interval_count compare interval (interval_count + 16) * 1/32768 (s)
+ * @param settle_count settleing time of LPAC after powered up (triggered) before measurement start (settle_count + 1) * 1/32768 (s)
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Configures timing behavior of comparator.
+ * @note Only available in XMC44, XMC42 and XMC41 series
+ *
+ */
+void XMC_SCU_HIB_LPAC_SetTiming(bool enable_delay, uint16_t interval_count, uint8_t settle_count);
+
+/**
+ * @param low VBAT low threshold
+ * @param high VBAT high threshold
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Select compare thresholds for VBAT.
+ * After the reset of HCU the upper threshold is applied to LPAC for all consecutive measurements until it has been crossed upwards.
+ * Once upper threshold crossed upwards the lower threshold gets applied and remains applied for all consecutive measuremements
+ * until it has been crossed downwards and the threshold values gets swapped again.
+ * @note Only available in XMC44, XMC42 and XMC41 series
+ *
+ */
+void XMC_SCU_HIB_LPAC_SetVBATThresholds(uint8_t lower, uint8_t upper);
+
+/**
+ * @param low HIB_IO_0 low threshold
+ * @param high HIB_IO_0 high threshold
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Select compare thresholds for HIB_IO_0.
+ * After the reset of HCU the upper threshold is applied to LPAC for all consecutive measurements until it has been crossed upwards.
+ * Once upper threshold crossed upwards the lower threshold gets applied and remains applied for all consecutive measuremements
+ * until it has been crossed downwards and the threshold values gets swapped again.
+ * @note Only available in XMC44, XMC42 and XMC41 series
+ *
+ */
+void XMC_SCU_HIB_LPAC_SetHIBIO0Thresholds(uint8_t lower, uint8_t upper);
+
+#if (defined(DOXYGEN) || (UC_SERIES == XMC44) && (UC_PACKAGE == LQFP100))
+/**
+ * @param low HIB_IO_1 low threshold
+ * @param high HIB_IO_1 high threshold
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Select compare thresholds for HIB_IO_1.
+ * After the reset of HCU the upper threshold is applied to LPAC for all consecutive measurements until it has been crossed upwards.
+ * Once upper threshold crossed upwards the lower threshold gets applied and remains applied for all consecutive measuremements
+ * until it has been crossed downwards and the threshold values gets swapped again.
+ * @note Only available in XMC44 series and LQFP100 package
+ *
+ */
+void XMC_SCU_HIB_LPAC_SetHIBIO1Thresholds(uint8_t lower, uint8_t upper);
+#endif
+
+/**
+ * @return HIB LPAC status ::XMC_SCU_HIB_LPAC_STATUS_t
+ *
+ * \par<b>Description</b><br>
+ * Return status of HIB LPAC.
+ * @note Only available in XMC44, XMC42 and XMC41 series and in certain packages
+ *
+ */
+int32_t XMC_SCU_HIB_LPAC_GetStatus(void);
+
+/**
+ * @param status HIB LPAC status. Values from ::XMC_SCU_HIB_LPAC_STATUS_t can be ORed.
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Clear status of HIB LPAC.
+ * @note Only available in XMC44, XMC42 and XMC41 series
+ *
+ */
+void XMC_SCU_HIB_LPAC_ClearStatus(int32_t status);
+
+/**
+ * @param input LPAC compare input. Values from ::XMC_SCU_HIB_LPAC_INPUT_t can be ORed.
+ * @return None
+ *
+ * \par<b>Description</b><br>
+ * Trigger comparasion on the selected inputs.
+ * @note Only available in XMC44, XMC42 and XMC41 series
+ *
+ */
+void XMC_SCU_HIB_LPAC_TriggerCompare(XMC_SCU_HIB_LPAC_INPUT_t input);
+
+#endif
 
 /**
  *

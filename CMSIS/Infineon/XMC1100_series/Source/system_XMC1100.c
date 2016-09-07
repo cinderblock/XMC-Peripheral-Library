@@ -1,12 +1,12 @@
 /*********************************************************************************************************************
  * @file     system_XMC1100.c
  * @brief    Device specific initialization for the XMC1100-Series according to CMSIS
- * @version  V1.9
- * @date     31 Mar 2016
+ * @version  V1.10
+ * @date     22 Aug 2016
  *
  * @cond
  *********************************************************************************************************************
- * Copyright (c) 2015-2016, Infineon Technologies AG
+ * Copyright (c) 2012-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -43,6 +43,9 @@
  * V1.8, 03 Sep 2015, JFT : Override values of CLOCK_VAL1 and CLOCK_VAL2 defined in vector table (startup.s)
  *                          MCLK = 32MHz, PCLK = 64MHz
  * V1.9, 31 Mar 2016, JFT : Fix flash wait states to 1 cycle
+ * V1.10,22 Aug 2016, JFT : Update coding for fixed flash wait states using new macros in device header file
+ *                          Add macro guard USE_DYNAMIC_FLASH_WS. If defined in compiler options, adaptive wait states
+ *                          are used for read accesses to the flash memory. Otherwise a fixed 1 WS is used.
  *
  * @endcond 
  */
@@ -73,12 +76,6 @@
 
 #define DCO1_FREQUENCY (64000000U)
 
-/* Macros to apply fixed wait states to flash read access (see DS Addendum) */
-#define NVM_NVMCONF_WS_Msk    (0x1000UL)
-#define NVM_CONFIG1           ((uint32_t *)0x40050048)
-#define NVM_CONFIG1_FIXWS_Msk (0x800UL)
-
-
 /*******************************************************************************
  * GLOBAL VARIABLES
  *******************************************************************************/
@@ -105,9 +102,11 @@ __WEAK void SystemInit(void)
 
 __WEAK void SystemCoreSetup(void)
 {
-  /* Fix flash wait states to 1 cycle */
+#ifndef USE_DYNAMIC_FLASH_WS
+  /* Fix flash wait states to 1 cycle (see DS Addendum) */
   NVM->NVMCONF |= NVM_NVMCONF_WS_Msk;
-  *NVM_CONFIG1 |= NVM_CONFIG1_FIXWS_Msk;
+  NVM->CONFIG1 |= NVM_CONFIG1_FIXWS_Msk;
+#endif
 }
 
 __WEAK void SystemCoreClockSetup(void)

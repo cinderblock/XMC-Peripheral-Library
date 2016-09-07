@@ -31,7 +31,6 @@
  */
 
 #include <xmc_gpio.h>
-#include <xmc_eru.h>
 
 #include <lwip/timers.h>
 #include <lwip/netif.h>
@@ -46,6 +45,9 @@
 
 #define LED1 P1_1
 #define LED2 P1_0
+
+#define BUTTON1 P1_14
+#define BUTTON2 P1_15
 
 /*Static IP ADDRESS*/
 #define IP_ADDR0   192
@@ -65,9 +67,30 @@
 #define GW_ADDR2   0
 #define GW_ADDR3   1
 
-struct netif xnetif;
+#define BUTTONS_TMR_INTERVAL 100
 
-void LWIP_Init(void)
+int8_t bx = 0;
+
+extern struct netif xnetif;
+
+static void buttons_timer(void *arg)
+{
+  XMC_UNUSED_ARG(arg);
+
+  if (XMC_GPIO_GetInput(BUTTON1) != 0)
+  {
+    bx++;
+  }
+
+  if (XMC_GPIO_GetInput(BUTTON2) != 0)
+  {
+    bx--;
+  }
+
+  sys_timeout(BUTTONS_TMR_INTERVAL, buttons_timer, NULL);
+}
+
+static void LWIP_Init(void)
 {
   struct ip_addr ipaddr;
   struct ip_addr netmask;
@@ -102,40 +125,20 @@ void LWIP_Init(void)
   /*  Registers the default network interface.*/
   netif_set_default(&xnetif);
 
-  /* Set Ethernet link flag */
-  xnetif.flags |= NETIF_FLAG_LINK_UP;
-
-#if LWIP_DHCP == 1
-  dhcp_start(&xnetif);
-#else
-  /* When the netif is fully configured this function must be called.*/
-  netif_set_up(&xnetif);
+  /* If callback enabled */
+#if LWIP_NETIF_STATUS_CALLBACK == 1
+  /* Initialize interface status change callback */
+  netif_set_status_callback(&xnetif, ETH_NETIF_STATUS_CB_FUNCTION);
 #endif
 
-}
+  /* device capabilities */
+  xnetif.flags |= NETIF_FLAG_ETHARP;
 
-#define BUTTON2 P1_15
+#if LWIP_DHCP == 1
+  /* Enable DHCP flag if DHCP is configured*/
+  xnetif.flags |= NETIF_FLAG_DHCP;
+#endif
 
-XMC_ERU_ETL_CONFIG_t button_event_generator_config =
-{
-  .input_a = ERU1_ETL1_INPUTA_P1_15,
-  .source = XMC_ERU_ETL_SOURCE_A,
-  .edge_detection = XMC_ERU_ETL_EDGE_DETECTION_FALLING,
-  .status_flag_mode = XMC_ERU_ETL_STATUS_FLAG_MODE_HWCTRL,
-  .enable_output_trigger = true,
-  .output_trigger_channel = XMC_ERU_ETL_OUTPUT_TRIGGER_CHANNEL0
-};
-
-XMC_ERU_OGU_CONFIG_t button_event_detection_config =
-{
-  .service_request = XMC_ERU_OGU_SERVICE_REQUEST_ON_TRIGGER
-};
-
-uint32_t button_count = 0;
-
-void ERU1_0_IRQHandler(void)
-{
-  button_count++;
 }
 
 /* Initialisation of functions to be used with CGi*/
@@ -149,7 +152,7 @@ const char *ledcontrol_handler(int iIndex, int iNumParams, char *pcParam[], char
   else {
     XMC_GPIO_ToggleOutput(LED2);
   }
-  return "/index.htm";
+  return "/cgi.htm";
 }
 
 const char *data_handler(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
@@ -179,34 +182,33 @@ int cgi_init(void)
 /**
  * Initialize SSI handlers
  */
-const char *TAGS[]={"b"};
+const char *TAGS[]={"bx"};
 
-uint16_t button_handler(int iIndex, char *pcInsert, int iInsertLen)
+static uint16_t ssi_handler(int iIndex, char *pcInsert, int iInsertLen)
 {
-  *pcInsert = (char)(((button_count / 100) % 10) + 0x30U);
-  pcInsert++;
-  *pcInsert = (char)(((button_count / 10) % 10) + 0x30U);
-  pcInsert++;
-  *pcInsert = (char)((button_count % 10) + 0x30U);
-
-  return 3;
+  return (sprintf(pcInsert, "%d", bx));
 }
 
 void ssi_init(void)
 {
-  http_set_ssi_handler(button_handler, (char const **)TAGS, 1);
+  http_set_ssi_handler(ssi_handler, (char const **)TAGS, 1);
 }
 
 int main(void)
 {
-  XMC_ERU_ETL_Init(ERU1_ETL1, &button_event_generator_config);
-  XMC_ERU_OGU_Init(ERU1_OGU0, &button_event_detection_config);
+  XMC_GPIO_CONFIG_t config;
+  
+  config.mode = XMC_GPIO_MODE_INPUT_TRISTATE;
 
-  NVIC_SetPriority(ERU1_0_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 63, 0));
-  NVIC_EnableIRQ(ERU1_0_IRQn);
-
-  XMC_GPIO_SetMode(LED1, XMC_GPIO_MODE_OUTPUT_PUSH_PULL);
-  XMC_GPIO_SetMode(LED2, XMC_GPIO_MODE_OUTPUT_PUSH_PULL);
+  XMC_GPIO_Init(BUTTON1, &config);
+  XMC_GPIO_Init(BUTTON2, &config);
+  
+  config.mode = XMC_GPIO_MODE_OUTPUT_PUSH_PULL;
+  config.output_level = XMC_GPIO_OUTPUT_LEVEL_LOW;
+  config.output_strength = XMC_GPIO_OUTPUT_STRENGTH_MEDIUM;
+  
+  XMC_GPIO_Init(LED1, &config);
+  XMC_GPIO_Init(LED2, &config);
 
   SysTick_Config(SystemCoreClock / 1000);
 
@@ -214,6 +216,8 @@ int main(void)
   httpd_init();
   cgi_init();
   ssi_init();
+
+  sys_timeout(BUTTONS_TMR_INTERVAL, buttons_timer, NULL);
 
   while(1)
   {

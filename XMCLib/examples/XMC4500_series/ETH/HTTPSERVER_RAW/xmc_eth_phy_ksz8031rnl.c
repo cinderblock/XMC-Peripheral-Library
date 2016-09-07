@@ -4,7 +4,7 @@
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.6 - XMC Peripheral Driver Library
+ * XMClib v2.1.8 - XMC Peripheral Driver Library
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
@@ -256,3 +256,10 @@ XMC_ETH_LINK_DUPLEX_t XMC_ETH_PHY_GetLinkDuplex(XMC_ETH_MAC_t *const eth_mac, ui
   return (XMC_ETH_LINK_DUPLEX_t)((val & PHYCTRL1_OPMODE_DUPLEX) ? XMC_ETH_LINK_DUPLEX_FULL : XMC_ETH_LINK_DUPLEX_HALF);
 }
 
+bool XMC_ETH_PHY_IsAutonegotiationCompleted(XMC_ETH_MAC_t *const eth_mac, uint8_t phy_addr)
+{
+  uint16_t val;
+
+  XMC_ETH_MAC_ReadPhy(eth_mac, phy_addr, REG_BMSR, &val);
+  return ((val & BMSR_ANEG_COMPL) == BMSR_ANEG_COMPL);
+}

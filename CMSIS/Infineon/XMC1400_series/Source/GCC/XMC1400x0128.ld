@@ -1,14 +1,16 @@
 /**
  * @file XMC1400x0128.ld
- * @date 2016-03-15
+ * @date 2016-06-07
  *
  * @cond
  *********************************************************************************************************************
- * Linker file for the GNU C Compiler v1.3
+ * Linker file for the GNU C Compiler v1.4
  * Supported devices: XMC1402-Q040X0128
  *                    XMC1402-Q048X0128
  *                    XMC1402-Q064X0128
  *                    XMC1402-F064X0128
+ *                    XMC1402-T038X0128
+ *                    XMC1403-Q040X0128
  *                    XMC1403-Q048X0128
  *                    XMC1403-Q064X0128
  *                    XMC1404-Q048X0128
@@ -55,7 +57,10 @@
  * 2016-03-15:
  *     - Fixed FLASH size
  *     - Add assertion to check that region SRAM_combined does not overflowed no_init section 
- *                                                                                                        
+ *
+ * 2016-06-07:
+ *     - Add XMC1402-T038X0128, XMC1403-Q040X0128
+ *
  * @endcond 
  *
  */

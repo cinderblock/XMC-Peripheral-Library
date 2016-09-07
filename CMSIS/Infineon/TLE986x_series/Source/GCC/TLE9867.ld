@@ -1,14 +1,14 @@
 /**
  * @file TLE9867.ld
- * @date 2015-07-20
+ * @date 2016-09-05
  *
  * @cond
  *********************************************************************************************************************
- * Linker file for the GNU C Compiler v1.5
+ * Linker file for the GNU C Compiler v1.6
  * Supported devices: TLE9867QXA20
  *                    TLE9867QXA40
  *
- * Copyright (c) 2015, Infineon Technologies AG
+ * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -38,13 +38,17 @@
  * Change History
  * --------------
  *
+ * 2015-07-13:
+ *     - Fix warning message 'sh_link not set for section .ARM.exidx
+ *
  * 2015-07-20:
  *     - Fix heap size
  *     - Make ARM.extab an own section.
  *     - Removed 'ARM <->THUMB interworking'
- *
- * 2015-07-13:
+ * 
+ * 2016-09-05:
  *     - Fix warning message 'sh_link not set for section .ARM.exidx
+ *     - Ensure data sections size are multiple of 4bytes
  * 
  * @endcond 
  *
@@ -104,21 +108,20 @@ SECTIONS
       KEEP(*(.secNACNAD)) /* keep my variable even if not referenced */
     } > FLASH_2
      
+    /* Exception handling, exidx needs a dedicated section */
+    .ARM.extab : ALIGN(4)
+    {
+      *(.ARM.extab* .gnu.linkonce.armextab.*)
+    } > FLASH_1
 
-	/* Exception handling, exidx needs a dedicated section */
-	.ARM.extab : 
-	{
-		. = ALIGN(4);
-		*(.ARM.extab* .gnu.linkonce.armextab.*)
-	} > FLASH_1
-
-	__exidx_start = .;
-	.ARM.exidx : 
-	{
-		. = ALIGN(4);
-		*(.ARM.exidx* .gnu.linkonce.armexidx.*)
-	} > FLASH_1
-	__exidx_end = .;
+    . = ALIGN(4);
+    __exidx_start = .;
+    .ARM.exidx : ALIGN(4)
+    {
+      *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+    } > FLASH_1
+    __exidx_end = .;
+    . = ALIGN(4);
 
 	/* CONST data section */
 	.rodata : 
@@ -144,6 +147,7 @@ SECTIONS
 	/* functions with __attribute__((section(".ram_code"))) */
     .ram_code : AT(__ram_load)
 	{
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
 		__ram_code_start = .;
 		*(.ram_code)  	
         . = ALIGN(4);
@@ -155,6 +159,7 @@ SECTIONS
 	/* Standard DATA and user defined DATA/BSS/CONST sections */
 	.data : AT(LOADADDR(.ram_code)  + SIZEOF(.ram_code))
 	{
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
 		__data_start = .;
 		* (.data);
 		* (.data*);
@@ -169,6 +174,7 @@ SECTIONS
 	/* BSS section */
 	.bss (NOLOAD) : 
 	{
+        . = ALIGN(4); /* section size must be multiply of 4. See startup.S file */
 		__bss_start = .;
 		* (.bss);
 		* (.bss*);

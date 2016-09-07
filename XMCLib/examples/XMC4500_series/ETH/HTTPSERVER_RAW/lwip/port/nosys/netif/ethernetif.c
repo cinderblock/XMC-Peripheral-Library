@@ -36,8 +36,8 @@
 #include "lwip/sys.h"
 #include "lwip/mem.h"
 #include "lwip/pbuf.h"
-#include <lwip/stats.h>
-#include <lwip/snmp.h>
+#include <lwip/netif.h>
+#include <lwip/timers.h>
 #include "netif/etharp.h"
 #include "netif/ppp_oe.h"
 
@@ -45,6 +45,8 @@
 #include "xmc_eth_mac.h"
 #include "xmc_eth_phy.h"
 #include <string.h>
+
+#include "ethernetif.h"
 
 /* Define those to better describe your network interface. */
 #define IFNAME0 'e'
@@ -64,7 +66,10 @@
 #define PHY_ADDR 0
 
 #define XMC_ETH_MAC_NUM_RX_BUF (4)
-#define XMC_ETH_MAC_NUM_TX_BUF (4)
+#define XMC_ETH_MAC_NUM_TX_BUF (8)
+
+/*Maximum retry iterations for phy auto-negotiation*/
+#define ETH_LWIP_PHY_MAX_RETRIES  0xfffffU
 
 /* MAC ADDRESS*/
 #define MAC_ADDR0   0x00
@@ -119,16 +124,142 @@ static XMC_ETH_MAC_t eth_mac =
   .num_tx_buf = XMC_ETH_MAC_NUM_TX_BUF
 };
 
-#if defined(__ICCARM__)
-#pragma data_alignment=4
-static uint8_t tx_buffer[XMC_ETH_MAC_BUF_SIZE];
-static uint8_t rx_buffer[XMC_ETH_MAC_BUF_SIZE];
+struct netif xnetif = 
+{
+  /* set MAC hardware address length */
+  .hwaddr_len = (u8_t)ETHARP_HWADDR_LEN,
+
+  /* set MAC hardware address */
+  .hwaddr =  {(u8_t)MAC_ADDR0, (u8_t)MAC_ADDR1,
+              (u8_t)MAC_ADDR2, (u8_t)MAC_ADDR3,
+              (u8_t)MAC_ADDR4, (u8_t)MAC_ADDR5},
+
+  /* maximum transfer unit */
+  .mtu = 1500U,
+
+  .name = {IFNAME0, IFNAME1},
+};
+
+/*Weak function to be called incase of error*/
+__WEAK void ethernetif_error(ETHIF_ERROR_t error_code)
+{
+  switch (error_code)
+  {
+    case ETHIF_ERROR_PHY_DEVICE_ID:
+       /* Wrong PHY address configured in the ETH_LWIP APP Network Interface.
+        * Because the connect PHY does not match the configuration or the PHYADR is wrong*/
+       break;
+
+   case ETHIF_ERROR_PHY_TIMEOUT:
+      /* PHY did not respond.*/
+      break;
+
+   case ETHIF_ERROR_PHY_ERROR:
+     /*PHY register update failed*/
+     break;
+
+   default:
+     break;
+  }
+
+  for (;;);
+}
+
+static void ethernetif_link_callback(struct netif *netif)
+{
+  XMC_ETH_LINK_SPEED_t speed;
+  XMC_ETH_LINK_DUPLEX_t duplex;
+  bool phy_autoneg_state;
+  uint32_t retries = 0U;
+  int32_t status;
+
+  if (netif_is_link_up(netif))
+  {
+    if((status = XMC_ETH_PHY_Init(&eth_mac, PHY_ADDR, &eth_phy_config)) != XMC_ETH_PHY_STATUS_OK)
+    {
+      ethernetif_error((ETHIF_ERROR_t)status);
+    }
+
+    /* If autonegotiation is enabled */
+    do {
+      phy_autoneg_state = XMC_ETH_PHY_IsAutonegotiationCompleted(&eth_mac, PHY_ADDR);
+      retries++;
+    } while ((phy_autoneg_state == false) && (retries < ETH_LWIP_PHY_MAX_RETRIES));
+    
+    if(phy_autoneg_state == false)
+    {
+      ethernetif_error(ETHIF_ERROR_PHY_TIMEOUT);
+    }
+  
+    speed = XMC_ETH_PHY_GetLinkSpeed(&eth_mac, PHY_ADDR);
+    duplex = XMC_ETH_PHY_GetLinkDuplex(&eth_mac, PHY_ADDR);
+  
+    XMC_ETH_MAC_SetLink(&eth_mac, speed, duplex);
+    /* Enable ethernet interrupts */
+    XMC_ETH_MAC_EnableEvent(&eth_mac, (uint32_t)XMC_ETH_MAC_EVENT_RECEIVE);
+
+    NVIC_SetPriority(ETH0_0_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 63U, 0U));
+    NVIC_ClearPendingIRQ(ETH0_0_IRQn);
+    NVIC_EnableIRQ(ETH0_0_IRQn);
+    XMC_ETH_MAC_EnableTx(&eth_mac);
+    XMC_ETH_MAC_EnableRx(&eth_mac);
+
+#if LWIP_DHCP == 1
+    /* Start DHCP query */
+    dhcp_start(&xnetif);
+#elif LWIP_AUTOIP == 1
+    /* Start AUTOIP probing */
+    autoip_start(&xnetif);
 #else
-static __attribute__((aligned(4))) uint8_t tx_buffer[XMC_ETH_MAC_BUF_SIZE];
-static __attribute__((aligned(4))) uint8_t rx_buffer[XMC_ETH_MAC_BUF_SIZE];
+    /* When the netif is fully configured this function must be called. */
+    netif_set_up(&xnetif);
 #endif
 
-extern struct netif xnetif;
+  }
+  else
+  {
+    /* Enable ethernet interrupts */
+    XMC_ETH_MAC_DisableEvent(&eth_mac, (uint32_t)XMC_ETH_MAC_EVENT_RECEIVE);
+    NVIC_DisableIRQ(ETH0_0_IRQn);
+
+    XMC_ETH_MAC_DisableTx(&eth_mac);
+    XMC_ETH_MAC_DisableRx(&eth_mac);
+
+#if LWIP_DHCP == 1
+    /* Stop DHCP query */
+    dhcp_stop(&xnetif);
+#elif LWIP_AUTOIP == 1
+    /* Stop AUTOIP probing */
+    autoip_stop(&xnetif);
+#else
+    /* When the netif link is down, set the status down. */
+    netif_set_down(&xnetif);
+#endif
+
+  }
+}
+
+static void ethernetif_link_status(void *args)
+{
+
+  if (XMC_ETH_PHY_GetLinkStatus(&eth_mac, PHY_ADDR) == XMC_ETH_LINK_STATUS_DOWN)
+  {
+    if (netif_is_link_up(&xnetif))
+    {
+      netif_set_link_down(&xnetif);
+    }
+  }
+  else
+  {
+    if (!netif_is_link_up(&xnetif))
+    {
+      netif_set_link_up(&xnetif);
+    }
+  }
+
+  sys_timeout(1000U, ethernetif_link_status, NULL);
+
+}
 
 /**
  * In this function, the hardware should be initialized.
@@ -142,24 +273,6 @@ low_level_init(struct netif *netif)
 {
   XMC_ETH_MAC_PORT_CTRL_t port_control;
   XMC_GPIO_CONFIG_t gpio_config;
-
-  /* set MAC hardware address length */
-  netif->hwaddr_len = ETHARP_HWADDR_LEN;
-
-  /* set MAC hardware address */
-  netif->hwaddr[0] =  MAC_ADDR0;
-  netif->hwaddr[1] =  MAC_ADDR1;
-  netif->hwaddr[2] =  MAC_ADDR2;
-  netif->hwaddr[3] =  MAC_ADDR3;
-  netif->hwaddr[4] =  MAC_ADDR4;
-  netif->hwaddr[5] =  MAC_ADDR5;
-
-  /* maximum transfer unit */
-  netif->mtu = 1500;
-  
-  /* device capabilities */
-  /* don't set NETIF_FLAG_ETHARP if this device is not an ethernet one */
-  netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP;
  
   /* Do whatever else is needed to initialize interface. */
   gpio_config.mode = XMC_GPIO_MODE_INPUT_TRISTATE;
@@ -198,25 +311,6 @@ low_level_init(struct netif *netif)
   XMC_GPIO_Init(MDC, &gpio_config);
 
   XMC_GPIO_SetHardwareControl(MDIO, XMC_GPIO_HWCTRL_PERIPHERAL1);
-
-  XMC_ETH_PHY_Init(&eth_mac, PHY_ADDR, &eth_phy_config);
-
-  while(XMC_ETH_PHY_GetLinkStatus(&eth_mac, PHY_ADDR) != XMC_ETH_LINK_STATUS_UP);
-
-  XMC_ETH_LINK_SPEED_t speed = XMC_ETH_PHY_GetLinkSpeed(&eth_mac, PHY_ADDR);
-  XMC_ETH_LINK_DUPLEX_t duplex = XMC_ETH_PHY_GetLinkDuplex(&eth_mac, PHY_ADDR);
-
-  XMC_ETH_MAC_SetLink(&eth_mac, speed, duplex);
-
-  /* Enable ethernet interrupts */
-  XMC_ETH_MAC_EnableEvent(&eth_mac, XMC_ETH_MAC_EVENT_RECEIVE);
-
-  NVIC_SetPriority(ETH0_0_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 63, 0));
-  NVIC_ClearPendingIRQ(ETH0_0_IRQn);
-  NVIC_EnableIRQ(ETH0_0_IRQn);
-
-  XMC_ETH_MAC_EnableTx(&eth_mac);
-  XMC_ETH_MAC_EnableRx(&eth_mac);
 }
 
 /**
@@ -239,37 +333,49 @@ static err_t
 low_level_output(struct netif *netif, struct pbuf *p)
 {
   struct pbuf *q;
-  int framelen = 0;
-  XMC_ETH_MAC_STATUS_t status;
+  uint32_t framelen = 0U;
+  uint8_t *buffer;
   
-  if (p->tot_len > XMC_ETH_MAC_BUF_SIZE) {
+  if (p->tot_len > (u16_t)XMC_ETH_MAC_BUF_SIZE) {
     return ERR_BUF;
   }
 
+  if (XMC_ETH_MAC_IsTxDescriptorOwnedByDma(&eth_mac))
+  {
+    XMC_ETH_MAC_ResumeTx(&eth_mac);
+
+    return ERR_BUF;
+  }
+  else
+  {
+    buffer = XMC_ETH_MAC_GetTxBuffer(&eth_mac);
+
 #if ETH_PAD_SIZE
-  pbuf_header(p, -ETH_PAD_SIZE);    /* Drop the padding word */
+    pbuf_header(p, -ETH_PAD_SIZE);    /* Drop the padding word */
 #endif
 
-  for(q = p; q != NULL; q = q->next) {
-    /* Send the data from the pbuf to the interface, one pbuf at a
+    for(q = p; q != NULL; q = q->next)
+    {
+      /* Send the data from the pbuf to the interface, one pbuf at a
        time. The size of the data in each pbuf is kept in the ->len
        variable. */
-    MEMCPY(&tx_buffer[framelen], q->payload, q->len);
-    framelen += q->len;
-  }
+      MEMCPY(buffer, q->payload, q->len);
+      framelen += (uint32_t)q->len;
+      buffer += q->len;
+    }
 
 #if ETH_PAD_SIZE
-  pbuf_header(p, ETH_PAD_SIZE);    /* Reclaim the padding word */
+    pbuf_header(p, ETH_PAD_SIZE);    /* Reclaim the padding word */
 #endif
 
-  status = XMC_ETH_MAC_SendFrame(&eth_mac, tx_buffer, framelen, 0);
-  if (status != XMC_ETH_MAC_STATUS_OK)
-  {
-    return ERR_BUF;
+    XMC_ETH_MAC_SetTxBufferSize(&eth_mac, framelen);
+
+    XMC_ETH_MAC_ReturnTxDescriptor(&eth_mac);
+    XMC_ETH_MAC_ResumeTx(&eth_mac);
+
+    return ERR_OK;
   }
 
-
-  return ERR_OK;
 }
 
 /**
@@ -286,54 +392,59 @@ low_level_input(void)
   struct pbuf *p = NULL;
   struct pbuf *q;
   uint32_t len;
+  uint8_t *buffer;
 
-  len = XMC_ETH_MAC_GetRxFrameSize(&eth_mac);
-
-  if ((len > 0) && (len < XMC_ETH_MAC_BUF_SIZE))
+  if (XMC_ETH_MAC_IsRxDescriptorOwnedByDma(&eth_mac) == false)
   {
-#if ETH_PAD_SIZE
-  len += ETH_PAD_SIZE;    /* allow room for Ethernet padding */
-#endif
-
-    /* We allocate a pbuf chain of pbufs from the pool. */
-    p = pbuf_alloc(PBUF_RAW, len, PBUF_POOL);
+    len = XMC_ETH_MAC_GetRxFrameSize(&eth_mac);
   
-    if (p != NULL)
+    if ((len > 0U) && (len <= (uint32_t)XMC_ETH_MAC_BUF_SIZE))
     {
 #if ETH_PAD_SIZE
-      pbuf_header(p, -ETH_PAD_SIZE);  /* drop the padding word */
+    len += ETH_PAD_SIZE;    /* allow room for Ethernet padding */
 #endif
-
-      XMC_ETH_MAC_ReadFrame(&eth_mac, rx_buffer, len);
-
-      len = 0;
-      /* We iterate over the pbuf chain until we have read the entire
-       * packet into the pbuf. */
-      for (q = p; q != NULL; q = q->next)
+  
+      /* We allocate a pbuf chain of pbufs from the pool. */
+      p = pbuf_alloc(PBUF_RAW, (u16_t)len, PBUF_POOL);
+    
+      if (p != NULL)
       {
-        /* Read enough bytes to fill this pbuf in the chain. The
-         * available data in the pbuf is given by the q->len
-         * variable.
-         * This does not necessarily have to be a memcpy, you can also preallocate
-         * pbufs for a DMA-enabled MAC and after receiving truncate it to the
-         * actually received size. In this case, ensure the tot_len member of the
-         * pbuf is the sum of the chained pbuf len members.
-         */
-         MEMCPY(q->payload, &rx_buffer[len], q->len);
-         len += q->len;
-      }
-
 #if ETH_PAD_SIZE
-      pbuf_header(p, ETH_PAD_SIZE);    /* Reclaim the padding word */
+        pbuf_header(p, -ETH_PAD_SIZE);  /* drop the padding word */
 #endif
-
+  
+        buffer = XMC_ETH_MAC_GetRxBuffer(&eth_mac);
+  
+        len = 0U;
+        /* We iterate over the pbuf chain until we have read the entire
+         * packet into the pbuf. */
+        for (q = p; q != NULL; q = q->next)
+        {
+          /* Read enough bytes to fill this pbuf in the chain. The
+           * available data in the pbuf is given by the q->len
+           * variable.
+           * This does not necessarily have to be a memcpy, you can also preallocate
+           * pbufs for a DMA-enabled MAC and after receiving truncate it to the
+           * actually received size. In this case, ensure the tot_len member of the
+           * pbuf is the sum of the chained pbuf len members.
+           */
+           MEMCPY(q->payload, &buffer[len], q->len);
+           len += q->len;
+        }
+#if ETH_PAD_SIZE
+        pbuf_header(p, ETH_PAD_SIZE);    /* Reclaim the padding word */
+#endif
+  
+      }
+      XMC_ETH_MAC_ReturnRxDescriptor(&eth_mac);
     }
+    else
+    {
+      /* Discard frame */
+      XMC_ETH_MAC_ReturnRxDescriptor(&eth_mac);
+    }
+    XMC_ETH_MAC_ResumeRx(&eth_mac);
   }
-  else
-  {
-    XMC_ETH_MAC_ReadFrame(&eth_mac, NULL, 0);  
-  }
-
   return p;  
 }
 
@@ -408,6 +519,10 @@ ethernetif_init(struct netif *netif)
 
   /* initialize the hardware */
   low_level_init(netif);
+
+  sys_timeout(1000U, ethernetif_link_status, NULL);
+
+  netif_set_link_callback(netif, ethernetif_link_callback);
 
   return ERR_OK;
 }

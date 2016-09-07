@@ -16,8 +16,8 @@
 
 /**
  * @file
- * @date 22 July, 2015
- * @version 1.0.2
+ * @date 06 September, 2016
+ * @version 1.0.4
  *
  * @brief I2C demo example
  *
@@ -28,9 +28,10 @@
  *
  * History <br>
  *
- * Version 1.0.0 Initial <br>
- * Version 1.0.1 Adapted to the last llds <br>
- * Version 1.0.2 Changed XMC_GPIO_SetMode() to XMC_GPIO_Init() for code clarity reasons <br> *
+ * Version 1.0.0 Initial
+ * Version 1.0.1 Adapted to the last llds
+ * Version 1.0.2 Changed XMC_GPIO_SetMode() to XMC_GPIO_Init() for code clarity reasons
+ * Version 1.0.4 Added ACT_PCA9502_ADDRESS
  */
 
 #include <xmc_gpio.h>
@@ -41,6 +42,9 @@
 
 /* IO expander address on HMI board */
 #define HMI_PCA9502_ADDRESS (0x9A)
+
+/* IO expander address on AUT_ISO board */
+#define ACT_PCA9502_ADDRESS (0x90)
 
 #define IO_EXPANDER_ADDRESS HMI_PCA9502_ADDRESS
 

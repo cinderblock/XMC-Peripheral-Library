@@ -1,21 +1,30 @@
-/****************************************************************************/
-/**
-Copyright (C) 2011-2015 Infineon Technologies AG. All rights reserved.
-* 
-*
-* @par
-* Infineon Technologies AG (Infineon) is supplying this software for use with 
-* Infineon's microcontrollers.  This file can be freely distributed within
-* development tools that are supporting such microcontrollers.
-*
-* @par
-* THIS SOFTWARE IS PROVIDED AS IS. NO WARRANTIES, WHETHER EXPRESS, IMPLIED
-* OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
-* MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
-* INFINEON SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
-* OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
-*
-******************************************************************************/
+/*********************************************************************************************************************
+ * Copyright (c) 2012-2016, Infineon Technologies AG
+ * All rights reserved.                        
+ *                                             
+ * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
+ * following conditions are met:   
+ *                                                                              
+ * Redistributions of source code must retain the above copyright notice, this list of conditions and the following 
+ * disclaimer.                        
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following 
+ * disclaimer in the documentation and/or other materials provided with the distribution.                       
+ * 
+ * Neither the name of the copyright holders nor the names of its contributors may be used to endorse or promote 
+ * products derived from this software without specific prior written permission.                                           
+ *                                                                              
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE  FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY,OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                                                  
+ *                                                                              
+ * To improve the quality of the software, users are encouraged to share modifications, enhancements or bug fixes with 
+ * Infineon Technologies AG dave@infineon.com).                                                          
+ *********************************************************************************************************************/
 
 
 /****************************************************************************************************//**
@@ -24,11 +33,11 @@ Copyright (C) 2011-2015 Infineon Technologies AG. All rights reserved.
  * @brief    CMSIS Cortex-M0 Peripheral Access Layer Header File for
  *           XMC1200 from Infineon.
  *
- * @version  V1.2.2 (Reference Manual v1.2)
- * @date     23. January 2015
+ * @version  V1.3.0 (Reference Manual v1.3)
+ * @date     22. August 2016
  *
  * @note     Generated with SVDConv V2.86c 
- *           from CMSIS SVD File 'XMC1200_Processed_SVD.xml' Version 1.2.2 (Reference Manual v1.2),
+ *           from CMSIS SVD File 'XMC1200_Processed_SVD.xml' Version 1.3.0 (Reference Manual v1.3),
  *******************************************************************************************************/
 
 
@@ -311,6 +320,8 @@ typedef struct {                                    /*!< (@ 0x40050000) NVM Stru
   __IO uint16_t  NVMPROG;                           /*!< (@ 0x40050004) NVM Programming Control Register                       */
   __I  uint16_t  RESERVED1;
   __IO uint16_t  NVMCONF;                           /*!< (@ 0x40050008) NVM Configuration Register                             */
+  __I  uint16_t  RESERVED2[31];
+  __IO uint16_t  CONFIG1;                           /*!< (@ 0x40050048) Configuration 1 Register                               */
 } NVM_Type;
 
 
@@ -1403,10 +1414,16 @@ typedef struct {                                    /*!< (@ 0x40040200) PORT2 St
 #define NVM_NVMCONF_HRLEV_Msk                 (0x6UL)                   /*!< NVM NVMCONF: HRLEV (Bitfield-Mask: 0x03)                    */
 #define NVM_NVMCONF_SECPROT_Pos               (4UL)                     /*!< NVM NVMCONF: SECPROT (Bit 4)                                */
 #define NVM_NVMCONF_SECPROT_Msk               (0xff0UL)                 /*!< NVM NVMCONF: SECPROT (Bitfield-Mask: 0xff)                  */
+#define NVM_NVMCONF_WS_Pos                    (12UL)                    /*!< NVM NVMCONF: WS (Bit 12)                                    */
+#define NVM_NVMCONF_WS_Msk                    (0x1000UL)                /*!< NVM NVMCONF: WS (Bitfield-Mask: 0x01)                       */
 #define NVM_NVMCONF_INT_ON_Pos                (14UL)                    /*!< NVM NVMCONF: INT_ON (Bit 14)                                */
 #define NVM_NVMCONF_INT_ON_Msk                (0x4000UL)                /*!< NVM NVMCONF: INT_ON (Bitfield-Mask: 0x01)                   */
 #define NVM_NVMCONF_NVM_ON_Pos                (15UL)                    /*!< NVM NVMCONF: NVM_ON (Bit 15)                                */
 #define NVM_NVMCONF_NVM_ON_Msk                (0x8000UL)                /*!< NVM NVMCONF: NVM_ON (Bitfield-Mask: 0x01)                   */
+
+/* ---------------------------------  NVM_CONFIG1  -------------------------------- */
+#define NVM_CONFIG1_FIXWS_Pos                 (11UL)                    /*!< NVM CONFIG1: FIXWS (Bit 11)                                 */
+#define NVM_CONFIG1_FIXWS_Msk                 (0x800UL)                 /*!< NVM CONFIG1: FIXWS (Bitfield-Mask: 0x01)                    */
 
 
 /* ================================================================================ */

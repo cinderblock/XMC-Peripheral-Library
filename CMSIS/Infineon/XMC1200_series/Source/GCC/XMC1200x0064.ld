@@ -1,11 +1,12 @@
 /**
  * @file XMC1200x0064.ld
- * @date 2016-03-15
+ * @date 2016-06-07
  *
  * @cond
  *********************************************************************************************************************
- * Linker file for the GNU C Compiler v1.9
+ * Linker file for the GNU C Compiler v1.10
  * Supported devices: XMC1201-T038F0064
+ *                    XMC1202-T016X0064
  *                    XMC1202-T028X0064
  *                    XMC1201-Q040F0064
  *
@@ -48,6 +49,9 @@
  *
  * 2016-03-15:
  *     - Add assertion to check that region SRAM_combined does not overflowed no_init section 
+ *
+ * 2016-06-07:
+ *     - Add XMC1202-T016X0064
  *                                               
  * @endcond 
  *

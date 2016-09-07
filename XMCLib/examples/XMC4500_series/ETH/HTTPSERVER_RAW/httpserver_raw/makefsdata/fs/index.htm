@@ -1,21 +1,8 @@
-<html>
+﻿<html>
   <head>
-    <title>XMC4500 RelaxKit Web Server Hands-On Session</title>
-    <script language="javascript" type="text/javascript" src="jquery.min.js"></script>
-    <script type="text/javascript">
-      $(document).ready(function() {        
-        function getData() {
-          $.get("data.cgi", function(data) {
-            $('#button_counter').val(parseInt(data.button_count));
-          }, "json");        
-        }
-        function update() {
-          getData();
-          setTimeout(update, 300);
-        }
-        update();
-      });
-    </script>    
+    <title>XMC4500 RelaxKit Web Server Demo</title>
+    <script type="text/javascript" src="smoothie.min.js"></script>
+    <script type="text/javascript" src="jquery.min.js"></script>
 	<style>
     html *
    {
@@ -25,18 +12,34 @@
   </head>
 
   <body>
-    <h1 align=center style='text-align:center'><img id="Picture 0" src="img_sics.gif" alt=scrollbg.jpg></h1>
-    <h1 align=center style='text-align:center'>XMC4500 RelaxKit Web Server Demo</span></h1>
-    <h3 align=center style='text-align:center'>Press buttons below to toggle LEDs</h3></span>
-    <form action="ledcontrol.cgi" method="get">
-    <div align=center>    
-      <button type="submit" name="toggle" value="led1">Switch LED1</button> 
-      <button type="submit" name="toggle" value="led2">Switch LED2</button>    
-    </div>
-    </form>
-    <br>
-    <h3 align=center style='text-align:center'>Press BUTTON2 in the RelaxKit to increment the count below</h3></span>
-    <p align=center>Button counter value: <input id="button_counter" type="text" value=""></p>
-    <br>
+    <h1 align=center style='text-align:center'><img id="logo" src="img_sics.gif"></h1>
+    <h1 align=center style='text-align:center'>XMC4500 RelaxKit Web Server Demo</h1>
+    <h3 align=center style='text-align:center'>Realtime Data - Press buttons in the kit</h3>
+    <table align=center>
+      <td>
+        <canvas id="mycanvas" width="600" height="300"></canvas>
+      </td>
+      <td>
+        <p style="color:red">x</p>
+      </td>
+    </table>
+    <a href="cgi.htm" target=_blank><p align=center>CGI demo</p></a>
+    
+    <script type="text/javascript">
+      var smoothie = new SmoothieChart({scaleSmoothing:0.01,maxValue:200,minValue:-200});
+      smoothie.streamTo(document.getElementById("mycanvas"), 100);      
+    
+      // Data
+      var linex = new TimeSeries();
+      
+      setInterval(function() {
+        $.get("data.cgi", function(data) {
+          linex.append(new Date().getTime(), parseInt(data.bx));
+        }, "json");
+      }, 100);              
+
+      smoothie.addTimeSeries(linex, { strokeStyle:'rgb(255, 0, 0)', lineWidth:3 });
+
+    </script>    
    </body>
 </html>

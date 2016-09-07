@@ -30,6 +30,11 @@
 -->
 <!-- edited with XMLSpy v2015 sp2 (http://www.altova.com) by Infineon Technologies AG (Infineon Technologies AG) -->
 <!--Release Notes-->
+<!--V1.1.0
+- Formal update to match latest reference manual version number
+- No register changes occured
+-->
+<!--Release History-->
 <!--V1.0.4
 - Add missing bit field DBYP to PCON register of PREF unit
 - Removed SCU register CANCLKCR-->
@@ -37,7 +42,6 @@
 - Corrected address offset of SCU registers CCUCLKCR, WDTCLKCR, EXTCLKCR, MLINKCLKCR, SLEEPCR, DSLEEPCR, ECATCLKCR, CANCLKCR-->
 <!--V1.0.2
 - Added missing SDMMCDEL register-->
-<!--Release History-->
 <!--V1.0.1
 - Added missing CGATSTAT1 register-->
 <!--V1.0.0 
@@ -67,7 +71,7 @@
 <device xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.2" xs:noNamespaceSchemaLocation="c:\fm8_xml\XSLT\RD2ISFR\CMSIS-SVD.xsd">
 	<vendor>Infineon</vendor>
 	<name>XMC4300</name>
-	<version>1.0.4 (Reference Manual v1.0)</version>
+	<version>1.1.0 (Reference Manual v1.1)</version>
 	<description>SVD file</description>
 	<cpu>
 		<name>CM4</name>

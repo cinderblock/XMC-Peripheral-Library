@@ -1,13 +1,14 @@
 /**
  * @file XMC1300x0016.ld
- * @date 2016-03-15
+ * @date 2016-06-07
  *
  * @cond
  *********************************************************************************************************************
- * Linker file for the GNU C Compiler v1.9
+ * Linker file for the GNU C Compiler v1.10
  * Supported devices: XMC1301-T016F0016
  *                    XMC1301-T016X0016
  *                    XMC1302-T016X0016
+ *                    XMC1302-T028X0016
  *                    XMC1301-T038F0016
  *                    XMC1302-T038X0016
  *                    XMC1301-Q024F0016
@@ -55,6 +56,9 @@
  * 
  * 2016-03-15:
  *     - Add assertion to check that region SRAM_combined does not overflowed no_init section 
+ *
+ * 2016-06-07:
+ *     - Add XMC1302-T028X0016
  *                                                                          
  * @endcond 
  *

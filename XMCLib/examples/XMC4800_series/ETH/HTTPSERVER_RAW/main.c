@@ -71,7 +71,7 @@
 
 int8_t bx = 0;
 
-struct netif xnetif;
+extern struct netif xnetif;
 
 static void buttons_timer(void *arg)
 {
@@ -125,14 +125,18 @@ static void LWIP_Init(void)
   /*  Registers the default network interface.*/
   netif_set_default(&xnetif);
 
-  /* Set Ethernet link flag */
-  xnetif.flags |= NETIF_FLAG_LINK_UP;
+  /* If callback enabled */
+#if LWIP_NETIF_STATUS_CALLBACK == 1
+  /* Initialize interface status change callback */
+  netif_set_status_callback(&xnetif, ETH_NETIF_STATUS_CB_FUNCTION);
+#endif
+
+  /* device capabilities */
+  xnetif.flags |= NETIF_FLAG_ETHARP;
 
 #if LWIP_DHCP == 1
-  dhcp_start(&xnetif);
-#else
-  /* When the netif is fully configured this function must be called.*/
-  netif_set_up(&xnetif);
+  /* Enable DHCP flag if DHCP is configured*/
+  xnetif.flags |= NETIF_FLAG_DHCP;
 #endif
 
 }

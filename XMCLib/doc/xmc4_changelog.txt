@@ -1,6 +1,131 @@
 /**
  * @page Changelog
+ *
  * @tableofcontents
+ * @section v218 Version 2.1.8
+ * @subsection GENERAL GENERAL
+ * - Added:
+ *    - Added USBH driver
+ *
+ * @subsection CAN CAN
+ * - Added:
+ *    - XMC_CAN_IsPanelControlReady()
+ * - Changed:
+ *    - XMC_CAN_AllocateMOtoNodeList()
+ *      Wait for ready status of list controller
+ * - Fixed:
+ *    - XMC_CAN_MO_Config()
+ *      Solve issue with TX and RX interrupt node pointers being cleared.
+ *
+ * @subsection CCU4 CCU4
+ * - Added:
+ *    - XMC_CCU4_SLICE_StopClearTimer()
+ * - Changed:
+ *    - XMC_CCU4_SLICE_StopTimer(), XMC_CCU4_SLICE_ClearTimer()
+ *      Avoid read write modify access
+ *
+ * @subsection CCU8 CCU8
+ * - Added:
+ *    - XMC_CCU8_SLICE_StopClearTimer()
+ * - Changed:
+ *    - XMC_CCU8_SLICE_StopTimer(), XMC_CCU4_SLICE_ClearTimer()
+ *      Avoid read write modify access
+ *
+ * @subsection GPIO GPIO
+ * - Added:
+ *    - Added P2_0_AF_CAN_N0_TXD for XMC4300
+ *
+ * @subsection ECAT ECAT
+ * - Added:
+ *    - Macro map file added XMC_ECAT_PORT_CTRL_LATCHIN0_P9_0 and XMC_ECAT_PORT_CTRL_LATCHIN0_P9_1
+ *
+ * @subsection ETH_MAC ETH_MAC
+ * - Added:
+ *    - XMC_ETH_MAC_GetTxBuffer(), XMC_ETH_MAC_GetRxBuffer()
+ *    - XMC_ETH_MAC_SetTxBufferSize()
+ *    - XMC_ETH_MAC_IsRxDescriptorOwnedByDma()
+ * - Changed:
+ *    - XMC_ETH_MAC_ReturnTxDescriptor(), XMC_ETH_MAC_ReturnRxDescriptor()
+ *      Update current descriptor pointer
+ *    - XMC_ETH_MAC_Init()
+ *      Disable MMC interrupt events
+ *
+ * @subsection I2C I2C
+ * - Added:
+ *    - XMC_I2C_CH_EnableDataTransmission(), XMC_I2C_CH_DisableDataTransmission()
+ *
+ * @subsection I2S I2S
+ * - Added:
+ *    - XMC_I2S_CH_EnableDataTransmission(), XMC_I2S_CH_DisableDataTransmission()
+ * - Changed:
+ *    - XMC_I2S_CH_Init()
+ *      Change default passive level to 0
+ *      Call XMC_I2S_CH_SetSystemWordLength() to set the system frame length equal to the frame length.
+ *    - XMC_I2S_CH_SetBaudrate()
+ *      Optional Master clock output signal generated with a fixed phase relation to SCLK
+ *
+ * @subsection RTC RTC
+ * - Added:
+ *    - XMC_RTC_SetTimeStdFormat(), XMC_RTC_SetAlarmStdFormat()
+ *
+ * @subsection SCU SCU
+ * - Added:
+ *    - XMC_SCU_CLOCK_IsLowPowerOscillatorStable(), XMC_SCU_CLOCK_IsHighPerformanceOscillatorStable()
+ *    - XMC_SCU_POWER_WaitForInterrupt(), XMC_SCU_POWER_WaitForEvent()
+ *    - XMC_SCU_CLOCK_EnableLowPowerOscillatorGeneralPurposeInput(), 
+ *      XMC_SCU_CLOCK_DisableLowPowerOscillatorGeneralPurposeInput(),
+ *      XMC_SCU_CLOCK_GetLowPowerOscillatorGeneralPurposeInputStatus()
+ *    - XMC_SCU_CLOCK_EnableHighPerformanceOscillatorGeneralPurposeInput(), 
+ *      XMC_SCU_CLOCK_DisableHighPerformanceOscillatorGeneralPurposeInput(),
+ *      XMC_SCU_CLOCK_GetHighPerformanceOscillatorGeneralPurposeInputStatus()
+ *    - XMC_SCU_HIB_IsWakeupEventDetected(), XMC_SCU_HIB_ClearWakeupEventDetectionStatus()
+ *    - XMC_SCU_HIB_EnterHibernateStateEx()
+ *    - Extended wakeup hibernate events using LPAC wakeup on events. Only available in XMC44, XMC42 and XMC41 series
+ *    - Added LPAC APIs. Only available in XMC44, XMC42 and XMC41 series
+ * - Removed:
+ *    - XMC_SCU_INTERRUPT_EVENT_OSCULSTAT_UPDATED, XMC_SCU_INTERRUPT_EVENT_HDSTAT_UPDATED
+ *
+ * @subsection SDMMC SDMMC
+ * - Fixed:
+ *    - XMC_SDMMC_SetBusVoltage(), XMC_SDMMC_SetDataLineTimeout(), XMC_SDMMC_SDClockFreqSelect()
+ *      Fixed wrong masking when accessing register
+ *    - XMC_SDMMC_SetDataTransferMode()
+ *      Avoid calling SetDateLineTimeout() 
+ *
+ * @subsection SPI SPI
+ * - Added:
+ *    - XMC_SPI_CH_EnableDataTransmission(), XMC_SPI_CH_DisableDataTransmission()
+ *
+ * @subsection UART UART
+ * - Added:
+ *    - XMC_UART_CH_EnableDataTransmission(), XMC_UART_CH_DisableDataTransmission()
+ * - Changed:
+ *    - XMC_UART_CH_Init()
+ *      Enable transfer status BUSY
+ *    - XMC_UART_CH_Stop()
+ *      Check for transfer status
+ *
+ * @subsection USIC USIC
+ * - Added: 
+ *    - Add missing USIC2_C1_DX0_P4_6,USIC1_C0_DX0_P1_14, USIC2_C0_DX0_P6_5, USIC2_C0_DX0_P9_4, USIC2_C1_DX1_P9_9, USIC2_C1_DX2_P9_8  for XMC47/48 BGA196
+ *    - Add missing USIC2_C1_DX0_P4_6, USIC1_C0_DX0_P1_14 for XMC47/48 LQFP100
+ *    - Add missing USIC2_C1_DX0_P4_6, USIC1_C0_DX0_P1_14, USIC2_C0_DX0_P6_5 for XMC47/48 LQFP144
+ *
+ * @subsection VADC VADC
+ * - Added:
+ *    - XMC_VADC_SHS_FULL_SET_REG, XMC_VADC_RESULT_PRIORITY_AVAILABLE, XMC_VADC_SYNCTR_START_LOCATION
+ *    - XMC_VADC_SHS_GAIN_LEVEL_t and XMC_VADC_SYNCTR_EVAL_t
+ *    - XMC_VADC_GROUP_SetSyncSlaveReadySignal()
+ *    - XMC_VADC_GROUP_ChannelGetAssertedEvents()
+ *    - XMC_VADC_GROUP_GetAssertedResultEvents()
+ *    - XMC_VADC_GROUP_SetResultRegPriority()
+ *    - XMC_VADC_GROUP_SetSyncReadySignal()
+ *    - XMC_VADC_GROUP_GetSyncReadySignal()
+ *    - XMC_VADC_GROUP_GetResultRegPriority()
+ * - Fixed:
+ *    - XMC_VADC_GROUP_CheckSlaveReadiness(), XMC_VADC_GROUP_IgnoreSlaveReadiness()
+ *      Fixed the EVAL configuration
+ *
  * @section v216 Version 2.1.6
  * @subsection SCU SCU
  * - Added:
@@ -70,21 +195,21 @@
  *      Clear channel event status before processing the event handler.
  *      It corrects event losses if the DMA triggered in the event handler finished before returning from handler.
  *
- * -Changed:
+ * - Changed:
  *    - XMC_DMA_CH_EnableEvent(), XMC_DMA_CH_DisableEvent()
  *      Optimization of write only registers
  *    - XMC_DMA_ClearOverrunStatus()
  *      Optimization of write only registers
  *
  * @subsection CCU4 CCU4
- * -Changed:
+ * - Changed:
  *    - XMC_CCU4_EnableShadowTransfer()
  *      Optimization of write only registers
  *
  * @subsection CCU8 CCU8
  * - Fixed:
  *    - Use correct API implementation for XMC43, XMC47/48 devices
- * -Changed:
+ * - Changed:
  *    - XMC_CCU8_EnableShadowTransfer()
  *      Optimization of write only registers
  *

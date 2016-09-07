@@ -1,10 +1,10 @@
 /**
  * @file xmc1_usic_map.h
- * @date 2015-08-25
+ * @date 2016-08-22
  *
  * @cond
 *********************************************************************************************************************
- * XMClib v2.1.6 - XMC Peripheral Driver Library 
+ * XMClib v2.1.8 - XMC Peripheral Driver Library 
  *
  * Copyright (c) 2015-2016, Infineon Technologies AG
  * All rights reserved.                        
@@ -41,7 +41,13 @@
  *
  * 2015-08-25:
  *     - Added XMC1400
- *      
+ *
+ * 2016-06-17:
+ *     - Added support for XMC1201 TSSOP28, XMC1302 TSSOP28, XMC1402 TSSOP38, XMC1403 VQFN40
+ *
+ * 2016-08-22:
+ *     - Added USIC1_C0_DX1_P3_4 for XMC14xx 64 pins package
+ *
  * @endcond 
  *
  */
@@ -520,6 +526,81 @@
 #define USIC0_C1_DX5_P1_5   	5
 #define USIC0_C1_DX5_P2_2   	0
 #define USIC0_C1_DX5_P2_4   	1
+#define USIC0_C1_DX5_P2_6   	3
+#define USIC0_C1_DX5_P2_8   	2
+#define USIC0_C1_DX5_SR0    	6
+#endif
+
+
+#if (UC_DEVICE == XMC1201) && (UC_PACKAGE == TSSOP28)
+#define USIC0_C0_DX0_DX3INS 	6
+#define USIC0_C0_DX0_P0_14  	0
+#define USIC0_C0_DX0_P0_15  	1
+#define USIC0_C0_DX0_P1_0   	2
+#define USIC0_C0_DX0_P1_1   	3
+#define USIC0_C0_DX0_P2_0   	4
+#define USIC0_C0_DX0_P2_1   	5
+#define USIC0_C0_DX1_DX0INS 	5
+#define USIC0_C0_DX1_DX4INS 	6
+#define USIC0_C0_DX1_P0_14  	0
+#define USIC0_C0_DX1_P0_7   	2
+#define USIC0_C0_DX1_P0_8   	1
+#define USIC0_C0_DX1_P1_1   	3
+#define USIC0_C0_DX1_P2_0   	4
+#define USIC0_C0_DX2_DX5INS 	6
+#define USIC0_C0_DX2_P0_0   	0
+#define USIC0_C0_DX2_P0_10  	2
+#define USIC0_C0_DX2_P0_12  	4
+#define USIC0_C0_DX2_P0_13  	5
+#define USIC0_C0_DX2_P0_9   	1
+#define USIC0_C0_DX3_DOUT0  	6
+#define USIC0_C0_DX3_DX5INS 	5
+#define USIC0_C0_DX3_P2_10  	2
+#define USIC0_C0_DX3_P2_2   	0
+#define USIC0_C0_DX3_P2_6   	4
+#define USIC0_C0_DX3_P2_8   	3
+#define USIC0_C0_DX4_DX5INS 	5
+#define USIC0_C0_DX4_P2_10  	2
+#define USIC0_C0_DX4_P2_2   	0
+#define USIC0_C0_DX4_P2_6   	4
+#define USIC0_C0_DX4_P2_8   	3
+#define USIC0_C0_DX4_SCLKOUT	6
+#define USIC0_C0_DX5_P2_5   	3
+#define USIC0_C0_DX5_P2_7   	2
+#define USIC0_C0_DX5_P2_9   	0
+#define USIC0_C0_DX5_SELO0  	6
+#define USIC0_C1_DX0_DX3INS 	6
+#define USIC0_C1_DX0_P0_6   	2
+#define USIC0_C1_DX0_P0_7   	3
+#define USIC0_C1_DX0_P1_2   	1
+#define USIC0_C1_DX0_P1_3   	0
+#define USIC0_C1_DX0_P2_10  	5
+#define USIC0_C1_DX0_P2_11  	4
+#define USIC0_C1_DX1_DX0INS 	5
+#define USIC0_C1_DX1_DX4INS 	6
+#define USIC0_C1_DX1_P0_7   	2
+#define USIC0_C1_DX1_P0_8   	1
+#define USIC0_C1_DX1_P1_3   	0
+#define USIC0_C1_DX1_P2_11  	4
+#define USIC0_C1_DX2_DX5INS 	6
+#define USIC0_C1_DX2_P0_0   	0
+#define USIC0_C1_DX2_P0_10  	2
+#define USIC0_C1_DX2_P0_9   	1
+#define USIC0_C1_DX2_P1_1   	4
+#define USIC0_C1_DX2_P2_0   	5
+#define USIC0_C1_DX3_DOUT0  	6
+#define USIC0_C1_DX3_DX5INS 	5
+#define USIC0_C1_DX3_P2_1   	0
+#define USIC0_C1_DX3_P2_5   	4
+#define USIC0_C1_DX3_P2_7   	3
+#define USIC0_C1_DX3_P2_9   	1
+#define USIC0_C1_DX4_DX5INS 	5
+#define USIC0_C1_DX4_P2_1   	0
+#define USIC0_C1_DX4_P2_5   	4
+#define USIC0_C1_DX4_P2_7   	3
+#define USIC0_C1_DX4_P2_9   	1
+#define USIC0_C1_DX4_SCLKOUT	6
+#define USIC0_C1_DX5_P2_2   	0
 #define USIC0_C1_DX5_P2_6   	3
 #define USIC0_C1_DX5_P2_8   	2
 #define USIC0_C1_DX5_SR0    	6
@@ -1409,6 +1490,81 @@
 #endif
 
 
+#if (UC_DEVICE == XMC1302) && (UC_PACKAGE == TSSOP28)
+#define USIC0_C0_DX0_DX3INS 	6
+#define USIC0_C0_DX0_P0_14  	0
+#define USIC0_C0_DX0_P0_15  	1
+#define USIC0_C0_DX0_P1_0   	2
+#define USIC0_C0_DX0_P1_1   	3
+#define USIC0_C0_DX0_P2_0   	4
+#define USIC0_C0_DX0_P2_1   	5
+#define USIC0_C0_DX1_DX0INS 	5
+#define USIC0_C0_DX1_DX4INS 	6
+#define USIC0_C0_DX1_P0_14  	0
+#define USIC0_C0_DX1_P0_7   	2
+#define USIC0_C0_DX1_P0_8   	1
+#define USIC0_C0_DX1_P1_1   	3
+#define USIC0_C0_DX1_P2_0   	4
+#define USIC0_C0_DX2_DX5INS 	6
+#define USIC0_C0_DX2_P0_0   	0
+#define USIC0_C0_DX2_P0_10  	2
+#define USIC0_C0_DX2_P0_12  	4
+#define USIC0_C0_DX2_P0_13  	5
+#define USIC0_C0_DX2_P0_9   	1
+#define USIC0_C0_DX3_DOUT0  	6
+#define USIC0_C0_DX3_DX5INS 	5
+#define USIC0_C0_DX3_P2_10  	2
+#define USIC0_C0_DX3_P2_2   	0
+#define USIC0_C0_DX3_P2_6   	4
+#define USIC0_C0_DX3_P2_8   	3
+#define USIC0_C0_DX4_DX5INS 	5
+#define USIC0_C0_DX4_P2_10  	2
+#define USIC0_C0_DX4_P2_2   	0
+#define USIC0_C0_DX4_P2_6   	4
+#define USIC0_C0_DX4_P2_8   	3
+#define USIC0_C0_DX4_SCLKOUT	6
+#define USIC0_C0_DX5_P2_5   	3
+#define USIC0_C0_DX5_P2_7   	2
+#define USIC0_C0_DX5_P2_9   	0
+#define USIC0_C0_DX5_SELO0  	6
+#define USIC0_C1_DX0_DX3INS 	6
+#define USIC0_C1_DX0_P0_6   	2
+#define USIC0_C1_DX0_P0_7   	3
+#define USIC0_C1_DX0_P1_2   	1
+#define USIC0_C1_DX0_P1_3   	0
+#define USIC0_C1_DX0_P2_10  	5
+#define USIC0_C1_DX0_P2_11  	4
+#define USIC0_C1_DX1_DX0INS 	5
+#define USIC0_C1_DX1_DX4INS 	6
+#define USIC0_C1_DX1_P0_7   	2
+#define USIC0_C1_DX1_P0_8   	1
+#define USIC0_C1_DX1_P1_3   	0
+#define USIC0_C1_DX1_P2_11  	4
+#define USIC0_C1_DX2_DX5INS 	6
+#define USIC0_C1_DX2_P0_0   	0
+#define USIC0_C1_DX2_P0_10  	2
+#define USIC0_C1_DX2_P0_9   	1
+#define USIC0_C1_DX2_P1_1   	4
+#define USIC0_C1_DX2_P2_0   	5
+#define USIC0_C1_DX3_DOUT0  	6
+#define USIC0_C1_DX3_DX5INS 	5
+#define USIC0_C1_DX3_P2_1   	0
+#define USIC0_C1_DX3_P2_5   	4
+#define USIC0_C1_DX3_P2_7   	3
+#define USIC0_C1_DX3_P2_9   	1
+#define USIC0_C1_DX4_DX5INS 	5
+#define USIC0_C1_DX4_P2_1   	0
+#define USIC0_C1_DX4_P2_5   	4
+#define USIC0_C1_DX4_P2_7   	3
+#define USIC0_C1_DX4_P2_9   	1
+#define USIC0_C1_DX4_SCLKOUT	6
+#define USIC0_C1_DX5_P2_2   	0
+#define USIC0_C1_DX5_P2_6   	3
+#define USIC0_C1_DX5_P2_8   	2
+#define USIC0_C1_DX5_SR0    	6
+#endif
+
+
 #if (UC_DEVICE == XMC1302) && (UC_PACKAGE == TSSOP38)
 #define USIC0_C0_DX0_DX3INS 	6
 #define USIC0_C0_DX0_P0_14  	0
@@ -1589,6 +1745,7 @@
 #define USIC1_C0_DX1_DX0INS 	5
 #define USIC1_C0_DX1_DX4INS 	6
 #define USIC1_C0_DX1_P0_2   	0
+#define USIC1_C0_DX1_P3_4   	4
 #define USIC1_C0_DX1_P4_3   	1
 #define USIC1_C0_DX1_P4_5   	2
 #define USIC1_C0_DX1_P4_6   	3
@@ -1896,6 +2053,7 @@
 #define USIC1_C0_DX1_DX0INS 	5
 #define USIC1_C0_DX1_DX4INS 	6
 #define USIC1_C0_DX1_P0_2   	0
+#define USIC1_C0_DX1_P3_4   	4
 #define USIC1_C0_DX1_P4_3   	1
 #define USIC1_C0_DX1_P4_5   	2
 #define USIC1_C0_DX1_P4_6   	3
@@ -2329,6 +2487,7 @@
 #define USIC1_C0_DX1_DX0INS 	5
 #define USIC1_C0_DX1_DX4INS 	6
 #define USIC1_C0_DX1_P0_2   	0
+#define USIC1_C0_DX1_P3_4   	4
 #define USIC1_C0_DX1_P4_3   	1
 #define USIC1_C0_DX1_P4_5   	2
 #define USIC1_C0_DX1_P4_6   	3
@@ -2398,6 +2557,257 @@
 #define USIC1_C1_DX5_P2_7   	4
 #define USIC1_C1_DX5_P4_10  	0
 #define USIC1_C1_DX5_P4_4   	5
+#define USIC1_C1_DX5_SELO0  	6
+#endif
+
+
+#if (UC_DEVICE == XMC1402) && (UC_PACKAGE == TSSOP38)
+#define USIC0_C0_DX0_DX3INS 	6
+#define USIC0_C0_DX0_P0_14  	0
+#define USIC0_C0_DX0_P0_15  	1
+#define USIC0_C0_DX0_P1_0   	2
+#define USIC0_C0_DX0_P1_1   	3
+#define USIC0_C0_DX0_P2_0   	4
+#define USIC0_C0_DX0_P2_1   	5
+#define USIC0_C0_DX1_DX0INS 	5
+#define USIC0_C0_DX1_DX4INS 	6
+#define USIC0_C0_DX1_P0_14  	0
+#define USIC0_C0_DX1_P0_7   	2
+#define USIC0_C0_DX1_P0_8   	1
+#define USIC0_C0_DX1_P1_1   	3
+#define USIC0_C0_DX1_P2_0   	4
+#define USIC0_C0_DX2_DX5INS 	6
+#define USIC0_C0_DX2_P0_0   	0
+#define USIC0_C0_DX2_P0_10  	2
+#define USIC0_C0_DX2_P0_11  	3
+#define USIC0_C0_DX2_P0_12  	4
+#define USIC0_C0_DX2_P0_13  	5
+#define USIC0_C0_DX2_P0_9   	1
+#define USIC0_C0_DX3_DOUT0  	6
+#define USIC0_C0_DX3_DX5INS 	5
+#define USIC0_C0_DX3_P2_10  	2
+#define USIC0_C0_DX3_P2_2   	0
+#define USIC0_C0_DX3_P2_4   	1
+#define USIC0_C0_DX3_P2_6   	4
+#define USIC0_C0_DX3_P2_8   	3
+#define USIC0_C0_DX4_DX5INS 	5
+#define USIC0_C0_DX4_P2_10  	2
+#define USIC0_C0_DX4_P2_2   	0
+#define USIC0_C0_DX4_P2_4   	1
+#define USIC0_C0_DX4_P2_6   	4
+#define USIC0_C0_DX4_P2_8   	3
+#define USIC0_C0_DX4_SCLKOUT	6
+#define USIC0_C0_DX5_P1_4   	4
+#define USIC0_C0_DX5_P2_3   	1
+#define USIC0_C0_DX5_P2_5   	3
+#define USIC0_C0_DX5_P2_7   	2
+#define USIC0_C0_DX5_P2_9   	0
+#define USIC0_C0_DX5_SELO0  	6
+#define USIC0_C1_DX0_DX3INS 	6
+#define USIC0_C1_DX0_P0_6   	2
+#define USIC0_C1_DX0_P0_7   	3
+#define USIC0_C1_DX0_P1_2   	1
+#define USIC0_C1_DX0_P1_3   	0
+#define USIC0_C1_DX0_P2_10  	5
+#define USIC0_C1_DX0_P2_11  	4
+#define USIC0_C1_DX1_DX0INS 	5
+#define USIC0_C1_DX1_DX4INS 	6
+#define USIC0_C1_DX1_P0_7   	2
+#define USIC0_C1_DX1_P0_8   	1
+#define USIC0_C1_DX1_P1_3   	0
+#define USIC0_C1_DX1_P2_11  	4
+#define USIC0_C1_DX2_DX5INS 	6
+#define USIC0_C1_DX2_P0_0   	0
+#define USIC0_C1_DX2_P0_10  	2
+#define USIC0_C1_DX2_P0_11  	3
+#define USIC0_C1_DX2_P0_9   	1
+#define USIC0_C1_DX2_P1_1   	4
+#define USIC0_C1_DX2_P2_0   	5
+#define USIC0_C1_DX3_DOUT0  	6
+#define USIC0_C1_DX3_DX5INS 	5
+#define USIC0_C1_DX3_P2_1   	0
+#define USIC0_C1_DX3_P2_3   	2
+#define USIC0_C1_DX3_P2_5   	4
+#define USIC0_C1_DX3_P2_7   	3
+#define USIC0_C1_DX3_P2_9   	1
+#define USIC0_C1_DX4_DX5INS 	5
+#define USIC0_C1_DX4_P2_1   	0
+#define USIC0_C1_DX4_P2_3   	2
+#define USIC0_C1_DX4_P2_5   	4
+#define USIC0_C1_DX4_P2_7   	3
+#define USIC0_C1_DX4_P2_9   	1
+#define USIC0_C1_DX4_SCLKOUT	6
+#define USIC0_C1_DX5_P1_4   	4
+#define USIC0_C1_DX5_P1_5   	5
+#define USIC0_C1_DX5_P2_2   	0
+#define USIC0_C1_DX5_P2_4   	1
+#define USIC0_C1_DX5_P2_6   	3
+#define USIC0_C1_DX5_P2_8   	2
+#define USIC0_C1_DX5_SR0    	6
+#define USIC1_C0_DX0_DX3INS 	6
+#define USIC1_C0_DX0_P0_2   	0
+#define USIC1_C0_DX0_P0_3   	1
+#define USIC1_C0_DX1_DX0INS 	5
+#define USIC1_C0_DX1_DX4INS 	6
+#define USIC1_C0_DX1_P0_2   	0
+#define USIC1_C0_DX2_DX5INS 	6
+#define USIC1_C0_DX3_DOUT0  	6
+#define USIC1_C0_DX3_DX5INS 	5
+#define USIC1_C0_DX3_P2_3   	4
+#define USIC1_C0_DX4_DX5INS 	5
+#define USIC1_C0_DX4_P2_3   	4
+#define USIC1_C0_DX4_SCLKOUT	6
+#define USIC1_C0_DX5_P2_2   	4
+#define USIC1_C0_DX5_P2_4   	5
+#define USIC1_C0_DX5_SELO0  	6
+#define USIC1_C1_DX0_DX3INS 	6
+#define USIC1_C1_DX0_P0_0   	0
+#define USIC1_C1_DX0_P0_1   	1
+#define USIC1_C1_DX1_DX0INS 	5
+#define USIC1_C1_DX1_DX4INS 	6
+#define USIC1_C1_DX1_P0_1   	0
+#define USIC1_C1_DX2_DX5INS 	6
+#define USIC1_C1_DX2_SR0    	5
+#define USIC1_C1_DX3_DOUT0  	6
+#define USIC1_C1_DX3_DX5INS 	5
+#define USIC1_C1_DX3_P0_15  	1
+#define USIC1_C1_DX3_P2_4   	2
+#define USIC1_C1_DX3_P2_6   	4
+#define USIC1_C1_DX4_DX5INS 	5
+#define USIC1_C1_DX4_P0_15  	1
+#define USIC1_C1_DX4_P2_4   	2
+#define USIC1_C1_DX4_P2_6   	4
+#define USIC1_C1_DX4_SCLKOUT	6
+#define USIC1_C1_DX5_P0_14  	1
+#define USIC1_C1_DX5_P2_3   	2
+#define USIC1_C1_DX5_P2_5   	3
+#define USIC1_C1_DX5_P2_7   	4
+#define USIC1_C1_DX5_SELO0  	6
+#endif
+
+
+#if (UC_DEVICE == XMC1403) && (UC_PACKAGE == VQFN40)
+#define USIC0_C0_DX0_DX3INS 	6
+#define USIC0_C0_DX0_P0_14  	0
+#define USIC0_C0_DX0_P0_15  	1
+#define USIC0_C0_DX0_P1_0   	2
+#define USIC0_C0_DX0_P1_1   	3
+#define USIC0_C0_DX0_P2_0   	4
+#define USIC0_C0_DX0_P2_1   	5
+#define USIC0_C0_DX1_DX0INS 	5
+#define USIC0_C0_DX1_DX4INS 	6
+#define USIC0_C0_DX1_P0_14  	0
+#define USIC0_C0_DX1_P0_7   	2
+#define USIC0_C0_DX1_P0_8   	1
+#define USIC0_C0_DX1_P1_1   	3
+#define USIC0_C0_DX1_P2_0   	4
+#define USIC0_C0_DX2_DX5INS 	6
+#define USIC0_C0_DX2_P0_0   	0
+#define USIC0_C0_DX2_P0_10  	2
+#define USIC0_C0_DX2_P0_11  	3
+#define USIC0_C0_DX2_P0_12  	4
+#define USIC0_C0_DX2_P0_13  	5
+#define USIC0_C0_DX2_P0_9   	1
+#define USIC0_C0_DX3_DOUT0  	6
+#define USIC0_C0_DX3_DX5INS 	5
+#define USIC0_C0_DX3_P2_10  	2
+#define USIC0_C0_DX3_P2_2   	0
+#define USIC0_C0_DX3_P2_4   	1
+#define USIC0_C0_DX3_P2_6   	4
+#define USIC0_C0_DX3_P2_8   	3
+#define USIC0_C0_DX4_DX5INS 	5
+#define USIC0_C0_DX4_P2_10  	2
+#define USIC0_C0_DX4_P2_2   	0
+#define USIC0_C0_DX4_P2_4   	1
+#define USIC0_C0_DX4_P2_6   	4
+#define USIC0_C0_DX4_P2_8   	3
+#define USIC0_C0_DX4_SCLKOUT	6
+#define USIC0_C0_DX5_P1_4   	4
+#define USIC0_C0_DX5_P1_6   	5
+#define USIC0_C0_DX5_P2_3   	1
+#define USIC0_C0_DX5_P2_5   	3
+#define USIC0_C0_DX5_P2_7   	2
+#define USIC0_C0_DX5_P2_9   	0
+#define USIC0_C0_DX5_SELO0  	6
+#define USIC0_C1_DX0_DX3INS 	6
+#define USIC0_C1_DX0_P0_6   	2
+#define USIC0_C1_DX0_P0_7   	3
+#define USIC0_C1_DX0_P1_2   	1
+#define USIC0_C1_DX0_P1_3   	0
+#define USIC0_C1_DX0_P2_10  	5
+#define USIC0_C1_DX0_P2_11  	4
+#define USIC0_C1_DX1_DX0INS 	5
+#define USIC0_C1_DX1_DX4INS 	6
+#define USIC0_C1_DX1_P0_7   	2
+#define USIC0_C1_DX1_P0_8   	1
+#define USIC0_C1_DX1_P1_3   	0
+#define USIC0_C1_DX1_P2_11  	4
+#define USIC0_C1_DX2_DX5INS 	6
+#define USIC0_C1_DX2_P0_0   	0
+#define USIC0_C1_DX2_P0_10  	2
+#define USIC0_C1_DX2_P0_11  	3
+#define USIC0_C1_DX2_P0_9   	1
+#define USIC0_C1_DX2_P1_1   	4
+#define USIC0_C1_DX2_P2_0   	5
+#define USIC0_C1_DX3_DOUT0  	6
+#define USIC0_C1_DX3_DX5INS 	5
+#define USIC0_C1_DX3_P2_1   	0
+#define USIC0_C1_DX3_P2_3   	2
+#define USIC0_C1_DX3_P2_5   	4
+#define USIC0_C1_DX3_P2_7   	3
+#define USIC0_C1_DX3_P2_9   	1
+#define USIC0_C1_DX4_DX5INS 	5
+#define USIC0_C1_DX4_P2_1   	0
+#define USIC0_C1_DX4_P2_3   	2
+#define USIC0_C1_DX4_P2_5   	4
+#define USIC0_C1_DX4_P2_7   	3
+#define USIC0_C1_DX4_P2_9   	1
+#define USIC0_C1_DX4_SCLKOUT	6
+#define USIC0_C1_DX5_P1_4   	4
+#define USIC0_C1_DX5_P1_5   	5
+#define USIC0_C1_DX5_P2_2   	0
+#define USIC0_C1_DX5_P2_4   	1
+#define USIC0_C1_DX5_P2_6   	3
+#define USIC0_C1_DX5_P2_8   	2
+#define USIC0_C1_DX5_SR0    	6
+#define USIC1_C0_DX0_DX3INS 	6
+#define USIC1_C0_DX0_P0_2   	0
+#define USIC1_C0_DX0_P0_3   	1
+#define USIC1_C0_DX1_DX0INS 	5
+#define USIC1_C0_DX1_DX4INS 	6
+#define USIC1_C0_DX1_P0_2   	0
+#define USIC1_C0_DX2_DX5INS 	6
+#define USIC1_C0_DX3_DOUT0  	6
+#define USIC1_C0_DX3_DX5INS 	5
+#define USIC1_C0_DX3_P2_3   	4
+#define USIC1_C0_DX4_DX5INS 	5
+#define USIC1_C0_DX4_P2_3   	4
+#define USIC1_C0_DX4_SCLKOUT	6
+#define USIC1_C0_DX5_P2_2   	4
+#define USIC1_C0_DX5_P2_4   	5
+#define USIC1_C0_DX5_SELO0  	6
+#define USIC1_C1_DX0_DX3INS 	6
+#define USIC1_C1_DX0_P0_0   	0
+#define USIC1_C1_DX0_P0_1   	1
+#define USIC1_C1_DX1_DX0INS 	5
+#define USIC1_C1_DX1_DX4INS 	6
+#define USIC1_C1_DX1_P0_1   	0
+#define USIC1_C1_DX2_DX5INS 	6
+#define USIC1_C1_DX2_SR0    	5
+#define USIC1_C1_DX3_DOUT0  	6
+#define USIC1_C1_DX3_DX5INS 	5
+#define USIC1_C1_DX3_P0_15  	1
+#define USIC1_C1_DX3_P2_4   	2
+#define USIC1_C1_DX3_P2_6   	4
+#define USIC1_C1_DX4_DX5INS 	5
+#define USIC1_C1_DX4_P0_15  	1
+#define USIC1_C1_DX4_P2_4   	2
+#define USIC1_C1_DX4_P2_6   	4
+#define USIC1_C1_DX4_SCLKOUT	6
+#define USIC1_C1_DX5_P0_14  	1
+#define USIC1_C1_DX5_P2_3   	2
+#define USIC1_C1_DX5_P2_5   	3
+#define USIC1_C1_DX5_P2_7   	4
 #define USIC1_C1_DX5_SELO0  	6
 #endif
 
@@ -2636,6 +3046,7 @@
 #define USIC1_C0_DX1_DX0INS 	5
 #define USIC1_C0_DX1_DX4INS 	6
 #define USIC1_C0_DX1_P0_2   	0
+#define USIC1_C0_DX1_P3_4   	4
 #define USIC1_C0_DX1_P4_3   	1
 #define USIC1_C0_DX1_P4_5   	2
 #define USIC1_C0_DX1_P4_6   	3
@@ -2803,6 +3214,7 @@
 #define USIC1_C0_DX1_DX0INS 	5
 #define USIC1_C0_DX1_DX4INS 	6
 #define USIC1_C0_DX1_P0_2   	0
+#define USIC1_C0_DX1_P3_4   	4
 #define USIC1_C0_DX1_P4_3   	1
 #define USIC1_C0_DX1_P4_5   	2
 #define USIC1_C0_DX1_P4_6   	3
@@ -3110,6 +3522,7 @@
 #define USIC1_C0_DX1_DX0INS 	5
 #define USIC1_C0_DX1_DX4INS 	6
 #define USIC1_C0_DX1_P0_2   	0
+#define USIC1_C0_DX1_P3_4   	4
 #define USIC1_C0_DX1_P4_3   	1
 #define USIC1_C0_DX1_P4_5   	2
 #define USIC1_C0_DX1_P4_6   	3
