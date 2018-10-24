@@ -338,9 +338,10 @@
                     <state>$PROJ_DIR$\..\..\..\..\..\..\CMSIS\Infineon\XMC4800_series\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\..\CMSIS\RTOS\RTX\INC</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\include</state>
-                    <state>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\nosys\include</state>
-                    <state>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\nosys\netif</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\nosys\include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\nosys\netif</state>
                     <state>$PROJ_DIR$\..\httpserver_raw</state>
+                    <state>$PROJ_DIR$\..</state>                                        
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -2404,16 +2405,19 @@
                 <group>
                     <name>netif</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\nosys\netif\ethernetif.c</name>
+                        <name>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\nosys\netif\ethernetif.c</name>
                     </file>
                 </group>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\nosys\sys_arch.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\nosys\sys_arch.c</name>
                 </file>
             </group>
         </group>
     </group>
     <file>
         <name>$PROJ_DIR$\..\main.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\..\ethernetif_init.c</name>
     </file>
 </project>

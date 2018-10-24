@@ -29,14 +29,15 @@
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.optimization.level.2140550645" name="Optimization level" superClass="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="org.eclipse.cdt.cross.arm.gnu.base.option.optimization.level.size" valueType="enumerated"/>
 								<option id="com.ifx.xmc4000.compiler.option.misc.mfloat.1331838068" name="Floating point" superClass="com.ifx.xmc4000.compiler.option.misc.mfloat" useByScannerDiscovery="false" value="org.eclipse.cdt.cross.arm.gnu.base.option.other.mfloat.softfp" valueType="enumerated"/>
 								<option id="com.ifx.xmc4000.compiler.option.include.paths.224511064" name="Include paths (-I)" superClass="com.ifx.xmc4000.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;./../..&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../../../XMCLib/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../../../CMSIS/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../../../CMSIS/Infineon/XMC4800_series/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/httpserver_raw}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/src/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/src/port/nosys/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/src/port/nosys/netif&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/src/nosys/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/src/nosys/netif&quot;"/>
 								</option>
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.preprocessor.def.266849897" name="Defined symbols (-D)" superClass="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="XMC4800_F144x2048"/>
@@ -50,14 +51,15 @@
 								<option id="org.eclipse.cdt.cross.arm.gnu.cpp.compiler.option.optimization.level.1610267472" name="Optimization level" superClass="org.eclipse.cdt.cross.arm.gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="org.eclipse.cdt.cross.arm.gnu.base.option.optimization.level.size" valueType="enumerated"/>
 								<option id="com.ifx.xmc4000.cppcompiler.option.misc.mfloat.1529696448" name="Floating point" superClass="com.ifx.xmc4000.cppcompiler.option.misc.mfloat" useByScannerDiscovery="false" value="org.eclipse.cdt.cross.arm.gnu.base.option.other.mfloat.softfp" valueType="enumerated"/>
 								<option id="com.ifx.xmc4000.cppcompiler.option.include.paths.1500824787" name="Include paths (-I)" superClass="com.ifx.xmc4000.cppcompiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;./../..&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../../../XMCLib/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../../../CMSIS/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../../../CMSIS/Infineon/XMC4800_series/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/httpserver_raw}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/src/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/src/port/nosys/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/src/port/nosys/netif&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/port/nosys/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/port/nosys/netif&quot;"/>
 								</option>
 							</tool>
 							<tool id="com.ifx.xmc4000.appRelease.assembler.1148522470" name="ARM-GCC Assembler" superClass="com.ifx.xmc4000.appRelease.assembler">
@@ -88,28 +90,6 @@
 							<tool id="com.ifx.xmc4000.appRelease.createflash.152704151" name="ARM-GCC Create Flash Image" superClass="com.ifx.xmc4000.appRelease.createflash"/>
 							<tool id="com.ifx.xmc4000.appRelease.createlisting.296985415" name="ARM-GCC Create Listing" superClass="com.ifx.xmc4000.appRelease.createlisting"/>
 							<tool id="com.ifx.xmc4000.printsize.1773001993" name="ARM-GCC Print Size" superClass="com.ifx.xmc4000.printsize"/>
-						</toolChain>
-					</folderInfo>
-					<folderInfo id="com.ifx.xmc4000.appRelease.1073606796.1832287862" name="/" resourcePath="lwip/apps">
-						<toolChain id="com.ifx.xmc4000.appRelease.toolChain.1391584290" name="ARM-GCC Application" superClass="com.ifx.xmc4000.appRelease.toolChain" unusedChildren="">
-							<option id="com.ifx.xmc4000.option.debugging.level.1520418551.691729854" name="Debug level" superClass="com.ifx.xmc4000.option.debugging.level.1520418551"/>
-							<option id="com.ifx.xmc4000.option.targetPath.308463112.1859624585" name="Target Path" superClass="com.ifx.xmc4000.option.targetPath.308463112"/>
-							<option id="com.ifx.xmc4000.option.target.fpu.763855767.174216145" name="Fpu (-mfpu)" superClass="com.ifx.xmc4000.option.target.fpu.763855767"/>
-							<option id="com.ifx.xmc4000.option.targetName.1637334028.295598482" name="Target Name" superClass="com.ifx.xmc4000.option.targetName.1637334028"/>
-							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.GNU_ELF" id="com.ifx.xmc4000.targetPlatform" isAbstract="false" name="Windows Platform" osList="win32" superClass="com.ifx.xmc4000.targetPlatform"/>
-							<tool id="com.ifx.xmc4000.appRelease.compiler.164985896" name="ARM-GCC C Compiler" superClass="com.ifx.xmc4000.appRelease.compiler.122228133">
-								<inputType id="org.eclipse.cdt.cross.arm.gnu.sourcery.windows.c.compiler.base.input.47701969" superClass="org.eclipse.cdt.cross.arm.gnu.sourcery.windows.c.compiler.base.input"/>
-							</tool>
-							<tool id="com.ifx.xmc4000.appRelease.cppcompiler.740458777" name="ARM-GCC C++ Compiler" superClass="com.ifx.xmc4000.appRelease.cppcompiler.1589225450"/>
-							<tool id="com.ifx.xmc4000.appRelease.assembler.380133081" name="ARM-GCC Assembler" superClass="com.ifx.xmc4000.appRelease.assembler.1148522470">
-								<inputType id="org.eclipse.cdt.cross.arm.gnu.sourcery.windows.assembler.base.input.510669303" superClass="org.eclipse.cdt.cross.arm.gnu.sourcery.windows.assembler.base.input"/>
-							</tool>
-							<tool id="com.ifx.xmc4000.appRelease.linker.1116981911" name="ARM-GCC C Linker" superClass="com.ifx.xmc4000.appRelease.linker.827063013"/>
-							<tool id="com.ifx.xmc4000.appRelease.cpplinker.503564443" name="ARM-GCC C++ Linker" superClass="com.ifx.xmc4000.appRelease.cpplinker.1261181114"/>
-							<tool id="com.ifx.xmc4000.libLinker.555607614" name="ARM-GCC Archiver" superClass="com.ifx.xmc4000.libLinker.1994395170"/>
-							<tool id="com.ifx.xmc4000.appRelease.createflash.1354908812" name="ARM-GCC Create Flash Image" superClass="com.ifx.xmc4000.appRelease.createflash.152704151"/>
-							<tool id="com.ifx.xmc4000.appRelease.createlisting.878542293" name="ARM-GCC Create Listing" superClass="com.ifx.xmc4000.appRelease.createlisting.296985415"/>
-							<tool id="com.ifx.xmc4000.printsize.948842664" name="ARM-GCC Print Size" superClass="com.ifx.xmc4000.printsize.1773001993"/>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
@@ -147,14 +127,15 @@
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.optimization.level.1658008572" name="Optimization level" superClass="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="org.eclipse.cdt.cross.arm.gnu.base.option.optimization.level.size" valueType="enumerated"/>
 								<option id="com.ifx.xmc4000.compiler.option.misc.mfloat.1734107124" name="Floating point" superClass="com.ifx.xmc4000.compiler.option.misc.mfloat" useByScannerDiscovery="false" value="org.eclipse.cdt.cross.arm.gnu.base.option.other.mfloat.softfp" valueType="enumerated"/>
 								<option id="com.ifx.xmc4000.compiler.option.include.paths.1272547769" name="Include paths (-I)" superClass="com.ifx.xmc4000.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;./../..&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../../../XMCLib/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../../../CMSIS/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../../../CMSIS/Infineon/XMC4800_series/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/httpserver_raw}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/src/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/src/port/nosys/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/src/port/nosys/netif&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/port/nosys/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/port/nosys/netif&quot;"/>
 								</option>
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.preprocessor.def.1307907415" name="Defined symbols (-D)" superClass="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="XMC4800_F144x2048"/>
@@ -169,14 +150,15 @@
 								<option id="org.eclipse.cdt.cross.arm.gnu.cpp.compiler.option.optimization.level.953043523" name="Optimization level" superClass="org.eclipse.cdt.cross.arm.gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false"/>
 								<option id="com.ifx.xmc4000.cppcompiler.option.misc.mfloat.1311429705" name="Floating point" superClass="com.ifx.xmc4000.cppcompiler.option.misc.mfloat" useByScannerDiscovery="false" value="org.eclipse.cdt.cross.arm.gnu.base.option.other.mfloat.softfp" valueType="enumerated"/>
 								<option id="com.ifx.xmc4000.cppcompiler.option.include.paths.303221499" name="Include paths (-I)" superClass="com.ifx.xmc4000.cppcompiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;./../..&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../../../XMCLib/inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../../../CMSIS/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../../../CMSIS/Infineon/XMC4800_series/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/httpserver_raw}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/src/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/src/port/nosys/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/src/port/nosys/netif&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/src/nosys/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../../../../../ThirdPartyLibraries/lwip/src/nosys/netif&quot;"/>
 								</option>
 							</tool>
 							<tool id="com.ifx.xmc4000.appDebug.assembler.981843482" name="ARM-GCC Assembler" superClass="com.ifx.xmc4000.appDebug.assembler">
@@ -208,28 +190,6 @@
 							<tool id="com.ifx.xmc4000.appDebug.createflash.1361965546" name="ARM-GCC Create Flash Image" superClass="com.ifx.xmc4000.appDebug.createflash"/>
 							<tool id="com.ifx.xmc4000.appDebug.createlisting.1790195372" name="ARM-GCC Create Listing" superClass="com.ifx.xmc4000.appDebug.createlisting"/>
 							<tool id="com.ifx.xmc4000.printsize.554624804" name="ARM-GCC Print Size" superClass="com.ifx.xmc4000.printsize"/>
-						</toolChain>
-					</folderInfo>
-					<folderInfo id="com.ifx.xmc4000.appDebug.15639804.1412449030" name="/" resourcePath="lwip/apps">
-						<toolChain id="com.ifx.xmc4000.appDebug.toolChain.2084533038" name="ARM-GCC Application" superClass="com.ifx.xmc4000.appDebug.toolChain" unusedChildren="">
-							<option id="com.ifx.xmc4000.option.debugging.level.475205430.1058819584" name="Debug level" superClass="com.ifx.xmc4000.option.debugging.level.475205430"/>
-							<option id="com.ifx.xmc4000.option.targetPath.13578633.403295764" name="Target Path" superClass="com.ifx.xmc4000.option.targetPath.13578633"/>
-							<option id="com.ifx.xmc4000.option.target.fpu.2077705944.1117053052" name="Fpu (-mfpu)" superClass="com.ifx.xmc4000.option.target.fpu.2077705944"/>
-							<option id="com.ifx.xmc4000.option.targetName.1507011679.1881845399" name="Target Name" superClass="com.ifx.xmc4000.option.targetName.1507011679"/>
-							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.GNU_ELF" id="com.ifx.xmc4000.targetPlatform" isAbstract="false" name="Windows Platform" osList="win32" superClass="com.ifx.xmc4000.targetPlatform"/>
-							<tool id="com.ifx.xmc4000.appDebug.compiler.972006441" name="ARM-GCC C Compiler" superClass="com.ifx.xmc4000.appDebug.compiler.732205511">
-								<inputType id="org.eclipse.cdt.cross.arm.gnu.sourcery.windows.c.compiler.base.input.318088913" superClass="org.eclipse.cdt.cross.arm.gnu.sourcery.windows.c.compiler.base.input"/>
-							</tool>
-							<tool id="com.ifx.xmc4000.appDebug.cppcompiler.215197174" name="ARM-GCC C++ Compiler" superClass="com.ifx.xmc4000.appDebug.cppcompiler.662931762"/>
-							<tool id="com.ifx.xmc4000.appDebug.assembler.1970874212" name="ARM-GCC Assembler" superClass="com.ifx.xmc4000.appDebug.assembler.981843482">
-								<inputType id="org.eclipse.cdt.cross.arm.gnu.sourcery.windows.assembler.base.input.1392148775" superClass="org.eclipse.cdt.cross.arm.gnu.sourcery.windows.assembler.base.input"/>
-							</tool>
-							<tool id="com.ifx.xmc4000.appDebug.linker.1664509479" name="ARM-GCC C Linker" superClass="com.ifx.xmc4000.appDebug.linker.322440945"/>
-							<tool id="com.ifx.xmc4000.appDebug.cpplinker.1491717537" name="ARM-GCC C++ Linker" superClass="com.ifx.xmc4000.appDebug.cpplinker.1615891328"/>
-							<tool id="com.ifx.xmc4000.libLinker.746173936" name="ARM-GCC Archiver" superClass="com.ifx.xmc4000.libLinker.227833424"/>
-							<tool id="com.ifx.xmc4000.appDebug.createflash.143885042" name="ARM-GCC Create Flash Image" superClass="com.ifx.xmc4000.appDebug.createflash.1361965546"/>
-							<tool id="com.ifx.xmc4000.appDebug.createlisting.1935009001" name="ARM-GCC Create Listing" superClass="com.ifx.xmc4000.appDebug.createlisting.1790195372"/>
-							<tool id="com.ifx.xmc4000.printsize.310064137" name="ARM-GCC Print Size" superClass="com.ifx.xmc4000.printsize.554624804"/>
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>

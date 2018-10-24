@@ -2,6 +2,84 @@
  * @page Changelog
  *
  * @tableofcontents
+ * @section v2118 Version 2.1.18
+ * @subsection COMMON COMMON
+ * - Added:
+ *     - Support for Keil Arm Compiler Version 6
+ *
+ * @subsection CAN CAN
+ * - Added:
+ *     - XMC_CAN_InitEx() and XMC_CAN_NODE_NominalBitTimeConfigureEx()
+ *     - XMC_CAN_GetBaudrateClockSource(), XMC_CAN_SetBaudrateClockSource() and XMC_CAN_GetBaudrateClockFrequency() available to all devices
+ *     - xmc_can_map.h added missing support for XMC4700
+ * - Changed:
+ *     - Refactored XMC_CAN_MO_Config() to configure MOCTR depending on transmit or receive message type
+ *
+ * @subsection CCU4 CCU4
+ * - Fixed:
+ *     - XMC_CCU4_SLICE_SetShadowTransferMode()
+ *
+ * @subsection CCU8 CCU8
+ * - Fixed:
+ *     - XMC_CCU8_SLICE_SetShadowTransferMode()
+ * - Added:
+ *     - Added parity checking functionality: 
+ *       - XMC_CCU8_StartParityChecker()
+ *       - XMC_CCU8_StopParityChecker()
+ *       - XMC_CCU8_IsParityCheckerRunning()
+ *       - XMC_CCU8_SLICE_ParityCheckerEnableSliceOutput()
+ *       - XMC_CCU8_SLICE_ParityCheckerDisableSliceOutput()
+ *       - XMC_CCU8_SLICE_ParityCheckerSetDelayInput()
+ *       - XMC_CCU8_SLICE_ParityCheckerSetDriverInput()
+ *       - XMC_CCU8_SLICE_ParityCheckerSetType()
+ *       - XMC_CCU8_SLICE_ParityCheckerGetStatus()
+ *
+ * @subsection DMA DMA
+ * - Added:
+ *     - XMC_DMA_CH_EnableFifoMode() and XMC_DMA_CH_DisableFifoMode()
+ * - Fixed:
+ *     - XMC_DMA_CH_RequestLastMultiblockTransfer() clears CTLL_LLP_SRC_EN and CTLL_LLP_DST_EN
+ * 
+ * @subsection ETH_MAC ETH_MAC
+ * - Added:
+ *     - XMC_ETH_MAC_InitEx(). Required when initializing the PHY, to deliver the clocks to the MAC, before MAC is reseted.
+ *     - XMC_ETH_MAC_SetAddressEx(), XMC_ETH_MAC_GetAddressEx() and XMC_ETH_MAC_SetAddressPerfectFilterEx() which receives a byte array with the MAC address instead of uint64_t
+ *
+ * @subsection I2C I2C
+ * - Added:
+ *     - XMC_I2C_CH_EnableMasterClock() and XMC_I2C_CH_DisableMasterClock()
+ *
+ * @subsection UART UART
+ * - Added:
+ *     - XMC_UART_CH_EnableMasterClock() and XMC_UART_CH_DisableMasterClock()
+ *
+ * @subsection USIC USIC
+ * - Fixed:
+ *     - Value of macro XMC_USIC_CH_SHIFT_DIRECTION_MSB_FIRST used in XMC_USIC_CH_SetShiftDirection()
+ *
+ * @subsection ADC ADC
+ * - Added:
+ *     - XMC_VADC_GLOBAL_DETAILED_RESULT_t. Return of XMC_VADC_GLOBAL_GetDetailedResult() can be casted to a varible of type XMC_VADC_GLOBAL_DETAILED_RESULT_t to easily access the register bit fields
+ *
+ * @subsection GPIO GPIO
+ * - Fixed:
+ *     - Side effects on output level when configuring a pin as input after the same pin in another port has been configured as output 
+ *
+ * @subsection FCE FCE
+ * - Fixed:
+ *     - XMC_FCE_CalculateCRC8()
+ *       Ensure 32bit access to IR register
+ *     - XMC_FCE_CalculateCRC16()
+ *       Ensure 32bit access to IR register
+ *       Remove restriction on data source alignment, although it is encourage for performance reasons to use 16bit aligned data
+ *     - XMC_FCE_CalculateCRC32()
+ *       Ensure 32bit access to IR register
+ *       Remove restriction on data source alignment, although it is encourage for performance reasons to use 16bit aligned data
+ *
+ * @subsection FLASH FLASH
+ * - Added:
+ *     - XMC_FLASH_InstallBMI()
+ *
  * @section v2116 Version 2.1.16
  * @subsection COMMON COMMON
  * - Added:

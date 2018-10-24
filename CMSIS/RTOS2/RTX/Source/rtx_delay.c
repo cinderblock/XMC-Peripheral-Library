@@ -30,7 +30,7 @@
 
 //  Service Calls definitions
 SVC0_1(Delay,      osStatus_t, uint32_t)
-SVC0_2(DelayUntil, osStatus_t, uint32_t, uint32_t)
+SVC0_1(DelayUntil, osStatus_t, uint32_t)
 
 /// Wait for Timeout (Time Delay).
 /// \note API identical to osDelay
@@ -47,19 +47,18 @@ osStatus_t svcRtxDelay (uint32_t ticks) {
 
 /// Wait until specified time.
 /// \note API identical to osDelayUntil
-osStatus_t svcRtxDelayUntil (uint32_t ticks_l, uint32_t ticks_h) {
-  uint64_t ticks = ((uint64_t)ticks_l) | ((uint64_t)ticks_h << 32);
+osStatus_t svcRtxDelayUntil (uint32_t ticks) {
 
   ticks -= osRtxInfo.kernel.tick;
-  if (ticks >= 0xFFFFFFFFU) {
-    EvrRtxThreadError(NULL, osErrorParameter);
+  if (ticks == 0xFFFFFFFFU) {
+    EvrRtxThreadError(NULL, (int32_t)osErrorParameter);
     return osErrorParameter;
   }
   if (ticks == 0U) {
     return osOK;
   }
 
-  osRtxThreadWaitEnter(osRtxThreadWaitingDelay, (uint32_t)ticks);
+  osRtxThreadWaitEnter(osRtxThreadWaitingDelay, ticks);
 
   return osOK;
 }
@@ -71,18 +70,18 @@ osStatus_t svcRtxDelayUntil (uint32_t ticks_l, uint32_t ticks_h) {
 osStatus_t osDelay (uint32_t ticks) {
   EvrRtxThreadDelay(ticks);
   if (IS_IRQ_MODE() || IS_IRQ_MASKED()) {
-    EvrRtxThreadError(NULL, osErrorISR);
+    EvrRtxThreadError(NULL, (int32_t)osErrorISR);
     return osErrorISR;
   }
   return __svcDelay(ticks);
 }
 
 /// Wait until specified time.
-osStatus_t osDelayUntil (uint64_t ticks) {
+osStatus_t osDelayUntil (uint32_t ticks) {
   EvrRtxThreadDelayUntil(ticks);
   if (IS_IRQ_MODE() || IS_IRQ_MASKED()) {
-    EvrRtxThreadError(NULL, osErrorISR);
+    EvrRtxThreadError(NULL, (int32_t)osErrorISR);
     return osErrorISR;
   }
-  return __svcDelayUntil((uint32_t)ticks, (uint32_t)(ticks >> 32));
+  return __svcDelayUntil(ticks);
 }

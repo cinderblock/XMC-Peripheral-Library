@@ -149,3 +149,18 @@ XMC Peripheral Library v2.1.16     (09-08-2017)
 --------------------------------------------
   - See changelog section in the documentation files for individual peripheral driver changes
   - Examples added
+
+XMC Peripheral Library v2.1.18     (30-11-2017)
+--------------------------------------------
+  - See changelog section in the documentation files for individual peripheral driver changes
+  - Updated CMSIS component to v5.2.0.
+    - Changed:
+      - update core files to v5.2.0 (http://www.keil.com/pack/doc/CMSIS/General/html/cm_revisionHistory.html)
+      - update lwIP to v2.0.3 (https://savannah.nongnu.org/forum/forum.php?forum_id=8953)
+      - update fatFS to v0.13a
+      - system_XMC4x00.c: Disable FPU if FPU_USED macro is zero. This is the case when using -mfloat-abi=soft.
+      - startup_XMC1400.s: Added option to select wait time before ASC BSL channel selection (WAIT_ASCBSL_ENTRY_SSW)
+    - Added:
+      - Support for XMC1302-T028x0064, XMC1302-T028x0128, XMC1302-T028x0200
+
+  - Examples added

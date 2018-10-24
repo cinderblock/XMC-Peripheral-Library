@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>XMC_ETH_PHY_KSZ8081RNB</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\include;..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\nosys\include;..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\nosys\netif</IncludePath>
+              <IncludePath>..;..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\include;..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\nosys\include;..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\nosys\netif</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -383,6 +383,11 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>ethernetif_init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ethernetif_init.c</FilePath>
             </File>
             <File>
               <FileName>fs.c</FileName>
@@ -782,12 +787,12 @@
             <File>
               <FileName>sys_arch.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\nosys\sys_arch.c</FilePath>
+              <FilePath>..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\nosys\sys_arch.c</FilePath>
             </File>
             <File>
               <FileName>ethernetif.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\nosys\netif\ethernetif.c</FilePath>
+              <FilePath>..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\nosys\netif\ethernetif.c</FilePath>
             </File>
           </Files>
         </Group>

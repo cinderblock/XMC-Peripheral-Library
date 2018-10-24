@@ -468,7 +468,7 @@
       <file attr="config" category="source" condition="XMC13xx ARM" name="Device\XMC1300_series\Source\ARM\startup_XMC1300.s" version="1.4.0">
         <instance index="0">RTE\Device\XMC1302-T038x0200\startup_XMC1300.s</instance>
         <component Cclass="Device" Cgroup="Startup" Cvendor="Infineon" Cversion="2.0.0" condition="XMC1 CMSIS"/>
-        <package license="License/CMSIS_END_USER_LICENSE_AGREEMENT.txt" name="XMC1000_DFP" schemaVersion="1.2" supportContact="http://www.infineon.com/cms/en/corporate/company/contact/support/index.html" url="http://dave.infineon.com/Libraries/CMSIS_PACK/" vendor="Infineon" version="2.5.1"/>
+        <package license="License/CMSIS_END_USER_LICENSE_AGREEMENT.txt" name="XMC1000_DFP" schemaVersion="1.2" supportContact="http://www.infineon.com/cms/en/corporate/company/contact/support/index.html" url="http://dave.infineon.com/Libraries/CMSIS_PACK/" vendor="Infineon" version="2.7.0"/>
         <targetInfos>
           <targetInfo name="math_sqrt"/>
         </targetInfos>
@@ -476,7 +476,7 @@
       <file attr="config" category="source" condition="XMC13xx" name="Device\XMC1300_series\Source\system_XMC1300.c" version="1.9.0">
         <instance index="0">RTE\Device\XMC1302-T038x0200\system_XMC1300.c</instance>
         <component Cclass="Device" Cgroup="Startup" Cvendor="Infineon" Cversion="2.0.0" condition="XMC1 CMSIS"/>
-        <package license="License/CMSIS_END_USER_LICENSE_AGREEMENT.txt" name="XMC1000_DFP" schemaVersion="1.2" supportContact="http://www.infineon.com/cms/en/corporate/company/contact/support/index.html" url="http://dave.infineon.com/Libraries/CMSIS_PACK/" vendor="Infineon" version="2.5.1"/>
+        <package license="License/CMSIS_END_USER_LICENSE_AGREEMENT.txt" name="XMC1000_DFP" schemaVersion="1.2" supportContact="http://www.infineon.com/cms/en/corporate/company/contact/support/index.html" url="http://dave.infineon.com/Libraries/CMSIS_PACK/" vendor="Infineon" version="2.7.0"/>
         <targetInfos>
           <targetInfo name="math_sqrt"/>
         </targetInfos>

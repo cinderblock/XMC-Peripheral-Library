@@ -6,6 +6,7 @@
  *********************************************************************************************************************
  * Linker file for the GNU C Compiler v1.11
  * Supported devices: XMC1302-T038X0128
+ *                    XMC1302-T028X0128
  *                    XMC1302-Q040X0128
  *
  * Copyright (c) 2015-2017, Infineon Technologies AG

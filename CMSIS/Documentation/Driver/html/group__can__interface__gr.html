@@ -32,7 +32,7 @@
   <td id="projectlogo"><img alt="Logo" src="CMSIS_Logo_Final.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">CMSIS-Driver
-   &#160;<span id="projectnumber">Version 2.05</span>
+   &#160;<span id="projectnumber">Version 2.6.0</span>
    </div>
    <div id="projectbrief">Peripheral Interface for Middleware and Application Code</div>
   </td>
@@ -232,7 +232,7 @@ Functions</h2></td></tr>
 <li>bitrates of up to 1Mbits/s</li>
 <li><a class="el" href="group__can__interface__gr.html#Remote_Frame">Remote Frame</a> requests</li>
 </ul>
-<p><a class="anchor" id="CAN_FD"></a> CAN FD**</p>
+<p><a class="anchor" id="CAN_FD"></a><b>CAN FD</b></p>
 <p>Support for CAN FD depends on the hardware. A CMSIS-Driver that supports CAN FD has the capability <a class="el" href="group__can__interface__gr.html#structARM__CAN__CAPABILITIES">ARM_CAN_CAPABILITIES</a> data field <b>fd_mode</b> = <span class="XML-Token">1</span>, which can be retrieved with the function <a class="el" href="group__can__interface__gr.html#ga35f21cabe1637b1be964024a8f77721c">ARM_CAN_GetCapabilities</a>.</p>
 <p>CAN FD supports:</p>
 <ul>
@@ -240,7 +240,7 @@ Functions</h2></td></tr>
 <li>faster data transfers with faster bitrate used during the data phase</li>
 </ul>
 <p>CAN FD does not support <a class="el" href="group__can__interface__gr.html#Remote_Frame">Remote Frame</a> requests.</p>
-<p>Block Diagram**</p>
+<p><b>Block Diagram</b></p>
 <p>The CAN Driver API defines a <b>CAN</b> interface for middleware components. The CAN Driver supports multiple nodes, which are able to send and receive messages, but not simultaneously.</p>
 <div class="image">
 <img src="CAN_Node.png" alt="CAN_Node.png"/>
@@ -252,12 +252,12 @@ CAN Node Schematic</div></div>
 <li><b>Driver_CAN.h</b> : Driver API for CAN Bus Peripheral</li>
 </ul>
 <p>The driver implementation is a typical part of the Device Family Pack (DFP) that supports the peripherals of the microcontroller family.</p>
-<p>Driver Functions**</p>
+<p><b>Driver Functions</b></p>
 <p>The driver functions are published in the access struct as explained in <a class="el" href="theoryOperation.html#DriverFunctions">Common Driver Functions</a></p>
 <ul>
 <li><a class="el" href="group__can__interface__gr.html#structARM__DRIVER__CAN">ARM_DRIVER_CAN</a> : access struct for CAN driver functions</li>
 </ul>
-<p>Example Code**</p>
+<p><b>Example Code</b></p>
 <p>The following example code shows the usage of the CAN interface.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;string.h&gt;</span></div>
@@ -425,7 +425,7 @@ CAN Message Filtering</h1>
 Remote Frame</h1>
 <p>In general, data transmission is performed on an autonomous basis with the data source node sending out Data Frames.</p>
 <p>However, sending a <b>Remote Frame</b> allows a destination node to request the data from the source node. The examples below shows the data exchange using a <b>Remote Transmission Request (RTR)</b>.</p>
-<p>Example for automatic Data Message response on RTR**</p>
+<p><b>Example for automatic Data Message response on RTR</b></p>
 <p>For automatic data message response on an RTR, the object is configured with the function <a class="el" href="group__can__interface__gr.html#ga00ec0715f6755a49dae5b60dca182630">ARM_CAN_ObjectConfigure</a> <em>obj_cfg</em> = <a class="el" href="Driver__CAN_8h.html#gaa9488554de0575bc821c9f65213c4cd0ac5d28d180ea9e4328974ffcb8b928a0c">ARM_CAN_OBJ_RX_RTR_TX_DATA</a>.</p>
 <p>In this case, the function <a class="el" href="group__can__interface__gr.html#ga0dcffd362b4093043442a030eaebbcfe">ARM_CAN_MessageSend</a> sets a data message that is transmitted when an RTR with a matching CAN ID is received. If <a class="el" href="group__can__interface__gr.html#ga0dcffd362b4093043442a030eaebbcfe">ARM_CAN_MessageSend</a> was not called before the RTR is received, the response is hardware dependent (either last data message is repeated or no data message is sent until <a class="el" href="group__can__interface__gr.html#ga0dcffd362b4093043442a030eaebbcfe">ARM_CAN_MessageSend</a> is called).</p>
 <p>After data transmission is completed, the driver calls a callback function <a class="el" href="group__can__interface__gr.html#gabfcaeac9e2ca25936ba5a29f2d594e7e">ARM_CAN_SignalObjectEvent</a> with <em>event</em> = <a class="el" href="group__CAN__events.html#ga486f0f35ebc7e3b5931ee68b56703503">ARM_CAN_EVENT_SEND_COMPLETE</a> and the related <em>obj_idx</em>.</p>
@@ -442,7 +442,7 @@ Remote Frame</h1>
 <div class="line">data_buf[4] = <span class="charliteral">&#39;5&#39;</span>;  data_buf[5] = <span class="charliteral">&#39;6&#39;</span>;</div>
 <div class="line">data_buf[6] = <span class="charliteral">&#39;7&#39;</span>;  data_buf[7] = <span class="charliteral">&#39;8&#39;</span>;</div>
 <div class="line">ptrCAN-&gt;MessageSend(0, &amp;tx_msg_info, data_buf, 8);            <span class="comment">// Start send message that will be triggered on RTR reception</span></div>
-</div><!-- fragment --><p>Example for automatic Data Message reception using RTR**</p>
+</div><!-- fragment --><p><b>Example for automatic Data Message reception using RTR</b></p>
 <p>For automatic data message reception on an RTR, the object is configured with the function <a class="el" href="group__can__interface__gr.html#ga00ec0715f6755a49dae5b60dca182630">ARM_CAN_ObjectConfigure</a> <em>obj_cfg</em> = <a class="el" href="Driver__CAN_8h.html#gaa9488554de0575bc821c9f65213c4cd0a396d7a6cd2353e1a2936405ace6417f5">ARM_CAN_OBJ_TX_RTR_RX_DATA</a>.</p>
 <p>The receiver or consumer requests data with transmission of an RTR with the <a class="el" href="group__can__interface__gr.html#ga0dcffd362b4093043442a030eaebbcfe">ARM_CAN_MessageSend</a>. This RTR requests from the transmitter or producer to send the data message. Once the data message is received, the driver calls a callback function <a class="el" href="group__can__interface__gr.html#gabfcaeac9e2ca25936ba5a29f2d594e7e">ARM_CAN_SignalObjectEvent</a> with <em>event</em> = <a class="el" href="group__CAN__events.html#ga2c1082561eeae3b2b8132e81fc241e47">ARM_CAN_EVENT_RECEIVE</a> and the related <em>obj_idx</em>. The received data message can then be read with the function <a class="el" href="group__can__interface__gr.html#gafc37084df5eab32f593c2744d35cf647">ARM_CAN_MessageRead</a>.</p>
 <p><b>Example:</b> </p>
@@ -1817,11 +1817,13 @@ The parameter <em>size</em> is data buffer size in bytes and indicates the maxim
 <tr>
 <th align="left">Unit State </th><th align="left">Description  </th></tr>
 <tr>
-<td align="left"><a class="el" href="group__can__status__code__ctrls.html#ga911a65cc31304d57d283a21476d9ade7">ARM_CAN_UNIT_STATE_INACTIVE</a> </td><td align="left">Unit is not active on bus (initialize or error bus off). </td></tr>
+<td align="left"><a class="el" href="group__can__status__code__ctrls.html#ga911a65cc31304d57d283a21476d9ade7">ARM_CAN_UNIT_STATE_INACTIVE</a> </td><td align="left">Unit state: Not active on the bus. Unit is in initialization state. </td></tr>
 <tr>
-<td align="left"><a class="el" href="group__can__status__code__ctrls.html#ga5f72c295ee2b829a8ae33b96466cc0e8">ARM_CAN_UNIT_STATE_ACTIVE</a> </td><td align="left">Unit is active on bus (can generate active error frame). </td></tr>
+<td align="left"><a class="el" href="group__can__status__code__ctrls.html#ga5f72c295ee2b829a8ae33b96466cc0e8">ARM_CAN_UNIT_STATE_ACTIVE</a> </td><td align="left">Unit state: Active on the bus. Unit can generate active error frames. </td></tr>
 <tr>
-<td align="left"><a class="el" href="group__can__status__code__ctrls.html#gace2db0f930f935054c21242f735e1922">ARM_CAN_UNIT_STATE_PASSIVE</a> </td><td align="left">Error passive (can not generate active error frame). Unit is interacting on the bus but does not send active error or overload frames. </td></tr>
+<td align="left"><a class="el" href="group__can__status__code__ctrls.html#gace2db0f930f935054c21242f735e1922">ARM_CAN_UNIT_STATE_PASSIVE</a> </td><td align="left">Unit state: Error passive. Unit is interacting on the bus but does not send active error frames. </td></tr>
+<tr>
+<td align="left"><a class="el" href="group__can__status__code__ctrls.html#gadd78b515410235cd77d0a10213ff4192">ARM_CAN_UNIT_STATE_BUS_OFF</a> </td><td align="left">Unit state: Bus-off. Unit does not participate on the bus but monitors it and can recover to active state. </td></tr>
 </table>
 <p>The following defines are error codes of the last error that happened on the bus:</p>
 <table class="doxtable">
@@ -1872,13 +1874,15 @@ The parameter <em>size</em> is data buffer size in bytes and indicates the maxim
 <tr>
 <th align="left">Parameter <em>event</em> </th><th align="center">Value </th><th align="left">Description  </th></tr>
 <tr>
-<td align="left"><a class="el" href="group__CAN__unit__events.html#ga0e65231ccb20684d7c8eac80385f8c18">ARM_CAN_EVENT_UNIT_ACTIVE</a> </td><td align="center">0 </td><td align="left">Unit became active on the bus. </td></tr>
+<td align="left"><a class="el" href="group__CAN__unit__events.html#gaa2347c172c8a8f42ac66cb42cd7a08db">ARM_CAN_EVENT_UNIT_INACTIVE</a> </td><td align="center">0 </td><td align="left">Unit entered Inactive state. </td></tr>
 <tr>
-<td align="left"><a class="el" href="group__CAN__unit__events.html#ga3690f864edd2e124f4f9875fdde9a2eb">ARM_CAN_EVENT_UNIT_WARNING</a> </td><td align="center">1 </td><td align="left">Unit error counter reached &gt;= <span class="XML-Token">96</span>. </td></tr>
+<td align="left"><a class="el" href="group__CAN__unit__events.html#ga0e65231ccb20684d7c8eac80385f8c18">ARM_CAN_EVENT_UNIT_ACTIVE</a> </td><td align="center">1 </td><td align="left">Unit entered Error Active state. </td></tr>
 <tr>
-<td align="left"><a class="el" href="group__CAN__unit__events.html#ga9c529d6697fe21e69639224322f8c4b4">ARM_CAN_EVENT_UNIT_PASSIVE</a> </td><td align="center">2 </td><td align="left">Unit became passive on the bus. </td></tr>
+<td align="left"><a class="el" href="group__CAN__unit__events.html#ga3690f864edd2e124f4f9875fdde9a2eb">ARM_CAN_EVENT_UNIT_WARNING</a> </td><td align="center">2 </td><td align="left">Unit entered Error Warning state (one or both error counters &gt;= <span class="XML-Token">96</span>). </td></tr>
 <tr>
-<td align="left"><a class="el" href="group__CAN__unit__events.html#gafa4f992a97b4ca0f079aec2990a69bed">ARM_CAN_EVENT_UNIT_BUS_OFF</a> </td><td align="center">3 </td><td align="left">Unit became inactive on the bus. </td></tr>
+<td align="left"><a class="el" href="group__CAN__unit__events.html#ga9c529d6697fe21e69639224322f8c4b4">ARM_CAN_EVENT_UNIT_PASSIVE</a> </td><td align="center">3 </td><td align="left">Unit entered Error Passive state. </td></tr>
+<tr>
+<td align="left"><a class="el" href="group__CAN__unit__events.html#gafa4f992a97b4ca0f079aec2990a69bed">ARM_CAN_EVENT_UNIT_BUS_OFF</a> </td><td align="center">4 </td><td align="left">Unit entered Bus-off state. </td></tr>
 </table>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__can__interface__gr.html#ga676d6b567fc4ab3d44f5d7a50ec9419c">ARM_CAN_GetStatus</a> </dd></dl>
 
@@ -1944,7 +1948,7 @@ The parameter <em>event</em> indicates object event that occurred during driver 
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Wed Feb 8 2017 10:20:44 for CMSIS-Driver by ARM Ltd. All rights reserved.
+    <li class="footer">Generated on Thu Nov 16 2017 17:50:29 for CMSIS-Driver by ARM Ltd. All rights reserved.
 	<!--
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 

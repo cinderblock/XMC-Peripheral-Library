@@ -64,6 +64,13 @@
       <xs:minLength value="1"/>
     </xs:restriction>
   </xs:simpleType>
+
+  <xs:simpleType name="descriptionStringType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[\p{IsBasicLatin}\p{IsLatin-1Supplement}]*" />
+    </xs:restriction>
+  </xs:simpleType>
+  
   <!-- cpuType specifies a selection of Cortex-M and Secure-Cores. This list will get extended as new processors are released -->
   <xs:simpleType name="cpuNameType">
     <xs:restriction base="xs:token">
@@ -72,7 +79,9 @@
       <xs:enumeration value="CM0+"/>
       <xs:enumeration value="CM1"/>
       <xs:enumeration value="SC000"/>
+      <xs:enumeration value="CM23"/>
       <xs:enumeration value="CM3"/>
+      <xs:enumeration value="CM33"/>
       <xs:enumeration value="SC300"/>
       <xs:enumeration value="CM4"/>
       <xs:enumeration value="CM7"/>
@@ -322,9 +331,9 @@
       <!-- V1.1: Endian specifies the endianess of the processor/device -->
       <xs:element name="endian" type="endianType"/>
       <!-- V1.1: mpuPresent specifies whether or not a memory protection unit is physically present -->
-      <xs:element name="mpuPresent" type="xs:boolean"/>
+      <xs:element name="mpuPresent" type="xs:boolean" minOccurs="0"/>
       <!-- V1.1: fpuPresent specifies whether or not a floating point hardware unit is physically present -->
-      <xs:element name="fpuPresent" type="xs:boolean"/>
+      <xs:element name="fpuPresent" type="xs:boolean" minOccurs="0"/>
       <!-- V1.2: fpuDP specifies a double precision floating point hardware unit is physically present-->
       <xs:element name="fpuDP" type="xs:boolean" minOccurs="0"/>
       <!-- V1.2: icachePresent specifies that an instruction cache is physically present-->

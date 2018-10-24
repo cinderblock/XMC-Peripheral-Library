@@ -11,7 +11,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>28</version>
+                <version>29</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>1</debug>
                 <option>
@@ -66,7 +66,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.11.1.13270</state>
+                    <state>8.11.2.13604</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -195,6 +195,10 @@
                 <option>
                     <name>GenLocaleDisplayOnly</name>
                     <state></state>
+                </option>
+                <option>
+                    <name>DSPExtension</name>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -338,9 +342,10 @@
                     <state>$PROJ_DIR$\..\..\..\..\..\..\CMSIS\Infineon\XMC4500_series\Include</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\..\CMSIS\RTOS\RTX\INC</state>
                     <state>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\include</state>
-                    <state>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\nosys\include</state>
-                    <state>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\nosys\netif</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\nosys\include</state>
+                    <state>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\nosys\netif</state>
                     <state>$PROJ_DIR$\..\httpserver_raw</state>
+                    <state>$PROJ_DIR$\..</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1029,7 +1034,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>28</version>
+                <version>29</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -1213,6 +1218,10 @@
                 <option>
                     <name>GenLocaleDisplayOnly</name>
                     <state></state>
+                </option>
+                <option>
+                    <name>DSPExtension</name>
+                    <state>0</state>
                 </option>
             </data>
         </settings>
@@ -2401,15 +2410,18 @@
                 <group>
                     <name>netif</name>
                     <file>
-                        <name>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\nosys\netif\ethernetif.c</name>
+                        <name>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\nosys\netif\ethernetif.c</name>
                     </file>
                 </group>
                 <file>
-                    <name>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\nosys\sys_arch.c</name>
+                    <name>$PROJ_DIR$\..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\nosys\sys_arch.c</name>
                 </file>
             </group>
         </group>
     </group>
+    <file>
+        <name>$PROJ_DIR$\..\ethernetif_init.c</name>
+    </file>
     <file>
         <name>$PROJ_DIR$\..\main.c</name>
     </file>

@@ -4,7 +4,7 @@
 ;* initialization, plain thumb variant.
 ;*
 ;*********************************************************************************************************************
-;* Copyright (c) 2015-2016, Infineon Technologies AG
+;* Copyright (c) 2015-2017, Infineon Technologies AG
 ;* All rights reserved.                        
 ;*                                             
 ;* Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -34,6 +34,7 @@
 ;******************* Version History **********************************************   
 ;
 ;  V1, May,  7,2015 JFT:a) Initial version, MCLK=8MHz, PCLK=16MHz
+;  V2, Sep, 15,2017 JFT:a) JFT:Added option to select wait time before ASC BSL channel selection (WAIT_ASCBSL_ENTRY_SSW)
 ;     
 ;**********************************************************************************
 ;
@@ -98,6 +99,14 @@
  *****************************************************************************/
 #define CLKVAL2_SSW 0x00000100
 
+/*****************************************************************************
+ *  <h> WAIT_ASCBSL_ENTRY Configuration
+ *    <o0.0..30>    Wait time before ASC BSL channel selection (number of MCLK clock cycles)
+ *    <o0.31>       Disable wait time before ASC BSL channel selection
+ *  </h>
+ *****************************************************************************/
+#define WAIT_ASCBSL_ENTRY_SSW 0x80000000
+
         ;; Forward declaration of sections.
         SECTION CSTACK:DATA:NOROOT(3)
         SECTION .intvec:CODE:NOROOT(2)
@@ -113,6 +122,7 @@ __vector_table
         DCD     0                         ; 0xC
         DCD     CLKVAL1_SSW               ; 0x10 CLK_VAL1 - (CLKCR default)
         DCD     CLKVAL2_SSW               ; 0x14 CLK_VAL2 - (CGATCLR0 default)
+        DCD     WAIT_ASCBSL_ENTRY_SSW     ; 0x18 WAIT_ASCBSL_ENTRY_SSW 
 
         SECTION .vect_table:CODE:ROOT(2)
         THUMB

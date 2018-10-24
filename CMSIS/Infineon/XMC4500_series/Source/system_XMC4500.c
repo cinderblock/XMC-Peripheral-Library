@@ -1,8 +1,8 @@
 /*********************************************************************************************************************
  * @file     system_XMC4500.c
  * @brief    CMSIS Cortex-M4 Device Peripheral Access Layer Header File for the Infineon XMC4500 Device Series
- * @version  V3.1.3
- * @date     19. Jun 2017
+ * @version  V3.1.4
+ * @date     26. Sep 2017
  *
  * @cond
  *********************************************************************************************************************
@@ -38,7 +38,9 @@
  * V3.1.1, 01. Jun 2016, Fix masking of OSCHPCTRL value 
  * V3.1.2, 09. Feb 2017, Fix activation of USBPLL when SDMMC clock is enabled
  * V3.1.3, 19. Jun 2017, Rely on cmsis_compiler.h instead of defining __WEAK
- *                       Added support for ARM Compiler 6 (armclang) 
+ *                       Added support for ARM Compiler 6 (armclang)
+ * V3.1.4, 26. Sep 2017, Disable FPU if FPU_USED is zero   
+ *                       Fixed include files
  ******************************************************************************
  * @endcond
  */
@@ -48,8 +50,8 @@
  *******************************************************************************/
 #include <string.h>
 
-#include <XMC4700.h>
-#include "system_XMC4700.h"
+#include <XMC4500.h>
+#include "system_XMC4500.h"
 
 /*******************************************************************************
  * MACROS
@@ -337,9 +339,16 @@ __WEAK void SystemCoreSetup(void)
   __DSB();
   __enable_irq();
     
+  /* __FPU_PRESENT = 1 defined in device header file */
+  /* __FPU_USED value depends on compiler/linker options. */
+  /* __FPU_USED = 0 if -mfloat-abi=soft is selected */
+  /* __FPU_USED = 1 if -mfloat-abi=softfp or –mfloat-abi=hard */
+
 #if ((__FPU_PRESENT == 1) && (__FPU_USED == 1))
   SCB->CPACR |= ((3UL << 10*2) |                 /* set CP10 Full Access */
                  (3UL << 11*2)  );               /* set CP11 Full Access */
+#else
+  SCB->CPACR = 0;
 #endif
 
   /* Enable unaligned memory access - SCB_CCR.UNALIGN_TRP = 0 */

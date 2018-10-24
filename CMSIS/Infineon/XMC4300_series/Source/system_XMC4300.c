@@ -1,8 +1,8 @@
 /********************************************************************************************************************
  * @file     system_XMC4300.c
  * @brief    CMSIS Cortex-M4 Device Peripheral Access Layer Header File for the Infineon XMC4300 Device Series
- * @version  V1.0.4
- * @date     19. Jun 2017
+ * @version  V1.0.5
+ * @date     26. Sep 2017
  *
  * @cond
  *********************************************************************************************************************
@@ -40,6 +40,7 @@
  * V1.0.3, 09. Feb 2017, Fix activation of USBPLL when SDMMC clock is enabled 
  * V1.0.4, 19. Jun 2017, Rely on cmsis_compiler.h instead of defining __WEAK 
  *                       Added support for ARM Compiler 6 (armclang) 
+ * V1.0.5, 26. Sep 2017, Disable FPU if FPU_USED is zero  
  ******************************************************************************
  * @endcond
  */
@@ -370,9 +371,16 @@ __WEAK void SystemCoreSetup(void)
   __DSB();
   __enable_irq();
 
+  /* __FPU_PRESENT = 1 defined in device header file */
+  /* __FPU_USED value depends on compiler/linker options. */
+  /* __FPU_USED = 0 if -mfloat-abi=soft is selected */
+  /* __FPU_USED = 1 if -mfloat-abi=softfp or –mfloat-abi=hard */
+
 #if ((__FPU_PRESENT == 1) && (__FPU_USED == 1))
   SCB->CPACR |= ((3UL << 10*2) |                 /* set CP10 Full Access */
                  (3UL << 11*2)  );               /* set CP11 Full Access */
+#else
+  SCB->CPACR = 0;
 #endif
 
   /* Enable unaligned memory access - SCB_CCR.UNALIGN_TRP = 0 */

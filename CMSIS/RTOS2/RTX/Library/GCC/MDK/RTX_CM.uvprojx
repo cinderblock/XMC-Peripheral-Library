@@ -12,11 +12,12 @@
       <ToolsetName>ARM-GNU</ToolsetName>
       <pArmCC>6050000::V6.5::.\ARMCLANG_6.5</pArmCC>
       <pCCUsed>6050000::V6.5::.\ARMCLANG_6.5</pCCUsed>
+      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM0</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.0.1</PackID>
+          <PackID>ARM.CMSIS.5.2.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("Cortex-M0") CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -335,6 +336,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
             </File>
+            <File>
+              <FileName>os_systick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -498,11 +504,12 @@
       <ToolsetName>ARM-GNU</ToolsetName>
       <pArmCC>6050000::V6.5::.\ARMCLANG_6.5</pArmCC>
       <pCCUsed>6050000::V6.5::.\ARMCLANG_6.5</pCCUsed>
+      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM3</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.0.1</PackID>
+          <PackID>ARM.CMSIS.5.2.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("Cortex-M3") CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -821,6 +828,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
             </File>
+            <File>
+              <FileName>os_systick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1031,11 +1043,12 @@
       <ToolsetName>ARM-GNU</ToolsetName>
       <pArmCC>6050000::V6.5::.\ARMCLANG_6.5</pArmCC>
       <pCCUsed>6050000::V6.5::.\ARMCLANG_6.5</pCCUsed>
+      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMCM4_FP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.0.1</PackID>
+          <PackID>ARM.CMSIS.5.2.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -1354,6 +1367,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
             </File>
+            <File>
+              <FileName>os_systick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1517,11 +1535,12 @@
       <ToolsetName>ARM-GNU</ToolsetName>
       <pArmCC>6050000::V6.5::.\ARMCLANG_6.5</pArmCC>
       <pCCUsed>6050000::V6.5::.\ARMCLANG_6.5</pCCUsed>
+      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MBL</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.0.1</PackID>
+          <PackID>ARM.CMSIS.5.2.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("ARMV8MBL") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -1840,6 +1859,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
             </File>
+            <File>
+              <FileName>os_systick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2050,11 +2074,12 @@
       <ToolsetName>ARM-GNU</ToolsetName>
       <pArmCC>6050000::V6.5::.\ARMCLANG_6.5</pArmCC>
       <pCCUsed>6050000::V6.5::.\ARMCLANG_6.5</pCCUsed>
+      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MBL</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.0.1</PackID>
+          <PackID>ARM.CMSIS.5.2.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("ARMV8MBL") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -2373,6 +2398,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
             </File>
+            <File>
+              <FileName>os_systick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2583,11 +2613,12 @@
       <ToolsetName>ARM-GNU</ToolsetName>
       <pArmCC>6050000::V6.5::.\ARMCLANG_6.5</pArmCC>
       <pCCUsed>6050000::V6.5::.\ARMCLANG_6.5</pCCUsed>
+      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MML</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.0.1</PackID>
+          <PackID>ARM.CMSIS.5.2.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("ARMV8MML") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -2906,6 +2937,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
             </File>
+            <File>
+              <FileName>os_systick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -3116,11 +3152,12 @@
       <ToolsetName>ARM-GNU</ToolsetName>
       <pArmCC>6050000::V6.5::.\ARMCLANG_6.5</pArmCC>
       <pCCUsed>6050000::V6.5::.\ARMCLANG_6.5</pCCUsed>
+      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MML</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.0.1</PackID>
+          <PackID>ARM.CMSIS.5.2.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("ARMV8MML") CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -3439,6 +3476,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
             </File>
+            <File>
+              <FileName>os_systick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -3649,11 +3691,12 @@
       <ToolsetName>ARM-GNU</ToolsetName>
       <pArmCC>6050000::V6.5::.\ARMCLANG_6.5</pArmCC>
       <pCCUsed>6050000::V6.5::.\ARMCLANG_6.5</pCCUsed>
+      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MML_SP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.0.1</PackID>
+          <PackID>ARM.CMSIS.5.2.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("ARMV8MML") FPU3(SFPU) CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -3972,6 +4015,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
             </File>
+            <File>
+              <FileName>os_systick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -4182,11 +4230,12 @@
       <ToolsetName>ARM-GNU</ToolsetName>
       <pArmCC>6050000::V6.5::.\ARMCLANG_6.5</pArmCC>
       <pCCUsed>6050000::V6.5::.\ARMCLANG_6.5</pCCUsed>
+      <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
           <Device>ARMv8MML_SP</Device>
           <Vendor>ARM</Vendor>
-          <PackID>ARM.CMSIS.5.0.1</PackID>
+          <PackID>ARM.CMSIS.5.2.0</PackID>
           <PackURL>http://www.keil.com/pack/</PackURL>
           <Cpu>IRAM(0x20000000,0x00020000) IROM(0x00000000,0x00040000) CPUTYPE("ARMV8MML") FPU3(SFPU) CLOCK(12000000) ESEL ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -4504,6 +4553,11 @@
               <FileName>rtx_evr.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Source\rtx_evr.c</FilePath>
+            </File>
+            <File>
+              <FileName>os_systick.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\Source\os_systick.c</FilePath>
             </File>
           </Files>
         </Group>

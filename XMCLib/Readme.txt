@@ -8,6 +8,7 @@ XMC Lib is built on top of CMSIS and MISRA-C 2004 compliant.
 The following tool chains are supported:
 - GNU GCC for ARM (gcc)
 - MDK-ARM Microcontroller Development Kit v5 (armcc)
+- Keil Arm Compiler Version 6
 - IAR Embedded Workbench for ARM (iccarm)
 - TASKING VX-toolset for ARM v5.(carm)
 

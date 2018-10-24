@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>HTTPSERVER_RAW</name>
+	<name>HTTPSERVER_RAW_XMC48</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -40,6 +40,21 @@
 			<name>Startup</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>ethernetif_init.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/ethernetif_init.c</locationURI>
+		</link>
+		<link>
+			<name>httpserver_raw</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/httpserver_raw</locationURI>
+		</link>
+		<link>
+			<name>lwipopts.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/lwipopts.h</locationURI>
 		</link>
 		<link>
 			<name>main.c</name>
@@ -92,6 +107,26 @@
 			<locationURI>PARENT-6-PROJECT_LOC/XMCLib/src</locationURI>
 		</link>
 		<link>
+			<name>lwip/src/api</name>
+			<type>2</type>
+			<locationURI>PARENT-6-PROJECT_LOC/ThirdPartyLibraries/lwip/src/api</locationURI>
+		</link>
+		<link>
+			<name>lwip/src/core</name>
+			<type>2</type>
+			<locationURI>PARENT-6-PROJECT_LOC/ThirdPartyLibraries/lwip/src/core</locationURI>
+		</link>
+		<link>
+			<name>lwip/src/include</name>
+			<type>2</type>
+			<locationURI>PARENT-6-PROJECT_LOC/ThirdPartyLibraries/lwip/src/include</locationURI>
+		</link>
+		<link>
+			<name>lwip/src/netif</name>
+			<type>2</type>
+			<locationURI>PARENT-6-PROJECT_LOC/ThirdPartyLibraries/lwip/src/netif</locationURI>
+		</link>
+		<link>
 			<name>Libraries/CMSIS/Infineon/XMC4800_series</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -110,16 +145,6 @@
 			<name>Libraries/CMSIS/Infineon/XMC4800_series/Include/system_XMC4800.h</name>
 			<type>1</type>
 			<locationURI>PARENT-6-PROJECT_LOC/CMSIS/Infineon/XMC4800_series/Include/system_XMC4800.h</locationURI>
-		</link>
-		<link>
-			<name>httpserver_raw</name>
-			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/httpserver_raw</locationURI>
-		</link>
-		<link>
-			<name>lwip</name>
-			<type>2</type>
-			<locationURI>PARENT-6-PROJECT_LOC/ThirdPartyLibraries/lwip/src</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

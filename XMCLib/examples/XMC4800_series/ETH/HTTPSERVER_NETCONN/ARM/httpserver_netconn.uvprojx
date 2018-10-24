@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>XMC_ETH_PHY_KSZ8081RNB</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\include;..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\include\ipv4;..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\cmsis-rtos\include;..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\cmsis-rtos\netif</IncludePath>
+              <IncludePath>..;..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\include;..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\include\ipv4;..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\cmsis-rtos\include;..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\cmsis-rtos\netif</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -383,6 +383,11 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>ethernetif_init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ethernetif_init.c</FilePath>
             </File>
             <File>
               <FileName>httpserver-netconn.c</FileName>
@@ -777,12 +782,12 @@
             <File>
               <FileName>sys_arch.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\cmsis-rtos\sys_arch.c</FilePath>
+              <FilePath>..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\cmsis-rtos\sys_arch.c</FilePath>
             </File>
             <File>
               <FileName>ethernetif.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\cmsis-rtos\netif\ethernetif.c</FilePath>
+              <FilePath>..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\cmsis-rtos\netif\ethernetif.c</FilePath>
             </File>
           </Files>
         </Group>

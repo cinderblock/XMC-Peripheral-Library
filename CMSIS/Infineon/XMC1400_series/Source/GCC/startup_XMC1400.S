@@ -1,12 +1,12 @@
 /*********************************************************************************************************************
  * @file     startup_XMC1400.S
  * @brief    CMSIS Core Device Startup File for Infineon XMC1400 Device Series
- * @version  V1.1
- * @date     05 Jan 2016
+ * @version  V1.2
+ * @date     15 Sep 2017
  *
  * @cond
  *********************************************************************************************************************
- * Copyright (c) 2015-2016, Infineon Technologies AG
+ * Copyright (c) 2015-2017, Infineon Technologies AG
  * All rights reserved.                        
  *                                             
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -37,6 +37,7 @@
  * V1.0, Sep, 03, 2015 JFT:Initial version
  *                         MCLK=8MHz, PCLK=16MHz
  * V1.1, Jan, 05, 2016 JFT:Fix .reset section attributes
+ * V1.2, Sep, 15, 2017 JFT:Added option to select wait time before ASC BSL channel selection (WAIT_ASCBSL_ENTRY_SSW)
  *
  * @endcond 
  */
@@ -91,6 +92,14 @@
  *****************************************************************************/
 #define CLKVAL2_SSW 0x00000100
 
+/*****************************************************************************
+ *  <h> WAIT_ASCBSL_ENTRY Configuration
+ *    <o0.0..30>    Wait time before ASC BSL channel selection (number of MCLK clock cycles)
+ *    <o0.31>       Disable wait time before ASC BSL channel selection
+ *  </h>
+ *****************************************************************************/
+#define WAIT_ASCBSL_ENTRY_SSW 0x80000000
+
 /* A couple of macros to ease definition of the various handlers */
 .macro Insert_InterruptHandler Interrupt
     .weak \Interrupt\()_Handler
@@ -126,8 +135,8 @@ __Vectors:
     .long   HardFault_Handler           /* Hard Fault Handler           */
     .long   CLKVAL1_SSW                 /* Reserved                     */
     .long   CLKVAL2_SSW                 /* Reserved                     */
+    .long   WAIT_ASCBSL_ENTRY_SSW       /* Reserved                     */
 #ifdef RETAIN_VECTOR_TABLE
-    .long   0                           /* Reserved                     */
     .long   0                           /* Reserved                     */
     .long   0                           /* Reserved                     */
     .long   0                           /* Reserved                     */

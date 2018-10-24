@@ -1,12 +1,12 @@
 /**
  * @file xmc1_scu.c
- * @date 2017-06-24
+ * @date 2017-10-25
  *
  * @cond
  *********************************************************************************************************************
- * XMClib v2.1.16 - XMC Peripheral Driver Library 
+ * XMClib v2.1.18 - XMC Peripheral Driver Library 
  *
- * Copyright (c) 2015-2017, Infineon Technologies AG
+ * Copyright (c) 2015-2018, Infineon Technologies AG
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,are permitted provided that the
@@ -70,6 +70,14 @@
  *
  * 2017-06-24
  *     - Changed XMC_SCU_SetBMI() for XMC11/XMC12/XMC13 to set to 1 the bit 11 of BMI
+ *
+ * 2017-10-25
+ *     - Move the following functions to xmc1_scu.h as STATCI_INLINE and make them available for XMC1 families
+ *            XMC_SCU_CLOCK_EnableDCO1OscillatorWatchdog(), 
+ *            XMC_SCU_CLOCK_DisableDCO1OscillatorWatchdog(), 
+ *            XMC_SCU_CLOCK_ClearDCO1OscillatorWatchdogStatus(), 
+ *            XMC_SCU_CLOCK_IsDCO1ClockFrequencyUsable()
+ *     - Changed XMC_SCU_SetBMI() for XMC11/XMC12/XMC13 to set to 1 the bits [7:6] of BMI
  *
  * @endcond
  *
@@ -863,7 +871,7 @@ uint32_t XMC_SCU_SetBMI(uint32_t flags, uint8_t timeout)
 #if (UC_SERIES == XMC14)
   return ROM_BmiInstallationReq((flags & 0x0fffU) | ((timeout << 12) & 0xf000U));
 #else
-  return ROM_BmiInstallationReq((flags & 0x07ffU) | ((timeout << 12) & 0xf000U) | 0x0800U);
+  return ROM_BmiInstallationReq((flags & 0x07ffU) | ((timeout << 12) & 0xf000U) | 0x08c0U);
 #endif
 }
 
@@ -895,38 +903,6 @@ void XMC_SCU_CLOCK_DisableDCO1ExtRefCalibration(void)
 bool XMC_SCU_CLOCK_IsDCO1ExtRefCalibrationReady(void)
 {
   return (bool)((SCU_ANALOG->ANASYNC2 & SCU_ANALOG_ANASYNC2_SYNC_READY_Msk) != 0U);
-}
-
-/**
- * This function enables the watchdog on the DCO1 frequency
- */
-void XMC_SCU_CLOCK_EnableDCO1OscillatorWatchdog(void)
-{
-  SCU_CLK->OSCCSR |= SCU_CLK_OSCCSR_OWDEN_Msk;
-}
-
-/**
- * This function disables the watchdog on the DCO1 frequency
- */
-void XMC_SCU_CLOCK_DisableDCO1OscillatorWatchdog(void)
-{
-  SCU_CLK->OSCCSR &= ~SCU_CLK_OSCCSR_OWDEN_Msk;
-}
-
-/**
- * This function clears the status of the watchdog on the DCO1 frequency
- */
-void XMC_SCU_CLOCK_ClearDCO1OscillatorWatchdogStatus(void)
-{
-  SCU_CLK->OSCCSR |= SCU_CLK_OSCCSR_OWDRES_Msk;
-}
-
-/**
- * This function checks if the DCO1 frequency is in the limits of the watchdog.
- */
-bool XMC_SCU_CLOCK_IsDCO1ClockFrequencyUsable(void)
-{
-  return ((SCU_CLK->OSCCSR & (SCU_CLK_OSCCSR_OSC2L_Msk | SCU_CLK_OSCCSR_OSC2H_Msk)) == 0U);
 }
 
 /* This function selects service request source for a NVIC interrupt node */

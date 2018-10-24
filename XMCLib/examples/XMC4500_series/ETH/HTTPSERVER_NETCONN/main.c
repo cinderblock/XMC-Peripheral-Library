@@ -16,8 +16,8 @@
 
 /**
  * @file
- * @date 07 August,2017
- * @version 1.2.0
+ * @date 10 November,2017
+ * @version 1.3.0
  *
  * @brief ETH HTTP server demo example using the netconn interface
  *
@@ -35,12 +35,17 @@
  * Version 1.2.0
  * - Changed the way the interface features are assigned
  * 
+ * Version 1.3.0
+ * - lwIP 2.0.3
+ * - Reworked example structure
  */
 
 #include "xmc_gpio.h"
 #include "cmsis_os.h"
 #include "lwip/tcpip.h"
 #include "lwip/netif.h"
+#include "netif/etharp.h"
+
 #include "ethernetif.h"
 #include "httpserver_netconn/httpserver-netconn.h"
 
@@ -68,7 +73,71 @@
 #define GW_ADDR2   0
 #define GW_ADDR3   1
 
-extern struct netif xnetif;
+/* MAC ADDRESS*/
+#define MAC_ADDR0   0x00
+#define MAC_ADDR1   0x00
+#define MAC_ADDR2   0x45
+#define MAC_ADDR3   0x19
+#define MAC_ADDR4   0x03
+#define MAC_ADDR5   0x00
+
+#define XMC_ETH_MAC_NUM_RX_BUF (4)
+#define XMC_ETH_MAC_NUM_TX_BUF (8)
+
+#if defined(__ICCARM__)
+#pragma data_alignment=4
+static XMC_ETH_MAC_DMA_DESC_t rx_desc[XMC_ETH_MAC_NUM_RX_BUF] @ ".dram";
+#pragma data_alignment=4
+static XMC_ETH_MAC_DMA_DESC_t tx_desc[XMC_ETH_MAC_NUM_TX_BUF] @ ".dram";
+#pragma data_alignment=4
+static uint8_t rx_buf[XMC_ETH_MAC_NUM_RX_BUF][XMC_ETH_MAC_BUF_SIZE] @ ".dram";
+#pragma data_alignment=4
+static uint8_t tx_buf[XMC_ETH_MAC_NUM_TX_BUF][XMC_ETH_MAC_BUF_SIZE] @ ".dram";
+#elif defined(__CC_ARM) || (defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050))
+static __ALIGNED(4) XMC_ETH_MAC_DMA_DESC_t rx_desc[XMC_ETH_MAC_NUM_RX_BUF] __attribute__((section ("RW_IRAM1")));
+static __ALIGNED(4) XMC_ETH_MAC_DMA_DESC_t tx_desc[XMC_ETH_MAC_NUM_TX_BUF] __attribute__((section ("RW_IRAM1")));
+static __ALIGNED(4) uint8_t rx_buf[XMC_ETH_MAC_NUM_RX_BUF][XMC_ETH_MAC_BUF_SIZE] __attribute__((section ("RW_IRAM1")));
+static __ALIGNED(4) uint8_t tx_buf[XMC_ETH_MAC_NUM_TX_BUF][XMC_ETH_MAC_BUF_SIZE] __attribute__((section ("RW_IRAM1")));
+#elif defined(__GNUC__)
+static __ALIGNED(4) XMC_ETH_MAC_DMA_DESC_t rx_desc[XMC_ETH_MAC_NUM_RX_BUF] __attribute__((section ("ETH_RAM")));
+static __ALIGNED(4) XMC_ETH_MAC_DMA_DESC_t tx_desc[XMC_ETH_MAC_NUM_TX_BUF] __attribute__((section ("ETH_RAM")));
+static __ALIGNED(4) uint8_t rx_buf[XMC_ETH_MAC_NUM_RX_BUF][XMC_ETH_MAC_BUF_SIZE] __attribute__((section ("ETH_RAM")));
+static __ALIGNED(4) uint8_t tx_buf[XMC_ETH_MAC_NUM_TX_BUF][XMC_ETH_MAC_BUF_SIZE] __attribute__((section ("ETH_RAM")));
+#endif
+
+static ETHIF_t ethif =
+{
+  .phy_addr = 0,
+  .mac =
+  {
+    .regs = ETH0,
+    .rx_desc = rx_desc,
+    .tx_desc = tx_desc,
+    .rx_buf = &rx_buf[0][0],
+    .tx_buf = &tx_buf[0][0],
+    .num_rx_buf = XMC_ETH_MAC_NUM_RX_BUF,
+    .num_tx_buf = XMC_ETH_MAC_NUM_TX_BUF
+  },
+  .phy =
+  {
+    .interface = XMC_ETH_LINK_INTERFACE_RMII,
+    .enable_auto_negotiate = true,
+  }
+};
+
+static struct netif xnetif = 
+{
+  /* set MAC hardware address length */
+  .hwaddr_len = (u8_t)ETHARP_HWADDR_LEN,
+
+  /* set MAC hardware address */
+  .hwaddr =  {(u8_t)MAC_ADDR0, (u8_t)MAC_ADDR1,
+              (u8_t)MAC_ADDR2, (u8_t)MAC_ADDR3,
+              (u8_t)MAC_ADDR4, (u8_t)MAC_ADDR5},
+
+  /* maximum transfer unit */
+  .mtu = 1500U,
+};
 
 void LWIP_Init(void)
 {
@@ -101,15 +170,7 @@ void LWIP_Init(void)
 
   The init function pointer must point to a initialization function for
   your ethernet netif interface. The following code illustrates it's use.*/
-  netif_add(&xnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &tcpip_input);
-
-  /*  Registers the default network interface.*/
-  netif_set_default(&xnetif);
-
-#if LWIP_NETIF_STATUS_CALLBACK == 1
-  /* Initialize interface status change callback */
-  netif_set_status_callback(&xnetif, ETH_NETIF_STATUS_CB_FUNCTION);
-#endif
+  netif_add(&xnetif, &ipaddr, &netmask, &gw, &ethif, &ethernetif_init, &tcpip_input);
 }
 
 void led1_task(void const *args)
@@ -127,6 +188,8 @@ void main_task(void const *args)
 {
   XMC_GPIO_SetMode(LED1, XMC_GPIO_MODE_OUTPUT_PUSH_PULL);
 
+  sys_sem_new(&ethif.eth_rx_semaphore, 0);
+  
   LWIP_Init();
   http_server_netconn_init();
 
@@ -141,4 +204,10 @@ int main(void)
   osThreadCreate(osThread(main_task), NULL);
 
   osKernelStart();
+}
+
+void ETH0_0_IRQHandler(void)
+{
+  XMC_ETH_MAC_ClearEventStatus(&ethif.mac, XMC_ETH_MAC_EVENT_RECEIVE);
+  sys_sem_signal(&ethif.eth_rx_semaphore);
 }

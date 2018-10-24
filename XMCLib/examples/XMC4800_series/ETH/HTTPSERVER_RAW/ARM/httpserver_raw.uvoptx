@@ -1152,7 +1152,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\nosys\sys_arch.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\nosys\sys_arch.c</PathWithFileName>
       <FilenameWithoutPath>sys_arch.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -1164,7 +1164,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\..\..\..\..\ThirdPartyLibraries\lwip\src\port\nosys\netif\ethernetif.c</PathWithFileName>
+      <PathWithFileName>..\..\..\..\..\..\ThirdPartyLibraries\lwip\port\nosys\netif\ethernetif.c</PathWithFileName>
       <FilenameWithoutPath>ethernetif.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>

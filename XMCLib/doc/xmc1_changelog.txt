@@ -2,6 +2,72 @@
  * @page Changelog
  *
  * @tableofcontents
+ * @section v2118 Version 2.1.18
+ * @subsection COMMON COMMON
+ * - Added:
+ *     - Support for Keil Arm Compiler Version 6
+ *
+ * @subsection CAN CAN
+ * - Added:
+ *     - XMC_CAN_InitEx() and XMC_CAN_NODE_NominalBitTimeConfigureEx()
+ *     - XMC_CAN_GetBaudrateClockSource(), XMC_CAN_SetBaudrateClockSource() and XMC_CAN_GetBaudrateClockFrequency() available to all devices
+ * - Changed:
+ *     - Refactored XMC_CAN_MO_Config() to configure MOCTR depending on transmit or receive message type
+ *
+ * @subsection CCU4 CCU4
+ * - Fixed:
+ *     - XMC_CCU4_SLICE_SetShadowTransferMode()
+ *
+ * @subsection CCU8 CCU8
+ * - Fixed:
+ *     - XMC_CCU8_SLICE_SetShadowTransferMode()
+ * - Added:
+ *     - Added parity checking functionality: 
+ *       - XMC_CCU8_StartParityChecker()
+ *       - XMC_CCU8_StopParityChecker()
+ *       - XMC_CCU8_IsParityCheckerRunning()
+ *       - XMC_CCU8_SLICE_ParityCheckerEnableSliceOutput()
+ *       - XMC_CCU8_SLICE_ParityCheckerDisableSliceOutput()
+ *       - XMC_CCU8_SLICE_ParityCheckerSetDelayInput()
+ *       - XMC_CCU8_SLICE_ParityCheckerSetDriverInput()
+ *       - XMC_CCU8_SLICE_ParityCheckerSetType()
+ *       - XMC_CCU8_SLICE_ParityCheckerGetStatus()
+ *
+ * @subsection I2C I2C
+ * - Added:
+ *     - XMC_I2C_CH_EnableMasterClock() and XMC_I2C_CH_DisableMasterClock()
+ *
+ * @subsection UART UART
+ * - Added:
+ *     - XMC_UART_CH_EnableMasterClock() and XMC_UART_CH_DisableMasterClock()
+ *
+ * @subsection USIC USIC
+ * - Fixed:
+ *     - Value of macro XMC_USIC_CH_SHIFT_DIRECTION_MSB_FIRST used in XMC_USIC_CH_SetShiftDirection()
+ *
+ * @subsection ADC ADC
+ * - Added:
+ *     - XMC_VADC_GLOBAL_DETAILED_RESULT_t. Return of XMC_VADC_GLOBAL_GetDetailedResult() can be casted to a varible of type XMC_VADC_GLOBAL_DETAILED_RESULT_t to easily access the register bit fields
+ * - Fixed:
+ *     - XMC_VADC_GLOBAL_SHS_SetAnalogReference() updates AREF bit field correctly
+ *
+ * @subsection SCU SCU
+ * - Added:
+ *     - XMC_SCU_GetBMI()
+ *     - XMC_SCU_BMI_HWCFG_PINDIS for XMC1400
+ *     - Make XMC_SCU_CLOCK_EnableFlashPowerDown() and XMC_SCU_CLOCK_DisableFlashPowerDown() available to all XMC1 families
+ * - Changed:
+ *     - XMC_SCU_SetBMI() for XMC11/XMC12/XMC13 to set to 1 the bits [7:6] of BMI
+ *
+ * @subsection GPIO GPIO
+ * - Fixed:
+ *     - Side effects on output level when configuring a pin as input after the same pin in another port has been configured as output 
+ * 
+ * @subsection MATH MATH
+ * - Fixed:
+ *     - Reentrancy problems when using __aeabi_* functions (division ‘/’ and modulo ‘%’ C operators) which are active by default 
+ *       as long as XMC_MATH_DISABLE_DIV_ABI is not defined
+ *
  * @section v2116 Version 2.1.16
  * @subsection COMMON COMMON
  * - Added:

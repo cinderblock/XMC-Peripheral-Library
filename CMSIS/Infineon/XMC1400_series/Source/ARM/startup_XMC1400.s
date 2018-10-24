@@ -1,12 +1,12 @@
 ;*********************************************************************************************************************
 ;* @file     startup_XMC1400.s
 ;* @brief    CMSIS Core Device Startup File for Infineon XMC1400 Device Series
-;* @version  V1.0
-;* @date     03 Sep 2015
+;* @version  V1.1
+;* @date     15 Sep 2017
 ;*
 ;* @cond
 ;*********************************************************************************************************************
-;* Copyright (c) 2015-2016, Infineon Technologies AG
+;* Copyright (c) 2015-2017, Infineon Technologies AG
 ;* All rights reserved.                        
 ;*                                             
 ;* Redistribution and use in source and binary forms, with or without modification,are permitted provided that the 
@@ -36,6 +36,8 @@
 ;**************************** Change history ********************************
 ;* V1.0, Sep, 03, 2015 JFT:Initial version
 ;*                         MCLK=8MHz, PCLK=16MHz
+;*
+;* V1.1, Sep, 15, 2017 JFT:Added option to select wait time before ASC BSL channel selection (WAIT_ASCBSL_ENTRY_SSW)
 ;*
 ;* @endcond 
 ;*
@@ -113,6 +115,14 @@ CLK_VAL1_Val    EQU     0x00041800
 ;  </h>
 ;*****************************************************************************
 CLK_VAL2_Val    EQU     0x00000100
+
+;*****************************************************************************
+;*  <h> WAIT_ASCBSL_ENTRY Configuration
+;*    <o0.0..30>    Wait time before ASC BSL channel selection (number of MCLK clock cycles)
+;*    <o0.31>       Disable wait time before ASC BSL channel selection
+;*  </h>
+;*****************************************************************************
+WAIT_ASCBSL_ENTRY_SSW_Val EQU 0x80000000
 ; </h>
 
                 PRESERVE8
@@ -131,6 +141,7 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     0                         ; Reserved
                 DCD     CLK_VAL1_Val              ; CLK_VAL1
                 DCD     CLK_VAL2_Val              ; CLK_VAL2
+                DCD     WAIT_ASCBSL_ENTRY_SSW_Val ; WAIT_ASCBSL_ENTRY_SSW
 __Vectors_End
 
 __Vectors_Size  EQU     __Vectors_End - __Vectors
